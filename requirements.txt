@@ -1,0 +1,5 @@
+boto3
+pydantic
+smart_open
+toposort
+ulid-py
