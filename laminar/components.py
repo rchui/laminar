@@ -9,6 +9,7 @@ from typing import Any, Callable, Dict, TypeVar, cast
 
 import ulid
 from smart_open import open, parse_uri
+from typeguard import typechecked
 
 from laminar import configs
 from laminar.exceptions import ArtifactError
@@ -19,12 +20,12 @@ T = TypeVar("T", bound=Callable[..., Dict[str, Any]])
 
 
 class Flow:
-    def __init__(self, name: str, scheduler: Scheduler) -> None:
+    def __init__(self: "Flow", name: str, scheduler: Scheduler) -> None:
         """A collection of laminar steps.
 
         Args:
             name (str): Name of the flow.
-            scheduler (Scheduler): Scheduler to use to execute the flow.
+        scheduler (Scheduler): Scheduler to use to execute the flow.
         """
 
         self.name = name
@@ -32,7 +33,7 @@ class Flow:
         self.id = str(ulid.new())
         self.scheduler = scheduler
 
-    def __call__(self, **kwargs: Any) -> None:
+    def __call__(self: "Flow", **parameters: Any) -> None:
         """Execute the flow."""
 
         execution_workspace = os.path.join(
@@ -44,7 +45,7 @@ class Flow:
             Path(execution_workspace).resolve().mkdir(parents=True, exist_ok=True)
 
         # Store flow parameters
-        self.put_artifacts(execution_workspace, **kwargs)
+        self.write_artifacts(execution_workspace, **parameters)
 
         for step in self.scheduler.queue:
             # For each arg in the step, fetch the stored arg from a previous
@@ -52,7 +53,7 @@ class Flow:
 
             try:
                 # Marshall step parameters
-                artifacts = self.get_artifacts(execution_workspace, *inspect.getfullargspec(step).args)
+                artifacts = self.read_artifacts(execution_workspace, *inspect.getfullargspec(step).args)
             except FileNotFoundError:
                 raise ArtifactError(
                     f"Error loading artifact '{key}' for step '{step.__name__}' in flow '{self.name}' during execution"
@@ -62,9 +63,9 @@ class Flow:
             results = step(**artifacts)
 
             # For each result, store the artifacts in the shared flow directory.
-            self.put_artifacts(execution_workspace, **results)
+            self.write_artifacts(execution_workspace, **results)
 
-    def get_artifacts(self, execution_workspace: str, *args: str) -> Dict[str, Any]:
+    def read_artifacts(self: "Flow", execution_workspace: str, *args: str) -> Dict[str, Any]:
         """For a given step, load the needed artifacts from the shared flow directory.
 
         Args:
@@ -81,7 +82,7 @@ class Flow:
 
         return artifacts
 
-    def put_artifacts(self, execution_workspace: str, **arifacts: Any) -> None:
+    def write_artifacts(self: "Flow", execution_workspace: str, **arifacts: Any) -> None:
         """For all values returned by a step, store each artifact in teh shared flow directory.
 
         Args:
@@ -92,7 +93,7 @@ class Flow:
             with open(os.path.join(execution_workspace, f"{key}.gz"), "wb") as artifact:
                 artifact.write(pickle.dumps(value))
 
-    def step(self, *next: Step) -> Callable[[T], T]:
+    def step(self: "Flow", *next: Step) -> Callable[[T], T]:
         """Define a function as a step in a laminar flow.
 
         Args:
@@ -100,6 +101,8 @@ class Flow:
         """
 
         def decorator(f: Step) -> T:
+            f = typechecked(f)
+
             @functools.wraps(f)
             def wrapper(*args: Any, **kwargs: Any) -> Dict[str, Any]:
                 return f(*args, **kwargs)
@@ -116,5 +119,5 @@ class Flow:
 
         return decorator
 
-    def submit(self) -> None:
+    def submit(self: "Flow") -> None:
         self.scheduler.submit(self)

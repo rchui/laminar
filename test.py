@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from laminar.components import Flow
 from laminar.schedulers import Scheduler
@@ -7,7 +7,7 @@ flow = Flow("test", Scheduler("test-queue"))
 
 
 @flow.step()
-def end(a: int, b: str, c: bool) -> Dict[str, Any]:
+def end(a: int, b: List[str], c: bool) -> Dict[str, Any]:
     print("Inheriting a from branch_1, b from branch_2, c from start_2", c)
     return {}
 
@@ -19,7 +19,7 @@ def start_2(c: float) -> Dict[str, Any]:
 
 
 @flow.step(end)
-def branch_2(b: str) -> Dict[str, Any]:
+def branch_2(b: List[str]) -> Dict[str, Any]:
     print("Inheriting b from start_1", b)
     return {"b": b}
 
@@ -27,13 +27,13 @@ def branch_2(b: str) -> Dict[str, Any]:
 @flow.step(end)
 def branch_1(a: int) -> Dict[str, Any]:
     print("Inheriting a from start_2", a)
-    return {"a": int}
+    return {"a": a}
 
 
 @flow.step(branch_1, branch_2)
 def start_1(start: str) -> Dict[str, Any]:
     print("Inheriting start from flow", start)
-    return {"a": 5, "b": "b"}
+    return {"a": 5, "b": ["b"]}
 
 
 if __name__ == "__main__":

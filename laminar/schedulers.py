@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 from itertools import chain
-from typing import Dict, Iterable, List, Set, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Iterable, List, Set
 
 import boto3
 from toposort import toposort
@@ -10,7 +10,7 @@ from toposort import toposort
 from laminar.types import Step
 
 if TYPE_CHECKING:
-    from .components import Flow
+    from laminar.components import Flow
 else:
     Flow = None
 
