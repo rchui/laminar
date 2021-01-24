@@ -5,8 +5,25 @@ export
 
 DEFAULT: test
 
-alembic:
+alembic-upgrade:
 	alembic upgrade head
+
+alembic-revision:
+	docker run \
+		--name postgres \
+		--detach \
+		--interactive \
+		--tty \
+		--rm \
+		--env POSTGRES_DB=laminar \
+		--env POSTGRES_USER=laminar \
+		--env POSTGRES_PASSWORD=laminar \
+		-p 5432:5432 \
+		postgres
+	until pg_isready -U laminar -h localhost; do echo 'Waiting for postgres...'; sleep 2; done
+	$(MAKE) alembic-upgrade
+	alembic revision --autogenerate
+	docker stop postgres
 
 env:
 	virtualenv .venv --clear
