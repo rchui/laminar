@@ -50,20 +50,6 @@ def get_executions(flow: int) -> List[models.Execution]:
     return response
 
 
-@router.get("/{flow}/steps")
-def get_steps(flow: int) -> List[models.Step]:
-    """Get steps for a flow."""
-
-    response: List[models.Step] = (
-        postgres.client.session()
-        .query(schema.Flow, schema.Step)
-        .filter(schema.Flow.id == schema.Step.flow)
-        .filter(schema.Flow.id == flow)
-        .all()
-    )
-    return response
-
-
 @router.get("/{flow}/executions/{execution}")
 def get_execution(flow: int, execution: int) -> models.Execution:
     """Get an execution for a flow."""
@@ -75,6 +61,20 @@ def get_execution(flow: int, execution: int) -> models.Execution:
         .filter(schema.Flow.id == flow)
         .filter(schema.Execution.id == execution)
         .one()
+    )
+    return response
+
+
+@router.get("/{flow}/steps")
+def get_steps(flow: int) -> List[models.Step]:
+    """Get steps for a flow."""
+
+    response: List[models.Step] = (
+        postgres.client.session()
+        .query(schema.Flow, schema.Step)
+        .filter(schema.Flow.id == schema.Step.flow)
+        .filter(schema.Flow.id == flow)
+        .all()
     )
     return response
 

@@ -6,7 +6,8 @@ import os
 from psycopg2.pool import ThreadedConnectionPool
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session as Session
+from sqlalchemy.orm import sessionmaker
 
 from laminar import configs, databases
 
@@ -16,10 +17,9 @@ class Client:
     _pool: ThreadedConnectionPool = None
     _sessionmaker: sessionmaker = None
 
-    @property
-    def engine(self) -> Engine:
+    def engine(self, *, uri: str) -> Engine:
         if self._engine is None:
-            self._engine = create_engine(databases.uri(), echo=True)
+            self._engine = create_engine(uri, echo=True)
         return self._engine
 
     @property
@@ -36,14 +36,14 @@ class Client:
             )
         return self._pool
 
-    @property
-    def sessionmaker(self) -> sessionmaker:
+    def sessionmaker(self, *, uri: str) -> sessionmaker:
         if self._sessionmaker is None:
-            self._sessionmaker = sessionmaker(bind=self.engine)
+            self._sessionmaker = sessionmaker(bind=self.engine(uri=uri))
         return self._sessionmaker
 
-    def session(self) -> Session:
-        return self.sessionmaker()
+    def session(self, *, uri: str = None) -> Session:
+        sessionmaker = self.sessionmaker(uri=uri or databases.uri())
+        return sessionmaker()
 
 
 client = Client()

@@ -8,4 +8,5 @@ app.include_router(flows.router)
 
 @app.get("/healthz", status_code=status.HTTP_200_OK)
 def healthz() -> None:
+    """Health check."""
     ...

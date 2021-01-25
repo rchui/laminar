@@ -4,6 +4,7 @@ fastapi
 pq
 psycopg2
 pydantic
+requests
 smart_open
 toposort
 typeguard
