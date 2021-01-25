@@ -5,20 +5,20 @@ from fastapi import APIRouter
 from laminar.api import models
 from laminar.databases import postgres, schema
 
-router = APIRouter(prefix="/steps")
+router = APIRouter(prefix="/tasks")
 
 
 @router.get("/")
-def get_steps() -> List[models.Step]:
-    """Get steps."""
+def get_tasks() -> List[models.Task]:
+    """Get tasks."""
 
-    response: List[models.Step] = postgres.client.session().query(schema.Step).all()
+    response: List[models.Task] = postgres.client.session().query(schema.Task).all()
     return response
 
 
-@router.get("/{step}")
-def get_step(step: int) -> models.Step:
-    """Get a step."""
+@router.get("/{task}")
+def get_task(task: int) -> models.Task:
+    """Get a task."""
 
-    response: models.Step = postgres.client.session().query(schema.Step).filter(schema.Step.id == step).one()
+    response: models.Task = postgres.client.session().query(schema.Task).filter(schema.Task.id == task).one()
     return response

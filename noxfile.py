@@ -4,7 +4,14 @@ import nox
 @nox.session(python=False)
 def pytest(session: nox.Session) -> None:
     session.run("pytest", "--version")
-    session.run("pytest", "-vv", "--cov=laminar", "--cov-report=term-missing", "tests")
+    session.run(
+        "pytest",
+        "-v",
+        "--cov=laminar",
+        "--cov-report=term-missing",
+        "tests",
+        env={"LAMINAR_POSTGRES_URI": "sqlite:///:memory:"},
+    )
 
 
 @nox.session(python=False)

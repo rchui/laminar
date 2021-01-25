@@ -2,29 +2,9 @@
 
 from typing import List
 
-import pytest
 from fastapi.testclient import TestClient
-from testing.postgresql import PostgresqlFactory
 
-from laminar.api import app
 from laminar.databases import postgres, schema
-
-
-@pytest.fixture
-def client() -> TestClient:
-    return TestClient(app)
-
-
-Postgresql = PostgresqlFactory(cache_initialized_db=True)
-
-
-@pytest.fixture(scope="function")
-def pg() -> postgres.Session:
-    with Postgresql() as pg:
-        engine = postgres.client.engine(uri=pg.url(), new=True)
-        schema.Base.metadata.create_all(engine)
-        yield postgres.client.session(uri=pg.url(), new=True)
-        Postgresql.clear_cache()
 
 
 def test_get_flows(pg: postgres.Session, client: TestClient) -> None:
@@ -63,3 +43,65 @@ def test_get_flow(pg: postgres.Session, client: TestClient) -> None:
     response = client.get("/flows/1/")
     assert response.status_code == 200
     assert response.json() == test_flow
+
+
+def test_get_executions(pg: postgres.Session, client: TestClient) -> None:
+    test_flow = {"id": 1, "name": "test-name", "project": "test-project"}
+    test_executions = [
+        {"id": 1, "name": "test-name", "flow": 1},
+        {"id": 2, "name": "test-name", "flow": 1},
+        {"id": 3, "name": "test-name", "flow": 1},
+    ]
+
+    pg.add(schema.Flow(**test_flow))
+    for execution in test_executions:
+        pg.add(schema.Execution(**execution))
+    pg.commit()
+
+    response = client.get("/flows/1/executions/")
+    assert response.status_code == 200
+    assert response.json() == test_executions
+
+
+def test_get_execution(pg: postgres.Session, client: TestClient) -> None:
+    test_flow = {"id": 1, "name": "test-name", "project": "test-project"}
+    test_execution = {"id": 1, "name": "test-name", "flow": 1}
+
+    pg.add(schema.Flow(**test_flow))
+    pg.add(schema.Execution(**test_execution))
+    pg.commit()
+
+    response = client.get("/flows/1/executions/1/")
+    assert response.status_code == 200
+    assert response.json() == test_execution
+
+
+def test_get_tasks(pg: postgres.Session, client: TestClient) -> None:
+    test_flow = {"id": 1, "name": "test-name", "project": "test-project"}
+    test_tasks = [
+        {"id": 1, "name": "test-name", "flow": 1, "payload": {}},
+        {"id": 2, "name": "test-name", "flow": 1, "payload": {}},
+        {"id": 3, "name": "test-name", "flow": 1, "payload": {}},
+    ]
+
+    pg.add(schema.Flow(**test_flow))
+    for task in test_tasks:
+        pg.add(schema.Task(**task))
+    pg.commit()
+
+    response = client.get("/flows/1/tasks")
+    assert response.status_code == 200
+    assert response.json() == test_tasks
+
+
+def test_get_task(pg: postgres.Session, client: TestClient) -> None:
+    test_flow = {"id": 1, "name": "test-name", "project": "test-project"}
+    test_task = {"id": 1, "name": "test-name", "flow": 1, "payload": {}}
+
+    pg.add(schema.Flow(**test_flow))
+    pg.add(schema.Task(**test_task))
+    pg.commit()
+
+    response = client.get("/flows/1/tasks/1/")
+    assert response.status_code == 200
+    assert response.json() == test_task

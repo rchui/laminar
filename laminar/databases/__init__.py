@@ -16,4 +16,4 @@ def authority() -> str:
 
 
 def uri() -> str:
-    return f"{configs.database.scheme}://{authority()}"
+    return configs.postgres.uri or f"{configs.database.scheme}://{authority()}"

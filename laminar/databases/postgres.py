@@ -7,7 +7,8 @@ from psycopg2.pool import ThreadedConnectionPool
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import Session as Session
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from laminar import configs, databases
 
@@ -17,9 +18,16 @@ class Client:
     _pool: ThreadedConnectionPool = None
     _sessionmaker: sessionmaker = None
 
-    def engine(self, *, uri: str, new: bool = False) -> Engine:
-        if self._engine is None or new:
-            self._engine = create_engine(uri, echo=True)
+    @property
+    def engine(self) -> Engine:
+        if self._engine is None:
+            uri = databases.uri()
+            if uri.startswith("sqlite://"):
+                self._engine = create_engine(
+                    uri, connect_args={"check_same_thread": False}, poolclass=StaticPool, echo=True
+                )
+            else:
+                self._engine = create_engine(uri, echo=True)
         return self._engine
 
     @property
@@ -36,14 +44,14 @@ class Client:
             )
         return self._pool
 
-    def sessionmaker(self, *, uri: str, new: bool = False) -> sessionmaker:
-        if self._sessionmaker is None or new:
-            self._sessionmaker = sessionmaker(bind=self.engine(uri=uri))
+    @property
+    def sessionmaker(self) -> sessionmaker:
+        if self._sessionmaker is None:
+            self._sessionmaker = sessionmaker(bind=self.engine)
         return self._sessionmaker
 
-    def session(self, *, uri: str = None, new: bool = False) -> Session:
-        sessionmaker = self.sessionmaker(uri=uri or databases.uri(), new=new)
-        return sessionmaker()
+    def session(self) -> Session:
+        return scoped_session(self.sessionmaker)
 
 
 client = Client()

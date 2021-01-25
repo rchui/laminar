@@ -10,4 +10,3 @@ mypy
 nox
 pytest
 pytest-cov
-testing.postgresql

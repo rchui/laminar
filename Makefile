@@ -42,7 +42,6 @@ lock:
 		--rm \
 		--workdir /src \
 		--volume $(PWD):/src \
-		--volume $(shell pip cache dir):/root/.cache/pip \
 		python:3.6 \
 		/bin/bash -c " \
 			set -exo pipefail; \

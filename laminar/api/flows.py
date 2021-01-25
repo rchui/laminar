@@ -43,11 +43,7 @@ def get_executions(flow: int) -> List[models.Execution]:
     """Get executions for a flow."""
 
     response: List[models.Execution] = (
-        postgres.client.session()
-        .query(schema.Flow, schema.Execution)
-        .filter(schema.Flow.id == schema.Execution.flow)
-        .filter(schema.Flow.id == flow)
-        .all()
+        postgres.client.session().query(schema.Execution).join(schema.Flow).filter(schema.Flow.id == flow).all()
     )
     return response
 
@@ -58,8 +54,8 @@ def get_execution(flow: int, execution: int) -> models.Execution:
 
     response: models.Execution = (
         postgres.client.session()
-        .query(schema.Flow, schema.Execution)
-        .filter(schema.Flow.id == schema.Execution.flow)
+        .query(schema.Execution)
+        .join(schema.Flow)
         .filter(schema.Flow.id == flow)
         .filter(schema.Execution.id == execution)
         .one()
@@ -67,30 +63,26 @@ def get_execution(flow: int, execution: int) -> models.Execution:
     return response
 
 
-@router.get("/{flow}/steps")
-def get_steps(flow: int) -> List[models.Step]:
-    """Get steps for a flow."""
+@router.get("/{flow}/tasks")
+def get_tasks(flow: int) -> List[models.Task]:
+    """Get tasks for a flow."""
 
-    response: List[models.Step] = (
-        postgres.client.session()
-        .query(schema.Flow, schema.Step)
-        .filter(schema.Flow.id == schema.Step.flow)
-        .filter(schema.Flow.id == flow)
-        .all()
+    response: List[models.Task] = (
+        postgres.client.session().query(schema.Task).join(schema.Flow).filter(schema.Flow.id == flow).all()
     )
     return response
 
 
-@router.get("/{flow}/steps/{step}")
-def get_step(flow: int, step: int) -> models.Step:
-    """Get a step for a flow."""
+@router.get("/{flow}/tasks/{task}")
+def get_task(flow: int, task: int) -> models.Task:
+    """Get a task for a flow."""
 
-    response: models.Step = (
+    response: models.Task = (
         postgres.client.session()
-        .query(schema.Flow, schema.Step)
-        .filter(schema.Flow.id == schema.Step.id)
+        .query(schema.Task)
+        .join(schema.Flow)
         .filter(schema.Flow.id == flow)
-        .filter(schema.Step.id == step)
+        .filter(schema.Task.id == task)
         .one()
     )
     return response

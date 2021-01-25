@@ -14,11 +14,13 @@ class Execution(BaseSettings):
 
 
 class Postgres(BaseSettings):
+
     database: str = Field("laminar", env="LAMINAR_POSTGRES_DATABASE")
     host: str = Field("localhost", env="LAMINAR_POSTGRES_HOST")
     user: str = Field("laminar", env="LAMINAR_POSTGRES_USER")
     password: str = Field("laminar", env="LAMINAR_POSTGRESS_PASSWORD")
     port: str = Field("5432", env="LAMINAR_POSTGRES_PORT")
+    uri: str = Field(None, env="LAMINAR_POSTGRES_URI")
 
 
 class Workspace(BaseSettings):

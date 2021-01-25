@@ -19,9 +19,9 @@ class Execution(BaseModel):
         orm_mode = True
 
 
-class Step(BaseModel):
+class Task(BaseModel):
     name: str
-    execution: int
+    flow: int
     payload: Dict[str, Any]
 
     class Config:
@@ -30,7 +30,7 @@ class Step(BaseModel):
 
 class Status(BaseModel):
     execution: int
-    step: int
+    task: int
     status: str
 
     class Config:
