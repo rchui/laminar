@@ -17,8 +17,8 @@ class Client:
     _pool: ThreadedConnectionPool = None
     _sessionmaker: sessionmaker = None
 
-    def engine(self, *, uri: str) -> Engine:
-        if self._engine is None:
+    def engine(self, *, uri: str, new: bool = False) -> Engine:
+        if self._engine is None or new:
             self._engine = create_engine(uri, echo=True)
         return self._engine
 
@@ -36,13 +36,13 @@ class Client:
             )
         return self._pool
 
-    def sessionmaker(self, *, uri: str) -> sessionmaker:
-        if self._sessionmaker is None:
+    def sessionmaker(self, *, uri: str, new: bool = False) -> sessionmaker:
+        if self._sessionmaker is None or new:
             self._sessionmaker = sessionmaker(bind=self.engine(uri=uri))
         return self._sessionmaker
 
-    def session(self, *, uri: str = None) -> Session:
-        sessionmaker = self.sessionmaker(uri=uri or databases.uri())
+    def session(self, *, uri: str = None, new: bool = False) -> Session:
+        sessionmaker = self.sessionmaker(uri=uri or databases.uri(), new=new)
         return sessionmaker()
 
 

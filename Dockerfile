@@ -13,7 +13,7 @@ WORKDIR /app
 
 COPY requirements.txt.lock ./
 RUN pip install --upgrade pip && \
-    pip install --requirement requirements.txt.lock
+    pip install --no-deps --requirement requirements.txt.lock
 
 COPY . ./
 
