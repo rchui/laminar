@@ -21,7 +21,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install --requirement requirements.txt.lock
-      - name: Static Analysis
+      - name: Run Tests
         run: |
           nox --list
           nox
