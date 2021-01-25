@@ -28,7 +28,7 @@ alembic-revision:
 env:
 	virtualenv .venv --clear
 	$(VENV) pip install --upgrade pip
-	$(VENV) pip install --requirement requirements.txt.lock
+	$(VENV) pip install --no-deps --requirement requirements.txt.lock
 	$(VENV) pip install --editable .
 
 format:

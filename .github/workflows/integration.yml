@@ -20,7 +20,7 @@ jobs:
       - name: Setup Environment
         run: |
           pip install --upgrade pip
-          pip install --requirement requirements.txt.lock
+          pip install --no-deps --requirement requirements.txt.lock
       - name: Run Tests
         run: |
           nox --list
