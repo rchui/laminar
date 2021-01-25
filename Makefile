@@ -52,7 +52,8 @@ lock:
 	$(MAKE) env
 
 test:
-	$(VENV) tox
+	$(VENV) nox --list
+	$(VENV) nox
 
 shell:
 	$(VENV) exec zsh

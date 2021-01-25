@@ -9,4 +9,4 @@ isort
 mypy
 pytest
 pytest-cov
-tox
+nox

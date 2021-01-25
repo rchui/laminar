@@ -4,6 +4,8 @@ appdirs==1.4.4
     # via
     #   black
     #   virtualenv
+argcomplete==1.12.2
+    # via nox
 attrs==20.3.0
     # via
     #   flake8-mypy
@@ -22,6 +24,8 @@ click==7.1.2
     # via
     #   black
     #   uvicorn
+colorlog==4.7.2
+    # via nox
 coverage==5.3.1
     # via pytest-cov
 dataclasses==0.8
@@ -33,9 +37,7 @@ distlib==0.3.1
 fastapi==0.63.0
     # via -r requirements.txt
 filelock==3.0.12
-    # via
-    #   tox
-    #   virtualenv
+    # via virtualenv
 flake8-black==0.2.1
     # via -r requirements.txt.dev
 flake8-isort==4.0.0
@@ -54,10 +56,11 @@ httptools==0.1.1
     # via uvicorn
 importlib-metadata==3.4.0
     # via
+    #   argcomplete
     #   flake8
+    #   nox
     #   pluggy
     #   pytest
-    #   tox
     #   virtualenv
 importlib-resources==5.0.0
     # via virtualenv
@@ -85,24 +88,22 @@ mypy==0.790
     # via
     #   -r requirements.txt.dev
     #   flake8-mypy
+nox==2020.12.31
+    # via -r requirements.txt.dev
 packaging==20.8
-    # via
-    #   pytest
-    #   tox
+    # via pytest
 pathspec==0.8.1
     # via black
 pluggy==0.13.1
-    # via
-    #   pytest
-    #   tox
+    # via pytest
 pq==1.9.0
     # via -r requirements.txt
 psycopg2==2.8.6
     # via -r requirements.txt
 py==1.10.0
     # via
+    #   nox
     #   pytest
-    #   tox
 pycodestyle==2.6.0
     # via flake8
 pydantic==1.7.3
@@ -136,7 +137,6 @@ s3transfer==0.3.4
 six==1.15.0
     # via
     #   python-dateutil
-    #   tox
     #   virtualenv
 smart-open==4.1.0
     # via -r requirements.txt
@@ -150,11 +150,8 @@ toml==0.10.2
     # via
     #   black
     #   pytest
-    #   tox
 toposort==1.6
     # via -r requirements.txt
-tox==3.21.1
-    # via -r requirements.txt.dev
 typed-ast==1.4.2
     # via
     #   black
@@ -176,7 +173,7 @@ uvicorn[standard]==0.13.3
 uvloop==0.14.0
     # via uvicorn
 virtualenv==20.3.1
-    # via tox
+    # via nox
 watchgod==0.6
     # via uvicorn
 websockets==8.1

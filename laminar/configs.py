@@ -1,8 +1,6 @@
 """Global config for laminar flows."""
 
-import sqlalchemy as sa
 from pydantic import BaseSettings, Field
-from sqlalchemy.ext.declarative import declarative_base
 
 
 class Database(BaseSettings):

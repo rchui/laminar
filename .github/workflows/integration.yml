@@ -1,0 +1,27 @@
+name: Integration Testing
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+    env:
+      PY_COLORS: 1
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v2
+        with:
+            python-version: ${{ matrix.python-version }}
+            architecture: x64
+      - name: Setup Environment
+        run: |
+          pip install --upgrade pip
+          pip install --requirement requirements.txt.lock
+      - name: Static Analysis
+        run: |
+          nox --list
+          nox
