@@ -62,7 +62,8 @@ up:
 	docker compose up
 
 .PHONY: \
-	alembic \
+	alembic-upgrade \
+	alembic-revision \
 	env \
 	format \
 	lock \

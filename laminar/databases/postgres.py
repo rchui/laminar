@@ -14,6 +14,7 @@ from laminar import configs, databases
 class Client:
     _engine: Engine = None
     _pool: ThreadedConnectionPool = None
+    _sessionmaker: sessionmaker = None
 
     @property
     def engine(self) -> Engine:
@@ -35,8 +36,14 @@ class Client:
             )
         return self._pool
 
+    @property
+    def sessionmaker(self) -> sessionmaker:
+        if self._sessionmaker is None:
+            self._sessionmaker = sessionmaker(bind=self.engine)
+        return self._sessionmaker
+
     def session(self) -> Session:
-        return sessionmaker(bind=self.engine)
+        return self.sessionmaker()
 
 
 client = Client()

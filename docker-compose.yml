@@ -31,6 +31,8 @@ services:
       retries: 5
     networks:
       - laminar
+    ports:
+      - 8081:8081
 
   postgres:
     environment:
