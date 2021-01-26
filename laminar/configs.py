@@ -1,6 +1,10 @@
 """Global config for laminar flows."""
 
+import logging
+
 from pydantic import BaseSettings, Field
+
+logger = logging.getLogger("laminar")
 
 
 class Database(BaseSettings):

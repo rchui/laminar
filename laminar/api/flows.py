@@ -1,12 +1,12 @@
-import logging
 from typing import List
 
 from fastapi import APIRouter, status
 
+from laminar import configs
 from laminar.api import models
 from laminar.databases import postgres, schema
 
-logger = logging.getLogger(__name__)
+logger = configs.logger
 router = APIRouter(prefix="/flows")
 
 

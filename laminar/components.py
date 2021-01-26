@@ -4,120 +4,92 @@ import functools
 import inspect
 import os
 import pickle
-from pathlib import Path
-from typing import Any, Callable, Dict, TypeVar, cast
+from typing import Any, Callable, TypeVar, cast
 
 import ulid
-from smart_open import open, parse_uri
+from pydantic import BaseModel as Response
+from smart_open import open
 from typeguard import typechecked
 
 from laminar import configs
-from laminar.exceptions import ArtifactError
-from laminar.schedulers import Scheduler
-from laminar.types import Step
+from laminar.schedulers import Local
+from laminar.schedulers.base import Scheduler
 
-T = TypeVar("T", bound=Callable[..., Dict[str, Any]])
+F = TypeVar("F", bound=Callable[..., Response])
+
+logger = configs.logger
 
 
 class Flow:
-    def __init__(self: "Flow", name: str, scheduler: Scheduler) -> None:
-        """A collection of laminar steps.
+    def __init__(self, *, name: str, project: str, scheduler: Scheduler = Local()) -> None:
+        """A collection of laminar tasks.
 
         Args:
             name (str): Name of the flow.
-        scheduler (Scheduler): Scheduler to use to execute the flow.
+            project (str): Project the flow belongs to.
         """
 
         self.name = name
+        self.project = project
 
-        self.id = str(ulid.new())
         self.scheduler = scheduler
 
-    def __call__(self: "Flow", **parameters: Any) -> None:
-        """Execute the flow."""
+        if isinstance(self.scheduler, Local):
+            self.id = str(ulid.new())
+        else:
+            self.id = str(ulid.new())
 
-        execution_workspace = os.path.join(
-            configs.workspace.path or str(Path.cwd().resolve() / ".laminar"), self.name, self.id
-        )
+    def __call__(self, **parameters: Any) -> None:
+        """Execute the laminar flow using the configured scheduler."""
 
-        # Create workspace folder
-        if parse_uri(execution_workspace).scheme == "file":
-            Path(execution_workspace).resolve().mkdir(parents=True, exist_ok=True)
+        self.scheduler(self, **parameters)
 
-        # Store flow parameters
-        self.write_artifacts(execution_workspace, **parameters)
+    def task(self, *sources: Callable[..., Response]) -> Callable[[F], F]:
+        """Define a function as a step in a laminar flow."""
 
-        for step in self.scheduler.queue:
-            # For each arg in the step, fetch the stored arg from a previous
-            key: str = None
-
-            try:
-                # Marshall step parameters
-                artifacts = self.read_artifacts(execution_workspace, *inspect.getfullargspec(step).args)
-            except FileNotFoundError:
-                raise ArtifactError(
-                    f"Error loading artifact '{key}' for step '{step.__name__}' in flow '{self.name}' during execution"
-                    + f" '{self.id}'. Was it created in the flow?"
-                )
-            # Exceute the step
-            results = step(**artifacts)
-
-            # For each result, store the artifacts in the shared flow directory.
-            self.write_artifacts(execution_workspace, **results)
-
-    def read_artifacts(self: "Flow", execution_workspace: str, *args: str) -> Dict[str, Any]:
-        """For a given step, load the needed artifacts from the shared flow directory.
-
-        Args:
-            execution_workspace (Path): Workspace that the execution's artifacts are stored.
-
-        Returns:
-            Dict[str, Any]: Artifact names mapped to values.
-        """
-
-        artifacts: Dict[str, Any] = {}
-        for key in args:
-            with open(os.path.join(execution_workspace, f"{key}.gz"), "rb") as artifact:
-                artifacts[key] = pickle.loads(artifact.read())
-
-        return artifacts
-
-    def write_artifacts(self: "Flow", execution_workspace: str, **arifacts: Any) -> None:
-        """For all values returned by a step, store each artifact in teh shared flow directory.
-
-        Args:
-            execution_workspace (Path): Workspace that the execution's artifacts are stored.
-        """
-
-        for key, value in arifacts.items():
-            with open(os.path.join(execution_workspace, f"{key}.gz"), "wb") as artifact:
-                artifact.write(pickle.dumps(value))
-
-    def step(self: "Flow", *next: Step) -> Callable[[T], T]:
-        """Define a function as a step in a laminar flow.
-
-        Args:
-            next (Optional[Iterable[Step]], optional): List of steps to execute after this one. Defaults to None.
-        """
-
-        def decorator(f: Step) -> T:
-            f = typechecked(f)
+        def decorator(f: F) -> F:
+            f = typechecked(f)  # type: ignore
 
             @functools.wraps(f)
-            def wrapper(*args: Any, **kwargs: Any) -> Dict[str, Any]:
+            def wrapper(*args: Any, **kwargs: Any) -> Response:
                 return f(*args, **kwargs)
 
             # Register steps and dependencies for executing flow dag.
             self.scheduler.register(wrapper)
-            for step in next:
-                self.scheduler.add_dependency(wrapper, step)
+            for source in sources:
+                self.scheduler.add_dependency(source, wrapper)
 
             # Update the wrapper signature so that we can inspect the original argspec
             wrapper.__signature__ = inspect.signature(f)  # type: ignore
             # Cast back to original function so type resolution works correctly
-            return cast(T, wrapper)
+            return cast(F, wrapper)
 
         return decorator
 
-    def submit(self: "Flow") -> None:
-        self.scheduler.submit(self)
+    def load_artifact(self: "Flow", workspace: str, key: str) -> Any:
+        """For a given step, load the needed artifacts from the shared flow directory.
+
+        Args:
+            workspace (Path): Workspace that the execution's artifacts are stored.
+
+        Returns:
+            Any: The value artifact value for the given key.
+        """
+
+        logger.info("Loading artifact %s from workspace.", key)
+
+        with open(os.path.join(workspace, f"{key}.gz"), "rb") as artifact:
+            return pickle.loads(artifact.read())
+
+    def store_artifacts(self: "Flow", workspace: str, **artifacts: Any) -> None:
+        """For all values returned by a step, store each artifact in teh shared flow directory.
+
+        Args:
+            workspace (Path): Workspace that the execution's artifacts are stored.
+        """
+
+        logger.info("Storing artifacts %s in workspace.", ", ".join(artifacts.keys()))
+
+        for key, value in artifacts.items():
+            with open(os.path.join(workspace, f"{key}.gz"), "wb") as artifact:
+                artifact.write(pickle.dumps(value))

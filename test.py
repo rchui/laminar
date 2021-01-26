@@ -1,40 +1,44 @@
-from typing import Any, Dict, List
+from laminar import Flow, Response
 
-from laminar.components import Flow
-from laminar.schedulers import Scheduler
-
-flow = Flow("test", Scheduler("test-queue"))
+flow = Flow(name="sentinel", project="gwas")
 
 
-@flow.step()
-def end(a: int, b: List[str], c: bool) -> Dict[str, Any]:
-    print("Inheriting a from branch_1, b from branch_2, c from start_2", c)
-    return {}
+class Start(Response):
+    a: str
+    b: int
 
 
-@flow.step(end)
-def start_2(c: float) -> Dict[str, Any]:
-    print("Inheriting c from flow", c)
-    return {"c": True}
+@flow.task()
+def start(a: str, b: int) -> Start:
+    return Start(a=a, b=b)
 
 
-@flow.step(end)
-def branch_2(b: List[str]) -> Dict[str, Any]:
-    print("Inheriting b from start_1", b)
-    return {"b": b}
+class Branch1(Response):
+    branch_1: str
 
 
-@flow.step(end)
-def branch_1(a: int) -> Dict[str, Any]:
-    print("Inheriting a from start_2", a)
-    return {"a": a}
+@flow.task(start)
+def branch_1(a: str) -> Branch1:
+    return Branch1(branch_1=a)
 
 
-@flow.step(branch_1, branch_2)
-def start_1(start: str) -> Dict[str, Any]:
-    print("Inheriting start from flow", start)
-    return {"a": 5, "b": ["b"]}
+class Branch2(Response):
+    branch_2: int
+
+
+@flow.task(start)
+def branch_2(b: int) -> Branch2:
+    return Branch2(branch_2=b)
+
+
+class End(Response):
+    end: str
+
+
+@flow.task(branch_1, branch_2)
+def end(branch_1: str, branch_2: int) -> End:
+    return End(end=branch_1 + str(branch_2))
 
 
 if __name__ == "__main__":
-    flow(start="hello world", c=1.25)
+    flow(a="hello world", b=5)

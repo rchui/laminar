@@ -1,3 +1,5 @@
-from typing import Any, Callable, Dict
+from typing import Callable
 
-Step = Callable[..., Dict[str, Any]]
+from pydantic import BaseModel
+
+Step = Callable[..., BaseModel]

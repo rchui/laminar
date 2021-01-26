@@ -23,6 +23,7 @@ class Client:
         if self._engine is None:
             uri = databases.uri()
             if uri.startswith("sqlite://"):
+                # Allows us to use the in-memory sqlite engine.
                 self._engine = create_engine(
                     uri, connect_args={"check_same_thread": False}, poolclass=StaticPool, echo=True
                 )
