@@ -1,0 +1,20 @@
+[tool.black]
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | deployment/artifacts
+    | dist
+  )/
+)
+'''
+line-length = 120
+
+[tool.isort]
+line_length = 120
+profile = "black"

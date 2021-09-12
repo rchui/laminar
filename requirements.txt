@@ -1,0 +1,4 @@
+cloudpickle
+pydantic
+smart_open
+svix-ksuid

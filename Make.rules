@@ -1,0 +1,2 @@
+VENV := . .venv/bin/activate &&
+PIP := $(VENV) python -m pip

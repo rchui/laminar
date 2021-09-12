@@ -1,0 +1,10 @@
+# Laminar
+.laminar
+.venv
+.mypy_cache
+
+# VSCode
+.vscode
+
+# Python
+__pycache__
