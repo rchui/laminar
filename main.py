@@ -1,40 +1,25 @@
 import logging
 
-from laminar.components import Pipeline, Step
+from laminar import Flow, Layer
+from laminar.layers import Container, Dependencies, Resources
 
 logging.basicConfig(level=logging.INFO)
 
-
-class Test(Step):
-    foo = "bar"
-
-    class Container:
-        image = "test"
+flow = Flow(name="hello world")
 
 
-class One(Test):
-    foo: str = "a"
-    bar: bool = False
-
-    def __call__(self) -> None:
-        print(vars(self))
+@flow.layer(container=Container(image="python:3.7"))
+class One(Layer):
+    foo: str = "bar"
 
 
-class Two(Test):
-    foo: str
-
-    def __call__(self) -> None:
-        print(vars(self))
+@flow.layer(dependencies=Dependencies(bar=One), resources=Resources(memory=3500))
+class Two(Layer):
+    foo: str = "baz"
 
 
-class Three(Test):
-    def __call__(self) -> None:
-        print(vars(self))
+if __name__ == "__main__":
+    print(flow.__repr__())
+    print(flow.dag)
 
-
-class Four(Test):
-    def __call__(self) -> None:
-        print(vars(self))
-
-
-pipeline = Pipeline("second", One, [Two, Three], Four)
+    flow()

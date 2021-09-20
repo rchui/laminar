@@ -9,9 +9,7 @@ T = TypeVar("T")
 
 
 def setting(category: Type[T]) -> T:
-    key = category.__name__.lower()  # type: ignore
-
-    def setting_getter(self: Any, key: str = key) -> T:
+    def setting_getter(self: Any, key: str = category.__name__.lower()) -> T:
         setattr(self, f"_{key}", getattr(self, f"_{key}", None) or category())  # type: ignore
         return getattr(self, f"_{key}")
 
@@ -36,24 +34,16 @@ class Execution(BaseSettings):
     id: str
 
 
-class Pipeline(BaseSettings):
+class Flow(BaseSettings):
     class Config:
-        env_prefix = "LAMINAR_PIPELINE_"
+        env_prefix = "LAMINAR_FLOW_"
 
     name: str
 
 
-class State(BaseSettings):
+class Layer(BaseSettings):
     class Config:
-        env_prefix = "LAMINAR_STATE_"
-
-    pipeline: bool = False
-    step: bool = False
-
-
-class Step(BaseSettings):
-    class Config:
-        env_prefix = "LAMINAR_STEP_"
+        env_prefix = "LAMINAR_LAYER_"
 
     name: str
 
@@ -61,7 +51,6 @@ class Step(BaseSettings):
 class Configuration:
     artifact = setting(Artifact)
     execution = setting(Execution)
-    pipeline = setting(Pipeline)
+    flow = setting(Flow)
     python = setting(Python)
-    state = setting(State)
-    step = setting(Step)
+    layer = setting(Layer)
