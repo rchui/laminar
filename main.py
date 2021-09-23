@@ -1,21 +1,42 @@
 import logging
 
 from laminar import Flow, Layer
-from laminar.layers import Container, Dependencies, Resources
+from laminar.layers import Container, Dependencies
 
 logging.basicConfig(level=logging.INFO)
 
-flow = Flow(name="hello world")
+
+class HelloWorld(Flow):
+    ...
 
 
-@flow.layer(container=Container(image="python:3.7"))
+flow = HelloWorld()
+container = Container(image="test")
+
+
+@flow.layer(container=container)
 class One(Layer):
     foo: str = "bar"
 
 
-@flow.layer(dependencies=Dependencies(bar=One), resources=Resources(memory=3500))
+@flow.layer(container=container, dependencies=Dependencies(foo=One))
 class Two(Layer):
-    foo: str = "baz"
+    foo: str
+
+
+@flow.layer(container=container, dependencies=Dependencies(foo=One))
+class Three(Layer):
+    foo: str
+
+
+@flow.layer(container=container, dependencies=Dependencies(foo=Three))
+class Four(Layer):
+    foo: str
+
+
+@flow.layer(container=container, dependencies=Dependencies(One))
+class Five(Layer):
+    bar: bool = False
 
 
 if __name__ == "__main__":

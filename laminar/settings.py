@@ -20,37 +20,24 @@ class Python:
     major, minor, micro = sys.version_info.major, sys.version_info.minor, sys.version_info.micro
 
 
-class Artifact(BaseSettings):
-    class Config:
-        env_prefix = "LAMINAR_ARTIFACT_"
-
-    source: str = ".laminar"
-
-
 class Execution(BaseSettings):
     class Config:
         env_prefix = "LAMINAR_EXECUTION_"
 
-    id: str
-
-
-class Flow(BaseSettings):
-    class Config:
-        env_prefix = "LAMINAR_FLOW_"
-
-    name: str
+    id: str = None
 
 
 class Layer(BaseSettings):
     class Config:
         env_prefix = "LAMINAR_LAYER_"
 
-    name: str
+    name: str = None
 
 
-class Configuration:
-    artifact = setting(Artifact)
+class Current:
     execution = setting(Execution)
-    flow = setting(Flow)
     python = setting(Python)
     layer = setting(Layer)
+
+
+current = Current()

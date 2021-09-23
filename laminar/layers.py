@@ -1,7 +1,9 @@
 import logging
-from typing import Dict, Type, TypeVar
+from typing import Dict, Set, Type, TypeVar
 
 from pydantic import BaseModel
+
+from laminar.settings import current
 
 __all__ = ["Layer", "Container", "Dependencies", "Resources"]
 T = TypeVar("T")
@@ -10,18 +12,26 @@ logger = logging.getLogger(__name__)
 
 
 class Container(BaseModel):
-    image: str
     command: str
+    image: str
+    workdir: str
 
-    def __init__(__pydantic_self__, *, image: str = "python:3.6", command: str = "python main.py") -> None:
-        super().__init__(image=image, command=command)
+    def __init__(
+        __pydantic_self__,
+        *,
+        command: str = "python main.py",
+        image: str = f"python:{current.python.major}.{current.python.minor}",
+        workdir: str = "/laminar",
+    ) -> None:
+        super().__init__(command=command, image=image, workdir=workdir)
 
 
 class Dependencies(BaseModel):
-    dependencies: Dict[str, Type["Layer"]]
+    layers: Set[Type["Layer"]]
+    data: Dict[str, Type["Layer"]]
 
-    def __init__(__pydantic_self__, **dependencies: Type["Layer"]) -> None:
-        super().__init__(dependencies=dependencies)
+    def __init__(__pydantic_self__, *layers: Type["Layer"], **data: Type["Layer"]) -> None:
+        super().__init__(layers=set(layers), data=data)
 
 
 class Resources(BaseModel):
