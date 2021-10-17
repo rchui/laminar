@@ -12,18 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class Container(BaseModel):
-    command: str
-    image: str
-    workdir: str
-
-    def __init__(
-        __pydantic_self__,
-        *,
-        command: str = "python main.py",
-        image: str = f"python:{current.python.major}.{current.python.minor}",
-        workdir: str = "/laminar",
-    ) -> None:
-        super().__init__(command=command, image=image, workdir=workdir)
+    command: str = "python main.py"
+    image: str = f"python:{current.python.major}.{current.python.minor}"
+    workdir: str = "/laminar"
 
 
 class Dependencies(BaseModel):
@@ -58,7 +49,16 @@ class Configuration(BaseModel):
 
 
 class Layer(BaseModel):
-    configuration: Configuration = Configuration()
+    configuration: Configuration
+
+    def __init_subclass__(
+        cls,
+        container: Container = Container(),
+        dependencies: Dependencies = Dependencies(),
+        resources: Resources = Resources(),
+    ) -> None:
+        cls.configuration = Configuration(container=container, dependencies=dependencies, resources=resources)
+        return super().__init_subclass__()
 
     def __call__(self) -> None:
         logger.info("Starting layer %s", self.__repr_name__())

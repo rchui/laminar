@@ -11,36 +11,48 @@ class HelloWorld(Flow):
 
 
 flow = HelloWorld()
-container = Container(image="test")
 
 
-@flow.layer(container=container)
-class One(Layer):
+class TestFlow(Flow):
+    ...
+
+
+flow2 = TestFlow()
+
+
+class HelloContainer(Container):
+    image: str = "test"
+
+
+@flow.layer
+@flow2.layer
+class One(Layer, container=HelloContainer()):
     foo: str = "bar"
 
 
-@flow.layer(container=container, dependencies=Dependencies(foo=One))
-class Two(Layer):
+@flow.layer
+class Two(Layer, container=HelloContainer(), dependencies=Dependencies(foo=One)):
     foo: str
 
 
-@flow.layer(container=container, dependencies=Dependencies(foo=One))
-class Three(Layer):
+@flow.layer
+class Three(Layer, container=HelloContainer(), dependencies=Dependencies(foo=One)):
     foo: str
 
 
-@flow.layer(container=container, dependencies=Dependencies(foo=Three))
-class Four(Layer):
+@flow.layer
+class Four(Layer, container=HelloContainer(), dependencies=Dependencies(foo=Three)):
     foo: str
 
 
-@flow.layer(container=container, dependencies=Dependencies(One))
-class Five(Layer):
+@flow.layer
+class Five(Layer, container=HelloContainer(), dependencies=Dependencies(One)):
     bar: bool = False
 
 
 if __name__ == "__main__":
-    print(flow.__repr__())
-    print(flow.dag)
+    # print(flow.__repr__())
+    # print(flow.dag)
 
     flow()
+    flow2()

@@ -4,19 +4,19 @@ import shlex
 import subprocess
 from pathlib import Path
 from laminar.exceptions import FlowError
-from typing import Any, Callable, Dict, Set, Type, TypeVar
+from typing import Any, Dict, Set, Type, TypeVar
 
 import cloudpickle
 from ksuid import Ksuid
 from smart_open import open
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, Field
 
 from laminar.settings import current
-from laminar.layers import Configuration, Layer, Container, Dependencies, Resources
+from laminar.layers import Configuration, Layer
 
 __all__ = ["DataSource", "Flow"]
 
-T = TypeVar("T")
+LayerType = TypeVar("LayerType", bound=Layer)
 
 logger = logging.getLogger(__name__)
 
@@ -41,16 +41,17 @@ class DataSource(BaseModel):
 
 
 class Flow(BaseModel):
-    datasource: DataSource
-    id: str
-    _dag: Dict[Type[Layer], Set[Type[Layer]]] = {}
-    _mapping: Dict[str, Type[Layer]] = {}
+    datasource: DataSource = DataSource()
+    id: str = current.execution.id or str(Ksuid())
 
-    def __init__(__pydantic_self__, datasource: DataSource = DataSource()) -> None:
-        super().__init__(datasource=datasource, id=current.execution.id or str(Ksuid()))
+    dag: Dict[Type[Layer], Set[Type[Layer]]] = Field(default_factory=dict)
+    mapping: Dict[str, Type[Layer]] = Field(default_factory=dict)
+
+    def __init__(__pydantic_self__, **data: Any) -> None:
+        super().__init__(**data)
 
     @property
-    def dag(self) -> Dict[str, str]:
+    def _dag(self) -> Dict[str, str]:
         return {child.__name__: {parent.__name__ for parent in parents} for child, parents in self._dag.items()}
 
     @property
@@ -59,19 +60,19 @@ class Flow(BaseModel):
 
     def __call__(self) -> None:
         def get_pending(dag: Dict[str, str], finished: Set[str]) -> Set[Type[Layer]]:
-            return {self._mapping[name] for name, parents in dag.items() if parents.issubset(finished)}
+            return {self.mapping[name] for name, parents in dag.items() if parents.issubset(finished)}
 
         if current.layer.name is not None:
-            layer = self._mapping[current.layer.name]
+            layer = self.mapping[current.layer.name]
 
-            configuration: Configuration = layer.__fields__["configuration"].default
+            configuration: Configuration = layer.configuration
 
             parameters = {
                 artifact: self.datasource.read(self.datasource.uri(self.name, self.id, source.__name__), artifact)
                 for artifact, source in configuration.dependencies.data.items()
             }
 
-            run = layer(**parameters)
+            run = layer(configuration=configuration, **parameters)
 
             run()
 
@@ -87,7 +88,8 @@ class Flow(BaseModel):
 
             while pending:
                 for layer in pending:
-                    configuration: Configuration = layer.__fields__["configuration"].default
+
+                    configuration: Configuration = layer.configuration
 
                     archive = (
                         f"{os.getcwd()}/{self.datasource.root}:{configuration.container.workdir}/{self.datasource.root}"
@@ -122,26 +124,14 @@ class Flow(BaseModel):
                         f"Remaining dag: {dag}."
                     )
 
-    def layer(
-        self,
-        *,
-        container: Container = Container(),
-        dependencies: Dependencies = Dependencies(),
-        resources: Resources = Resources(),
-    ) -> Callable[[T], T]:
-        def wrapper(layer: T) -> T:
-            layer = create_model(
-                layer.__name__,
-                __base__=layer,
-                configuration=Configuration(container=container, dependencies=dependencies, resources=resources),
-            )
+    def layer(self, layer: LayerType) -> LayerType:
+        if layer.__name__ in self.mapping:
+            raise FlowError(f"The {layer.__name__} layer is being added more than once to the {self.name} flow.")
 
-            if layer.__name__ in self._mapping:
-                raise FlowError(f"The {layer.__name__} layer is being added more than once to the {self.name} flow.")
+        self.mapping[layer.__name__] = layer
+        self._dag[layer] = {
+            *layer.configuration.dependencies.layers,
+            *layer.configuration.dependencies.data.values(),
+        }
 
-            self._mapping[layer.__name__] = layer
-            self._dag[layer] = {*dependencies.layers, *dependencies.data.values()}
-
-            return layer
-
-        return wrapper
+        return layer
