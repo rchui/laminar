@@ -1,137 +1,95 @@
-import logging
-import os
-import shlex
-import subprocess
-from pathlib import Path
-from laminar.exceptions import FlowError
-from typing import Any, Dict, Set, Type, TypeVar
+# class Flow(BaseModel):
+#     datasource: DataSource = DataSource()
+#     id: str = current.execution.id or str(Ksuid())
 
-import cloudpickle
-from ksuid import Ksuid
-from smart_open import open
-from pydantic import BaseModel, Field
+#     dag: Dict[Type[Layer], Set[Type[Layer]]] = Field(default_factory=dict)
+#     mapping: Dict[str, Type[Layer]] = Field(default_factory=dict)
 
-from laminar.settings import current
-from laminar.layers import Configuration, Layer
+#     def __init__(__pydantic_self__, **data: Any) -> None:
+#         super().__init__(**data)
 
-__all__ = ["DataSource", "Flow"]
+#     @property
+#     def _dag(self) -> Dict[str, str]:
+#         return {child.__name__: {parent.__name__ for parent in parents} for child, parents in self._dag.items()}
 
-LayerType = TypeVar("LayerType", bound=Layer)
+#     @property
+#     def name(self) -> str:
+#         return self.__repr_name__()
 
-logger = logging.getLogger(__name__)
+#     def __call__(self) -> None:
+#         def get_pending(dag: Dict[str, str], finished: Set[str]) -> Set[Type[Layer]]:
+#             return {self.mapping[name] for name, parents in dag.items() if parents.issubset(finished)}
 
+#         if current.layer.name is not None:
+#             layer = self.mapping[current.layer.name]
 
-class DataSource(BaseModel):
-    root: str
+#             configuration: Configuration = layer.configuration
 
-    def __init__(__pydantic_self__, root: str = ".laminar") -> None:
-        super().__init__(root=root)
+#             parameters = {
+#                 artifact: self.datasource.read(self.datasource.uri(self.name, self.id, source.__name__), artifact)
+#                 for artifact, source in configuration.dependencies.data.items()
+#             }
 
-    def uri(self, flow: str, id: str, step: str) -> str:
-        return f"{self.root}/{flow}/{id}/{step}"
+#             run = layer(configuration=configuration, **parameters)
 
-    def read(self, uri: str, artifact: str) -> Any:
-        with open(f"{uri}/{artifact}.gz", "rb") as archive:
-            return cloudpickle.load(archive)
+#             run()
 
-    def write(self, uri: str, artifact: str, value: Any) -> None:
-        Path(uri).mkdir(parents=True, exist_ok=True)
-        with open(f"{uri}/{artifact}.gz", "wb") as archive:
-            cloudpickle.dump(value, archive)
+#             for artifact, value in vars(run).items():
+#                 if artifact != "configuration":
+#                     self.datasource.write(self.datasource.uri(self.name, self.id, layer.__name__), artifact, value)
 
+#         else:
+#             dag = self.dag
+#             finished: Set[str] = set()
 
-class Flow(BaseModel):
-    datasource: DataSource = DataSource()
-    id: str = current.execution.id or str(Ksuid())
+#             pending = get_pending(dag, finished)
 
-    dag: Dict[Type[Layer], Set[Type[Layer]]] = Field(default_factory=dict)
-    mapping: Dict[str, Type[Layer]] = Field(default_factory=dict)
+#             while pending:
+#                 for layer in pending:
 
-    def __init__(__pydantic_self__, **data: Any) -> None:
-        super().__init__(**data)
+#                     configuration: Configuration = layer.configuration
 
-    @property
-    def _dag(self) -> Dict[str, str]:
-        return {child.__name__: {parent.__name__ for parent in parents} for child, parents in self._dag.items()}
+#                     archive = (
+#                         f"{os.getcwd()}/{self.datasource.root}:{configuration.container.workdir}/{self.datasource.root}"
+#                     )
+#                     command = " ".join(
+#                         [
+#                             "docker",
+#                             "run",
+#                             "--rm",
+#                             "--interactive",
+#                             "--tty",
+#                             f"--env LAMINAR_EXECUTION_ID={self.id}",
+#                             f"--env LAMINAR_LAYER_NAME={layer.__name__}",
+#                             f"--volume {archive}",
+#                             f"--workdir {configuration.container.workdir}",
+#                             configuration.container.image,
+#                             configuration.container.command,
+#                         ]
+#                     )
+#                     logger.info(command)
+#                     subprocess.run(shlex.split(command), check=True)
 
-    @property
-    def name(self) -> str:
-        return self.__repr_name__()
+#                     finished.add(layer.__name__)
+#                     dag.pop(layer.__name__)
 
-    def __call__(self) -> None:
-        def get_pending(dag: Dict[str, str], finished: Set[str]) -> Set[Type[Layer]]:
-            return {self.mapping[name] for name, parents in dag.items() if parents.issubset(finished)}
+#                 pending = get_pending(dag, finished)
 
-        if current.layer.name is not None:
-            layer = self.mapping[current.layer.name]
+#                 if not pending and dag:
+#                     raise FlowError(
+#                         f"A dependency exists for a step that is not registered with the {self.name} flow. "
+#                         f"Finished steps: {sorted(finished)}. "
+#                         f"Remaining dag: {dag}."
+#                     )
 
-            configuration: Configuration = layer.configuration
+#     def layer(self, layer: LayerType) -> LayerType:
+#         if layer.__name__ in self.mapping:
+#             raise FlowError(f"The {layer.__name__} layer is being added more than once to the {self.name} flow.")
 
-            parameters = {
-                artifact: self.datasource.read(self.datasource.uri(self.name, self.id, source.__name__), artifact)
-                for artifact, source in configuration.dependencies.data.items()
-            }
+#         self.mapping[layer.__name__] = layer
+#         self._dag[layer] = {
+#             *layer.configuration.dependencies.layers,
+#             *layer.configuration.dependencies.data.values(),
+#         }
 
-            run = layer(configuration=configuration, **parameters)
-
-            run()
-
-            for artifact, value in vars(run).items():
-                if artifact != "configuration":
-                    self.datasource.write(self.datasource.uri(self.name, self.id, layer.__name__), artifact, value)
-
-        else:
-            dag = self.dag
-            finished: Set[str] = set()
-
-            pending = get_pending(dag, finished)
-
-            while pending:
-                for layer in pending:
-
-                    configuration: Configuration = layer.configuration
-
-                    archive = (
-                        f"{os.getcwd()}/{self.datasource.root}:{configuration.container.workdir}/{self.datasource.root}"
-                    )
-                    command = " ".join(
-                        [
-                            "docker",
-                            "run",
-                            "--rm",
-                            "--interactive",
-                            "--tty",
-                            f"--env LAMINAR_EXECUTION_ID={self.id}",
-                            f"--env LAMINAR_LAYER_NAME={layer.__name__}",
-                            f"--volume {archive}",
-                            f"--workdir {configuration.container.workdir}",
-                            configuration.container.image,
-                            configuration.container.command,
-                        ]
-                    )
-                    logger.info(command)
-                    subprocess.run(shlex.split(command), check=True)
-
-                    finished.add(layer.__name__)
-                    dag.pop(layer.__name__)
-
-                pending = get_pending(dag, finished)
-
-                if not pending and dag:
-                    raise FlowError(
-                        f"A dependency exists for a step that is not registered with the {self.name} flow. "
-                        f"Finished steps: {sorted(finished)}. "
-                        f"Remaining dag: {dag}."
-                    )
-
-    def layer(self, layer: LayerType) -> LayerType:
-        if layer.__name__ in self.mapping:
-            raise FlowError(f"The {layer.__name__} layer is being added more than once to the {self.name} flow.")
-
-        self.mapping[layer.__name__] = layer
-        self._dag[layer] = {
-            *layer.configuration.dependencies.layers,
-            *layer.configuration.dependencies.data.values(),
-        }
-
-        return layer
+#         return layer
