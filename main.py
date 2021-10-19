@@ -1,34 +1,38 @@
+import logging
+
 from laminar import Flow, Layer
+from laminar.configurations.layers import Container
+
+logging.basicConfig(level=logging.DEBUG)
 
 flow = Flow(name="TestFlow")
 
+container = Container(image="test")
+
 
 @flow.layer
-class One(Layer):
+class One(Layer, container=container):
     def __call__(self) -> None:
-        ...
+        self.foo = "bar"
 
 
 @flow.layer
-class Two(Layer):
+class Two(Layer, container=container):
     def __call__(self, one: One) -> None:
-        ...
+        self.bar = one.foo
 
 
 @flow.layer
-class Three(Layer):
+class Three(Layer, container=container):
     def __call__(self, one: One) -> None:
-        ...
+        self.baz = one.foo
 
 
 @flow.layer
-class Four(Layer):
+class Four(Layer, container=container):
     def __call__(self, two: Two, three: Three) -> None:
-        ...
+        self.end = [two.bar, three.baz]
 
 
-# for layer in [One, Two, Three, Four]:
-#     print(type(layer()).__name__, {k: v for k, v in vars(layer).items() if not callable(v)}, vars(layer()))
-
-print(flow.dependencies)
-print(flow.dependents)
+if __name__ == "__main__":
+    flow()

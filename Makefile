@@ -5,6 +5,7 @@ env:
 	python -m virtualenv .venv --clear
 	$(MAKE) upgrade
 
+.PHONY: upgrade
 upgrade:
 	$(PIP) install --upgrade pip
 	$(PIP) install --upgrade --requirement requirements.dev.txt
@@ -24,3 +25,8 @@ lint:
 	flake8 laminar
 	isort --check .
 	mypy laminar
+
+.PHONY: test
+run:
+	docker build -t test .
+	python main.py

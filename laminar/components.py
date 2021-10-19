@@ -1,8 +1,14 @@
 import inspect
-from typing import Any, Dict, Set, Type, TypeVar
+import logging
+from typing import Any, Dict, Set, Tuple, Type, TypeVar, Union
 
-from laminar.configurations.layers import Container
+from ksuid import Ksuid
+
+from laminar.configurations import datasources, executors, layers
 from laminar.exceptions import FlowError
+from laminar.settings import current
+
+logger = logging.getLogger(__name__)
 
 
 class Layer:
@@ -16,21 +22,41 @@ class Layer:
             ...
     """
 
-    container: Container
+    container: layers.Container
+    flow: "Flow"
 
-    def __init_subclass__(cls, container: Container = Container()) -> None:
+    def __init_subclass__(cls, container: layers.Container = layers.Container()) -> None:
         cls.container = container
 
     def __init__(self, **data: Any) -> None:
         for key, value in data.items():
             setattr(self, key, value)
 
+    def __call__(self) -> None:
+        ...
+
+    def __eq__(self, other: Union[str, "Layer"]) -> bool:
+        if isinstance(other, str):
+            return self.name == other
+        else:
+            return type(self) is type(other) and self.name == other.name
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
     @property
     def name(self) -> str:
         return type(self).__name__
 
-    def __call__(self) -> None:
-        ...
+    def __getattr__(self, name: str) -> Any:
+        try:
+            return object.__getattribute__(self, name)
+        except AttributeError:
+            value = self.flow.datasource.read(
+                f"{self.flow.datasource.root}/{self.flow.name}/{current.execution.id}/{self.name}/{name}.gz"
+            )
+            setattr(self, name, value)
+            return value
 
 
 LayerType = TypeVar("LayerType", bound=Type[Layer])
@@ -46,7 +72,13 @@ class Flow:
         flow = Flow(name="HelloFlow")
     """
 
-    def __init__(self, *, name: str) -> None:
+    def __init__(
+        self,
+        *,
+        name: str,
+        datasource: datasources.DataSource = datasources.Local(),
+        executor: executors.Executor = executors.Docker(),
+    ) -> None:
         """
         Args:
             name (str): Name of the flow. Must be alphanumeric.
@@ -59,20 +91,78 @@ class Flow:
             raise FlowError(f"A flow's name can only contain alphanumeric characters. Given name '{name}'.")
 
         self.name = name
+        self.datasource = datasource
+        self.executor = executor
 
-        self._dependencies: Dict[Layer, Set[Layer]] = {}
-
-    @property
-    def dependencies(self) -> Dict[str, Set[str]]:
-        return {child.name: {parent.name for parent in parents} for child, parents in self._dependencies.items()}
+        self._dependencies: Dict[Layer, Tuple[Layer, ...]] = {}
 
     @property
-    def dependents(self) -> Dict[str, Set[str]]:
-        dependents: Dict[str, Set[str]] = {}
-        for child, parents in self._dependencies.items():
-            for parent in parents:
-                dependents.setdefault(parent.name, set()).add(child.name)
-        return dependents
+    def dependencies(self) -> Dict[str, Tuple[str, ...]]:
+        return {child.name: tuple(parent.name for parent in parents) for child, parents in self._dependencies.items()}
+
+    def __call__(self) -> None:
+        """Execute the flow or execute a layer in the flow.
+
+        Notes:
+            If the execution id and layer name are set, execute a layer.
+            Else execute the flow.
+
+        Usage::
+
+            flow = Flow(name = "HelloFlow")
+            flow()
+        """
+
+        # Execute a layer in the flow.
+        if current.execution.id and current.layer.name:
+            layer = {layer: layer for layer in self._dependencies}[current.layer.name]
+            self.execute(current.execution.id, layer)
+
+        # Execute the flow.
+        else:
+            self.schedule(str(Ksuid()), self._dependencies)
+
+    def execute(self, execution_id: str, layer: Layer) -> None:
+        parameters = self._dependencies[layer]
+
+        logger.info("Starting layer '%s'.", layer.name)
+        layer(*parameters)
+        logger.info("Finishing layer '%s'.", layer.name)
+
+        artifacts = vars(layer)
+        artifacts.pop("flow")
+        for name, artifact in artifacts.items():
+            self.datasource.write(
+                f"{self.datasource.root}/{self.name}/{execution_id}/{layer.name}/{name}.gz",
+                artifact,
+            )
+
+    def schedule(self, execution_id: str, dependencies: Dict[Layer, Tuple[Layer]]) -> None:
+        def get_pending(dependencies: Dict[Layer, Tuple[Layer]], finished: Set[Layer]) -> Set[Layer]:
+            return {
+                child
+                for child, parents in dependencies.items()
+                if child not in finished and set(parents).issubset(finished)
+            }
+
+        finished: Set[Layer] = set()
+        pending = get_pending(dependencies, finished)
+
+        while pending:
+            for layer in pending:
+
+                self.executor.run(execution_id, layer)
+
+                finished.add(layer)
+
+            pending = get_pending(dependencies, finished)
+
+            if not pending and (set(dependencies) - finished):
+                raise FlowError(
+                    f"A dependency exists for a step that is not registered with the {self.name} flow."
+                    f" Finished steps: {sorted(finished)}."
+                    f" Remaining dependencies: {dependencies}."
+                )
 
     def layer(self, Layer: LayerType) -> LayerType:
         """Add a layer to the flow.
@@ -84,113 +174,13 @@ class Flow:
                 ...
         """
 
-        layer = Layer()
+        layer = Layer(flow=self)
 
         if layer in self._dependencies:
             raise FlowError(f"Duplicate layer added to flow '{self.name}'. Given layer '{layer.name}'.")
 
-        self._dependencies[layer] = set()
-
-        for parameter in inspect.signature(layer.__call__).parameters.values():
-            self._dependencies[layer].add(parameter.annotation())
+        self._dependencies[layer] = tuple(
+            parameter.annotation(flow=self) for parameter in inspect.signature(layer.__call__).parameters.values()
+        )
 
         return Layer
-
-
-# class Flow(BaseModel):
-#     datasource: DataSource = DataSource()
-#     id: str = current.execution.id or str(Ksuid())
-
-#     dag: Dict[Type[Layer], Set[Type[Layer]]] = Field(default_factory=dict)
-#     mapping: Dict[str, Type[Layer]] = Field(default_factory=dict)
-
-#     def __init__(__pydantic_self__, **data: Any) -> None:
-#         super().__init__(**data)
-
-#     @property
-#     def _dependencies(self) -> Dict[str, str]:
-#         return {
-#             child.__name__: {parent.__name__ for parent in parents} for child, parents in self._dependencies.items()
-#         }
-
-#     @property
-#     def name(self) -> str:
-#         return self.__repr_name__()
-
-#     def __call__(self) -> None:
-#         def get_pending(dag: Dict[str, str], finished: Set[str]) -> Set[Type[Layer]]:
-#             return {self.mapping[name] for name, parents in dag.items() if parents.issubset(finished)}
-
-#         if current.layer.name is not None:
-#             layer = self.mapping[current.layer.name]
-
-#             configuration: Configuration = layer.configuration
-
-#             parameters = {
-#                 artifact: self.datasource.read(self.datasource.uri(self.name, self.id, source.__name__), artifact)
-#                 for artifact, source in configuration.dependencies.data.items()
-#             }
-
-#             run = layer(configuration=configuration, **parameters)
-
-#             run()
-
-#             for artifact, value in vars(run).items():
-#                 if artifact != "configuration":
-#                     self.datasource.write(self.datasource.uri(self.name, self.id, layer.__name__), artifact, value)
-
-#         else:
-#             dag = self.dag
-#             finished: Set[str] = set()
-
-#             pending = get_pending(dag, finished)
-
-#             while pending:
-#                 for layer in pending:
-
-#                     configuration: Configuration = layer.configuration
-
-#                     archive = (
-#                         f"{os.getcwd()}/{self.datasource.root}:{configuration.container.workdir}/{self.datasource.root}"
-#                     )
-#                     command = " ".join(
-#                         [
-#                             "docker",
-#                             "run",
-#                             "--rm",
-#                             "--interactive",
-#                             "--tty",
-#                             f"--env LAMINAR_EXECUTION_ID={self.id}",
-#                             f"--env LAMINAR_LAYER_NAME={layer.__name__}",
-#                             f"--volume {archive}",
-#                             f"--workdir {configuration.container.workdir}",
-#                             configuration.container.image,
-#                             configuration.container.command,
-#                         ]
-#                     )
-#                     logger.info(command)
-#                     subprocess.run(shlex.split(command), check=True)
-
-#                     finished.add(layer.__name__)
-#                     dag.pop(layer.__name__)
-
-#                 pending = get_pending(dag, finished)
-
-#                 if not pending and dag:
-#                     raise FlowError(
-#                         f"A dependency exists for a step that is not registered with the {self.name} flow. "
-#                         f"Finished steps: {sorted(finished)}. "
-#                         f"Remaining dag: {dag}."
-#                     )
-
-#     def layer(self, layer: LayerType) -> LayerType:
-#         if layer.__name__ in self.mapping:
-#             raise FlowError(f"The {layer.__name__} layer is being added more than once to the {self.name} flow.")
-
-#         self.mapping[layer.__name__] = layer
-#         self._dependencies[layer] = {
-#             *layer.configuration.dependencies.layers,
-#             *layer.configuration.dependencies.data.values(),
-#         }
-
-#         return layer
