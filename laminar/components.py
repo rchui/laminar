@@ -1,3 +1,102 @@
+import inspect
+from typing import Any, Dict, Set, Type, TypeVar
+
+from laminar.configurations.layers import Container
+from laminar.exceptions import FlowError
+
+
+class Layer:
+    """Task to execute as part of a flow.
+
+    Usage::
+
+        from laminar import Layer
+
+        class Task(Layer):
+            ...
+    """
+
+    container: Container
+
+    def __init_subclass__(cls, container: Container = Container()) -> None:
+        cls.container = container
+
+    def __init__(self, **data: Any) -> None:
+        for key, value in data.items():
+            setattr(self, key, value)
+
+    @property
+    def name(self) -> str:
+        return type(self).__name__
+
+    def __call__(self) -> None:
+        ...
+
+
+LayerType = TypeVar("LayerType", bound=Type[Layer])
+
+
+class Flow:
+    """Collection of tasks that execute in a specific order.
+
+    Usage::
+
+        from laminar import Flow, Layer
+
+        flow = Flow(name="HelloFlow")
+    """
+
+    def __init__(self, *, name: str) -> None:
+        """
+        Args:
+            name (str): Name of the flow. Must be alphanumeric.
+
+        Raises:
+            FlowError: If the flow's name is not alphanumeric
+        """
+
+        if not name.isalnum():
+            raise FlowError(f"A flow's name can only contain alphanumeric characters. Given name '{name}'.")
+
+        self.name = name
+
+        self._dependencies: Dict[Layer, Set[Layer]] = {}
+
+    @property
+    def dependencies(self) -> Dict[str, Set[str]]:
+        return {child.name: {parent.name for parent in parents} for child, parents in self._dependencies.items()}
+
+    @property
+    def dependents(self) -> Dict[str, Set[str]]:
+        dependents: Dict[str, Set[str]] = {}
+        for child, parents in self._dependencies.items():
+            for parent in parents:
+                dependents.setdefault(parent.name, set()).add(child.name)
+        return dependents
+
+    def layer(self, Layer: LayerType) -> LayerType:
+        """Add a layer to the flow.
+
+        Usage::
+
+            @flow.layer
+            class Task(Layer):
+                ...
+        """
+
+        layer = Layer()
+
+        if layer in self._dependencies:
+            raise FlowError(f"Duplicate layer added to flow '{self.name}'. Given layer '{layer.name}'.")
+
+        self._dependencies[layer] = set()
+
+        for parameter in inspect.signature(layer.__call__).parameters.values():
+            self._dependencies[layer].add(parameter.annotation())
+
+        return Layer
+
+
 # class Flow(BaseModel):
 #     datasource: DataSource = DataSource()
 #     id: str = current.execution.id or str(Ksuid())
@@ -9,8 +108,10 @@
 #         super().__init__(**data)
 
 #     @property
-#     def _dag(self) -> Dict[str, str]:
-#         return {child.__name__: {parent.__name__ for parent in parents} for child, parents in self._dag.items()}
+#     def _dependencies(self) -> Dict[str, str]:
+#         return {
+#             child.__name__: {parent.__name__ for parent in parents} for child, parents in self._dependencies.items()
+#         }
 
 #     @property
 #     def name(self) -> str:
@@ -87,7 +188,7 @@
 #             raise FlowError(f"The {layer.__name__} layer is being added more than once to the {self.name} flow.")
 
 #         self.mapping[layer.__name__] = layer
-#         self._dag[layer] = {
+#         self._dependencies[layer] = {
 #             *layer.configuration.dependencies.layers,
 #             *layer.configuration.dependencies.data.values(),
 #         }
