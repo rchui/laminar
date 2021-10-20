@@ -46,7 +46,7 @@ class Layer:
             return object.__getattribute__(self, name)
         except AttributeError:
             value = self.flow.datasource.read(
-                f"{self.flow.datasource.root}/{self.flow.name}/{current.execution.id}/{self.name}/{name}.gz"
+                flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=name
             )
             setattr(self, name, value)
             return value
@@ -134,10 +134,13 @@ class Flow:
 
         artifacts = vars(layer)
         artifacts.pop("flow")
-        for name, artifact in artifacts.items():
+        for artifact, value in artifacts.items():
             self.datasource.write(
-                f"{self.datasource.root}/{self.name}/{execution_id}/{layer.name}/{name}.gz",
-                artifact,
+                flow=self.name,
+                execution=execution_id,
+                layer=layer.name,
+                artifact=artifact,
+                value=value,
             )
 
     def schedule(self, execution_id: str, dependencies: Dict[Layer, Tuple[Layer]]) -> None:
