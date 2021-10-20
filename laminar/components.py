@@ -41,13 +41,6 @@ class Layer:
         else:
             return type(self) is type(other) and self.name == other.name
 
-    def __hash__(self) -> int:
-        return hash(self.name)
-
-    @property
-    def name(self) -> str:
-        return type(self).__name__
-
     def __getattr__(self, name: str) -> Any:
         try:
             return object.__getattribute__(self, name)
@@ -57,6 +50,16 @@ class Layer:
             )
             setattr(self, name, value)
             return value
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __next__(self) -> Tuple[Type["Layer"], ...]:
+        return tuple()
+
+    @property
+    def name(self) -> str:
+        return type(self).__name__
 
 
 LayerType = TypeVar("LayerType", bound=Type[Layer])
