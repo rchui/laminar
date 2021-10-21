@@ -3,7 +3,6 @@
 import logging
 import shlex
 import subprocess
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
 
@@ -11,11 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class Executor(ABC):
-    ...
-
-    @abstractmethod
-    def run(self, execution_id: str) -> None:
+class Executor:
+    def run(self, execution_id: str, layer: Any) -> None:
         ...
 
 

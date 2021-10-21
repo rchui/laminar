@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Any
 
 import cloudpickle
-from smart_open import open
 
 from laminar.models import Archive, Artifact
+from laminar.utils import fs
 
 
 @dataclass(frozen=True)
@@ -20,11 +20,11 @@ class DataSource:
 
     def _read(self, uri: str) -> Any:
         # Read the archive
-        with open(uri, "r") as file:
+        with fs.open(uri, "r") as file:
             archive = Archive.parse_raw(file.read())
 
         # Read the artifact value
-        with open(archive.artifact.uri(self.root), "rb") as file:
+        with fs.open(archive.artifact.uri(self.root), "rb") as file:
             return cloudpickle.load(file)
 
     def read(self, *, flow: str, execution: str, layer: str, artifact: str) -> Any:
@@ -47,11 +47,11 @@ class DataSource:
         )
 
         # Write the archive
-        with open(uri, "w") as file:
+        with fs.open(uri, "w") as file:
             file.write(archive.json())
 
         # Write the artifact value
-        with open(archive.artifact.uri(self.root), "wb") as file:
+        with fs.open(archive.artifact.uri(self.root), "wb") as file:
             file.write(contents)
 
     def write(self, *, flow: str, execution: str, layer: str, artifact: str, value: Any) -> None:

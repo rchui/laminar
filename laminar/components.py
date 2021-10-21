@@ -1,6 +1,6 @@
 import inspect
 import logging
-from typing import Any, Dict, Set, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -35,16 +35,19 @@ class Layer:
     def __call__(self) -> None:
         ...
 
-    def __eq__(self, other: Union[str, "Layer"]) -> bool:
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
             return self.name == other
-        else:
+        elif isinstance(other, Layer):
             return type(self) is type(other) and self.name == other.name
+        else:
+            return False
 
     def __getattr__(self, name: str) -> Any:
         try:
             return object.__getattribute__(self, name)
         except AttributeError:
+            assert current.execution.id
             value = self.flow.datasource.read(
                 flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=name
             )
@@ -118,7 +121,7 @@ class Flow:
 
         # Execute a layer in the flow.
         if current.execution.id and current.layer.name:
-            layer = {layer: layer for layer in self._dependencies}[current.layer.name]
+            layer = {layer.name: layer for layer in self._dependencies}[current.layer.name]
             self.execute(current.execution.id, layer)
 
         # Execute the flow.
@@ -143,8 +146,8 @@ class Flow:
                 value=value,
             )
 
-    def schedule(self, execution_id: str, dependencies: Dict[Layer, Tuple[Layer]]) -> None:
-        def get_pending(dependencies: Dict[Layer, Tuple[Layer]], finished: Set[Layer]) -> Set[Layer]:
+    def schedule(self, execution_id: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
+        def get_pending(dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:
             return {
                 child
                 for child, parents in dependencies.items()
