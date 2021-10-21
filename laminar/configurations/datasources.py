@@ -12,32 +12,6 @@ from pydantic import BaseModel
 from laminar.utils import fs
 
 
-class Accessor(BaseModel):
-    """Artifact handler for forked artifacts."""
-
-    archive: "Archive"
-    datasource: Any
-
-    @staticmethod
-    def create(*, archive: "Archive", datasource: Any) -> "Accessor":
-        return Accessor(
-            archive=archive,
-            datasource=datasource,
-        )
-
-    def __getitem__(self, key: int) -> Any:
-        with fs.open(self.archive.artifacts[key].uri(self.datasource.root), "rb") as file:
-            return cloudpickle.load(file)
-
-    def __iter__(self) -> Iterator[Any]:  # type: ignore
-        for artifact in self.archive.artifacts:
-            with fs.open(artifact.uri(self.datasource.root), "rb") as file:
-                yield cloudpickle.load(file)
-
-    def __len__(self) -> int:
-        return len(self.archive.artifacts)
-
-
 class Artifact(BaseModel):
     """Metadata for laminar artifacts."""
 
@@ -61,7 +35,23 @@ class Archive(BaseModel):
         return os.path.join(root, flow, execution, layer, f"{artifact}.json")
 
 
-Accessor.update_forward_refs()
+class Accessor(BaseModel):
+    """Artifact handler for forked artifacts."""
+
+    archive: Archive
+    datasource: "DataSource"
+
+    def __getitem__(self, key: int) -> Any:
+        with fs.open(self.archive.artifacts[key].uri(self.datasource.root), "rb") as file:
+            return cloudpickle.load(file)
+
+    def __iter__(self) -> Iterator[Any]:  # type: ignore
+        for artifact in self.archive.artifacts:
+            with fs.open(artifact.uri(self.datasource.root), "rb") as file:
+                yield cloudpickle.load(file)
+
+    def __len__(self) -> int:
+        return len(self.archive.artifacts)
 
 
 @dataclass(frozen=True)
@@ -83,7 +73,7 @@ class DataSource:
 
         # Create an accessor for the artifacts
         else:
-            return Accessor.create(archive=archive, datasource=self)
+            return Accessor(archive=archive, datasource=self)
 
     def read(self, *, flow: str, execution: str, layer: str, artifact: str) -> Any:
         """Read an artifact from the laminar datasource.
