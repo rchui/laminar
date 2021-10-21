@@ -1,9 +1,10 @@
 import logging
+from typing import List
 
 from laminar import Flow, Layer
 from laminar.configurations.layers import Container
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 flow = Flow(name="TestFlow")
 
@@ -14,6 +15,7 @@ container = Container(image="test")
 class One(Layer, container=container):
     def __call__(self) -> None:
         self.foo = "bar"
+        self.baz = ["a", "b", "c"]
 
 
 @flow.layer
@@ -24,8 +26,10 @@ class Two(Layer, container=container):
 
 @flow.layer
 class Three(Layer, container=container):
+    baz: List[str]
+
     def __call__(self, one: One) -> None:
-        self.baz = one.foo
+        self.fork(baz=one.baz)
 
 
 @flow.layer

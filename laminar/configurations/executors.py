@@ -4,20 +4,32 @@ import logging
 import shlex
 import subprocess
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING
 
 logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from laminar import Layer
+else:
+    Layer = "Layer"
 
 
 @dataclass(frozen=True)
 class Executor:
-    def run(self, execution_id: str, layer: Any) -> None:
+    def run(self, execution_id: str, layer: Layer) -> None:
         ...
 
 
 @dataclass(frozen=True)
 class Docker(Executor):
-    def run(self, execution_id: str, layer: Any) -> None:
+    def run(self, execution_id: str, layer: Layer) -> None:
+        """Execute a layer in a docker container.
+
+        Args:
+            execution_id (str): Flow execution ID
+            layer (Layer): Layer to execute
+        """
+
         command = " ".join(
             [
                 "docker",

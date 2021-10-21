@@ -1,6 +1,6 @@
 import inspect
 import logging
-from typing import Any, Dict, Set, Tuple, Type, TypeVar
+from typing import Any, Dict, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -45,24 +45,46 @@ class Layer:
 
     def __getattr__(self, name: str) -> Any:
         try:
-            return object.__getattribute__(self, name)
+            value = object.__getattribute__(self, name)
         except AttributeError:
             assert current.execution.id
+
             value = self.flow.datasource.read(
                 flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=name
             )
             setattr(self, name, value)
-            return value
+
+        return value
 
     def __hash__(self) -> int:
         return hash(self.name)
 
-    def __next__(self) -> Tuple[Type["Layer"], ...]:
-        return tuple()
-
     @property
     def name(self) -> str:
         return type(self).__name__
+
+    def fork(self, **artifacts: Sequence[Any]) -> None:
+        """Store each item of a sequence separately so that they may be loaded individually downstream.
+
+        Notes:
+            The artifact that is loaded is of type laminar.configurations.datasources.Accessor.
+
+        Usage::
+
+            class Task(Layer):
+                def __call__(self) -> None:
+                    self.fork(foo=["a", "b", "c"])
+
+        Args:
+            **artifacts: Sequence to break up and store.
+        """
+
+        assert current.execution.id
+
+        for artifact, sequence in artifacts.items():
+            self.flow.datasource.write(
+                flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=artifact, values=sequence
+            )
 
 
 LayerType = TypeVar("LayerType", bound=Type[Layer])
@@ -143,7 +165,7 @@ class Flow:
                 execution=execution_id,
                 layer=layer.name,
                 artifact=artifact,
-                value=value,
+                values=[value],
             )
 
     def schedule(self, execution_id: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
