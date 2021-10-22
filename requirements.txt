@@ -1,6 +1,7 @@
 botocore
 boto3
 cloudpickle
+dacite
 pydantic
 smart_open
 svix-ksuid

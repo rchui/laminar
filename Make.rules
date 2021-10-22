@@ -1,2 +1,2 @@
 VENV := . .venv/bin/activate &&
-PIP := $(VENV) python -m pip
+PIP := $(VENV) python -m pip install --index-url https://pypi.python.org/simple

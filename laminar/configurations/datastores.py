@@ -1,18 +1,20 @@
 """Configuraitons for laminar data sources."""
 
 import hashlib
+import json
 import os
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterator, List, Sequence
+from typing import Any, Generator, List, Sequence
 
 import cloudpickle
-from pydantic import BaseModel
+from dacite import from_dict
 
 from laminar.utils import fs
 
 
-class Artifact(BaseModel):
+@dataclass(frozen=True)
+class Artifact:
     """Metadata for laminar artifacts."""
 
     hexdigest: str
@@ -25,7 +27,8 @@ class Artifact(BaseModel):
         return os.path.join(self.root(root), f"{self.hexdigest}.gz")
 
 
-class Archive(BaseModel):
+@dataclass(frozen=True)
+class Archive:
     """Metadata for laminar archives."""
 
     artifacts: List[Artifact]
@@ -35,7 +38,8 @@ class Archive(BaseModel):
         return os.path.join(root, flow, execution, layer, f"{artifact}.json")
 
 
-class Accessor(BaseModel):
+@dataclass(frozen=True)
+class Accessor:
     """Artifact handler for forked artifacts."""
 
     archive: Archive
@@ -45,7 +49,7 @@ class Accessor(BaseModel):
         with fs.open(self.archive.artifacts[key].uri(self.datastore.root), "rb") as file:
             return cloudpickle.load(file)
 
-    def __iter__(self) -> Iterator[Any]:  # type: ignore
+    def __iter__(self) -> Generator[Any, None, None]:
         for artifact in self.archive.artifacts:
             with fs.open(artifact.uri(self.datastore.root), "rb") as file:
                 yield cloudpickle.load(file)
@@ -64,7 +68,7 @@ class DataStore:
     def _read(self, uri: str) -> Any:
         # Read the archive
         with fs.open(uri, "r") as file:
-            archive = Archive.parse_raw(file.read())
+            archive = from_dict(Archive, json.load(file))
 
         # Read the artifact value
         if len(archive.artifacts) == 1:
@@ -73,7 +77,7 @@ class DataStore:
 
         # Create an accessor for the artifacts
         else:
-            return Accessor(archive=archive, datastore=self)
+            return Accessor(archive=archive, datastore=asdict(self))
 
     def read(self, *, flow: str, execution: str, layer: str, artifact: str) -> Any:
         """Read an artifact from the laminar datastore.
@@ -96,7 +100,7 @@ class DataStore:
 
         # Write the archive
         with fs.open(uri, "w") as file:
-            file.write(archive.json())
+            json.dump(asdict(archive), file)
 
         # Write the artifact(s) value
         for artifact, content in zip(archive.artifacts, contents):

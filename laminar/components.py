@@ -1,6 +1,7 @@
+# from dataclasses import dataclass
 import inspect
 import logging
-from typing import Any, Dict, Sequence, Set, Tuple, Type, TypeVar
+from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -9,6 +10,8 @@ from laminar.exceptions import FlowError
 from laminar.settings import current
 
 logger = logging.getLogger(__name__)
+
+LAYER_RESERVED_KEYWORDS = {"flow"}
 
 
 class Layer:
@@ -32,7 +35,7 @@ class Layer:
         for key, value in data.items():
             setattr(self, key, value)
 
-    def __call__(self) -> None:
+    def __call__(self) -> Optional[Tuple["Layer", ...]]:
         ...
 
     def __eq__(self, other: object) -> bool:
@@ -159,15 +162,11 @@ class Flow:
         logger.info("Finishing layer '%s'.", layer.name)
 
         artifacts = vars(layer)
-        artifacts.pop("flow")
         for artifact, value in artifacts.items():
-            self.datastore.write(
-                flow=self.name,
-                execution=execution_id,
-                layer=layer.name,
-                artifact=artifact,
-                values=[value],
-            )
+            if artifact not in LAYER_RESERVED_KEYWORDS:
+                self.datastore.write(
+                    flow=self.name, execution=execution_id, layer=layer.name, artifact=artifact, values=[value]
+                )
 
     def schedule(self, execution_id: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
         def get_pending(dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:

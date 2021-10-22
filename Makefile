@@ -7,8 +7,8 @@ env:
 
 .PHONY: upgrade
 upgrade:
-	$(PIP) install --upgrade pip
-	$(PIP) install --upgrade --requirement requirements.dev.txt
+	$(PIP) --upgrade pip
+	$(PIP) --upgrade --requirement requirements.dev.txt
 
 .PHONY: bash zsh
 bash zsh:
