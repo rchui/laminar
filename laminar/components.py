@@ -1,7 +1,7 @@
 # from dataclasses import dataclass
 import inspect
 import logging
-from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
+from typing import Any, Dict, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -11,7 +11,7 @@ from laminar.settings import current
 
 logger = logging.getLogger(__name__)
 
-LAYER_RESERVED_KEYWORDS = {"flow"}
+LAYER_RESERVED_KEYWORDS = {"flow", "metrics"}
 
 
 class Layer:
@@ -35,7 +35,7 @@ class Layer:
         for key, value in data.items():
             setattr(self, key, value)
 
-    def __call__(self) -> Optional[Tuple["Layer", ...]]:
+    def __call__(self) -> None:
         ...
 
     def __eq__(self, other: object) -> bool:
