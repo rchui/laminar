@@ -39,15 +39,15 @@ class Accessor(BaseModel):
     """Artifact handler for forked artifacts."""
 
     archive: Archive
-    datasource: "DataSource"
+    datastore: "DataStore"
 
     def __getitem__(self, key: int) -> Any:
-        with fs.open(self.archive.artifacts[key].uri(self.datasource.root), "rb") as file:
+        with fs.open(self.archive.artifacts[key].uri(self.datastore.root), "rb") as file:
             return cloudpickle.load(file)
 
     def __iter__(self) -> Iterator[Any]:  # type: ignore
         for artifact in self.archive.artifacts:
-            with fs.open(artifact.uri(self.datasource.root), "rb") as file:
+            with fs.open(artifact.uri(self.datastore.root), "rb") as file:
                 yield cloudpickle.load(file)
 
     def __len__(self) -> int:
@@ -55,7 +55,7 @@ class Accessor(BaseModel):
 
 
 @dataclass(frozen=True)
-class DataSource:
+class DataStore:
     root: str
 
     def __post_init__(self) -> None:
@@ -73,10 +73,10 @@ class DataSource:
 
         # Create an accessor for the artifacts
         else:
-            return Accessor(archive=archive, datasource=self)
+            return Accessor(archive=archive, datastore=self)
 
     def read(self, *, flow: str, execution: str, layer: str, artifact: str) -> Any:
-        """Read an artifact from the laminar datasource.
+        """Read an artifact from the laminar datastore.
 
         Args:
             flow: Name of the flow
@@ -104,7 +104,7 @@ class DataSource:
                 file.write(content)
 
     def write(self, *, flow: str, execution: str, layer: str, artifact: str, values: Sequence[Any]) -> None:
-        """Write an artifact to the laminar datasource.
+        """Write an artifact to the laminar datastore.
 
         Args:
             flow: Name of the flow
@@ -118,7 +118,7 @@ class DataSource:
 
 
 @dataclass(frozen=True)
-class Local(DataSource):
+class Local(DataStore):
     """Store the laminar workspace on the local filesystem."""
 
     root: str = str(Path.cwd() / ".laminar")
@@ -133,5 +133,5 @@ class Local(DataSource):
 
 
 @dataclass(frozen=True)
-class S3(DataSource):
+class S3(DataStore):
     """Store the laminar workspace in AWS S3."""

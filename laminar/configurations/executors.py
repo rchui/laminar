@@ -42,7 +42,7 @@ class Docker(Executor):
                 f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
                 f"--env LAMINAR_LAYER_NAME={layer.name}",
                 f"--memory {layer.container.memory}m",
-                f"--volume {layer.flow.datasource.root}:{layer.container.workdir}/.laminar",
+                f"--volume {layer.flow.datastore.root}:{layer.container.workdir}/.laminar",
                 f"--workdir {layer.container.workdir}",
                 layer.container.image,
                 layer.container.command,

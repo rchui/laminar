@@ -4,7 +4,7 @@ from typing import Any, Dict, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
-from laminar.configurations import datasources, executors, layers
+from laminar.configurations import datastores, executors, layers
 from laminar.exceptions import FlowError
 from laminar.settings import current
 
@@ -49,7 +49,7 @@ class Layer:
         except AttributeError:
             assert current.execution.id
 
-            value = self.flow.datasource.read(
+            value = self.flow.datastore.read(
                 flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=name
             )
             setattr(self, name, value)
@@ -67,7 +67,7 @@ class Layer:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
 
         Notes:
-            The artifact that is loaded is of type laminar.configurations.datasources.Accessor.
+            The artifact that is loaded is of type laminar.configurations.datastores.Accessor.
 
         Usage::
 
@@ -82,7 +82,7 @@ class Layer:
         assert current.execution.id
 
         for artifact, sequence in artifacts.items():
-            self.flow.datasource.write(
+            self.flow.datastore.write(
                 flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=artifact, values=sequence
             )
 
@@ -104,7 +104,7 @@ class Flow:
         self,
         *,
         name: str,
-        datasource: datasources.DataSource = datasources.Local(),
+        datastore: datastores.DataStore = datastores.Local(),
         executor: executors.Executor = executors.Docker(),
     ) -> None:
         """
@@ -119,10 +119,11 @@ class Flow:
             raise FlowError(f"A flow's name can only contain alphanumeric characters. Given name '{name}'.")
 
         self.name = name
-        self.datasource = datasource
+        self.datastore = datastore
         self.executor = executor
 
         self._dependencies: Dict[Layer, Tuple[Layer, ...]] = {}
+        self._mapping: Dict[str, Layer] = {}
 
     @property
     def dependencies(self) -> Dict[str, Tuple[str, ...]]:
@@ -143,7 +144,7 @@ class Flow:
 
         # Execute a layer in the flow.
         if current.execution.id and current.layer.name:
-            layer = {layer.name: layer for layer in self._dependencies}[current.layer.name]
+            layer = self._mapping[current.layer.name]
             self.execute(current.execution.id, layer)
 
         # Execute the flow.
@@ -160,7 +161,7 @@ class Flow:
         artifacts = vars(layer)
         artifacts.pop("flow")
         for artifact, value in artifacts.items():
-            self.datasource.write(
+            self.datastore.write(
                 flow=self.name,
                 execution=execution_id,
                 layer=layer.name,
@@ -213,5 +214,6 @@ class Flow:
         self._dependencies[layer] = tuple(
             parameter.annotation(flow=self) for parameter in inspect.signature(layer.__call__).parameters.values()
         )
+        self._mapping[layer.name] = layer
 
         return Layer
