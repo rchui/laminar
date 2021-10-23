@@ -1,7 +1,7 @@
 # from dataclasses import dataclass
 import inspect
 import logging
-from typing import Any, Dict, Sequence, Set, Tuple, Type, TypeVar
+from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -50,11 +50,9 @@ class Layer:
         try:
             value = object.__getattribute__(self, name)
         except AttributeError:
-            assert current.execution.id
+            assert self.flow.execution
 
-            value = self.flow.datastore.read(
-                flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=name
-            )
+            value = self.flow.datastore.read(self, name)
             setattr(self, name, value)
 
         return value
@@ -82,15 +80,13 @@ class Layer:
             **artifacts: Sequence to break up and store.
         """
 
-        assert current.execution.id
+        assert self.flow.execution
 
         for artifact, sequence in artifacts.items():
-            self.flow.datastore.write(
-                flow=self.flow.name, execution=current.execution.id, layer=self.name, artifact=artifact, values=sequence
-            )
+            self.flow.datastore.write(self, artifact, sequence)
 
 
-LayerType = TypeVar("LayerType", bound=Type[Layer])
+L = TypeVar("L", bound=Type[Layer])
 
 
 class Flow:
@@ -102,6 +98,8 @@ class Flow:
 
         flow = Flow(name="HelloFlow")
     """
+
+    execution: Optional[str] = current.execution.id
 
     def __init__(
         self,
@@ -146,15 +144,15 @@ class Flow:
         """
 
         # Execute a layer in the flow.
-        if current.execution.id and current.layer.name:
+        if self.execution and current.layer.name:
             layer = self._mapping[current.layer.name]
-            self.execute(current.execution.id, layer)
+            self.execute(layer)
 
         # Execute the flow.
         else:
             self.schedule(str(Ksuid()), self._dependencies)
 
-    def execute(self, execution_id: str, layer: Layer) -> None:
+    def execute(self, layer: Layer) -> None:
         parameters = self._dependencies[layer]
 
         logger.info("Starting layer '%s'.", layer.name)
@@ -164,11 +162,9 @@ class Flow:
         artifacts = vars(layer)
         for artifact, value in artifacts.items():
             if artifact not in LAYER_RESERVED_KEYWORDS:
-                self.datastore.write(
-                    flow=self.name, execution=execution_id, layer=layer.name, artifact=artifact, values=[value]
-                )
+                self.datastore.write(layer, artifact, [value])
 
-    def schedule(self, execution_id: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
+    def schedule(self, execution: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
         def get_pending(dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:
             return {
                 child
@@ -182,7 +178,7 @@ class Flow:
         while pending:
             for layer in pending:
 
-                self.executor.run(execution_id, layer)
+                self.executor.run(execution, layer)
 
                 finished.add(layer)
 
@@ -195,7 +191,7 @@ class Flow:
                     f" Remaining dependencies: {dependencies}."
                 )
 
-    def layer(self, Layer: LayerType) -> LayerType:
+    def layer(self, Layer: L) -> L:
         """Add a layer to the flow.
 
         Usage::

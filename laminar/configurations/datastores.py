@@ -1,19 +1,24 @@
 """Configuraitons for laminar data sources."""
 
+import dataclasses
 import hashlib
 import json
 import os
-from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Generator, List, Sequence
+from typing import TYPE_CHECKING, Any, Generator, List, Sequence
 
 import cloudpickle
-from dacite import from_dict
+from dacite.core import from_dict
 
 from laminar.utils import fs
 
+if TYPE_CHECKING:
+    from laminar.components import Layer
+else:
+    Layer = "Layer"
 
-@dataclass(frozen=True)
+
+@dataclasses.dataclass(frozen=True)
 class Artifact:
     """Metadata for laminar artifacts."""
 
@@ -27,18 +32,18 @@ class Artifact:
         return os.path.join(self.root(root), f"{self.hexdigest}.gz")
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class Archive:
     """Metadata for laminar archives."""
 
     artifacts: List[Artifact]
 
     @staticmethod
-    def uri(*, root: str, flow: str, execution: str, layer: str, artifact: str) -> str:
-        return os.path.join(root, flow, execution, layer, f"{artifact}.json")
+    def uri(root: str, layer: Layer, artifact: str) -> str:
+        return os.path.join(root, layer.flow.name, layer.flow.execution, layer.name, f"{artifact}.json")
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class Accessor:
     """Artifact handler for forked artifacts."""
 
@@ -58,16 +63,16 @@ class Accessor:
         return len(self.archive.artifacts)
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class DataStore:
     root: str
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "root", self.root.rstrip("/"))
 
-    def _read(self, uri: str) -> Any:
+    def _read(self, layer: Layer, artifact: str) -> Any:
         # Read the archive
-        with fs.open(uri, "r") as file:
+        with fs.open(Archive.uri(self.root, layer, artifact), "r") as file:
             archive = from_dict(Archive, json.load(file))
 
         # Read the artifact value
@@ -77,9 +82,9 @@ class DataStore:
 
         # Create an accessor for the artifacts
         else:
-            return Accessor(archive=archive, datastore=asdict(self))
+            return Accessor(archive=archive, datastore=self)
 
-    def read(self, *, flow: str, execution: str, layer: str, artifact: str) -> Any:
+    def read(self, layer: Layer, artifact: str) -> Any:
         """Read an artifact from the laminar datastore.
 
         Args:
@@ -92,22 +97,22 @@ class DataStore:
             Any: Value of the artifact.
         """
 
-        return self._read(Archive.uri(root=self.root, flow=flow, execution=execution, layer=layer, artifact=artifact))
+        return self._read(layer, artifact)
 
-    def _write(self, uri: str, values: Sequence[Any]) -> None:
+    def _write(self, layer: Layer, artifact: str, values: Sequence[Any]) -> None:
         contents = [cloudpickle.dumps(value) for value in values]
         archive = Archive(artifacts=[Artifact(hexdigest=hashlib.sha256(content).hexdigest()) for content in contents])
 
         # Write the archive
-        with fs.open(uri, "w") as file:
-            json.dump(asdict(archive), file)
+        with fs.open(Archive.uri(self.root, layer, artifact), "w") as file:
+            json.dump(dataclasses.asdict(archive), file)
 
         # Write the artifact(s) value
         for artifact, content in zip(archive.artifacts, contents):
             with fs.open(artifact.uri(self.root), "wb") as file:
                 file.write(content)
 
-    def write(self, *, flow: str, execution: str, layer: str, artifact: str, values: Sequence[Any]) -> None:
+    def write(self, layer: Layer, artifact: str, values: Sequence[Any]) -> None:
         """Write an artifact to the laminar datastore.
 
         Args:
@@ -118,24 +123,22 @@ class DataStore:
             values : Artifact values to store
         """
 
-        self._write(Archive.uri(root=self.root, flow=flow, execution=execution, layer=layer, artifact=artifact), values)
+        self._write(layer, artifact, values)
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class Local(DataStore):
     """Store the laminar workspace on the local filesystem."""
 
     root: str = str(Path.cwd() / ".laminar")
 
-    def write(self, *, flow: str, execution: str, layer: str, artifact: str, values: Sequence[Any]) -> None:
-        uri = Archive.uri(root=self.root, flow=flow, execution=execution, layer=layer, artifact=artifact)
-
-        Path(uri).parent.mkdir(parents=True, exist_ok=True)
+    def write(self, layer: Layer, artifact: str, values: Sequence[Any]) -> None:
+        Path(Archive.uri(self.root, layer, artifact)).parent.mkdir(parents=True, exist_ok=True)
         Path(Artifact.root(self.root)).mkdir(parents=True, exist_ok=True)
 
-        self._write(uri, values)
+        self._write(layer, artifact, values)
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class S3(DataStore):
     """Store the laminar workspace in AWS S3."""
