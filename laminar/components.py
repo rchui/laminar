@@ -1,7 +1,7 @@
 # from dataclasses import dataclass
 import inspect
 import logging
-from typing import Any, Dict, Iterable, Optional, Set, Tuple, Type, TypeVar
+from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -57,6 +57,12 @@ class Layer:
 
         return value
 
+    def __getstate__(self) -> Dict[str, Any]:
+        return self.__dict__
+
+    def __setstate__(self, slots: Dict[str, Any]) -> None:
+        self.__dict__ = slots
+
     def __hash__(self) -> int:
         return hash(self.name)
 
@@ -64,7 +70,7 @@ class Layer:
     def name(self) -> str:
         return type(self).__name__
 
-    def fork(self, **artifacts: Iterable[Any]) -> None:
+    def fork(self, **artifacts: Sequence[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
 
         Notes:
@@ -77,7 +83,7 @@ class Layer:
                     self.fork(foo=["a", "b", "c"])
 
         Args:
-            **artifacts: Iterable to break up and store.
+            **artifacts: Sequence to break up and store.
         """
 
         for artifact, sequence in artifacts.items():
