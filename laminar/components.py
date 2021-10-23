@@ -1,7 +1,7 @@
 # from dataclasses import dataclass
 import inspect
 import logging
-from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
+from typing import Any, Dict, Iterable, Optional, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -27,6 +27,7 @@ class Layer:
 
     container: layers.Container
     flow: "Flow"
+    index: Optional[int] = current.layer.index
 
     def __init_subclass__(cls, container: layers.Container = layers.Container()) -> None:
         cls.container = container
@@ -50,10 +51,9 @@ class Layer:
         try:
             value = object.__getattribute__(self, name)
         except AttributeError:
-            assert self.flow.execution
-
             value = self.flow.datastore.read(self, name)
-            setattr(self, name, value)
+            if isinstance(value, datastores.Accessor):
+                setattr(self, name, value)
 
         return value
 
@@ -64,7 +64,7 @@ class Layer:
     def name(self) -> str:
         return type(self).__name__
 
-    def fork(self, **artifacts: Sequence[Any]) -> None:
+    def fork(self, **artifacts: Iterable[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
 
         Notes:
@@ -77,10 +77,8 @@ class Layer:
                     self.fork(foo=["a", "b", "c"])
 
         Args:
-            **artifacts: Sequence to break up and store.
+            **artifacts: Iterable to break up and store.
         """
-
-        assert self.flow.execution
 
         for artifact, sequence in artifacts.items():
             self.flow.datastore.write(self, artifact, sequence)

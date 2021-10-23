@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generator, List, Sequence
+from typing import TYPE_CHECKING, Any, Generator, Iterable, List, Sequence
 
 import cloudpickle
 from dacite.core import from_dict
@@ -119,7 +119,7 @@ class DataStore:
 
         return self._read(layer, name)
 
-    def _write(self, layer: Layer, name: str, values: Sequence[Any]) -> None:
+    def _write(self, layer: Layer, name: str, values: Iterable[Any]) -> None:
         contents = [cloudpickle.dumps(value) for value in values]
         archive = Archive(artifacts=[Artifact(hexdigest=hashlib.sha256(content).hexdigest()) for content in contents])
 
@@ -129,7 +129,7 @@ class DataStore:
         for artifact, content in zip(archive.artifacts, contents):
             artifact.write(self.root, content)
 
-    def write(self, layer: Layer, name: str, values: Sequence[Any]) -> None:
+    def write(self, layer: Layer, name: str, values: Iterable[Any]) -> None:
         """Write an artifact to the laminar datastore.
 
         Args:
