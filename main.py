@@ -35,7 +35,7 @@ class Three(Layer, container=container):
 @flow.layer
 class Four(Layer, container=container):
     def __call__(self, two: Two, three: Three) -> None:
-        self.end = [two.bar, three.baz]
+        self.end = [two.bar, list(three.baz)]
 
 
 if __name__ == "__main__":

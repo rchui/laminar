@@ -70,6 +70,10 @@ class Layer:
     def name(self) -> str:
         return type(self).__name__
 
+    @property
+    def dependencies(self) -> Tuple[Type["Layer"], ...]:
+        return tuple(parameter.annotation for parameter in inspect.signature(self.__call__).parameters.values())
+
     def fork(self, **artifacts: Sequence[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
 
@@ -210,9 +214,7 @@ class Flow:
         if layer in self._dependencies:
             raise FlowError(f"Duplicate layer added to flow '{self.name}'. Given layer '{layer.name}'.")
 
-        self._dependencies[layer] = tuple(
-            parameter.annotation(flow=self) for parameter in inspect.signature(layer.__call__).parameters.values()
-        )
+        self._dependencies[layer] = tuple(dependency(flow=self) for dependency in layer.dependencies)
         self._mapping[layer.name] = layer
 
         return Layer
