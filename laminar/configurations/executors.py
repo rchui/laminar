@@ -37,16 +37,16 @@ class Docker(Executor):
                 "--rm",
                 "--interactive",
                 "--tty",
-                f"--cpus {layer.container.cpu}",
+                f"--cpus {layer.configuration.container.cpu}",
                 f"--env LAMINAR_EXECUTION_ID={execution}",
                 f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
                 f"--env LAMINAR_LAYER_INDEX={0}",
                 f"--env LAMINAR_LAYER_NAME={layer.name}",
-                f"--memory {layer.container.memory}m",
-                f"--volume {layer.flow.datastore.root}:{layer.container.workdir}/.laminar",
-                f"--workdir {layer.container.workdir}",
-                layer.container.image,
-                layer.container.command,
+                f"--memory {layer.configuration.container.memory}m",
+                f"--volume {layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar",
+                f"--workdir {layer.configuration.container.workdir}",
+                layer.configuration.container.image,
+                layer.configuration.container.command,
             ]
         )
         logger.debug(command)

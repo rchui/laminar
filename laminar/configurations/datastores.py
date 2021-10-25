@@ -79,12 +79,12 @@ class Accessor:
     layer: "Layer"
 
     def __getitem__(self, key: int) -> Any:
-        with fs.open(self.archive.artifacts[key].uri(root=self.layer.flow.datastore.root), "rb") as file:
+        with fs.open(self.archive.artifacts[key].uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
             return cloudpickle.load(file)
 
     def __iter__(self) -> Generator[Any, None, None]:
         for artifact in self.archive.artifacts:
-            with fs.open(artifact.uri(root=self.layer.flow.datastore.root), "rb") as file:
+            with fs.open(artifact.uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
                 yield cloudpickle.load(file)
 
     def __len__(self) -> int:

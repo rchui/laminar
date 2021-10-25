@@ -1,5 +1,9 @@
 include Make.rules
 
+.PHONY: clear
+clear:
+	rm -rf .laminar
+
 .PHONY: env
 env:
 	python -m virtualenv .venv --clear

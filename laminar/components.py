@@ -5,13 +5,14 @@ from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
-from laminar.configurations import datastores, executors, layers
+from laminar.configurations import flows, layers
+from laminar.configurations.datastores import Accessor
 from laminar.exceptions import FlowError
 from laminar.settings import current
 
 logger = logging.getLogger(__name__)
 
-LAYER_RESERVED_KEYWORDS = {"flow", "metrics"}
+LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index"}
 
 
 class Layer:
@@ -25,12 +26,12 @@ class Layer:
             ...
     """
 
-    container: layers.Container
+    configuration: layers.Configuration
     flow: "Flow"
     index: Optional[int] = current.layer.index
 
-    def __init_subclass__(cls, container: layers.Container = layers.Container()) -> None:
-        cls.container = container
+    def __init_subclass__(cls, configuration: layers.Configuration = layers.Configuration()) -> None:
+        cls.configuration = configuration
 
     def __init__(self, **data: Any) -> None:
         for key, value in data.items():
@@ -53,8 +54,8 @@ class Layer:
         except AttributeError:
             assert self.index is not None
 
-            value = self.flow.datastore.read(layer=self, index=self.index, name=name)
-            if isinstance(value, datastores.Accessor):
+            value = self.flow.configuration.datastore.read(layer=self, index=self.index, name=name)
+            if isinstance(value, Accessor):
                 setattr(self, name, value)
 
         return value
@@ -93,7 +94,7 @@ class Layer:
         """
 
         for artifact, sequence in artifacts.items():
-            self.flow.datastore.write(layer=self, name=artifact, values=sequence)
+            self.flow.configuration.datastore.write(layer=self, name=artifact, values=sequence)
 
 
 L = TypeVar("L", bound=Type[Layer])
@@ -111,13 +112,7 @@ class Flow:
 
     execution: Optional[str] = current.execution.id
 
-    def __init__(
-        self,
-        *,
-        name: str,
-        datastore: datastores.DataStore = datastores.Local(),
-        executor: executors.Executor = executors.Docker(),
-    ) -> None:
+    def __init__(self, *, name: str, configuration: flows.Configuration = flows.Configuration()) -> None:
         """
         Args:
             name (str): Name of the flow. Must be alphanumeric.
@@ -130,8 +125,7 @@ class Flow:
             raise FlowError(f"A flow's name can only contain alphanumeric characters. Given name '{name}'.")
 
         self.name = name
-        self.datastore = datastore
-        self.executor = executor
+        self.configuration = configuration
 
         self._dependencies: Dict[Layer, Tuple[Layer, ...]] = {}
         self._mapping: Dict[str, Layer] = {}
@@ -172,7 +166,7 @@ class Flow:
         artifacts = vars(layer)
         for artifact, value in artifacts.items():
             if artifact not in LAYER_RESERVED_KEYWORDS:
-                self.datastore.write(layer=layer, name=artifact, values=[value])
+                self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
 
     def schedule(self, *, execution: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
         def get_pending(*, dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:
@@ -188,7 +182,7 @@ class Flow:
         while pending:
             for layer in pending:
 
-                self.executor.run(execution=execution, layer=layer)
+                self.configuration.executor.run(execution=execution, layer=layer)
 
                 finished.add(layer)
 

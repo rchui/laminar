@@ -2,30 +2,30 @@ import logging
 from typing import List
 
 from laminar import Flow, Layer
-from laminar.configurations.layers import Container
+from laminar.configurations import layers
 
 logging.basicConfig(level=logging.DEBUG)
 
 flow = Flow(name="TestFlow")
 
-container = Container(image="test")
+configuration = layers.Configuration(container=layers.Container(image="test"))
 
 
 @flow.layer
-class One(Layer, container=container):
+class One(Layer, configuration=configuration):
     def __call__(self) -> None:
         self.foo = "bar"
         self.baz = ["a", "b", "c"]
 
 
 @flow.layer
-class Two(Layer, container=container):
+class Two(Layer, configuration=configuration):
     def __call__(self, one: One) -> None:
         self.bar = one.foo
 
 
 @flow.layer
-class Three(Layer, container=container):
+class Three(Layer, configuration=configuration):
     baz: List[str]
 
     def __call__(self, one: One) -> None:
@@ -33,7 +33,9 @@ class Three(Layer, container=container):
 
 
 @flow.layer
-class Four(Layer, container=container):
+class Four(
+    Layer, configuration=configuration | layers.ForEach(parameters=[layers.Parameter(cls=Three, attribute="baz")])
+):
     def __call__(self, two: Two, three: Three) -> None:
         self.end = [two.bar, list(three.baz)]
 
