@@ -2,7 +2,7 @@
 
 import itertools
 from dataclasses import asdict, dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Type, Union
 
 from dacite.core import from_dict
 
@@ -39,7 +39,7 @@ class Parameter:
 
     layer: Type["Layer"]
     attribute: str
-    index: int = 0
+    index: Optional[int] = 0
 
 
 @dataclass(frozen=True)
@@ -50,12 +50,31 @@ class ForEach:
 
         In order to foreach over each element of a layer, the layer's artifact must be sharded. See Layer.shard().
 
+        If `Parameter(index=None)`, ForEach will include artifacts from all Layer indexes.
+
     Usage::
 
         Configuration(foreach=ForEach(...))
     """
 
     parameters: Iterable[Parameter] = field(default_factory=list)
+
+    def join(self, *, layer: Layer, name: str) -> Archive:
+        """Join together multiple artifact indexes of a layer into a single Archive.
+
+        Args:
+            layer (Layer): Layer to join archives for.
+            name (str): Name of the attribute to join archives for.
+
+        Returns:
+            Archive: Archive created from multiple layer archives.
+        """
+
+        artifacts = [
+            layer.flow.configuration.datastore.read_archive(layer=layer, index=index, name=name).artifacts
+            for index in range(layer.configuration.foreach.size(layer=layer))
+        ]
+        return Archive(artifacts=list(itertools.chain.from_iterable(artifacts)))
 
     def grid(self, *, layer: Layer) -> List[Dict[Layer, Dict[str, int]]]:
         """Generate a grid of all combinations of foreach inputs.
@@ -74,11 +93,18 @@ class ForEach:
         for parameter in self.parameters:
             instance = parameter.layer(flow=layer.flow)
             parameters.append((instance, parameter.attribute))
-            archives.append(
-                instance.flow.configuration.datastore.read_archive(
-                    layer=instance, index=parameter.index, name=parameter.attribute
+
+            # Get archives for all layer indexes.
+            if parameter.index is None:
+                archives.append(instance.configuration.foreach.join(layer=instance, name=parameter.attribute))
+
+            # Get archive for specified layer index.
+            else:
+                archives.append(
+                    instance.flow.configuration.datastore.read_archive(
+                        layer=instance, index=parameter.index, name=parameter.attribute
+                    )
                 )
-            )
 
         grid: List[Dict[Layer, Dict[str, int]]] = []
         for indexes in itertools.product(*(range(len(archive.artifacts)) for archive in archives)):

@@ -168,3 +168,51 @@ python main.py
 >>> 1 'b'
 >>> 2 'b'
 ```
+
+## Chained ForEach
+
+It is common to performed multiple foreach loops in a row, where each value produced by a foreach is passed to another foreach. You can define `Parameter(index=None)` in `ForEach` to create a `1:1` mapping of one foreach to another.
+
+```python
+# main.py
+from laminar import Flow, Layer
+from laminar.configurations.layers import Configuration, ForEach, Parameters
+
+flow = Flow("ShardedFlow")
+
+@flow.layer
+class Shard(Layer):
+    def __call__(self) -> None:
+        self.shard(foo=[1, 2, 3]
+
+@flow.layer
+class First(Layer, Configuration(
+        foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")])
+    )
+):
+    def __call__(self, shard: Shard) -> None:
+        print('First', shard.foo)
+        self.foo = shard.foo
+
+@flow.layer
+class Second(Layer, Configuration(
+        foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)])
+    )
+):
+    def __call__(self, first: First) -> None:
+        print('Second', first.foo)
+
+if __name__ == '__main__':
+    flow()
+```
+
+```python
+python main.py
+
+>>> 'First' 1
+>>> 'First' 2
+>>> 'First' 3
+>>> 'Second' 1
+>>> 'Second' 2
+>>> 'Second' 3
+```

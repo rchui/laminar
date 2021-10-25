@@ -1,13 +1,12 @@
 # from dataclasses import dataclass
 import inspect
-import itertools
 import logging
 from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
 from laminar.configurations import flows, layers
-from laminar.configurations.datastores import Accessor, Archive
+from laminar.configurations.datastores import Accessor
 from laminar.exceptions import FlowError
 from laminar.settings import current
 
@@ -64,11 +63,7 @@ class Layer:
 
             # The layer has multiple indexes. Create an accessor for all index artifacts.
             else:
-                artifacts = [
-                    self.flow.configuration.datastore.read_archive(layer=self, index=index, name=name).artifacts
-                    for index in range(indexes)
-                ]
-                value = Accessor(archive=Archive(artifacts=list(itertools.chain.from_iterable(artifacts))), layer=self)
+                value = Accessor(archive=self.configuration.foreach.join(layer=self, name=name), layer=self)
 
         return value
 

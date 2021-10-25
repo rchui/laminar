@@ -38,9 +38,22 @@ class Three(
 
 
 @flow.layer
+class Five(
+    Layer,
+    configuration=configuration
+    | layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)]),
+):
+    baz: List[str]
+
+    def __call__(self, three: Three) -> None:
+        self.baz = three.baz
+        print(self.baz)
+
+
+@flow.layer
 class Four(Layer, configuration=configuration):
-    def __call__(self, two: Two, three: Three) -> None:
-        self.end = [two.bar, list(three.baz)]
+    def __call__(self, two: Two, five: Five) -> None:
+        self.end = [two.bar, list(five.baz)]
         print(self.end)
 
 
