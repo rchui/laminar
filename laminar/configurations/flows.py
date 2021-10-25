@@ -13,8 +13,10 @@ class Configuration:
     executor: Executor = Docker()
 
     def __or__(self, other: Union[DataStore, Executor]) -> "Configuration":
+        new: Dict[str, Any]
+
         if isinstance(other, DataStore):
-            new: Dict[str, Any] = {"datastore": other}
+            new = {"datastore": other}
         elif isinstance(other, Executor):
             new = {"executor": other}
         else:

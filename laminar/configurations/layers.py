@@ -37,8 +37,10 @@ class Configuration:
     foreach: ForEach = ForEach()
 
     def __or__(self, other: Union[Container, ForEach]) -> "Configuration":
+        new: Dict[str, Any]
+
         if isinstance(other, Container):
-            new: Dict[str, Any] = {"container": other}
+            new = {"container": other}
         elif isinstance(other, ForEach):
             new = {"foreach": other}
         else:
