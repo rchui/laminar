@@ -73,7 +73,7 @@ class Archive:
 
 @dataclasses.dataclass(frozen=True)
 class Accessor:
-    """Artifact handler for forked artifacts."""
+    """Artifact handler for sharded artifacts."""
 
     archive: Archive
     layer: "Layer"
@@ -98,9 +98,21 @@ class DataStore:
     def __post_init__(self) -> None:
         object.__setattr__(self, "root", self.root.rstrip("/"))
 
-    def _read(self, *, layer: Layer, index: int, name: str) -> Any:
-        archive = Archive.read(root=self.root, layer=layer, index=index, name=name)
+    def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
+        """Read an archive from the laminar datastore.
 
+        Args:
+            layer (Layer): Layer being read from.
+            index (int): Layer index being read from.
+            name (str): Name of the artifact the archive is for.
+
+        Returns:
+            Archive: Archive of the requested artifact.
+        """
+
+        return Archive.read(root=self.root, layer=layer, index=index, name=name)
+
+    def _read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
         # Read the artifact value
         if len(archive.artifacts) == 1:
             return archive.artifacts[0].read(root=self.root)
@@ -114,13 +126,14 @@ class DataStore:
 
         Args:
             layer: Layer being read from.
+            index: Layer index being read from.
             name: Name of the artifact being read.
 
         Returns:
             Any: Value of the artifact.
         """
 
-        return self._read(layer=layer, index=index, name=name)
+        return self._read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
 
     def _write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
         contents = [cloudpickle.dumps(value) for value in values]

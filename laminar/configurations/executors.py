@@ -30,24 +30,27 @@ class Docker(Executor):
             layer (Layer): Layer to execute
         """
 
-        command = " ".join(
-            [
-                "docker",
-                "run",
-                "--rm",
-                "--interactive",
-                "--tty",
-                f"--cpus {layer.configuration.container.cpu}",
-                f"--env LAMINAR_EXECUTION_ID={execution}",
-                f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
-                f"--env LAMINAR_LAYER_INDEX={0}",
-                f"--env LAMINAR_LAYER_NAME={layer.name}",
-                f"--memory {layer.configuration.container.memory}m",
-                f"--volume {layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar",
-                f"--workdir {layer.configuration.container.workdir}",
-                layer.configuration.container.image,
-                layer.configuration.container.command,
-            ]
-        )
-        logger.debug(command)
-        subprocess.run(shlex.split(command), check=True)
+        workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
+
+        for index in range(layer.configuration.foreach.size(layer=layer)):
+            command = " ".join(
+                [
+                    "docker",
+                    "run",
+                    "--rm",
+                    "--interactive",
+                    "--tty",
+                    f"--cpus {layer.configuration.container.cpu}",
+                    f"--env LAMINAR_EXECUTION_ID={execution}",
+                    f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
+                    f"--env LAMINAR_LAYER_INDEX={index}",
+                    f"--env LAMINAR_LAYER_NAME={layer.name}",
+                    f"--memory {layer.configuration.container.memory}m",
+                    f"--volume {workspace}",
+                    f"--workdir {layer.configuration.container.workdir}",
+                    layer.configuration.container.image,
+                    layer.configuration.container.command,
+                ]
+            )
+            logger.debug(command)
+            subprocess.run(shlex.split(command), check=True)

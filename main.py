@@ -4,7 +4,7 @@ from typing import List
 from laminar import Flow, Layer
 from laminar.configurations import layers
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 flow = Flow(name="TestFlow")
 
@@ -13,9 +13,11 @@ configuration = layers.Configuration(container=layers.Container(image="test"))
 
 @flow.layer
 class One(Layer, configuration=configuration):
+    baz: str
+
     def __call__(self) -> None:
         self.foo = "bar"
-        self.baz = ["a", "b", "c"]
+        self.shard(baz=["a", "b", "c"])
 
 
 @flow.layer
@@ -25,19 +27,21 @@ class Two(Layer, configuration=configuration):
 
 
 @flow.layer
-class Three(Layer, configuration=configuration):
+class Three(
+    Layer, configuration=configuration | layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")])
+):
     baz: List[str]
 
     def __call__(self, one: One) -> None:
-        self.fork(baz=one.baz)
+        self.baz = one.baz
+        print(self.baz)
 
 
 @flow.layer
-class Four(
-    Layer, configuration=configuration | layers.ForEach(parameters=[layers.Parameter(cls=Three, attribute="baz")])
-):
+class Four(Layer, configuration=configuration):
     def __call__(self, two: Two, three: Three) -> None:
         self.end = [two.bar, list(three.baz)]
+        print(self.end)
 
 
 if __name__ == "__main__":

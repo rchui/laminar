@@ -1,12 +1,13 @@
 # from dataclasses import dataclass
 import inspect
+import itertools
 import logging
 from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
 from laminar.configurations import flows, layers
-from laminar.configurations.datastores import Accessor
+from laminar.configurations.datastores import Accessor, Archive
 from laminar.exceptions import FlowError
 from laminar.settings import current
 
@@ -49,14 +50,25 @@ class Layer:
             return False
 
     def __getattr__(self, name: str) -> Any:
+        # First attempt to get the attribute normally.
         try:
             value = object.__getattribute__(self, name)
-        except AttributeError:
-            assert self.index is not None
 
-            value = self.flow.configuration.datastore.read(layer=self, index=self.index, name=name)
-            if isinstance(value, Accessor):
-                setattr(self, name, value)
+        # Fall back to getting a layer artifact.
+        except AttributeError:
+            indexes = self.configuration.foreach.size(layer=self)
+
+            # The layer has only one index. Get the artifact directly
+            if indexes == 1:
+                value = self.flow.configuration.datastore.read(layer=self, index=0, name=name)
+
+            # The layer has multiple indexes. Create an accessor for all index artifacts.
+            else:
+                artifacts = [
+                    self.flow.configuration.datastore.read_archive(layer=self, index=index, name=name).artifacts
+                    for index in range(indexes)
+                ]
+                value = Accessor(archive=Archive(artifacts=list(itertools.chain.from_iterable(artifacts))), layer=self)
 
         return value
 
@@ -77,7 +89,7 @@ class Layer:
     def dependencies(self) -> Tuple[Type["Layer"], ...]:
         return tuple(parameter.annotation for parameter in inspect.signature(self.__call__).parameters.values())
 
-    def fork(self, **artifacts: Sequence[Any]) -> None:
+    def shard(self, **artifacts: Sequence[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
 
         Notes:
@@ -87,7 +99,7 @@ class Layer:
 
             class Task(Layer):
                 def __call__(self) -> None:
-                    self.fork(foo=["a", "b", "c"])
+                    self.shard(foo=["a", "b", "c"])
 
         Args:
             **artifacts: Sequence to break up and store.
@@ -154,10 +166,19 @@ class Flow:
 
         # Execute the flow.
         else:
-            self.schedule(execution=str(Ksuid()), dependencies=self._dependencies)
+            self.execution = str(Ksuid())
+            self.schedule(execution=self.execution, dependencies=self._dependencies)
+            self.execution = None
 
     def execute(self, *, layer: Layer) -> None:
+        """Execute a single layer of the flow.
+
+        Args:
+            layer (Layer): Layer of the flow to execute.
+        """
+
         parameters = self._dependencies[layer]
+        parameters = layer.configuration.foreach.set(layer=layer, parameters=parameters)
 
         logger.info("Starting layer '%s'.", layer.name)
         layer(*parameters)
@@ -169,6 +190,13 @@ class Flow:
                 self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
 
     def schedule(self, *, execution: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
+        """Schedule layers to run in sequence in the flow.
+
+        Args:
+            execution (str): ID of the execution being run.
+            dependencies (Dict[Layer, Tuple[Layer, ...]]): Mapping of layers to layers it depends on.
+        """
+
         def get_pending(*, dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:
             return {
                 child
