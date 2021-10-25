@@ -6,7 +6,7 @@ from smart_open import open as open  # noqa
 from smart_open import parse_uri
 
 
-def exists(uri: str) -> bool:
+def exists(*, uri: str) -> bool:
     parts = parse_uri(uri)
 
     if parts.scheme == "file":

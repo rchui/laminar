@@ -16,17 +16,17 @@ else:
 
 @dataclass(frozen=True)
 class Executor:
-    def run(self, execution_id: str, layer: Layer) -> None:
+    def run(self, *, execution: str, layer: Layer) -> None:
         ...
 
 
 @dataclass(frozen=True)
 class Docker(Executor):
-    def run(self, execution_id: str, layer: Layer) -> None:
+    def run(self, *, execution: str, layer: Layer) -> None:
         """Execute a layer in a docker container.
 
         Args:
-            execution_id (str): Flow execution ID
+            execution (str): Flow execution ID
             layer (Layer): Layer to execute
         """
 
@@ -38,7 +38,7 @@ class Docker(Executor):
                 "--interactive",
                 "--tty",
                 f"--cpus {layer.container.cpu}",
-                f"--env LAMINAR_EXECUTION_ID={execution_id}",
+                f"--env LAMINAR_EXECUTION_ID={execution}",
                 f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
                 f"--env LAMINAR_LAYER_NAME={layer.name}",
                 f"--memory {layer.container.memory}m",

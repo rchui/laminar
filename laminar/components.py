@@ -51,7 +51,7 @@ class Layer:
         try:
             value = object.__getattribute__(self, name)
         except AttributeError:
-            value = self.flow.datastore.read(self, name)
+            value = self.flow.datastore.read(layer=self, name=name)
             if isinstance(value, datastores.Accessor):
                 setattr(self, name, value)
 
@@ -91,7 +91,7 @@ class Layer:
         """
 
         for artifact, sequence in artifacts.items():
-            self.flow.datastore.write(self, artifact, sequence)
+            self.flow.datastore.write(layer=self, name=artifact, values=sequence)
 
 
 L = TypeVar("L", bound=Type[Layer])
@@ -154,13 +154,13 @@ class Flow:
         # Execute a layer in the flow.
         if self.execution and current.layer.name:
             layer = self._mapping[current.layer.name]
-            self.execute(layer)
+            self.execute(layer=layer)
 
         # Execute the flow.
         else:
-            self.schedule(str(Ksuid()), self._dependencies)
+            self.schedule(execution=str(Ksuid()), dependencies=self._dependencies)
 
-    def execute(self, layer: Layer) -> None:
+    def execute(self, *, layer: Layer) -> None:
         parameters = self._dependencies[layer]
 
         logger.info("Starting layer '%s'.", layer.name)
@@ -170,10 +170,10 @@ class Flow:
         artifacts = vars(layer)
         for artifact, value in artifacts.items():
             if artifact not in LAYER_RESERVED_KEYWORDS:
-                self.datastore.write(layer, artifact, [value])
+                self.datastore.write(layer=layer, name=artifact, values=[value])
 
-    def schedule(self, execution: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
-        def get_pending(dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:
+    def schedule(self, *, execution: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
+        def get_pending(*, dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:
             return {
                 child
                 for child, parents in dependencies.items()
@@ -181,16 +181,16 @@ class Flow:
             }
 
         finished: Set[Layer] = set()
-        pending = get_pending(dependencies, finished)
+        pending = get_pending(dependencies=dependencies, finished=finished)
 
         while pending:
             for layer in pending:
 
-                self.executor.run(execution, layer)
+                self.executor.run(execution=execution, layer=layer)
 
                 finished.add(layer)
 
-            pending = get_pending(dependencies, finished)
+            pending = get_pending(dependencies=dependencies, finished=finished)
 
             if not pending and (set(dependencies) - finished):
                 raise FlowError(
