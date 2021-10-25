@@ -51,7 +51,9 @@ class Layer:
         try:
             value = object.__getattribute__(self, name)
         except AttributeError:
-            value = self.flow.datastore.read(layer=self, name=name)
+            assert self.index is not None
+
+            value = self.flow.datastore.read(layer=self, index=self.index, name=name)
             if isinstance(value, datastores.Accessor):
                 setattr(self, name, value)
 

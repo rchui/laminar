@@ -4,7 +4,7 @@ from typing import List
 from laminar import Flow, Layer
 from laminar.configurations.layers import Container
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 flow = Flow(name="TestFlow")
 

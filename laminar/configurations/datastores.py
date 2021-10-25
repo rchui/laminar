@@ -55,17 +55,19 @@ class Archive:
     artifacts: List[Artifact]
 
     @staticmethod
-    def uri(*, root: str, layer: Layer, name: str) -> str:
+    def uri(*, root: str, layer: Layer, index: int, name: str) -> str:
         assert layer.flow.execution is not None
-        return os.path.join(root, layer.flow.name, layer.flow.execution, layer.name, f"{name}.json")
+        return os.path.join(root, layer.flow.name, layer.flow.execution, layer.name, str(index), f"{name}.json")
 
     @staticmethod
-    def read(*, root: str, layer: Layer, name: str) -> "Archive":
-        with fs.open(Archive.uri(root=root, layer=layer, name=name), "r") as file:
+    def read(*, root: str, layer: Layer, index: int, name: str) -> "Archive":
+        with fs.open(Archive.uri(root=root, layer=layer, index=index, name=name), "r") as file:
             return from_dict(Archive, json.load(file))
 
     def write(self, *, root: str, layer: Layer, name: str) -> None:
-        with fs.open(Archive.uri(root=root, layer=layer, name=name), "w") as file:
+        assert layer.index is not None
+
+        with fs.open(Archive.uri(root=root, layer=layer, index=layer.index, name=name), "w") as file:
             json.dump(dataclasses.asdict(self), file)
 
 
@@ -96,8 +98,8 @@ class DataStore:
     def __post_init__(self) -> None:
         object.__setattr__(self, "root", self.root.rstrip("/"))
 
-    def _read(self, *, layer: Layer, name: str) -> Any:
-        archive = Archive.read(root=self.root, layer=layer, name=name)
+    def _read(self, *, layer: Layer, index: int, name: str) -> Any:
+        archive = Archive.read(root=self.root, layer=layer, index=index, name=name)
 
         # Read the artifact value
         if len(archive.artifacts) == 1:
@@ -107,7 +109,7 @@ class DataStore:
         else:
             return Accessor(archive=archive, layer=layer)
 
-    def read(self, *, layer: Layer, name: str) -> Any:
+    def read(self, *, layer: Layer, index: int, name: str) -> Any:
         """Read an artifact from the laminar datastore.
 
         Args:
@@ -118,7 +120,7 @@ class DataStore:
             Any: Value of the artifact.
         """
 
-        return self._read(layer=layer, name=name)
+        return self._read(layer=layer, index=index, name=name)
 
     def _write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
         contents = [cloudpickle.dumps(value) for value in values]
@@ -149,7 +151,11 @@ class Local(DataStore):
     root: str = str(Path.cwd() / ".laminar")
 
     def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
-        Path(Archive.uri(root=self.root, layer=layer, name=name)).parent.mkdir(parents=True, exist_ok=True)
+        assert layer.index is not None
+
+        Path(Archive.uri(root=self.root, layer=layer, index=layer.index, name=name)).parent.mkdir(
+            parents=True, exist_ok=True
+        )
         Path(Artifact.root(root=self.root)).mkdir(parents=True, exist_ok=True)
 
         self._write(layer=layer, name=name, values=values)
