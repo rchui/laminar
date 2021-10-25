@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
-from laminar.configurations import flows, layers
+from laminar.configurations import datastores, executors, flows, layers
 from laminar.configurations.datastores import Accessor
 from laminar.exceptions import FlowError
 from laminar.settings import current
@@ -29,9 +29,6 @@ class Layer:
     configuration: layers.Configuration
     flow: "Flow"
     index: Optional[int] = current.layer.index
-
-    def __init_subclass__(cls, configuration: layers.Configuration = layers.Configuration()) -> None:
-        cls.configuration = configuration
 
     def __init__(self, **data: Any) -> None:
         for key, value in data.items():
@@ -119,7 +116,13 @@ class Flow:
 
     execution: Optional[str] = current.execution.id
 
-    def __init__(self, *, name: str, configuration: flows.Configuration = flows.Configuration()) -> None:
+    def __init__(
+        self,
+        *,
+        name: str,
+        datastore: datastores.DataStore = datastores.Local(),
+        executor: executors.Executor = executors.Docker(),
+    ) -> None:
         """
         Args:
             name (str): Name of the flow. Must be alphanumeric.
@@ -132,7 +135,7 @@ class Flow:
             raise FlowError(f"A flow's name can only contain alphanumeric characters. Given name '{name}'.")
 
         self.name = name
-        self.configuration = configuration
+        self.configuration = flows.Configuration(datastore=datastore, executor=executor)
 
         self._dependencies: Dict[Layer, Tuple[Layer, ...]] = {}
         self._mapping: Dict[str, Layer] = {}
@@ -218,7 +221,9 @@ class Flow:
                     f" Remaining dependencies: {dependencies}."
                 )
 
-    def layer(self, Layer: L) -> L:
+    def layer(
+        self, Layer: L, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
+    ) -> L:
         """Add a layer to the flow.
 
         Usage::
@@ -228,7 +233,7 @@ class Flow:
                 ...
         """
 
-        layer = Layer(flow=self)
+        layer = Layer(flow=self, configuration=layers.Configuration(container=container, foreach=foreach))
 
         if layer in self._dependencies:
             raise FlowError(f"Duplicate layer added to flow '{self.name}'. Given layer '{layer.name}'.")

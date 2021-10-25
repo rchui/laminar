@@ -134,7 +134,7 @@ Modern data science and machine learning techniques often require foreach loops 
 ```python
 # main.py
 from laminar import Flow, Layer
-from laminar.configurations.layers import Configuration, ForEach, Parameters
+from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
@@ -143,16 +143,15 @@ class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2], bar=['a', 'b'])
 
-@flow.layer
-class Process(Layer, configuration=Configuration(
+@flow.layer(
     foreach=ForEach(
-            parameters=[
-                Parameter(layer=Shard, attribute="foo"),
-                Parameter(layer=Shard, attribute="bar")
-            ]
-        )
+        parameters=[
+            Parameter(layer=Shard, attribute="foo"),
+            Parameter(layer=Shard, attribute="bar")
+        ]
     )
-):
+)
+class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(shard.foo, shard.bar)
 
@@ -185,20 +184,14 @@ class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@flow.layer
-class First(Layer, configuration=Configuration(
-        foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")])
-    )
-):
+@flow.layer(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
+class First(Layer):
     def __call__(self, shard: Shard) -> None:
         print('First', shard.foo)
         self.foo = shard.foo
 
-@flow.layer
-class Second(Layer, configuration=Configuration(
-        foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)])
-    )
-):
+@flow.layer(foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)]))
+class Second(Layer):
     def __call__(self, first: First) -> None:
         print('Second', first.foo)
 
