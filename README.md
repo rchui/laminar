@@ -144,7 +144,7 @@ class Shard(Layer):
         self.shard(foo=[1, 2], bar=['a', 'b'])
 
 @flow.layer
-class Process(Layer, Configuration(
+class Process(Layer, configuration=Configuration(
     foreach=ForEach(
             parameters=[
                 Parameter(layer=Shard, attribute="foo"),
@@ -186,7 +186,7 @@ class Shard(Layer):
         self.shard(foo=[1, 2, 3])
 
 @flow.layer
-class First(Layer, Configuration(
+class First(Layer, configuration=Configuration(
         foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")])
     )
 ):
@@ -195,7 +195,7 @@ class First(Layer, Configuration(
         self.foo = shard.foo
 
 @flow.layer
-class Second(Layer, Configuration(
+class Second(Layer, configuration=Configuration(
         foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)])
     )
 ):
