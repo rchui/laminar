@@ -1,4 +1,4 @@
-# `laminar`
+# laminar
 
 `laminar` is a modern framework for building high performance, easy to learn, fast to code, ready for production workflows.
 
@@ -183,7 +183,7 @@ flow = Flow("ShardedFlow")
 @flow.layer
 class Shard(Layer):
     def __call__(self) -> None:
-        self.shard(foo=[1, 2, 3]
+        self.shard(foo=[1, 2, 3])
 
 @flow.layer
 class First(Layer, Configuration(
@@ -216,3 +216,7 @@ python main.py
 >>> 'Second' 2
 >>> 'Second' 3
 ```
+
+## TODO
+- [ ] Conditional Branching
+- [ ] Dynamic Configuration
