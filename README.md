@@ -39,6 +39,9 @@ class Three(Layer):
 class Four(Layer):
     def __call__(self, two: Two, three: Three) -> None:
         print(self.name)
+
+if __name__ == '__main__':
+    flow()
 ```
 
 ```python
