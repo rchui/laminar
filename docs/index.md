@@ -2,6 +2,9 @@
 
 `laminar` is a modern framework for building high performance, easy to learn, fast to code, ready for production workflows.
 
+* TOC
+{:toc}
+
 ## Terminology
 
 * `Flow`: A collection of `Layer` objects that defines the workflow
