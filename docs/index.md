@@ -1,37 +1,215 @@
-## Welcome to GitHub Pages
+## Laminar
 
-You can use the [editor on GitHub](https://github.com/rchui/laminar/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+`laminar` is a modern framework for building high performance, easy to learn, fast to code, ready for production workflows.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Terminology
 
-### Markdown
+* `Flow`: A collection of `Layer` objects that defines the workflow
+* `Layer`: A step in the `Flow` workflow that performs an action
+* `Archive`: Metadata about an artifact stored for a `Layer`
+* `Artifact`: A compressed copy of an assigned `Layer` attribute.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Dependencies
 
-```markdown
-Syntax highlighted code block
+Defining a `Layer` dependency is as easy as defining a function parameter.
 
-# Header 1
-## Header 2
-### Header 3
+```python
+# main.py
 
-- Bulleted
-- List
+from laminar import Flow, Layer
 
-1. Numbered
-2. List
+flow = Flow("HelloFlow")
 
-**Bold** and _Italic_ and `Code` text
+@flow.layer
+class One(Layer):
+    def __call__(self) -> None:
+        print(self.name)
 
-[Link](url) and ![Image](src)
+@flow.layer
+class Two(Layer):
+    def __call__(self, one: One) -> None:
+        print(self.name)
+
+@flow.layer
+class Three(Layer):
+    def __call__(self, one: One) -> None:
+        print(self.name)
+
+@flow.layer
+class Four(Layer):
+    def __call__(self, two: Two, three: Three) -> None:
+        print(self.name)
+
+if __name__ == '__main__':
+    flow()
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+```python
+python main.py
 
-### Jekyll Themes
+>>> 'One'
+>>> 'Two'
+>>> 'Three'
+>>> 'Four'
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/rchui/laminar/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Artifacts
 
-### Support or Contact
+Any value that is set to `self` is automatically saved as an `Archive` and `Artifact` and passed to the next `Layer`. In this way, data is passed logically from one `Layer` to the next.
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+`laminar` uses a content addressable storage scheme to automatically deduplicate identical data shared between `Layer` objects.
+
+```python
+# main.py
+
+from laminar import Flow, Layer
+
+flow = Flow("HelloFlow")
+
+@flow.layer
+class Start(Layer):
+    def __call__(self) -> None:
+        self.message = "Hello World"
+        print(f"Sending the message: {self.message}")
+
+@flow.layer
+class Middle(Layer):
+    def __call__(self, start: Start) -> None:
+        print(start.message)
+        self.message = start.message
+
+@flow.layer
+class End(Layer):
+    def __call__(self, middle: Middle) -> None:
+        print(f"Sent message: {middle.message}")
+
+if __name__ == '__main__':
+    flow()
+```
+
+```python
+python main.py
+
+>>> "Sending the message: Hello World"
+>>> "Hello World"
+>>> "Sent message: Hello World"
+```
+
+## Sharded Artifacts
+
+Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. It returns an `Accessor` object that exposes both an `Iterable` interface as well as the ability to index for specific values.
+
+```python
+# main.py
+from laminar import Flow, Layer
+
+flow = Flow("ShardedFlow")
+
+@flow.layer
+class Shard(Layer):
+    def __call__(self) -> None:
+        self.shard(foo=[1, 2, 3])
+
+@flow.layer
+class Process(Layer):
+    def __call__(self, shard: Shard) -> None:
+        print(list(shard.foo))
+        print(shard.foo[1])
+
+if __name__ == '__main__':
+    flow()
+```
+
+```python
+python main.py
+
+>>> [1, 2, 3]
+>>> 2
+```
+
+## ForEach and Grid Search
+
+Modern data science and machine learning techniques often require foreach loops or grid searches of a hyper parameter space. A configuration object `ForEach` combined with `Layer.shard()` makes this simple and logical. `laminar` will calculate all possible combinations for given input parameters, and fans out to compute each separately.
+
+```python
+# main.py
+from laminar import Flow, Layer
+from laminar.configurations.layers import ForEach, Parameters
+
+flow = Flow("ShardedFlow")
+
+@flow.layer
+class Shard(Layer):
+    def __call__(self) -> None:
+        self.shard(foo=[1, 2], bar=['a', 'b'])
+
+@flow.layer(
+    foreach=ForEach(
+        parameters=[
+            Parameter(layer=Shard, attribute="foo"),
+            Parameter(layer=Shard, attribute="bar")
+        ]
+    )
+)
+class Process(Layer):
+    def __call__(self, shard: Shard) -> None:
+        print(shard.foo, shard.bar)
+
+if __name__ == '__main__':
+    flow()
+```
+
+```python
+python main.py
+
+>>> 1 'a'
+>>> 2 'a'
+>>> 1 'b'
+>>> 2 'b'
+```
+
+## Chained ForEach
+
+It is common to performed multiple foreach loops in a row, where each value produced by a foreach is passed to another foreach. You can define `Parameter(index=None)` in `ForEach` to create a `1:1` mapping of one foreach to another.
+
+```python
+# main.py
+from laminar import Flow, Layer
+from laminar.configurations.layers import Configuration, ForEach, Parameters
+
+flow = Flow("ShardedFlow")
+
+@flow.layer
+class Shard(Layer):
+    def __call__(self) -> None:
+        self.shard(foo=[1, 2, 3])
+
+@flow.layer(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
+class First(Layer):
+    def __call__(self, shard: Shard) -> None:
+        print('First', shard.foo)
+        self.foo = shard.foo
+
+@flow.layer(foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)]))
+class Second(Layer):
+    def __call__(self, first: First) -> None:
+        print('Second', first.foo)
+
+if __name__ == '__main__':
+    flow()
+```
+
+```python
+python main.py
+
+>>> 'First' 1
+>>> 'First' 2
+>>> 'First' 3
+>>> 'Second' 1
+>>> 'Second' 2
+>>> 'Second' 3
+```
+
+## TODO
+- [ ] Conditional Branching
+- [ ] Dynamic Configuration
