@@ -1,2 +1,6 @@
 class FlowError(Exception):
     ...
+
+
+class LayerError(Exception):
+    ...

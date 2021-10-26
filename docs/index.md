@@ -146,15 +146,16 @@ class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2], bar=['a', 'b'])
 
-@flow.layer(
+@flow.layer
+class Process(
+    Layer,
     foreach=ForEach(
         parameters=[
             Parameter(layer=Shard, attribute="foo"),
             Parameter(layer=Shard, attribute="bar")
         ]
     )
-)
-class Process(Layer):
+):
     def __call__(self, shard: Shard) -> None:
         print(shard.foo, shard.bar)
 
@@ -187,14 +188,20 @@ class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@flow.layer(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
-class First(Layer):
+@flow.layer
+class First(
+    Layer,
+    foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")])
+):
     def __call__(self, shard: Shard) -> None:
         print('First', shard.foo)
         self.foo = shard.foo
 
-@flow.layer(foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)]))
-class Second(Layer):
+@flow.layer
+class Second(
+    Layer,
+    foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)])
+):
     def __call__(self, first: First) -> None:
         print('Second', first.foo)
 

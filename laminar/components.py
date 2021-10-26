@@ -30,6 +30,11 @@ class Layer:
     flow: "Flow"
     index: Optional[int] = current.layer.index
 
+    def __init_subclass__(
+        cls, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
+    ) -> None:
+        cls.configuration = layers.Configuration(container=container, foreach=foreach)
+
     def __init__(self, **data: Any) -> None:
         for key, value in data.items():
             setattr(self, key, value)
@@ -67,11 +72,11 @@ class Layer:
     def __getstate__(self) -> Dict[str, Any]:
         return self.__dict__
 
-    def __setstate__(self, slots: Dict[str, Any]) -> None:
-        self.__dict__ = slots
-
     def __hash__(self) -> int:
         return hash(self.name)
+
+    def __setstate__(self, slots: Dict[str, Any]) -> None:
+        self.__dict__ = slots
 
     @property
     def name(self) -> str:
@@ -142,7 +147,23 @@ class Flow:
 
     @property
     def dependencies(self) -> Dict[str, Tuple[str, ...]]:
+        """A mapping of each layer and the layers it depends on."""
+
         return {child.name: tuple(parent.name for parent in parents) for child, parents in self._dependencies.items()}
+
+    @property
+    def _dependents(self) -> Dict[Layer, Set[Layer]]:
+        dependents: Dict[Layer, Set[Layer]] = {}
+        for child, parents in self._dependencies.items():
+            for parent in parents:
+                dependents.setdefault(parent, set()).add(child)
+        return dependents
+
+    @property
+    def dependents(self) -> Dict[str, Set[str]]:
+        """A mapping of each layer and the layers that depend on it."""
+
+        return {parent.name: {child.name for child in children} for parent, children in self._dependents.items()}
 
     def __call__(self) -> None:
         """Execute the flow or execute a layer in the flow.
@@ -221,9 +242,7 @@ class Flow:
                     f" Remaining dependencies: {dependencies}."
                 )
 
-    def layer(
-        self, Layer: L, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
-    ) -> L:
+    def layer(self, Layer: L) -> L:
         """Add a layer to the flow.
 
         Usage::
@@ -233,7 +252,7 @@ class Flow:
                 ...
         """
 
-        layer = Layer(flow=self, configuration=layers.Configuration(container=container, foreach=foreach))
+        layer = Layer(flow=self)
 
         if layer in self._dependencies:
             raise FlowError(f"Duplicate layer added to flow '{self.name}'. Given layer '{layer.name}'.")

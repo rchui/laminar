@@ -31,6 +31,6 @@ lint:
 	mypy laminar
 
 .PHONY: test
-run:
+run: lint
 	docker build -t test .
 	python main.py

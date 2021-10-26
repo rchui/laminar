@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Set
 
 from laminar import Flow, Layer
 from laminar.configurations import layers
@@ -11,23 +11,29 @@ flow = Flow(name="TestFlow")
 container = layers.Container(image="test")
 
 
-@flow.layer(container=container)
-class One(Layer):
-    baz: str
+@flow.layer
+class One(Layer, container=container):
+    baz: List[str]
+    foo: str
 
     def __call__(self) -> None:
         self.foo = "bar"
         self.shard(baz=["a", "b", "c"])
 
+    def __next__(self) -> Set[Layer]:
+        return self.next(Two)
 
-@flow.layer(container=container)
-class Two(Layer):
+
+@flow.layer
+class Two(Layer, container=container):
     def __call__(self, one: One) -> None:
         self.bar = one.foo
 
 
-@flow.layer(container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
-class Three(Layer):
+@flow.layer
+class Three(
+    Layer, container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")])
+):
     baz: List[str]
 
     def __call__(self, one: One) -> None:
@@ -35,10 +41,12 @@ class Three(Layer):
         print(self.baz)
 
 
-@flow.layer(
-    container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
-)
-class Five(Layer):
+@flow.layer
+class Five(
+    Layer,
+    container=container,
+    foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)]),
+):
     baz: List[str]
 
     def __call__(self, three: Three) -> None:
@@ -46,8 +54,8 @@ class Five(Layer):
         print(self.baz)
 
 
-@flow.layer(container=container)
-class Four(Layer):
+@flow.layer
+class Four(Layer, container=container):
     def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]
         print(self.end)
