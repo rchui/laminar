@@ -6,7 +6,7 @@ from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
-from laminar.configurations.datastores import Archive
+from laminar.configurations.datastores import Accessor, Archive
 
 if TYPE_CHECKING:
     from laminar.components import Layer
@@ -148,7 +148,11 @@ class ForEach:
         inputs = self.grid(layer=layer)[layer.index]
         for parameter in parameters:
             for attribute, index in inputs.get(parameter, {}).items():
-                setattr(parameter, attribute, getattr(parameter, attribute)[index])
+                value = getattr(parameter, attribute)
+
+                # Index only if the requested attribute is an Accessor
+                value = value[index] if isinstance(value, Accessor) else value
+                setattr(parameter, attribute, value)
 
         return parameters
 

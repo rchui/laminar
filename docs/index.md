@@ -86,7 +86,7 @@ python main.py
 >>> 'Four'
 ```
 
-Here layer `Four` waits on layers `One` and `Three` to complete before running.
+Here `Two` waits on `One`, `Three` waits on `Two`, and `Four` waits on `One` and `Three` to complete before running.
 
 ## Artifacts
 

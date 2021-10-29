@@ -79,20 +79,22 @@ class Accessor:
     layer: "Layer"
 
     def __getitem__(self, key: Union[int, slice]) -> Any:
-        if key >= len(self.archive.artifacts):
-            raise IndexError
-
         if isinstance(key, int):
+            if key >= len(self.archive.artifacts):
+                raise IndexError
+
             with fs.open(
                 self.archive.artifacts[key].uri(root=self.layer.flow.configuration.datastore.root), "rb"
             ) as file:
                 return cloudpickle.load(file)
+
         elif isinstance(key, slice):
             values: List[Any] = []
             for artifact in self.archive.artifacts[key]:
                 with fs.open(artifact.uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
                     values.append(cloudpickle.load(file))
             return values
+
         else:
             raise TypeError(f"{type(key)} is not a valid Accessor __getitem__ input.")
 
