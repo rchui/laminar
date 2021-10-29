@@ -63,7 +63,7 @@ class Layer:
             if indexes == 1:
                 value = self.flow.configuration.datastore.read(layer=self, index=0, name=name)
 
-            # The layer has multiple indexes. Create an accessor for all index artifacts.
+            # The layer has multiple indexes. Create an accessor for all artifact indexes.
             else:
                 value = Accessor(archive=self.configuration.foreach.join(layer=self, name=name), layer=self)
 
@@ -83,8 +83,10 @@ class Layer:
         return type(self).__name__
 
     @property
-    def dependencies(self) -> Tuple[Type["Layer"], ...]:
-        return tuple(parameter.annotation for parameter in inspect.signature(self.__call__).parameters.values())
+    def dependencies(self) -> Tuple["Layer", ...]:
+        return tuple(
+            parameter.annotation(flow=self.flow) for parameter in inspect.signature(self.__call__).parameters.values()
+        )
 
     def shard(self, **artifacts: Sequence[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
@@ -229,6 +231,9 @@ class Flow:
         while pending:
             for layer in pending:
 
+                # Set dynamic layer configuration
+                object.__setattr__(layer.configuration, "container", layer.configuration.container.set(layer=layer))
+
                 self.configuration.executor.run(execution=execution, layer=layer)
 
                 finished.add(layer)
@@ -257,7 +262,7 @@ class Flow:
         if layer in self._dependencies:
             raise FlowError(f"Duplicate layer added to flow '{self.name}'. Given layer '{layer.name}'.")
 
-        self._dependencies[layer] = tuple(dependency(flow=self) for dependency in layer.dependencies)
+        self._dependencies[layer] = layer.dependencies
         self._mapping[layer.name] = layer
 
         return Layer

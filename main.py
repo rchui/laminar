@@ -4,7 +4,7 @@ from typing import List, Set
 from laminar import Flow, Layer
 from laminar.configurations import layers
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 flow = Flow(name="TestFlow")
 
@@ -54,8 +54,14 @@ class Five(
         print(self.baz)
 
 
+class FourContainer(layers.Container):
+    def configure(self, one: One) -> None:
+        if one.foo == "bar":
+            self.memory = 2000
+
+
 @flow.layer
-class Four(Layer, container=container):
+class Four(Layer, container=FourContainer(image="test")):
     def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]
         print(self.end)
