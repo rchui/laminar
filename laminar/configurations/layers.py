@@ -3,10 +3,8 @@
 import inspect
 import itertools
 from copy import deepcopy
-from dataclasses import asdict, dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Type, Union
-
-from dacite.core import from_dict
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
 from laminar.configurations.datastores import Archive
 
@@ -173,15 +171,3 @@ class Configuration:
 
     container: Container = Container()
     foreach: ForEach = ForEach()
-
-    def __or__(self, other: Union[Container, ForEach]) -> "Configuration":
-        new: Dict[str, Any]
-
-        if isinstance(other, Container):
-            new = {"container": other}
-        elif isinstance(other, ForEach):
-            new = {"foreach": other}
-        else:
-            raise NotImplementedError
-
-        return from_dict(Configuration, {**asdict(self), **new})
