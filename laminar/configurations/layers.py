@@ -34,7 +34,7 @@ class Container:
     def __post_init__(self) -> None:
         object.__setattr__(self, "workdir", self.workdir.rstrip("/"))
 
-    def configure(self) -> None:
+    def __call__(self) -> None:
         ...
 
     def set(self, *, layer: Layer) -> "Container":
@@ -47,9 +47,9 @@ class Container:
         container = deepcopy(self)
         parameters = tuple(
             parameter.annotation(flow=layer.flow)
-            for parameter in inspect.signature(container.configure).parameters.values()
+            for parameter in inspect.signature(container.__call__).parameters.values()
         )
-        container.configure(*parameters)
+        container(*parameters)
         return container
 
 

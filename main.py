@@ -55,7 +55,7 @@ class Five(
 
 
 class FourContainer(layers.Container):
-    def configure(self, one: One) -> None:
+    def __call__(self, one: One) -> None:
         if one.foo == "bar":
             self.memory = 2000
 
