@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generator, List, Sequence
+from typing import TYPE_CHECKING, Any, Generator, List, Sequence, Union
 
 import cloudpickle
 from dacite.core import from_dict
@@ -78,9 +78,23 @@ class Accessor:
     archive: Archive
     layer: "Layer"
 
-    def __getitem__(self, key: int) -> Any:
-        with fs.open(self.archive.artifacts[key].uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
-            return cloudpickle.load(file)
+    def __getitem__(self, key: Union[int, slice]) -> Any:
+        if key >= len(self.archive.artifacts):
+            raise IndexError
+
+        if isinstance(key, int):
+            with fs.open(
+                self.archive.artifacts[key].uri(root=self.layer.flow.configuration.datastore.root), "rb"
+            ) as file:
+                return cloudpickle.load(file)
+        elif isinstance(key, slice):
+            values: List[Any] = []
+            for artifact in self.archive.artifacts[key]:
+                with fs.open(artifact.uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
+                    values.append(cloudpickle.load(file))
+            return values
+        else:
+            raise TypeError(f"{type(key)} is not a valid Accessor __getitem__ input.")
 
     def __iter__(self) -> Generator[Any, None, None]:
         for artifact in self.archive.artifacts:

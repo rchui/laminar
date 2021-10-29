@@ -130,7 +130,7 @@ python main.py
 
 ## Sharded Artifacts
 
-Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. In downstream steps, the attribute returns an `Accessor` object that can accessed by index or iterated over.
+Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. In downstream steps, the attribute returns an `Accessor` object that can be iterated over, and supports direct and slice indexing.
 
 ```python
 # main.py
@@ -148,6 +148,7 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(list(shard.foo))
         print(shard.foo[1])
+        print(shard.foo[1:])
 
 if __name__ == '__main__':
     flow()
@@ -158,6 +159,7 @@ python main.py
 
 >>> [1, 2, 3]
 >>> 2
+>>> [2, 3]
 ```
 
 ## ForEach Loops
