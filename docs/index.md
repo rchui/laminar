@@ -130,7 +130,7 @@ python main.py
 
 ## Sharded Artifacts
 
-Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. In downstream steps, the attribute returns an `Accessor` object that can be iterated over, and supports direct and slice indexing.
+Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. In downstream steps, the attribute returns an `Accessor` object. An `Accessor` will lazily read sharded artifact values, can be iterated over, and supports direct and slice indexing.
 
 ```python
 # main.py
@@ -199,7 +199,7 @@ python main.py
 >>> 2
 ```
 
-`laminar` will infer from the defined `Parameter` layer and shard, how many tasks to create in the `Process` layer. Any `Layer` attribute can be defined as a `ForEach` parameter.
+`laminar` will infer from the defined `Parameter` layer and shard, how many tasks to create in the `Process` layer. Any `Layer` attribute can be defined as a `ForEach` parameter. Even ones that have not been sharded.
 
 ```python
 # main.py
@@ -238,9 +238,11 @@ python main.py
 >>> 2 "a"
 ```
 
+`laminar` will infer that an attribute is not sharded and supply that value to each `ForEach` task.
+
 ## Grid Search
 
-`laminar` will infer that an attribute is not sharded and supply that value to each `ForEach` task. Notice that `ForEach` can handle arbitrary numbers of `Parameter` inputs. When provided with more than one `Parameter`, `ForEach` will create a task for each permutation of the `ForEach` parameters.
+`ForEach` can handle arbitrary numbers of `Parameter` inputs. When provided with more than one `Parameter`, `ForEach` will create a task for each permutation of the `ForEach` parameters.
 
 ```python
 # main.py
@@ -373,6 +375,8 @@ python main.py
 >>> 'Second' 3
 ```
 
+By default an unset `Parameter.index` will read from `Parameter(index=0)`.
+
 ## Dynamic Layer Configuration
 
 Not all workloads need the same resources. Even if the data is being processed in the same way, the amount of data can affect how much cpu/memory needs to be allocated to accomplish the given task.
@@ -406,5 +410,4 @@ if __name__ == "__main__":
     flow()
 ```
 
-Prior to the execution of the `Configured` layer, `ConfiguredContainer` will pull in layer `One` as an input parameter and process `__call__` to dynamically overwrite values on itself.
-
+Prior to the execution of the `Configured` layer, `ConfiguredContainer` will be provided layer `One` as an input parameter to `__call__` to dynamically overwrite values on itself.
