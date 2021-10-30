@@ -1,132 +1,16 @@
-## Laminar
-
-> slow is smooth, and smooth is fast
-
 * TOC
 {:toc}
 
-## Terminology
+## Contents
 
-* `Flow`: A collection of `Layer` objects that defines the workflow
-* `Layer`: A step in the `Flow` workflow that performs an task
-* `Archive`: Metadata about an artifact stored for a `Layer`
-* `Artifact`: A compressed copy of an assigned `Layer` attribute.
+* [Basics](https://rchui.github.io/laminar/usage)
+* [Scaling Up](https://rchui.github.io/laminar/scaling_up)
+* [Scaling OUt](https://rchui.github.io/laminar/scaling_out)
 
-## Dependencies
+## Introduction
 
-Defining a `Layer` dependency is as easy as defining a function parameter. In this two `Layer` example, layer `Two` is dependent on layer `One`:
+> slow is smooth, and smooth is fast
 
-```python
-# main.py
-
-from laminar import Flow, Layer
-
-flow = Flow("HelloFlow")
-
-@flow.layer
-class One(Layer):
-    def __call__(self) -> None:
-        print(self.name)
-
-@flow.layer
-class Two(Layer):
-    def __call__(self, one: One) -> None:
-        print(self.name)
-
-if __name__ == '__main__':
-    flow()
-```
-
-```python
-python main.py
-
->>> 'One'
->>> 'Two'
-```
-
-Dependencies can be arbitrarily complex but must represent a directed acyclic graph. Any `Layer` can have a dependency on any other `Layer`, without cycles. Consider this extended example:
-
-```python
-# main.py
-
-from laminar import Flow, Layer
-
-flow = Flow("HelloFlow")
-
-@flow.layer
-class One(Layer):
-    def __call__(self) -> None:
-        print(self.name)
-
-@flow.layer
-class Two(Layer):
-    def __call__(self, one: One) -> None:
-        print(self.name)
-
-@flow.layer
-class Three(Layer):
-    def __call__(self, two: Two) -> None:
-        print(self.name)
-
-@flow.layer
-class Four(Layer):
-    def __call__(self, one: One, three: Three) -> None:
-        print(self.name)
-
-if __name__ == '__main__':
-    flow()
-```
-
-```python
-python main.py
-
->>> 'One'
->>> 'Two'
->>> 'Three'
->>> 'Four'
-```
-
-Here `Two` waits on `One`, `Three` waits on `Two`, and `Four` waits on `One` and `Three` to complete before running.
-
-## Artifacts
-
-Any value that is set to `self` is automatically saved as an `Archive` and `Artifact` and passed to the next `Layer`. In this way, data is passed logically from one `Layer` to the next and are referenced directly using the `dot` attribute notation.
-
-```python
-# main.py
-
-from laminar import Flow, Layer
-
-flow = Flow("HelloFlow")
-
-@flow.layer
-class Start(Layer):
-    def __call__(self) -> None:
-        self.message = "Hello World"
-        print(f"Sending the message: {self.message}")
-
-@flow.layer
-class Middle(Layer):
-    def __call__(self, start: Start) -> None:
-        print(start.message)
-        self.message = start.message
-
-@flow.layer
-class End(Layer):
-    def __call__(self, middle: Middle) -> None:
-        print(f"Sent message: {middle.message}")
-
-if __name__ == '__main__':
-    flow()
-```
-
-```python
-python main.py
-
->>> "Sending the message: Hello World"
->>> "Hello World"
->>> "Sent message: Hello World"
-```
 
 ## Sharded Artifacts
 
@@ -334,7 +218,7 @@ It is common to performed multiple foreach loops in a row, where each value prod
 ```python
 # main.py
 from laminar import Flow, Layer
-from laminar.configurations.layers import Configuration, ForEach, Parameters
+from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
@@ -376,38 +260,3 @@ python main.py
 ```
 
 By default an unset `Parameter.index` will read from `Parameter(index=0)`.
-
-## Dynamic Layer Configuration
-
-Not all workloads need the same resources. Even if the data is being processed in the same way, the amount of data can affect how much cpu/memory needs to be allocated to accomplish the given task.
-
-The `Container` configuration can be subclassed and the `__call__` function overwritten to provide a dynamic configuration based off of the outputs of a previous step. `__call__` follows the same parameter rules as a `Layer` does and can also pull in arbitrary layers as inputs.
-
-```python
-# main.py
-from laminar import Flow, Layer
-from laminar.configurations.layers import Configuration, Container
-
-flow = Flow("ConfiguredFlow")
-
-@flow.layer
-class Start(Layer):
-    def __call__(self) -> None:
-        self.foo = True
-
-class ConfiguredContainer(Container):
-    def __call__(self, one: One) -> None:
-        if one.foo:
-            self.cpu = 2
-        else:
-            self.memory = 5000
-
-@flow.layer
-class Configured(Layer, container = ConfiguredContainer()):
-    ...
-
-if __name__ == "__main__":
-    flow()
-```
-
-Prior to the execution of the `Configured` layer, `ConfiguredContainer` will be provided layer `One` as an input parameter to `__call__` to dynamically overwrite values on itself.
