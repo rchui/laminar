@@ -1,3 +1,15 @@
+## Laminar
+
+* [Basics](https://rchui.github.io/laminar/basics)
+* [Scaling Up](https://rchui.github.io/laminar/scaling_up)
+* [Scaling Out](https://rchui.github.io/laminar/scaling_out)
+
+## Contents
+
+* TOC
+{:toc}
+
+
 ## Terminology
 
 * `Flow`: A collection of `Layer` objects that defines the workflow
@@ -119,4 +131,37 @@ python main.py
 >>> "Sending the message: Hello World"
 >>> "Hello World"
 >>> "Sent message: Hello World"
+```
+## Sharded Artifacts
+
+Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. In downstream steps, the attribute returns an `Accessor` object. An `Accessor` will lazily read sharded artifact values, can be iterated over, and supports direct and slice indexing.
+
+```python
+# main.py
+from laminar import Flow, Layer
+
+flow = Flow("ShardedFlow")
+
+@flow.layer
+class Shard(Layer):
+    def __call__(self) -> None:
+        self.shard(foo=[1, 2, 3])
+
+@flow.layer
+class Process(Layer):
+    def __call__(self, shard: Shard) -> None:
+        print(list(shard.foo))
+        print(shard.foo[1])
+        print(shard.foo[1:])
+
+if __name__ == '__main__':
+    flow()
+```
+
+```python
+python main.py
+
+>>> [1, 2, 3]
+>>> 2
+>>> [2, 3]
 ```
