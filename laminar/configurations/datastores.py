@@ -54,13 +54,6 @@ class Archive:
 
     artifacts: List[Artifact]
 
-    def __iter__(self) -> Generator[Artifact, None, None]:
-        for artifact in self.artifacts:
-            yield artifact
-
-    def __len__(self) -> int:
-        return len(self.artifacts)
-
     @overload
     def __getitem__(self, key: int) -> Artifact:
         ...
@@ -81,6 +74,13 @@ class Archive:
 
         else:
             raise TypeError(f"{type(key)} is not a valid key for Archive.__getitem__")
+
+    def __iter__(self) -> Generator[Artifact, None, None]:
+        for artifact in self.artifacts:
+            yield artifact
+
+    def __len__(self) -> int:
+        return len(self.artifacts)
 
     @staticmethod
     def uri(*, root: str, layer: Layer, index: int, name: str) -> str:
