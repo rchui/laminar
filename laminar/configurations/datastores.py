@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generator, List, Sequence, Union
+from typing import TYPE_CHECKING, Any, Generator, List, Sequence, Union, overload
 
 import cloudpickle
 from dacite.core import from_dict
@@ -54,6 +54,34 @@ class Archive:
 
     artifacts: List[Artifact]
 
+    def __iter__(self) -> Generator[Artifact, None, None]:
+        for artifact in self.artifacts:
+            yield artifact
+
+    def __len__(self) -> int:
+        return len(self.artifacts)
+
+    @overload
+    def __getitem__(self, key: int) -> Artifact:
+        ...
+
+    @overload
+    def __getitem__(self, key: slice) -> List[Artifact]:
+        ...
+
+    def __getitem__(self, key: Union[int, slice]) -> Union[Artifact, List[Artifact]]:
+        if isinstance(key, int):
+            if key >= len(self):
+                raise IndexError
+
+            return self.artifacts[key]
+
+        elif isinstance(key, slice):
+            return self.artifacts[key]
+
+        else:
+            raise TypeError(f"{type(key)} is not a valid key for Archive.__getitem__")
+
     @staticmethod
     def uri(*, root: str, layer: Layer, index: int, name: str) -> str:
         assert layer.flow.execution is not None
@@ -78,33 +106,41 @@ class Accessor:
     archive: Archive
     layer: "Layer"
 
+    @overload
+    def __getitem__(self, key: int) -> Any:
+        ...
+
+    @overload
+    def __getitem__(self, key: slice) -> List[Any]:
+        ...
+
     def __getitem__(self, key: Union[int, slice]) -> Any:
+        # Directly access an index
         if isinstance(key, int):
-            if key >= len(self.archive.artifacts):
+            if key >= len(self.archive):
                 raise IndexError
 
-            with fs.open(
-                self.archive.artifacts[key].uri(root=self.layer.flow.configuration.datastore.root), "rb"
-            ) as file:
+            with fs.open(self.archive[key].uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
                 return cloudpickle.load(file)
 
+        # Slicing for multiple indexes
         elif isinstance(key, slice):
             values: List[Any] = []
-            for artifact in self.archive.artifacts[key]:
+            for artifact in self.archive[key]:
                 with fs.open(artifact.uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
                     values.append(cloudpickle.load(file))
             return values
 
         else:
-            raise TypeError(f"{type(key)} is not a valid Accessor __getitem__ input.")
+            raise TypeError(f"{type(key)} is not a valid key for Accessor.__getitem__")
 
     def __iter__(self) -> Generator[Any, None, None]:
-        for artifact in self.archive.artifacts:
+        for artifact in self.archive:
             with fs.open(artifact.uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
                 yield cloudpickle.load(file)
 
     def __len__(self) -> int:
-        return len(self.archive.artifacts)
+        return len(self.archive)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -130,8 +166,8 @@ class DataStore:
 
     def _read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
         # Read the artifact value
-        if len(archive.artifacts) == 1:
-            return archive.artifacts[0].read(root=self.root)
+        if len(archive) == 1:
+            return archive[0].read(root=self.root)
 
         # Create an accessor for the artifacts
         else:
@@ -158,7 +194,7 @@ class DataStore:
         archive.write(root=self.root, layer=layer, name=name)
 
         # Write the artifact(s) value
-        for artifact, content in zip(archive.artifacts, contents):
+        for artifact, content in zip(archive, contents):
             artifact.write(root=self.root, content=content)
 
     def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:

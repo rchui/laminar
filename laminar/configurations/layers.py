@@ -125,7 +125,7 @@ class ForEach:
                 )
 
         grid: List[Dict[Layer, Dict[str, int]]] = []
-        for indexes in itertools.product(*(range(len(archive.artifacts)) for archive in archives)):
+        for indexes in itertools.product(*(range(len(archive)) for archive in archives)):
             model: Dict[Layer, Dict[str, int]] = {}
             for (instance, attribute), index in zip(parameters, indexes):
                 model.setdefault(instance, {})[attribute] = index
