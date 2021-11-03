@@ -35,13 +35,15 @@ class Artifact:
     def uri(self, *, root: str) -> str:
         return os.path.join(Artifact.root(root=root), f"{self.hexdigest}.gz")
 
-    def read(self, *, root: str) -> Any:
-        with fs.open(self.uri(root=root), "rb") as file:
-            return cloudpickle.load(file)
+    def read(self, *, layer: Layer) -> Any:
+        return layer.flow.configuration.datastore._read_artifact(
+            uri=self.uri(root=layer.flow.configuration.datastore.root)
+        )
 
-    def write(self, *, root: str, content: bytes) -> None:
-        with fs.open(self.uri(root=root), "wb") as file:
-            file.write(content)
+    def write(self, *, layer: Layer, content: bytes) -> None:
+        return layer.flow.configuration.datastore._write_artifact(
+            uri=self.uri(root=layer.flow.configuration.datastore.root), content=content
+        )
 
 
 @dataclasses.dataclass(frozen=True)
@@ -73,7 +75,7 @@ class Archive:
             return self.artifacts[key]
 
         else:
-            raise TypeError(f"{type(key)} is not a valid key for Archive.__getitem__")
+            raise TypeError(f"{type(key)} is not a valid key type for Archive.__getitem__")
 
     def __iter__(self) -> Generator[Artifact, None, None]:
         for artifact in self.artifacts:
@@ -83,20 +85,27 @@ class Archive:
         return len(self.artifacts)
 
     @staticmethod
-    def uri(*, root: str, layer: Layer, index: int, name: str) -> str:
+    def uri(*, layer: Layer, index: int, name: str) -> str:
         assert layer.flow.execution is not None
-        return os.path.join(root, layer.flow.name, layer.flow.execution, layer.name, str(index), f"{name}.json")
+        return os.path.join(
+            layer.flow.configuration.datastore.root,
+            layer.flow.name,
+            layer.flow.execution,
+            layer.name,
+            str(index),
+            f"{name}.json",
+        )
 
     @staticmethod
-    def read(*, root: str, layer: Layer, index: int, name: str) -> "Archive":
-        with fs.open(Archive.uri(root=root, layer=layer, index=index, name=name), "r") as file:
-            return from_dict(Archive, json.load(file))
+    def read(*, layer: Layer, index: int, name: str) -> "Archive":
+        return layer.flow.configuration.datastore._read_archive(uri=Archive.uri(layer=layer, index=index, name=name))
 
-    def write(self, *, root: str, layer: Layer, name: str) -> None:
+    def write(self, *, layer: Layer, name: str) -> None:
         assert layer.index is not None
 
-        with fs.open(Archive.uri(root=root, layer=layer, index=layer.index, name=name), "w") as file:
-            json.dump(dataclasses.asdict(self), file)
+        layer.flow.configuration.datastore._write_archive(
+            uri=Archive.uri(layer=layer, index=layer.index, name=name), archive=self
+        )
 
 
 @dataclasses.dataclass(frozen=True)
@@ -120,24 +129,21 @@ class Accessor:
             if key >= len(self.archive):
                 raise IndexError
 
-            with fs.open(self.archive[key].uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
-                return cloudpickle.load(file)
+            return self.archive[key].read(layer=self.layer)
 
         # Slicing for multiple indexes
         elif isinstance(key, slice):
             values: List[Any] = []
             for artifact in self.archive[key]:
-                with fs.open(artifact.uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
-                    values.append(cloudpickle.load(file))
+                values.append(artifact.read(layer=self.layer))
             return values
 
         else:
-            raise TypeError(f"{type(key)} is not a valid key for Accessor.__getitem__")
+            raise TypeError(f"{type(key)} is not a valid key type for Accessor.__getitem__")
 
     def __iter__(self) -> Generator[Any, None, None]:
         for artifact in self.archive:
-            with fs.open(artifact.uri(root=self.layer.flow.configuration.datastore.root), "rb") as file:
-                yield cloudpickle.load(file)
+            yield artifact.read(layer=self.layer)
 
     def __len__(self) -> int:
         return len(self.archive)
@@ -149,6 +155,10 @@ class DataStore:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "root", self.root.rstrip("/"))
+
+    def _read_archive(self, *, uri: str) -> Archive:
+        with fs.open(uri, "r") as file:
+            return from_dict(Archive, json.load(file))
 
     def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
         """Read an archive from the laminar datastore.
@@ -162,12 +172,16 @@ class DataStore:
             Archive: Archive of the requested artifact.
         """
 
-        return Archive.read(root=self.root, layer=layer, index=index, name=name)
+        return Archive.read(layer=layer, index=index, name=name)
 
-    def _read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
+    def _read_artifact(self, *, uri: str) -> Any:
+        with fs.open(uri, "rb") as file:
+            return cloudpickle.load(file)
+
+    def read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
         # Read the artifact value
         if len(archive) == 1:
-            return archive[0].read(root=self.root)
+            return archive[0].read(layer=layer)
 
         # Create an accessor for the artifacts
         else:
@@ -185,17 +199,26 @@ class DataStore:
             Any: Value of the artifact.
         """
 
-        return self._read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
+        return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
+
+    def _write_archive(self, *, uri: str, archive: Archive) -> None:
+        with fs.open(uri, "w") as file:
+            json.dump(dataclasses.asdict(archive), file)
+
+    def _write_artifact(self, *, uri: str, content: bytes) -> None:
+        with fs.open(uri, "wb") as file:
+            file.write(content)
 
     def _write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
         contents = [cloudpickle.dumps(value) for value in values]
-        archive = Archive(artifacts=[Artifact(hexdigest=hashlib.sha256(content).hexdigest()) for content in contents])
+        artifacts = [Artifact(hexdigest=hashlib.sha256(content).hexdigest()) for content in contents]
+        archive = Archive(artifacts=artifacts)
 
-        archive.write(root=self.root, layer=layer, name=name)
+        archive.write(layer=layer, name=name)
 
         # Write the artifact(s) value
-        for artifact, content in zip(archive, contents):
-            artifact.write(root=self.root, content=content)
+        for artifact, content in zip(artifacts, contents):
+            artifact.write(layer=layer, content=content)
 
     def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
         """Write an artifact to the laminar datastore.
@@ -218,9 +241,7 @@ class Local(DataStore):
     def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
         assert layer.index is not None
 
-        Path(Archive.uri(root=self.root, layer=layer, index=layer.index, name=name)).parent.mkdir(
-            parents=True, exist_ok=True
-        )
+        Path(Archive.uri(layer=layer, index=layer.index, name=name)).parent.mkdir(parents=True, exist_ok=True)
         Path(Artifact.root(root=self.root)).mkdir(parents=True, exist_ok=True)
 
         self._write(layer=layer, name=name, values=values)
