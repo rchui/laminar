@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generator, List, Sequence, Union, overload
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Union, overload
 
 import cloudpickle
 from dacite.core import from_dict
@@ -179,6 +179,16 @@ class DataStore:
             return cloudpickle.load(file)
 
     def read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
+        """REad an artifact form the laminar datastore.
+
+        Args:
+            layer (Layer): Layer being read from.
+            archive (Archive): Archive to reference the artifact from.
+
+        Returns:
+            Any: Artifact value.
+        """
+
         # Read the artifact value
         if len(archive) == 1:
             return archive[0].read(layer=layer)
@@ -245,6 +255,26 @@ class Local(DataStore):
         Path(Artifact.root(root=self.root)).mkdir(parents=True, exist_ok=True)
 
         self._write(layer=layer, name=name, values=values)
+
+
+@dataclasses.dataclass(frozen=True)
+class Memory(DataStore):
+    """Store the laminar workspace in memory."""
+
+    root: str = "memory://"
+    workspace: Dict[str, Any] = dataclasses.field(default_factory=dict)
+
+    def _read_archive(self, *, uri: str) -> Archive:
+        return self.workspace[uri]
+
+    def _write_archive(self, *, uri: str, archive: Archive) -> None:
+        self.workspace[uri] = archive
+
+    def _read_artifact(self, *, uri: str) -> Any:
+        return self.workspace[uri]
+
+    def _write_artifact(self, *, uri: str, content: bytes) -> None:
+        self.workspace[uri] = content
 
 
 @dataclasses.dataclass(frozen=True)
