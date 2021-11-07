@@ -28,22 +28,8 @@ class Artifact:
 
     hexdigest: str
 
-    @staticmethod
-    def root(*, root: str) -> str:
-        return os.path.join(root, "artifacts")
-
-    def uri(self, *, root: str) -> str:
-        return os.path.join(Artifact.root(root=root), f"{self.hexdigest}.gz")
-
-    def read(self, *, layer: Layer) -> Any:
-        return layer.flow.configuration.datastore._read_artifact(
-            uri=self.uri(root=layer.flow.configuration.datastore.root)
-        )
-
-    def write(self, *, layer: Layer, content: bytes) -> None:
-        return layer.flow.configuration.datastore._write_artifact(
-            uri=self.uri(root=layer.flow.configuration.datastore.root), content=content
-        )
+    def path(self) -> str:
+        return os.path.join("artifacts", f"{self.hexdigest}.gz")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -56,56 +42,13 @@ class Archive:
 
     artifacts: List[Artifact]
 
-    @overload
-    def __getitem__(self, key: int) -> Artifact:
-        ...
-
-    @overload
-    def __getitem__(self, key: slice) -> List[Artifact]:
-        ...
-
-    def __getitem__(self, key: Union[int, slice]) -> Union[Artifact, List[Artifact]]:
-        if isinstance(key, int):
-            if key >= len(self):
-                raise IndexError
-
-            return self.artifacts[key]
-
-        elif isinstance(key, slice):
-            return self.artifacts[key]
-
-        else:
-            raise TypeError(f"{type(key)} is not a valid key type for Archive.__getitem__")
-
-    def __iter__(self) -> Generator[Artifact, None, None]:
-        for artifact in self.artifacts:
-            yield artifact
-
     def __len__(self) -> int:
         return len(self.artifacts)
 
     @staticmethod
-    def uri(*, layer: Layer, index: int, name: str) -> str:
+    def path(*, layer: Layer, index: int, name: str) -> str:
         assert layer.flow.execution is not None
-        return os.path.join(
-            layer.flow.configuration.datastore.root,
-            layer.flow.name,
-            layer.flow.execution,
-            layer.name,
-            str(index),
-            f"{name}.json",
-        )
-
-    @staticmethod
-    def read(*, layer: Layer, index: int, name: str) -> "Archive":
-        return layer.flow.configuration.datastore._read_archive(uri=Archive.uri(layer=layer, index=index, name=name))
-
-    def write(self, *, layer: Layer, name: str) -> None:
-        assert layer.index is not None
-
-        layer.flow.configuration.datastore._write_archive(
-            uri=Archive.uri(layer=layer, index=layer.index, name=name), archive=self
-        )
+        return os.path.join(layer.flow.name, layer.flow.execution, layer.name, str(index), f"{name}.json")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -129,21 +72,21 @@ class Accessor:
             if key >= len(self.archive):
                 raise IndexError
 
-            return self.archive[key].read(layer=self.layer)
+            return self.layer.flow.configuration.datastore._read_artifact(path=self.archive.artifacts[key].path())
 
         # Slicing for multiple indexes
         elif isinstance(key, slice):
             values: List[Any] = []
-            for artifact in self.archive[key]:
-                values.append(artifact.read(layer=self.layer))
+            for artifact in self.archive.artifacts[key]:
+                values.append(self.layer.flow.configuration.datastore._read_artifact(path=artifact.path()))
             return values
 
         else:
             raise TypeError(f"{type(key)} is not a valid key type for Accessor.__getitem__")
 
     def __iter__(self) -> Generator[Any, None, None]:
-        for artifact in self.archive:
-            yield artifact.read(layer=self.layer)
+        for artifact in self.archive.artifacts:
+            yield self.layer.flow.configuration.datastore._read_artifact(path=artifact.path())
 
     def __len__(self) -> int:
         return len(self.archive)
@@ -156,8 +99,11 @@ class DataStore:
     def __post_init__(self) -> None:
         object.__setattr__(self, "root", self.root.rstrip("/"))
 
-    def _read_archive(self, *, uri: str) -> Archive:
-        with fs.open(uri, "r") as file:
+    def uri(self, *, path: str) -> str:
+        return os.path.join(self.root, path)
+
+    def _read_archive(self, *, path: str) -> Archive:
+        with fs.open(self.uri(path=path), "r") as file:
             return from_dict(Archive, json.load(file))
 
     def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
@@ -172,10 +118,10 @@ class DataStore:
             Archive: Archive of the requested artifact.
         """
 
-        return Archive.read(layer=layer, index=index, name=name)
+        return self._read_archive(path=Archive.path(layer=layer, index=index, name=name))
 
-    def _read_artifact(self, *, uri: str) -> Any:
-        with fs.open(uri, "rb") as file:
+    def _read_artifact(self, *, path: str) -> Any:
+        with fs.open(self.uri(path=path), "rb") as file:
             return cloudpickle.load(file)
 
     def read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
@@ -191,7 +137,7 @@ class DataStore:
 
         # Read the artifact value
         if len(archive) == 1:
-            return archive[0].read(layer=layer)
+            return self._read_artifact(path=archive.artifacts[0].path())
 
         # Create an accessor for the artifacts
         else:
@@ -211,24 +157,27 @@ class DataStore:
 
         return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
 
-    def _write_archive(self, *, uri: str, archive: Archive) -> None:
-        with fs.open(uri, "w") as file:
+    def _write_archive(self, *, path: str, archive: Archive) -> None:
+        with fs.open(self.uri(path=path), "w") as file:
             json.dump(dataclasses.asdict(archive), file)
 
-    def _write_artifact(self, *, uri: str, content: bytes) -> None:
-        with fs.open(uri, "wb") as file:
+    def _write_artifact(self, *, path: str, content: bytes) -> None:
+        with fs.open(self.uri(path=path), "wb") as file:
             file.write(content)
 
     def _write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
-        contents = [cloudpickle.dumps(value) for value in values]
-        artifacts = [Artifact(hexdigest=hashlib.sha256(content).hexdigest()) for content in contents]
-        archive = Archive(artifacts=artifacts)
+        artifacts = {
+            Artifact(hexdigest=hashlib.sha256(content).hexdigest()): content
+            for content in (cloudpickle.dumps(value) for value in values)
+        }
+        archive = Archive(artifacts=list(artifacts.keys()))
 
-        archive.write(layer=layer, name=name)
+        assert layer.index is not None
+        self._write_archive(path=Archive.path(layer=layer, index=layer.index, name=name), archive=archive)
 
         # Write the artifact(s) value
-        for artifact, content in zip(artifacts, contents):
-            artifact.write(layer=layer, content=content)
+        for artifact, content in artifacts.items():
+            self._write_artifact(path=artifact.path(), content=content)
 
     def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
         """Write an artifact to the laminar datastore.
@@ -248,13 +197,19 @@ class Local(DataStore):
 
     root: str = str(Path.cwd() / ".laminar")
 
-    def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
-        assert layer.index is not None
+    def _write_archive(self, *, path: str, archive: Archive) -> None:
+        uri = self.uri(path=path)
+        Path(uri).parent.mkdir(parents=True, exist_ok=True)
 
-        Path(Archive.uri(layer=layer, index=layer.index, name=name)).parent.mkdir(parents=True, exist_ok=True)
-        Path(Artifact.root(root=self.root)).mkdir(parents=True, exist_ok=True)
+        with fs.open(self.uri(path=path), "w") as file:
+            json.dump(dataclasses.asdict(archive), file)
 
-        self._write(layer=layer, name=name, values=values)
+    def _write_artifact(self, *, path: str, content: bytes) -> None:
+        uri = self.uri(path=path)
+        Path(uri).parent.mkdir(parents=True, exist_ok=True)
+
+        with fs.open(uri, "wb") as file:
+            file.write(content)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -264,17 +219,17 @@ class Memory(DataStore):
     root: str = "memory://"
     workspace: Dict[str, Any] = dataclasses.field(default_factory=dict)
 
-    def _read_archive(self, *, uri: str) -> Archive:
-        return self.workspace[uri]
+    def _read_archive(self, *, path: str) -> Archive:
+        return self.workspace[self.uri(path=path)]
 
-    def _write_archive(self, *, uri: str, archive: Archive) -> None:
-        self.workspace[uri] = archive
+    def _write_archive(self, *, path: str, archive: Archive) -> None:
+        self.workspace[self.uri(path=path)] = archive
 
-    def _read_artifact(self, *, uri: str) -> Any:
-        return self.workspace[uri]
+    def _read_artifact(self, *, path: str) -> Any:
+        return self.workspace[self.uri(path=path)]
 
-    def _write_artifact(self, *, uri: str, content: bytes) -> None:
-        self.workspace[uri] = content
+    def _write_artifact(self, *, path: str, content: bytes) -> None:
+        self.workspace[self.uri(path=path)] = content
 
 
 @dataclasses.dataclass(frozen=True)
