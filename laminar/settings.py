@@ -22,6 +22,7 @@ class Current(BaseModel):
 
         index: Optional[int] = None
         name: Optional[str] = None
+        splits: Optional[int] = None
 
     execution = Execution()
     flow = Flow()

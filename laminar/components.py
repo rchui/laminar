@@ -13,7 +13,7 @@ from laminar.settings import current
 
 logger = logging.getLogger(__name__)
 
-LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index"}
+LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "splits"}
 
 
 class Layer:
@@ -30,6 +30,7 @@ class Layer:
     configuration: layers.Configuration
     flow: "Flow"
     index: Optional[int] = current.layer.index
+    splits: Optional[int] = current.layer.splits
 
     def __init__(self, **data: Any) -> None:
         for key, value in data.items():

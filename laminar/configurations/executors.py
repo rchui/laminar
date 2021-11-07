@@ -32,7 +32,8 @@ class Docker(Executor):
 
         workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
 
-        for index in range(layer.configuration.foreach.size(layer=layer)):
+        splits = layer.configuration.foreach.size(layer=layer)
+        for index in range(splits):
             command = " ".join(
                 [
                     "docker",
@@ -45,6 +46,7 @@ class Docker(Executor):
                     f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
                     f"--env LAMINAR_LAYER_INDEX={index}",
                     f"--env LAMINAR_LAYER_NAME={layer.name}",
+                    f"--env LAMINAR_LAYER_SPLITS={splits}",
                     f"--memory {layer.configuration.container.memory}m",
                     f"--volume {workspace}",
                     f"--workdir {layer.configuration.container.workdir}",
