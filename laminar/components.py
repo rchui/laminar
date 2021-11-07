@@ -1,7 +1,8 @@
 # from dataclasses import dataclass
 import inspect
 import logging
-from typing import Any, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
+from copy import deepcopy
+from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 from ksuid import Ksuid
 
@@ -29,11 +30,6 @@ class Layer:
     configuration: layers.Configuration
     flow: "Flow"
     index: Optional[int] = current.layer.index
-
-    def __init_subclass__(
-        cls, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
-    ) -> None:
-        cls.configuration = layers.Configuration(container=container, foreach=foreach)
 
     def __init__(self, **data: Any) -> None:
         for key, value in data.items():
@@ -83,10 +79,14 @@ class Layer:
         return type(self).__name__
 
     @property
-    def dependencies(self) -> Tuple["Layer", ...]:
+    def _dependencies(self) -> Tuple["Layer", ...]:
         return tuple(
             parameter.annotation(flow=self.flow) for parameter in inspect.signature(self.__call__).parameters.values()
         )
+
+    @property
+    def dependencies(self) -> Tuple[str, ...]:
+        return tuple(layer.name for layer in self._dependencies)
 
     def shard(self, **artifacts: Sequence[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
@@ -144,28 +144,32 @@ class Flow:
         self.name = name
         self.configuration = flows.Configuration(datastore=datastore, executor=executor)
 
-        self._dependencies: Dict[Layer, Tuple[Layer, ...]] = {}
-        self._mapping: Dict[str, Layer] = {}
+        self.dependencies: Dict[str, Tuple[str, ...]] = {}
+        self._registry: Dict[str, Layer] = {}
 
     @property
-    def dependencies(self) -> Dict[str, Tuple[str, ...]]:
-        """A mapping of each layer and the layers it depends on."""
-
-        return {child.name: tuple(parent.name for parent in parents) for child, parents in self._dependencies.items()}
+    def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
+        return {
+            self._registry[child]: tuple(self._registry[parent] for parent in parents)
+            for child, parents in self.dependencies.items()
+        }
 
     @property
     def _dependents(self) -> Dict[Layer, Set[Layer]]:
-        dependents: Dict[Layer, Set[Layer]] = {}
-        for child, parents in self._dependencies.items():
-            for parent in parents:
-                dependents.setdefault(parent, set()).add(child)
-        return dependents
+        return {
+            self._registry[parent]: {self._registry[child] for child in children}
+            for parent, children in self.dependents.items()
+        }
 
     @property
     def dependents(self) -> Dict[str, Set[str]]:
         """A mapping of each layer and the layers that depend on it."""
 
-        return {parent.name: {child.name for child in children} for parent, children in self._dependents.items()}
+        dependents: Dict[str, Set[str]] = {}
+        for child, parents in self.dependencies.items():
+            for parent in parents:
+                dependents.setdefault(parent, set()).add(child)
+        return dependents
 
     def __call__(self) -> None:
         """Execute the flow or execute a layer in the flow.
@@ -182,13 +186,13 @@ class Flow:
 
         # Execute a layer in the flow.
         if self.execution and current.layer.name:
-            layer = self._mapping[current.layer.name]
+            layer = self._registry[current.layer.name]
             self.execute(layer=layer)
 
         # Execute the flow.
         else:
             self.execution = str(Ksuid())
-            self.schedule(execution=self.execution, dependencies=self._dependencies)
+            self.schedule(execution=self.execution, dependencies=self.dependencies)
             self.execution = None
 
     def execute(self, *, layer: Layer) -> None:
@@ -210,7 +214,7 @@ class Flow:
             if artifact not in LAYER_RESERVED_KEYWORDS:
                 self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
 
-    def schedule(self, *, execution: str, dependencies: Dict[Layer, Tuple[Layer, ...]]) -> None:
+    def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
         """Schedule layers to run in sequence in the flow.
 
         Args:
@@ -218,14 +222,14 @@ class Flow:
             dependencies (Dict[Layer, Tuple[Layer, ...]]): Mapping of layers to layers it depends on.
         """
 
-        def get_pending(*, dependencies: Dict[Layer, Tuple[Layer, ...]], finished: Set[Layer]) -> Set[Layer]:
+        def get_pending(*, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> Set[Layer]:
             return {
-                child
+                self._registry[child]
                 for child, parents in dependencies.items()
                 if child not in finished and set(parents).issubset(finished)
             }
 
-        finished: Set[Layer] = set()
+        finished: Set[str] = set()
         pending = get_pending(dependencies=dependencies, finished=finished)
 
         while pending:
@@ -236,7 +240,7 @@ class Flow:
 
                 self.configuration.executor.run(execution=execution, layer=layer)
 
-                finished.add(layer)
+                finished.add(layer.name)
 
             pending = get_pending(dependencies=dependencies, finished=finished)
 
@@ -247,22 +251,34 @@ class Flow:
                     f" Remaining dependencies: {dependencies}."
                 )
 
-    def layer(self, Layer: L) -> L:
+    def layer(
+        self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
+    ) -> Callable[[L], L]:
         """Add a layer to the flow.
 
         Usage::
 
-            @flow.layer
+            @flow.layer()
             class Task(Layer):
                 ...
         """
 
-        layer = Layer(flow=self)
+        def wrapper(Layer: L) -> L:
 
-        if layer in self._dependencies:
-            raise FlowError(f"Duplicate layer added to flow '{self.name}'. Given layer '{layer.name}'.")
+            layer = Layer(
+                flow=self, configuration=layers.Configuration(container=deepcopy(container), foreach=deepcopy(foreach))
+            )
 
-        self._dependencies[layer] = layer.dependencies
-        self._mapping[layer.name] = layer
+            if layer.name in self.dependencies:
+                raise FlowError(
+                    f"Duplicate layer added to flow '{self.name}'.\n"
+                    f"  Given layer '{layer.name}'.\n"
+                    f"  Added layers {sorted(self.dependencies)}"
+                )
 
-        return Layer
+            self.dependencies[layer.name] = layer.dependencies
+            self._registry[layer.name] = layer
+
+            return Layer
+
+        return wrapper

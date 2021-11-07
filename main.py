@@ -12,8 +12,8 @@ flow = Flow(name="TestFlow")
 container = layers.Container(image="test")
 
 
-@flow.layer
-class One(Layer, container=container):
+@flow.layer(container=container)
+class One(Layer):
     baz: List[str]
     foo: str
 
@@ -25,16 +25,14 @@ class One(Layer, container=container):
         return self.next(Two)
 
 
-@flow.layer
-class Two(Layer, container=container):
+@flow.layer(container=container)
+class Two(Layer):
     def __call__(self, one: One) -> None:
         self.bar = one.foo
 
 
-@flow.layer
-class Three(
-    Layer, container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")])
-):
+@flow.layer(container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
+class Three(Layer):
     baz: List[str]
 
     def __call__(self, one: One) -> None:
@@ -42,12 +40,10 @@ class Three(
         print(self.baz)
 
 
-@flow.layer
-class Five(
-    Layer,
-    container=container,
-    foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)]),
-):
+@flow.layer(
+    container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
+)
+class Five(Layer):
     baz: List[str]
 
     def __call__(self, three: Three) -> None:
@@ -61,8 +57,8 @@ class FourContainer(layers.Container):
             self.memory = 2000
 
 
-@flow.layer
-class Four(Layer, container=FourContainer(image="test")):
+@flow.layer(container=FourContainer(image="test"))
+class Four(Layer):
     def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]
         print(self.end)

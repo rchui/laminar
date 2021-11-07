@@ -19,8 +19,8 @@ from laminar.configurations.layers import Container
 
 flow = Flow("ConfiguredFlow")
 
-@flow.layer
-class Task(Layer, container=Container(cpu=4, memory=2000, workdir="/app")):
+@flow.layer(container=Container(cpu=4, memory=2000, workdir="/app"))
+class Task(Layer):
     ...
 ```
 
@@ -34,12 +34,12 @@ flow = Flow("ConfiguredFlow")
 
 container = Container(cpu=4, memory=2000, workdir="/app")
 
-@flow.layer
-class First(Layer, container=container):
+@flow.layer(container=container)
+class First(Layer):
     ...
 
-@flow.layer
-class Second(Layer, container=container):
+@flow.layer(container=container)
+class Second(Layer):
     ...
 ```
 
@@ -54,8 +54,8 @@ from laminar.configurations.layers import Container
 
 flow = Flow("ConfiguredFlow")
 
-@flow.layer
-class Task(Layer, container=Container(cpu=4, memory=2000, workdir="/app")):
+@flow.layer(container=Container(cpu=4, memory=2000, workdir="/app"))
+class Task(Layer):
     def __call__(self) -> None:
         print(self.configuration.container.cpu, self.configuration.container.memory)
 
@@ -93,8 +93,8 @@ class ConfiguredContainer(Container):
         else:
             self.memory = 5000
 
-@flow.layer
-class Configured(Layer, container = ConfiguredContainer()):
+@flow.layer(container=ConfiguredContainer())
+class Configured(Layer):
     ...
 
 if __name__ == "__main__":

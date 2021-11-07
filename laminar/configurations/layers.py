@@ -20,7 +20,7 @@ class Container:
 
     Usage::
 
-        Configuration(container=Container(...))
+        @flow.layer(container=Container(...))
     """
 
     command: str = "python main.py"
@@ -43,10 +43,10 @@ class Container:
         """
 
         container = deepcopy(self)
-        parameters = tuple(
-            parameter.annotation(flow=layer.flow)
-            for parameter in inspect.signature(container.__call__).parameters.values()
+        annotations: Tuple[Layer, ...] = tuple(
+            parameter.annotation() for parameter in inspect.signature(container.__call__).parameters.values()
         )
+        parameters = tuple(layer.flow._registry[annotation.name] for annotation in annotations)
         container(*parameters)
         return container
 
@@ -72,7 +72,7 @@ class ForEach:
 
     Usage::
 
-        Configuration(foreach=ForEach(...))
+        @flow.layer(foreach=ForEach(...))
     """
 
     parameters: Iterable[Parameter] = field(default_factory=list)
@@ -109,7 +109,7 @@ class ForEach:
         archives: List[Archive] = []
 
         for parameter in self.parameters:
-            instance = parameter.layer(flow=layer.flow)
+            instance = layer.flow._registry[parameter.layer().name]
             parameters.append((instance, parameter.attribute))
 
             # Get archives for all layer indexes.
@@ -164,14 +164,5 @@ class ForEach:
 
 @dataclass(frozen=True)
 class Configuration:
-    """Configures a laminar layer.
-
-    Usage::
-
-        @flow.layer
-        class Task(Layer, configuration=Configuration(...)):
-            ...
-    """
-
     container: Container = Container()
     foreach: ForEach = ForEach()

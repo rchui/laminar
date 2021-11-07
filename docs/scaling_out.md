@@ -21,12 +21,12 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer
+@flow.layer()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
 
-@flow.layer
+@flow.layer()
 class Process(
     Layer,
     foreach=ForEach(
@@ -56,13 +56,13 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer
+@flow.layer()
 class Shard(Layer):
     def __call__(self) -> None:
         self.bar = "a"
         self.shard(foo=[1, 2])
 
-@flow.layer
+@flow.layer()
 class Process(
     Layer,
     foreach=ForEach(
@@ -99,21 +99,20 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer
+@flow.layer()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3], bar=["a", "b"])
 
-@flow.layer
-class Process(
-    Layer,
+@flow.layer(
     foreach=ForEach(
         parameters=[
             Parameter(layer=Shard, attribute="foo"),
             Parameter(layer=Shard, attribute="bar")
         ]
     )
-):
+)
+class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(shard.foo, shard.bar)
 
@@ -143,18 +142,17 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer
+@flow.layer()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
 
-@flow.layer
-class Process(
-    Layer,
+@flow.layer(
     foreach=ForEach(
         parameters=[Parameter(layer=Shard, attribute="foo")]
     )
-):
+)
+class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         self.foo = shard.foo
 
@@ -186,25 +184,19 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer
+@flow.layer()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@flow.layer
-class First(
-    Layer,
-    foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")])
-):
+@flow.layer(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
+class First(Layer):
     def __call__(self, shard: Shard) -> None:
         print('First', shard.foo)
         self.foo = shard.foo
 
-@flow.layer
-class Second(
-    Layer,
-    foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)])
-):
+@flow.layer(foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)]))
+class Second(Layer):
     def __call__(self, first: First) -> None:
         print('Second', first.foo)
 
