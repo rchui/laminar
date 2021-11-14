@@ -46,7 +46,7 @@ class Container:
         annotations: Tuple[Layer, ...] = tuple(
             parameter.annotation() for parameter in inspect.signature(container.__call__).parameters.values()
         )
-        parameters = tuple(layer.flow._registry[annotation.name] for annotation in annotations)
+        parameters = tuple(layer.flow.get_layer(name=annotation.name) for annotation in annotations)
         container(*parameters)
         return container
 
@@ -109,7 +109,7 @@ class ForEach:
         archives: List[Archive] = []
 
         for parameter in self.parameters:
-            instance = layer.flow._registry[parameter.layer().name]
+            instance = layer.flow.get_layer(name=parameter.layer().name)
             parameters.append((instance, parameter.attribute))
 
             # Get archives for all layer indexes.

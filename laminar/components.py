@@ -39,6 +39,14 @@ class Layer:
     def __call__(self) -> None:
         ...
 
+    def __deepcopy__(self, memo: Dict[int, Any]) -> "Layer":
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
             return self.name == other
@@ -82,7 +90,8 @@ class Layer:
     @property
     def _dependencies(self) -> Tuple["Layer", ...]:
         return tuple(
-            parameter.annotation(flow=self.flow) for parameter in inspect.signature(self.__call__).parameters.values()
+            self.flow.get_layer(name=parameter.annotation().name)
+            for parameter in inspect.signature(self.__call__).parameters.values()
         )
 
     @property
@@ -151,14 +160,14 @@ class Flow:
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
         return {
-            self._registry[child]: tuple(self._registry[parent] for parent in parents)
+            self.get_layer(name=child): tuple(self.get_layer(name=parent) for parent in parents)
             for child, parents in self.dependencies.items()
         }
 
     @property
     def _dependents(self) -> Dict[Layer, Set[Layer]]:
         return {
-            self._registry[parent]: {self._registry[child] for child in children}
+            self.get_layer(name=parent): {self.get_layer(name=child) for child in children}
             for parent, children in self.dependents.items()
         }
 
@@ -187,7 +196,7 @@ class Flow:
 
         # Execute a layer in the flow.
         if self.execution and current.layer.name:
-            layer = self._registry[current.layer.name]
+            layer = self.get_layer(name=current.layer.name)
             self.execute(layer=layer)
 
         # Execute the flow.
@@ -225,7 +234,7 @@ class Flow:
 
         def get_pending(*, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> Set[Layer]:
             return {
-                self._registry[child]
+                self.get_layer(name=child)
                 for child, parents in dependencies.items()
                 if child not in finished and set(parents).issubset(finished)
             }
@@ -266,9 +275,7 @@ class Flow:
 
         def wrapper(Layer: L) -> L:
 
-            layer = Layer(
-                flow=self, configuration=layers.Configuration(container=deepcopy(container), foreach=deepcopy(foreach))
-            )
+            layer = Layer(configuration=layers.Configuration(container=container, foreach=foreach))
 
             if layer.name in self.dependencies:
                 raise FlowError(
@@ -277,9 +284,18 @@ class Flow:
                     f"  Added layers {sorted(self.dependencies)}"
                 )
 
+            # First register the layer without the flow attribute
+            self._registry[layer.name] = deepcopy(layer)
+
+            # Then inject it to get the layer dependencies
+            layer.flow = self
             self.dependencies[layer.name] = layer.dependencies
-            self._registry[layer.name] = layer
 
             return Layer
 
         return wrapper
+
+    def get_layer(self, *, name: str) -> Layer:
+        layer = deepcopy(self._registry[name])
+        layer.flow = self
+        return layer
