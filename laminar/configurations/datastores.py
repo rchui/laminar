@@ -31,6 +31,9 @@ class Artifact:
     def path(self) -> str:
         return os.path.join("artifacts", f"{self.hexdigest}.gz")
 
+    def dict(self) -> Dict[str, str]:
+        return dataclasses.asdict(self)
+
 
 @dataclasses.dataclass(frozen=True)
 class Archive:
@@ -49,6 +52,13 @@ class Archive:
     def path(*, layer: Layer, index: int, name: str) -> str:
         assert layer.flow.execution is not None
         return os.path.join(layer.flow.name, layer.flow.execution, layer.name, str(index), f"{name}.json")
+
+    def dict(self) -> Dict[str, List[Dict[str, str]]]:
+        return dataclasses.asdict(self)
+
+    @staticmethod
+    def parse(source: Dict[str, List[Dict[str, str]]]) -> "Archive":
+        return from_dict(Archive, source)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -104,7 +114,7 @@ class DataStore:
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
-            return from_dict(Archive, json.load(file))
+            return Archive.parse(json.loads(file))
 
     def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
         """Read an archive from the laminar datastore.
@@ -159,7 +169,7 @@ class DataStore:
 
     def _write_archive(self, *, path: str, archive: Archive) -> None:
         with fs.open(self.uri(path=path), "w") as file:
-            json.dump(dataclasses.asdict(archive), file)
+            json.dump(archive.dict(), file)
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
         with fs.open(self.uri(path=path), "wb") as file:
@@ -202,7 +212,7 @@ class Local(DataStore):
         Path(uri).parent.mkdir(parents=True, exist_ok=True)
 
         with fs.open(self.uri(path=path), "w") as file:
-            json.dump(dataclasses.asdict(archive), file)
+            json.dump(archive.dict(), file)
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
         uri = self.uri(path=path)

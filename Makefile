@@ -28,7 +28,7 @@ lint:
 	black --check .
 	flake8 laminar
 	isort --check .
-	mypy laminar
+	mypy laminar tests
 
 .PHONY: run
 run: lint
@@ -37,4 +37,4 @@ run: lint
 
 .PHONY:
 test: lint
-	pytest tests --cov laminar --cov-report term-missing
+	pytest -vv -r Efs --cov laminar --cov-report term-missing tests --failed-first --strict-markers
