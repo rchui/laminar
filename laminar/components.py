@@ -296,6 +296,18 @@ class Flow:
         return wrapper
 
     def get_layer(self, *, name: str) -> Layer:
+        """Get a registered flow layer.
+
+        Args:
+            name (str): Name of the layer to get.
+
+        Returns:
+            Layer: Layer that was registered to the flow.
+        """
+
+        # Deepcopy so that layer artifacts don't mess with other layer split executions
         layer = deepcopy(self._registry[name])
+
+        # Inject the flow attribute to link the layer to the flow
         layer.flow = self
         return layer

@@ -30,7 +30,11 @@ lint:
 	isort --check .
 	mypy laminar
 
-.PHONY: test
+.PHONY: run
 run: lint
 	docker build -t test .
 	python main.py
+
+.PHONY:
+test: lint
+	pytest tests --cov laminar --cov-report term-missing

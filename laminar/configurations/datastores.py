@@ -229,7 +229,7 @@ class Memory(DataStore):
         return self.workspace[self.uri(path=path)]
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
-        self.workspace[self.uri(path=path)] = content
+        self.workspace[self.uri(path=path)] = cloudpickle.loads(content)
 
 
 @dataclasses.dataclass(frozen=True)

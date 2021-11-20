@@ -6,6 +6,8 @@ import subprocess
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from laminar import contexts
+
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
@@ -18,6 +20,25 @@ else:
 class Executor:
     def run(self, *, execution: str, layer: Layer) -> None:
         ...
+
+
+@dataclass(frozen=True)
+class Thread(Executor):
+    def run(self, *, execution: str, layer: Layer) -> None:
+
+        splits = layer.configuration.foreach.size(layer=layer)
+        for index in range(splits):
+            with contexts.Attributes(layer, index=index, splits=splits), contexts.Attributes(
+                layer.flow, execution=execution
+            ):
+                base_attributes = set(vars(layer))
+
+                layer.flow.execute(layer=layer)
+
+                execution_attributes = list(vars(layer))
+                for key in execution_attributes:
+                    if key not in base_attributes:
+                        delattr(layer, key)
 
 
 @dataclass(frozen=True)

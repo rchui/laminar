@@ -1,10 +1,5 @@
-# Laminar
-.laminar
-.venv
-.mypy_cache
-
-# VSCode
-.vscode
+# Generic
+.*
 
 # Python
 __pycache__
