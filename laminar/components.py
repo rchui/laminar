@@ -8,12 +8,12 @@ from ksuid import Ksuid
 
 from laminar.configurations import datastores, executors, flows, layers
 from laminar.configurations.datastores import Accessor
-from laminar.exceptions import FlowError
+from laminar.exceptions import FlowError, LayerError
 from laminar.settings import current
 
 logger = logging.getLogger(__name__)
 
-LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "splits"}
+LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "namespace", "splits"}
 
 
 class Layer:
@@ -30,11 +30,21 @@ class Layer:
     configuration: layers.Configuration
     flow: "Flow"
     index: Optional[int] = current.layer.index
+    namespace: Optional[str] = None
     splits: Optional[int] = current.layer.splits
 
     def __init__(self, **data: Any) -> None:
         for key, value in data.items():
             setattr(self, key, value)
+
+    def __init_subclass__(cls, *, namespace: Optional[str] = None) -> None:
+        if namespace is not None and not namespace.isalnum():
+            raise LayerError(
+                "A layer's namespace can only contain alphanumeric characters to ensure filesystem compatability."
+                + f" Given namespace '{namespace}'."
+            )
+
+        cls.namespace = namespace
 
     def __call__(self) -> None:
         ...
@@ -85,7 +95,9 @@ class Layer:
 
     @property
     def name(self) -> str:
-        return type(self).__name__
+        if self.namespace is None:
+            return type(self).__name__
+        return f"{self.namespace}.{type(self).__name__}"
 
     @property
     def _dependencies(self) -> Tuple["Layer", ...]:
@@ -149,7 +161,10 @@ class Flow:
         """
 
         if not name.isalnum():
-            raise FlowError(f"A flow's name can only contain alphanumeric characters. Given name '{name}'.")
+            raise FlowError(
+                "A flow's name can only contain alphanumeric characters to maintain filesystem compatability."
+                + f" Given name '{name}'."
+            )
 
         self.name = name
         self.configuration = flows.Configuration(datastore=datastore, executor=executor)
