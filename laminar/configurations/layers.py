@@ -68,7 +68,7 @@ class ForEach:
 
         In order to foreach over each element of a layer, the layer's artifact must be sharded. See Layer.shard().
 
-        If `Parameter(index=None)`, ForEach will include artifacts from all Layer indexes.
+        If `Parameter(index=None)`, ForEach will include artifacts from all Layer splits.
 
     Usage::
 
@@ -78,7 +78,7 @@ class ForEach:
     parameters: Iterable[Parameter] = field(default_factory=list)
 
     def join(self, *, layer: Layer, name: str) -> Archive:
-        """Join together multiple artifact indexes of a layer into a single Archive.
+        """Join together multiple artifact splits of a layer into a single Archive.
 
         Args:
             layer (Layer): Layer to join archives for.
@@ -112,7 +112,7 @@ class ForEach:
             instance = layer.flow.get_layer(name=parameter.layer().name)
             parameters.append((instance, parameter.attribute))
 
-            # Get archives for all layer indexes.
+            # Get archives for all layer splits.
             if parameter.index is None:
                 archives.append(instance.configuration.foreach.join(layer=instance, name=parameter.attribute))
 

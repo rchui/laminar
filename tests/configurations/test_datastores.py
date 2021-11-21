@@ -46,8 +46,8 @@ class TestAccessor:
     @pytest.fixture(autouse=True)
     def _accessor(self, layer: Layer) -> None:
         workspace: Dict[str, Any] = layer.flow.configuration.datastore.workspace  # type: ignore
-        workspace["memory:/artifacts/test-hexdigest-0.gz"] = "foo"
-        workspace["memory:/artifacts/test-hexdigest-1.gz"] = "bar"
+        workspace["memory:///artifacts/test-hexdigest-0.gz"] = "foo"
+        workspace["memory:///artifacts/test-hexdigest-1.gz"] = "bar"
 
         self.accessor = Accessor(
             archive=Archive(

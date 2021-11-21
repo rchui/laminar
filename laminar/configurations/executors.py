@@ -35,6 +35,7 @@ class Thread(Executor):
 
                 layer.flow.execute(layer=layer)
 
+                # Use the starting attributes to remove anything that was set while executing the layer
                 execution_attributes = list(vars(layer))
                 for key in execution_attributes:
                     if key not in base_attributes:

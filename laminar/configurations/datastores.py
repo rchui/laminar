@@ -84,7 +84,7 @@ class Accessor:
 
             return self.layer.flow.configuration.datastore._read_artifact(path=self.archive.artifacts[key].path())
 
-        # Slicing for multiple indexes
+        # Slicing for multiple splits
         elif isinstance(key, slice):
             values: List[Any] = []
             for artifact in self.archive.artifacts[key]:
@@ -107,7 +107,8 @@ class DataStore:
     root: str
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "root", self.root.rstrip("/"))
+        if not self.root.endswith(("://", ":///")):
+            object.__setattr__(self, "root", self.root.rstrip("/"))
 
     def uri(self, *, path: str) -> str:
         return os.path.join(self.root, path)
@@ -223,7 +224,7 @@ class Local(DataStore):
 class Memory(DataStore):
     """Store the laminar workspace in memory."""
 
-    root: str = "memory://"
+    root: str = "memory:///"
     workspace: Dict[str, Any] = dataclasses.field(default_factory=dict)
 
     def _read_archive(self, *, path: str) -> Archive:

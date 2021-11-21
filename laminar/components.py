@@ -33,8 +33,8 @@ class Layer:
     namespace: Optional[str] = None
     splits: Optional[int] = current.layer.splits
 
-    def __init__(self, **data: Any) -> None:
-        for key, value in data.items():
+    def __init__(self, **attributes: Any) -> None:
+        for key, value in attributes.items():
             setattr(self, key, value)
 
     def __init_subclass__(cls, *, namespace: Optional[str] = None) -> None:
@@ -66,21 +66,16 @@ class Layer:
             return False
 
     def __getattr__(self, name: str) -> Any:
-        # First attempt to get the attribute normally.
-        try:
-            value = object.__getattribute__(self, name)
+        # Get the number of splits present in the current layer.
+        splits = self.configuration.foreach.size(layer=self)
 
-        # Fall back to getting a layer artifact.
-        except AttributeError:
-            indexes = self.configuration.foreach.size(layer=self)
+        # The layer has only one index. Get the artifact directly
+        if splits == 1:
+            value = self.flow.configuration.datastore.read(layer=self, index=0, name=name)
 
-            # The layer has only one index. Get the artifact directly
-            if indexes == 1:
-                value = self.flow.configuration.datastore.read(layer=self, index=0, name=name)
-
-            # The layer has multiple indexes. Create an accessor for all artifact indexes.
-            else:
-                value = Accessor(archive=self.configuration.foreach.join(layer=self, name=name), layer=self)
+        # The layer has multiple splits. Create an accessor for all artifact splits.
+        else:
+            value = Accessor(archive=self.configuration.foreach.join(layer=self, name=name), layer=self)
 
         return value
 
@@ -167,6 +162,10 @@ class Flow:
             )
 
         self.name = name
+
+        if isinstance(datastore, datastores.Memory) and not isinstance(executor, executors.Thread):
+            raise FlowError("The Memory datastore can only be used with the Thread executor.")
+
         self.configuration = flows.Configuration(datastore=datastore, executor=executor)
 
         self.dependencies: Dict[str, Tuple[str, ...]] = {}
@@ -211,8 +210,7 @@ class Flow:
 
         # Execute a layer in the flow.
         if self.execution and current.layer.name:
-            layer = self.get_layer(name=current.layer.name)
-            self.execute(layer=layer)
+            self.execute(layer=self.get_layer(name=current.layer.name))
 
         # Execute the flow.
         else:
@@ -310,11 +308,12 @@ class Flow:
 
         return wrapper
 
-    def get_layer(self, *, name: str) -> Layer:
+    def get_layer(self, *, name: str, **attributes: Any) -> Layer:
         """Get a registered flow layer.
 
         Args:
             name (str): Name of the layer to get.
+            **attributes (Any): Keyword attributes to add to the Layer.
 
         Returns:
             Layer: Layer that was registered to the flow.
@@ -325,4 +324,7 @@ class Flow:
 
         # Inject the flow attribute to link the layer to the flow
         layer.flow = self
+        for key, value in attributes.items():
+            setattr(layer, key, value)
+
         return layer
