@@ -28,7 +28,7 @@ class One(Layer):
 
 @flow.layer(container=container)
 class Two(Layer):
-    def __call__(self, one: One) -> None:
+    def __call__(self, one: One) -> None:  # type: ignore
         self.bar = one.foo
 
 
@@ -36,7 +36,7 @@ class Two(Layer):
 class Three(Layer):
     baz: List[str]
 
-    def __call__(self, one: One) -> None:
+    def __call__(self, one: One) -> None:  # type: ignore
         self.baz = one.baz
         print(self.baz)
 
@@ -47,20 +47,20 @@ class Three(Layer):
 class Five(Layer):
     baz: List[str]
 
-    def __call__(self, three: Three) -> None:
+    def __call__(self, three: Three) -> None:  # type: ignore
         self.baz = three.baz
         print(self.baz)
 
 
 class FourContainer(layers.Container):
-    def __call__(self, one: One) -> None:
+    def __call__(self, one: One) -> None:  # type: ignore
         if one.foo == "bar":
             self.memory = 2000
 
 
 @flow.layer(container=FourContainer(image="test"))
 class Four(Layer):
-    def __call__(self, two: Two, five: Five) -> None:
+    def __call__(self, two: Two, five: Five) -> None:  # type: ignore
         self.end = [two.bar, list(five.baz)]
         print(self.end)
 

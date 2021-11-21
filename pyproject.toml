@@ -33,3 +33,6 @@ no_strict_optional = false
 strict_equality = true
 check_untyped_defs = true
 allow_untyped_defs = false
+
+[tool.pytest.ini_options]
+addopts = "--durations 10 --failed-first --strict-markers"

@@ -23,19 +23,13 @@ format:
 	black .
 	isort .
 
-.PHONY: lint
-lint:
-	black --check .
-	flake8 laminar
-	isort --check .
-	mypy laminar tests
-
 .PHONY: run
-run: lint
+run: test
 	docker build -t test .
 	docker system prune --force
 	python main.py
 
 .PHONY: test
-test: lint
-	pytest -vv -r Efs --cov laminar --cov-report term-missing --durations 10 --failed-first --strict-markers tests
+test:
+	black --check .
+	pytest --cov laminar --cov-report term-missing --flake8 --mypy --isort
