@@ -38,4 +38,4 @@ run: lint
 
 .PHONY: test
 test: lint
-	pytest -vv -r Efs --cov laminar --cov-report term-missing tests --failed-first --strict-markers
+	pytest -vv -r Efs --cov laminar --cov-report term-missing --durations 10 --failed-first --strict-markers tests

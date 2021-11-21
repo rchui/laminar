@@ -1,8 +1,9 @@
-from contextlib import ContextDecorator
+import contextlib
+import os
 from typing import Any, Dict
 
 
-class Attributes(ContextDecorator):
+class Attributes(contextlib.ContextDecorator):
     def __init__(self, cls: object, **attributes: Any) -> None:
         """Modify a class's attributes.
 
@@ -33,3 +34,30 @@ class Attributes(ContextDecorator):
                 setattr(self.cls, key, self._attributes[key])
             else:
                 delattr(self.cls, key)
+
+
+class Environment(contextlib.ContextDecorator):
+    def __init__(self, **variables: Any) -> None:
+        """Modify the current execution environment.
+
+        Args:
+            **variables (Any): Key/value pairs of environment variables to create.
+        """
+
+        self.variables = variables
+
+    def __enter__(self) -> "Environment":
+        """<odify environment variables."""
+
+        self._variables = dict(os.environ)
+
+        for key, value in self.variables.items():
+            os.environ[key] = str(value)
+
+        return self
+
+    def __exit__(self, *_: Any) -> None:
+        """Revert environment variable changes."""
+
+        os.environ.clear()
+        os.environ.update(self._variables)
