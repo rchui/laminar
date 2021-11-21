@@ -114,7 +114,7 @@ class DataStore:
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
-            return Archive.parse(json.loads(file))
+            return Archive.parse(json.load(file))
 
     def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
         """Read an archive from the laminar datastore.
