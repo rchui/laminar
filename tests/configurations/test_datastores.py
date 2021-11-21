@@ -20,47 +20,61 @@ def layer(flow: Flow) -> Layer:
     return Layer(flow=flow, index=0)
 
 
-def test_artifact() -> None:
+class TestArtifact:
     artifact = datastores.Artifact(hexdigest="foo")
 
-    assert artifact.dict() == {"hexdigest": "foo"}
-    assert artifact.path() == "artifacts/foo.gz"
+    def test_dict(self) -> None:
+        assert self.artifact.dict() == {"hexdigest": "foo"}
+
+    def test_path(self) -> None:
+        assert self.artifact.path() == "artifacts/foo.gz"
 
 
-def test_archive(layer: Layer) -> None:
+class TestArchive:
     archive = datastores.Archive(artifacts=[datastores.Artifact(hexdigest="foo"), datastores.Artifact(hexdigest="bar")])
 
-    assert archive.dict() == {"artifacts": [{"hexdigest": "foo"}, {"hexdigest": "bar"}]}
-    assert len(archive) == 2
-    assert (
-        datastores.Archive(artifacts=[datastores.Artifact(hexdigest="foo")]).path(
-            layer=layer, index=0, name="test-archive"
+    def test_dict(self) -> None:
+        assert self.archive.dict() == {"artifacts": [{"hexdigest": "foo"}, {"hexdigest": "bar"}]}
+
+    def test_len(self) -> None:
+        assert len(self.archive) == 2
+
+    def test_path(self, layer: Layer) -> None:
+        assert (
+            self.archive.path(layer=layer, index=0, name="test-archive")
+            == f"{layer.flow.name}/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.json"
         )
-        == f"{layer.flow.name}/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.json"
-    )
+
+    def test_parse(self) -> None:
+        expected = {"artifacts": [{"hexdigest": "foo"}, {"hexdigest": "bar"}]}
+        assert datastores.Archive.parse(expected).dict() == expected
 
 
-def test_archive_parse() -> None:
-    expected = {"artifacts": [{"hexdigest": "foo"}, {"hexdigest": "bar"}]}
-    assert datastores.Archive.parse(expected).dict() == expected
+class TestAccessor:
+    @pytest.fixture(autouse=True)
+    def _accessor(self, layer: Layer) -> None:
+        workspace: Dict[str, Any] = layer.flow.configuration.datastore.workspace  # type: ignore
+        workspace["memory:/artifacts/test-hexdigest-0.gz"] = "foo"
+        workspace["memory:/artifacts/test-hexdigest-1.gz"] = "bar"
 
+        self.accessor = datastores.Accessor(
+            archive=datastores.Archive(
+                artifacts=[
+                    datastores.Artifact(hexdigest="test-hexdigest-0"),
+                    datastores.Artifact(hexdigest="test-hexdigest-1"),
+                ]
+            ),
+            layer=layer,
+        )
 
-def test_accessor(layer: Layer) -> None:
-    workspace: Dict[str, Any] = layer.flow.configuration.datastore.workspace  # type: ignore
-    workspace["memory:/artifacts/test-hexdigest-0.gz"] = "foo"
-    workspace["memory:/artifacts/test-hexdigest-1.gz"] = "bar"
+    def test_len(self) -> None:
+        assert len(self.accessor) == 2
 
-    accessor = datastores.Accessor(
-        archive=datastores.Archive(
-            artifacts=[
-                datastores.Artifact(hexdigest="test-hexdigest-0"),
-                datastores.Artifact(hexdigest="test-hexdigest-1"),
-            ]
-        ),
-        layer=layer,
-    )
+    def test_get_item(self) -> None:
+        assert [self.accessor[0], self.accessor[1]] == ["foo", "bar"]
 
-    assert len(accessor) == 2
-    assert [accessor[0], accessor[1]] == ["foo", "bar"]
-    assert list(accessor) == ["foo", "bar"]
-    assert accessor[:1] == ["foo"]
+    def test_iterable(self) -> None:
+        assert list(self.accessor) == ["foo", "bar"]
+
+    def test_slice(self) -> None:
+        assert self.accessor[:1] == ["foo"]

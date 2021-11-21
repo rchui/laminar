@@ -35,6 +35,6 @@ run: lint
 	docker build -t test .
 	python main.py
 
-.PHONY:
+.PHONY: test
 test: lint
 	pytest -vv -r Efs --cov laminar --cov-report term-missing tests --failed-first --strict-markers
