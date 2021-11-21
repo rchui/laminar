@@ -175,7 +175,15 @@ class DataStore:
         with fs.open(self.uri(path=path), "wb") as file:
             file.write(content)
 
-    def _write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
+    def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
+        """Write an artifact to the laminar datastore.
+
+        Args:
+            layer: Layer being written to.
+            name: Name of the artifact being written.
+            values : Artifact values to store.
+        """
+
         artifacts = {
             Artifact(hexdigest=hashlib.sha256(content).hexdigest()): content
             for content in (cloudpickle.dumps(value) for value in values)
@@ -188,17 +196,6 @@ class DataStore:
         # Write the artifact(s) value
         for artifact, content in artifacts.items():
             self._write_artifact(path=artifact.path(), content=content)
-
-    def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
-        """Write an artifact to the laminar datastore.
-
-        Args:
-            layer: Layer being written to.
-            name: Name of the artifact being written.
-            values : Artifact values to store.
-        """
-
-        self._write(layer=layer, name=name, values=values)
 
 
 @dataclasses.dataclass(frozen=True)

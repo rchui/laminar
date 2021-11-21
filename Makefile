@@ -33,6 +33,7 @@ lint:
 .PHONY: run
 run: lint
 	docker build -t test .
+	docker system prune --force
 	python main.py
 
 .PHONY: test

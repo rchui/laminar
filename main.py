@@ -2,12 +2,13 @@ import logging
 from typing import List, Set
 
 from laminar import Flow, Layer
-from laminar.configurations import layers
+from laminar.configurations import datastores, executors, layers
 
 logging.basicConfig(level=logging.INFO)
 
 
-flow = Flow(name="TestFlow")
+flow = Flow(name="TestFlow", datastore=datastores.Local(), executor=executors.Docker())
+# flow = Flow(name="TestFlow", datastore=datastores.Memory(), executor=executors.Thread())
 
 container = layers.Container(image="test")
 
