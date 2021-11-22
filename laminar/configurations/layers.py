@@ -46,7 +46,7 @@ class Container:
         annotations: Tuple[Layer, ...] = tuple(
             parameter.annotation() for parameter in inspect.signature(container.__call__).parameters.values()
         )
-        parameters = tuple(layer.flow.get_layer(name=annotation.name) for annotation in annotations)
+        parameters = tuple(layer.flow.get_layer(layer=annotation.name) for annotation in annotations)
         container(*parameters)
         return container
 
@@ -109,7 +109,7 @@ class ForEach:
         archives: List[Archive] = []
 
         for parameter in self.parameters:
-            instance = layer.flow.get_layer(name=parameter.layer().name)
+            instance = layer.flow.get_layer(layer=parameter.layer)
             parameters.append((instance, parameter.attribute))
 
             # Get archives for all layer splits.
@@ -124,6 +124,7 @@ class ForEach:
                     )
                 )
 
+        # Compute the product of every possible set of parameter indexes based off of parameter layer splits.
         grid: List[Dict[Layer, Dict[str, int]]] = []
         for indexes in itertools.product(*(range(len(archive)) for archive in archives)):
             model: Dict[Layer, Dict[str, int]] = {}
@@ -132,6 +133,11 @@ class ForEach:
             grid.append(model)
 
         return grid
+
+    def size(self, *, layer: Layer) -> int:
+        """Get the size of the ForEach grid."""
+
+        return len(self.grid(layer=layer))
 
     def set(self, *, layer: Layer, parameters: Tuple[Layer, ...]) -> Tuple[Layer, ...]:
         """Set a foreach layer's parameters given the inputs from the foreach grid.
@@ -155,11 +161,6 @@ class ForEach:
                 setattr(parameter, attribute, value)
 
         return parameters
-
-    def size(self, *, layer: Layer) -> int:
-        """Get the size of the ForEach grid."""
-
-        return len(self.grid(layer=layer))
 
 
 @dataclass(frozen=True)

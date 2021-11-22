@@ -73,11 +73,11 @@ class TestLayer:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:  # type: ignore
                 ...
 
-        assert flow.get_layer(name=Test().name).dependencies == ("Dep1", "Dep2")
+        assert flow.get_layer(layer=Test).dependencies == ("Dep1", "Dep2")
 
     def test_shard(self, flow: Flow) -> None:
         flow.layer()(Layer)
-        flow.get_layer(name=Layer().name, index=0).shard(foo=[True, False, None])
+        flow.get_layer(layer=Layer, index=0).shard(foo=[True, False, None])
 
         assert flow.configuration.datastore.workspace == {  # type: ignore
             "memory:///TestFlow/test-execution/Layer/0/foo.json": datastores.Archive(
@@ -132,7 +132,7 @@ class TestFLow:
         with contexts.Attributes(current.layer, name="Test"), contexts.Attributes(flow, execution="test-execution"):
             flow()
 
-            assert isinstance(mock_execute.call_args[-1]["layer"], Test)
+            assert mock_execute.call_args[-1]["layer"] == Test()
 
     def test_execute(self) -> None:
         ...
@@ -154,9 +154,7 @@ class TestFLow:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:  # type: ignore
                 ...
 
-        for name, dtype in {"Dep1": Dep1, "Dep2": Dep2, "Test": Test}.items():
-            assert name in flow._registry
-            assert isinstance(flow._registry[name], dtype)
+        assert {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test()}
         assert flow.dependencies == {"Dep1": (), "Dep2": (), "Test": ("Dep1", "Dep2")}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
@@ -176,5 +174,5 @@ class TestFLow:
         class Test(Layer):
             ...
 
-        assert isinstance(flow.get_layer(name=Test().name), Test)
-        assert flow.get_layer(name=Test().name, foo="bar").foo == "bar"
+        assert flow.get_layer(layer=Test), Test()
+        assert flow.get_layer(layer=Test, foo="bar").foo == "bar"

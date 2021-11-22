@@ -2,7 +2,7 @@
 import inspect
 import logging
 from copy import deepcopy
-from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar
+from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar, Union
 
 from ksuid import Ksuid
 
@@ -97,7 +97,7 @@ class Layer:
     @property
     def _dependencies(self) -> Tuple["Layer", ...]:
         return tuple(
-            self.flow.get_layer(name=parameter.annotation().name)
+            self.flow.get_layer(layer=parameter.annotation)
             for parameter in inspect.signature(self.__call__).parameters.values()
         )
 
@@ -174,14 +174,14 @@ class Flow:
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
         return {
-            self.get_layer(name=child): tuple(self.get_layer(name=parent) for parent in parents)
+            self.get_layer(layer=child): tuple(self.get_layer(layer=parent) for parent in parents)
             for child, parents in self.dependencies.items()
         }
 
     @property
     def _dependents(self) -> Dict[Layer, Set[Layer]]:
         return {
-            self.get_layer(name=parent): {self.get_layer(name=child) for child in children}
+            self.get_layer(layer=parent): {self.get_layer(layer=child) for child in children}
             for parent, children in self.dependents.items()
         }
 
@@ -210,7 +210,7 @@ class Flow:
 
         # Execute a layer in the flow.
         if self.execution and current.layer.name:
-            self.execute(layer=self.get_layer(name=current.layer.name))
+            self.execute(layer=self.get_layer(layer=current.layer.name))
 
         # Execute the flow.
         else:
@@ -247,7 +247,7 @@ class Flow:
 
         def get_pending(*, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> Set[Layer]:
             return {
-                self.get_layer(name=child)
+                self.get_layer(layer=child)
                 for child, parents in dependencies.items()
                 if child not in finished and set(parents).issubset(finished)
             }
@@ -308,19 +308,24 @@ class Flow:
 
         return wrapper
 
-    def get_layer(self, *, name: str, **attributes: Any) -> Layer:
+    def get_layer(self, *, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.
 
         Args:
-            name (str): Name of the layer to get.
+            layer (Union[str, Type[Layer], Layer]): Layer to get.
             **attributes (Any): Keyword attributes to add to the Layer.
 
         Returns:
             Layer: Layer that was registered to the flow.
         """
 
+        if isinstance(layer, Layer):
+            layer = layer.name
+        elif not isinstance(layer, str):
+            layer = layer().name
+
         # Deepcopy so that layer artifacts don't mess with other layer split executions
-        layer = deepcopy(self._registry[name])
+        layer = deepcopy(self._registry[layer])
 
         # Inject the flow attribute to link the layer to the flow
         layer.flow = self
