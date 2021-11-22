@@ -1,6 +1,7 @@
 """Tests for laminar.components"""
 
 import copy
+from typing import Any, Dict
 from unittest.mock import ANY, Mock, patch
 
 import cloudpickle
@@ -75,6 +76,27 @@ class TestLayer:
 
         assert flow.layer(Test).dependencies == ("Dep1", "Dep2")
 
+    def test_getattr(self, flow: Flow) -> None:
+        workspace: Dict[str, Any] = flow.configuration.datastore.workspace  # type: ignore
+        workspace["memory:///TestFlow/test-execution/Layer/0/foo.json"] = datastores.Archive(
+            artifacts=[datastores.Artifact(hexdigest="abc")]
+        )
+        workspace["memory:///TestFlow/test-execution/Layer/0/bar.json"] = datastores.Archive(
+            artifacts=[datastores.Artifact(hexdigest="123"), datastores.Artifact(hexdigest="456")]
+        )
+
+        workspace["memory:///artifacts/abc.gz"] = True
+
+        flow.register()(Layer)
+
+        assert flow.layer(Layer, index=0).foo is True
+        assert flow.layer(Layer, index=0).bar == datastores.Accessor(
+            archive=datastores.Archive(
+                artifacts=[datastores.Artifact(hexdigest="123"), datastores.Artifact(hexdigest="456")]
+            ),
+            layer=Layer(),
+        )
+
     def test_shard(self, flow: Flow) -> None:
         flow.register()(Layer)
         flow.layer(Layer, index=0).shard(foo=[True, False, None])
@@ -140,7 +162,7 @@ class TestFLow:
     def test_schedule(self) -> None:
         ...
 
-    def test_layer(self, flow: Flow) -> None:
+    def test_register(self, flow: Flow) -> None:
         @flow.register()
         class Dep1(Layer):
             ...
@@ -169,10 +191,12 @@ class TestFLow:
             class Test(Layer):  # type: ignore
                 ...
 
-    def test_get_layer(self, flow: Flow) -> None:
+    def test_layer(self, flow: Flow) -> None:
         @flow.register()
         class Test(Layer):
             ...
 
+        assert flow.layer("Test"), Test()
         assert flow.layer(Test), Test()
+        assert flow.layer(Test()), Test()
         assert flow.layer(Test, foo="bar").foo == "bar"

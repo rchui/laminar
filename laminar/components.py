@@ -69,7 +69,7 @@ class Layer:
         # Get the number of splits present in the current layer.
         splits = self.configuration.foreach.size(layer=self)
 
-        # The layer has only one index. Get the artifact directly
+        # The layer has only one split. Get the artifact directly
         if splits == 1:
             value = self.flow.configuration.datastore.read(layer=self, index=0, name=name)
 

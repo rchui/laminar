@@ -2,6 +2,7 @@ import os
 
 import boto3
 import botocore
+from mypy_boto3_s3.service_resource import S3ServiceResource
 from smart_open import open as open  # noqa
 from smart_open import parse_uri
 
@@ -13,7 +14,7 @@ def exists(*, uri: str) -> bool:
         return os.path.isfile(parts.uri_path)
     elif parts.scheme == "s3":
         try:  # Check if file exists
-            s3 = boto3.resource("s3")
+            s3: S3ServiceResource = boto3.resource("s3")
             s3.Object(parts.bucket_id, parts.key_id).load()
             return True
         except botocore.exceptions.ClientError as exception:
