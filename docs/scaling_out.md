@@ -9,6 +9,39 @@
 * TOC
 {:toc}
 
+## Sharded Artifacts
+
+Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. In downstream steps, the attribute returns an `Accessor` object. An `Accessor` will lazily read sharded artifact values, can be iterated over, and supports direct and slice indexing.
+
+```python
+# main.py
+from laminar import Flow, Layer
+
+flow = Flow("ShardedFlow")
+
+@flow.register()
+class Shard(Layer):
+    def __call__(self) -> None:
+        self.shard(foo=[1, 2, 3])
+
+@flow.register()
+class Process(Layer):
+    def __call__(self, shard: Shard) -> None:
+        print(list(shard.foo))
+        print(shard.foo[1])
+        print(shard.foo[1:])
+
+if __name__ == '__main__':
+    flow()
+```
+
+```python
+python main.py
+
+>>> [1, 2, 3]
+>>> 2
+>>> [2, 3]
+```
 
 ## ForEach Loops
 
@@ -34,7 +67,7 @@ class Process(
     )
 ):
     def __call__(self, shard: Shard) -> None:
-        print(shard.foo)
+        print(self.index, shard.foo)
 
 if __name__ == '__main__':
     flow()
@@ -43,8 +76,8 @@ if __name__ == '__main__':
 ```python
 python main.py
 
->>> 1
->>> 2
+>>> 0 1
+>>> 1 2
 ```
 
 `laminar` will infer from the defined `Parameter` layer and shard, how many tasks to create in the `Process` layer. Any `Layer` attribute can be defined as a `ForEach` parameter. Even ones that have not been sharded.
@@ -73,7 +106,7 @@ class Process(
     )
 ):
     def __call__(self, shard: Shard) -> None:
-        print(shard.foo, shard.bar)
+        print(self.index, shard.foo, shard.bar)
 
 if __name__ == '__main__':
     flow()
@@ -82,8 +115,8 @@ if __name__ == '__main__':
 ```python
 python main.py
 
->>> 1 "a"
->>> 2 "a"
+>>> 0 1 "a"
+>>> 1 2 "a"
 ```
 
 `laminar` will infer that an attribute is not sharded and supply that value to each `ForEach` task.
@@ -114,7 +147,7 @@ class Shard(Layer):
 )
 class Process(Layer):
     def __call__(self, shard: Shard) -> None:
-        print(shard.foo, shard.bar)
+        print(self.index, shard.foo, shard.bar)
 
 if __name__ == '__main__':
     flow()
@@ -123,12 +156,12 @@ if __name__ == '__main__':
 ```python
 python main.py
 
->>> 1 "a"
->>> 2 "a"
->>> 3 "a"
->>> 1 "b"
->>> 2 "b"
->>> 3 "b"
+>>> 0 1 "a"
+>>> 1 2 "a"
+>>> 2 3 "a"
+>>> 3 1 "b"
+>>> 4 2 "b"
+>>> 5 3 "b"
 ```
 
 ## ForEach Joins
@@ -175,7 +208,7 @@ python main.py
 
 ## Chained ForEach
 
-It is common to performed multiple foreach loops in a row, where each value produced by a foreach is passed to another foreach. You can define `Parameter(index=None)` in subsequent `ForEach` to create a `1:1` mapping of one foreach to another.
+It is common to performed multiple foreach loops in a row, where each value produced by a foreach task is passed to another foreach task. You can define `Parameter(index=None)` in subsequent `ForEach` to create a `1:1` mapping of one foreach to another.
 
 ```python
 # main.py
@@ -192,13 +225,13 @@ class Shard(Layer):
 @flow.register(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
 class First(Layer):
     def __call__(self, shard: Shard) -> None:
-        print('First', shard.foo)
+        print(self.index, 'First', shard.foo)
         self.foo = shard.foo
 
 @flow.register(foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)]))
 class Second(Layer):
     def __call__(self, first: First) -> None:
-        print('Second', first.foo)
+        print(self.index, 'Second', first.foo)
 
 if __name__ == '__main__':
     flow()
@@ -207,12 +240,12 @@ if __name__ == '__main__':
 ```python
 python main.py
 
->>> 'First' 1
->>> 'First' 2
->>> 'First' 3
->>> 'Second' 1
->>> 'Second' 2
->>> 'Second' 3
+>>> 0 'First' 1
+>>> 1 'First' 2
+>>> 2 'First' 3
+>>> 0 'Second' 1
+>>> 1 'Second' 2
+>>> 2 'Second' 3
 ```
 
 By default an unset `Parameter.index` will read from `Parameter(index=0)`.

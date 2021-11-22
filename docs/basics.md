@@ -9,17 +9,27 @@
 * TOC
 {:toc}
 
+## Registering Layers
 
-## Terminology
+A `Flow` is a collection of Layers that define a workflow and perform tasks. A `Layer` must be registered with a `Flow` before it can be used in the `Flow`:
 
-* `Flow`: A collection of `Layer` objects that defines the workflow
-* `Layer`: A step in the `Flow` workflow that performs an task
-* `Archive`: Metadata about an artifact stored for a `Layer`
-* `Artifact`: A compressed copy of an assigned `Layer` attribute.
+```python
+from laminar import Flow, Layer
+
+flow = Flow("RegisterFLow")
+
+@flow.register()
+class One(Layer):
+    ...
+
+@flow.register():
+class Two(Layer):
+    ...
+```
 
 ## Dependencies
 
-Defining a `Layer` dependency is as easy as defining a function parameter. In this two `Layer` example, layer `Two` is dependent on layer `One`:
+Defining a `Layer` dependency is as easy as defining a function parameter. A registered `Layer` is inferred from the type annotation to determine which Layers depend on which other Layers. In this two `Layer` example, layer `Two` is dependent on layer `One`:
 
 ```python
 # main.py
@@ -131,37 +141,4 @@ python main.py
 >>> "Sending the message: Hello World"
 >>> "Hello World"
 >>> "Sent message: Hello World"
-```
-## Sharded Artifacts
-
-Workflows often involve processing large objects which needs to be handled in parts. `laminar` provides `Layer.shard()` to break apart large objects. In downstream steps, the attribute returns an `Accessor` object. An `Accessor` will lazily read sharded artifact values, can be iterated over, and supports direct and slice indexing.
-
-```python
-# main.py
-from laminar import Flow, Layer
-
-flow = Flow("ShardedFlow")
-
-@flow.register()
-class Shard(Layer):
-    def __call__(self) -> None:
-        self.shard(foo=[1, 2, 3])
-
-@flow.register()
-class Process(Layer):
-    def __call__(self, shard: Shard) -> None:
-        print(list(shard.foo))
-        print(shard.foo[1])
-        print(shard.foo[1:])
-
-if __name__ == '__main__':
-    flow()
-```
-
-```python
-python main.py
-
->>> [1, 2, 3]
->>> 2
->>> [2, 3]
 ```

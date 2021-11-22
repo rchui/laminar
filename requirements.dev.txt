@@ -1,7 +1,10 @@
 --requirement requirements.txt
 
 black
+coverage
 flake8<4.0.0
+isort
+mypy
 pytest
 pytest-cov
 pytest-flake8
