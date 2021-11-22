@@ -14,5 +14,5 @@ def flow() -> Flow:
 
 @pytest.fixture()
 def layer(flow: Flow) -> Layer:
-    flow.layer()(Layer)
-    return flow.get_layer(layer=Layer, index=0)
+    flow.register()(Layer)
+    return flow.layer(Layer, index=0)

@@ -20,7 +20,7 @@ class Container:
 
     Usage::
 
-        @flow.layer(container=Container(...))
+        @flow.register(container=Container(...))
     """
 
     command: str = "python main.py"
@@ -46,7 +46,7 @@ class Container:
         annotations: Tuple[Layer, ...] = tuple(
             parameter.annotation() for parameter in inspect.signature(container.__call__).parameters.values()
         )
-        parameters = tuple(layer.flow.get_layer(layer=annotation.name) for annotation in annotations)
+        parameters = tuple(layer.flow.layer(annotation.name) for annotation in annotations)
         container(*parameters)
         return container
 
@@ -72,7 +72,7 @@ class ForEach:
 
     Usage::
 
-        @flow.layer(foreach=ForEach(...))
+        @flow.register(foreach=ForEach(...))
     """
 
     parameters: Iterable[Parameter] = field(default_factory=list)
@@ -109,7 +109,7 @@ class ForEach:
         archives: List[Archive] = []
 
         for parameter in self.parameters:
-            instance = layer.flow.get_layer(layer=parameter.layer)
+            instance = layer.flow.layer(parameter.layer)
             parameters.append((instance, parameter.attribute))
 
             # Get archives for all layer splits.

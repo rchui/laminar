@@ -13,7 +13,7 @@ flow = Flow(name="TestFlow", datastore=datastores.Local(), executor=executors.Do
 container = layers.Container(image="test")
 
 
-@flow.layer(container=container)
+@flow.register(container=container)
 class One(Layer):
     baz: List[str]
     foo: str
@@ -26,13 +26,13 @@ class One(Layer):
         return self.next(Two)
 
 
-@flow.layer(container=container)
+@flow.register(container=container)
 class Two(Layer):
     def __call__(self, one: One) -> None:  # type: ignore
         self.bar = one.foo
 
 
-@flow.layer(container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
+@flow.register(container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
 class Three(Layer):
     baz: List[str]
 
@@ -41,7 +41,7 @@ class Three(Layer):
         print(self.baz)
 
 
-@flow.layer(
+@flow.register(
     container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
 )
 class Five(Layer):
@@ -58,7 +58,7 @@ class FourContainer(layers.Container):
             self.memory = 2000
 
 
-@flow.layer(container=FourContainer(image="test"))
+@flow.register(container=FourContainer(image="test"))
 class Four(Layer):
     def __call__(self, two: Two, five: Five) -> None:  # type: ignore
         self.end = [two.bar, list(five.baz)]

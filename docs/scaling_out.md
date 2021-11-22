@@ -21,12 +21,12 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer()
+@flow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
 
-@flow.layer()
+@flow.register()
 class Process(
     Layer,
     foreach=ForEach(
@@ -56,13 +56,13 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer()
+@flow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.bar = "a"
         self.shard(foo=[1, 2])
 
-@flow.layer()
+@flow.register()
 class Process(
     Layer,
     foreach=ForEach(
@@ -99,12 +99,12 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer()
+@flow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3], bar=["a", "b"])
 
-@flow.layer(
+@flow.register(
     foreach=ForEach(
         parameters=[
             Parameter(layer=Shard, attribute="foo"),
@@ -142,12 +142,12 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer()
+@flow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
 
-@flow.layer(
+@flow.register(
     foreach=ForEach(
         parameters=[Parameter(layer=Shard, attribute="foo")]
     )
@@ -184,18 +184,18 @@ from laminar.configurations.layers import ForEach, Parameters
 
 flow = Flow("ShardedFlow")
 
-@flow.layer()
+@flow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@flow.layer(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
+@flow.register(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
 class First(Layer):
     def __call__(self, shard: Shard) -> None:
         print('First', shard.foo)
         self.foo = shard.foo
 
-@flow.layer(foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)]))
+@flow.register(foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)]))
 class Second(Layer):
     def __call__(self, first: First) -> None:
         print('Second', first.foo)

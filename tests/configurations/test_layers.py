@@ -31,15 +31,15 @@ class TestForEach:
 
         self.flow = flow
 
-        @self.flow.layer()
+        @self.flow.register()
         class A(Layer):
             ...
 
-        @self.flow.layer()
+        @self.flow.register()
         class B(Layer):
             ...
 
-        @self.flow.layer(
+        @self.flow.register(
             foreach=ForEach(parameters=[Parameter(layer=A, attribute="foo"), Parameter(layer=B, attribute="bar")])
         )
         class C(Layer):
@@ -50,7 +50,7 @@ class TestForEach:
         self.C = C
 
     def test_join(self) -> None:
-        layer = self.flow.get_layer(layer=self.C)
+        layer = self.flow.layer(self.C)
         assert layer.configuration.foreach.join(layer=layer, name="foo") == Archive(
             artifacts=[
                 Artifact(hexdigest="a"),
@@ -61,7 +61,7 @@ class TestForEach:
         )
 
     def test_grid(self) -> None:
-        layer = self.flow.get_layer(layer=self.C)
+        layer = self.flow.layer(self.C)
         assert layer.configuration.foreach.grid(layer=layer) == [
             {self.A(): {"foo": 0}, self.B(): {"bar": 0}},
             {self.A(): {"foo": 0}, self.B(): {"bar": 1}},
@@ -70,21 +70,21 @@ class TestForEach:
         ]
 
     def test_size(self) -> None:
-        layer = self.flow.get_layer(layer=self.C)
+        layer = self.flow.layer(self.C)
         assert layer.configuration.foreach.size(layer=layer) == 4
 
     def test_set(self) -> None:
-        layer = self.flow.get_layer(layer=self.C, index=0)
+        layer = self.flow.layer(self.C, index=0)
         A, B = layer.configuration.foreach.set(
-            layer=layer, parameters=(self.flow.get_layer(layer=self.A), self.flow.get_layer(layer=self.B))
+            layer=layer, parameters=(self.flow.layer(self.A), self.flow.layer(self.B))
         )
 
         assert A.foo is True
         assert B.bar == 0
 
-        layer = self.flow.get_layer(layer=self.C, index=3)
+        layer = self.flow.layer(self.C, index=3)
         A, B = layer.configuration.foreach.set(
-            layer=layer, parameters=(self.flow.get_layer(layer=self.A), self.flow.get_layer(layer=self.B))
+            layer=layer, parameters=(self.flow.layer(self.A), self.flow.layer(self.B))
         )
 
         assert A.foo is False

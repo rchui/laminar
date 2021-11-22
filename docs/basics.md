@@ -28,12 +28,12 @@ from laminar import Flow, Layer
 
 flow = Flow("HelloFlow")
 
-@flow.layer()
+@flow.register()
 class One(Layer):
     def __call__(self) -> None:
         print(self.name)
 
-@flow.layer()
+@flow.register()
 class Two(Layer):
     def __call__(self, one: One) -> None:
         print(self.name)
@@ -58,22 +58,22 @@ from laminar import Flow, Layer
 
 flow = Flow("HelloFlow")
 
-@flow.layer()
+@flow.register()
 class One(Layer):
     def __call__(self) -> None:
         print(self.name)
 
-@flow.layer()
+@flow.register()
 class Two(Layer):
     def __call__(self, one: One) -> None:
         print(self.name)
 
-@flow.layer()
+@flow.register()
 class Three(Layer):
     def __call__(self, two: Two) -> None:
         print(self.name)
 
-@flow.layer()
+@flow.register()
 class Four(Layer):
     def __call__(self, one: One, three: Three) -> None:
         print(self.name)
@@ -104,19 +104,19 @@ from laminar import Flow, Layer
 
 flow = Flow("HelloFlow")
 
-@flow.layer()
+@flow.register()
 class Start(Layer):
     def __call__(self) -> None:
         self.message = "Hello World"
         print(f"Sending the message: {self.message}")
 
-@flow.layer()
+@flow.register()
 class Middle(Layer):
     def __call__(self, start: Start) -> None:
         print(start.message)
         self.message = start.message
 
-@flow.layer()
+@flow.register()
 class End(Layer):
     def __call__(self, middle: Middle) -> None:
         print(f"Sent message: {middle.message}")
@@ -142,12 +142,12 @@ from laminar import Flow, Layer
 
 flow = Flow("ShardedFlow")
 
-@flow.layer()
+@flow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@flow.layer()
+@flow.register()
 class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(list(shard.foo))

@@ -97,8 +97,7 @@ class Layer:
     @property
     def _dependencies(self) -> Tuple["Layer", ...]:
         return tuple(
-            self.flow.get_layer(layer=parameter.annotation)
-            for parameter in inspect.signature(self.__call__).parameters.values()
+            self.flow.layer(parameter.annotation) for parameter in inspect.signature(self.__call__).parameters.values()
         )
 
     @property
@@ -174,14 +173,14 @@ class Flow:
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
         return {
-            self.get_layer(layer=child): tuple(self.get_layer(layer=parent) for parent in parents)
+            self.layer(child): tuple(self.layer(parent) for parent in parents)
             for child, parents in self.dependencies.items()
         }
 
     @property
     def _dependents(self) -> Dict[Layer, Set[Layer]]:
         return {
-            self.get_layer(layer=parent): {self.get_layer(layer=child) for child in children}
+            self.layer(parent): {self.layer(child) for child in children}
             for parent, children in self.dependents.items()
         }
 
@@ -210,7 +209,7 @@ class Flow:
 
         # Execute a layer in the flow.
         if self.execution and current.layer.name:
-            self.execute(layer=self.get_layer(layer=current.layer.name))
+            self.execute(layer=self.layer(current.layer.name))
 
         # Execute the flow.
         else:
@@ -247,7 +246,7 @@ class Flow:
 
         def get_pending(*, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> Set[Layer]:
             return {
-                self.get_layer(layer=child)
+                self.layer(child)
                 for child, parents in dependencies.items()
                 if child not in finished and set(parents).issubset(finished)
             }
@@ -274,14 +273,14 @@ class Flow:
                     f" Remaining dependencies: {dependencies}."
                 )
 
-    def layer(
+    def register(
         self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
     ) -> Callable[[L], L]:
         """Add a layer to the flow.
 
         Usage::
 
-            @flow.layer()
+            @flow.register()
             class Task(Layer):
                 ...
         """
@@ -308,7 +307,7 @@ class Flow:
 
         return wrapper
 
-    def get_layer(self, *, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
+    def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.
 
         Args:
