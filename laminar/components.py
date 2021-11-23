@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "namespace", "splits"}
 
+HookType = TypeVar("HookType", bound=Callable[..., layers.Configuration])
+
 
 class Layer:
     """Task to execute as part of a flow.
@@ -46,7 +48,9 @@ class Layer:
 
         cls.namespace = namespace
 
-    def __call__(self) -> None:
+    __call__: Callable[..., None]
+
+    def __call__(self) -> None:  # type: ignore
         ...
 
     def __deepcopy__(self, memo: Dict[int, Any]) -> "Layer":
@@ -123,8 +127,16 @@ class Layer:
         for artifact, sequence in artifacts.items():
             self.flow.configuration.datastore.write(layer=self, name=artifact, values=sequence)
 
+    @staticmethod
+    def pre(hook: HookType) -> HookType:
+        return hook
 
-L = TypeVar("L", bound=Type[Layer])
+    @staticmethod
+    def post(hook: HookType) -> HookType:
+        return hook
+
+
+LayerType = TypeVar("LayerType", bound=Type[Layer])
 
 
 class Flow:
@@ -167,7 +179,6 @@ class Flow:
 
         self.configuration = flows.Configuration(datastore=datastore, executor=executor)
 
-        self.dependencies: Dict[str, Tuple[str, ...]] = {}
         self._registry: Dict[str, Layer] = {}
 
     @property
@@ -176,6 +187,12 @@ class Flow:
             self.layer(child): tuple(self.layer(parent) for parent in parents)
             for child, parents in self.dependencies.items()
         }
+
+    @property
+    def dependencies(self) -> Dict[str, Tuple[str, ...]]:
+        """A mapping of each layer and the layers it depends on."""
+
+        return {layer: self.layer(layer).dependencies for layer in self._registry}
 
     @property
     def _dependents(self) -> Dict[Layer, Set[Layer]]:
@@ -254,6 +271,9 @@ class Flow:
         finished: Set[str] = set()
         pending = get_pending(dependencies=dependencies, finished=finished)
 
+        if not pending:
+            raise FlowError(f"A cycle exists in the {self.name} flow. Dependencies: {dependencies}")
+
         while pending:
             for layer in pending:
 
@@ -272,7 +292,7 @@ class Flow:
 
     def register(
         self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
-    ) -> Callable[[L], L]:
+    ) -> Callable[[LayerType], LayerType]:
         """Add a layer to the flow.
 
         Usage::
@@ -282,11 +302,11 @@ class Flow:
                 ...
         """
 
-        def wrapper(Layer: L) -> L:
+        def wrapper(Layer: LayerType) -> LayerType:
 
             layer = Layer(configuration=layers.Configuration(container=container, foreach=foreach))
 
-            if layer.name in self.dependencies:
+            if layer.name in self._registry:
                 raise FlowError(
                     f"Duplicate layer added to flow '{self.name}'.\n"
                     f"  Given layer '{layer.name}'.\n"
@@ -295,10 +315,6 @@ class Flow:
 
             # First register the layer without the flow attribute
             self._registry[layer.name] = deepcopy(layer)
-
-            # Then inject it to get the layer dependencies
-            layer.flow = self
-            self.dependencies[layer.name] = layer.dependencies
 
             return Layer
 

@@ -28,7 +28,7 @@ class One(Layer):
 
 @flow.register(container=container)
 class Two(Layer):
-    def __call__(self, one: One) -> None:  # type: ignore
+    def __call__(self, one: One, three: "Three") -> None:
         self.bar = one.foo
         print(self.bar)
 
@@ -37,7 +37,7 @@ class Two(Layer):
 class Three(Layer):
     baz: List[str]
 
-    def __call__(self, one: One) -> None:  # type: ignore
+    def __call__(self, one: One) -> None:
         self.baz = one.baz
         print(self.baz)
 
@@ -48,17 +48,18 @@ class Three(Layer):
 class Five(Layer):
     baz: List[str]
 
-    def __call__(self, three: Three) -> None:  # type: ignore
+    def __call__(self, three: Three) -> None:
         self.baz = three.baz
         print(self.baz)
 
 
 @flow.register(container=container)
 class Four(Layer):
-    def __call__(self, two: Two, five: Five) -> None:  # type: ignore
+    def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]
         print(self.end)
 
 
 if __name__ == "__main__":
+    # print(flow.dependencies)
     flow()
