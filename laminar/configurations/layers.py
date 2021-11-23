@@ -1,8 +1,6 @@
 """Configurations for laminar layers."""
 
-import inspect
 import itertools
-from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
@@ -31,24 +29,6 @@ class Container:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "workdir", self.workdir.rstrip("/"))
-
-    def __call__(self) -> None:
-        ...
-
-    def set(self, *, layer: Layer) -> "Container":
-        """Set user defined configuration.
-
-        Returns:
-            Container: User configured container configuration.
-        """
-
-        container = deepcopy(self)
-        annotations: Tuple[Layer, ...] = tuple(
-            parameter.annotation() for parameter in inspect.signature(container.__call__).parameters.values()
-        )
-        parameters = tuple(layer.flow.layer(annotation.name) for annotation in annotations)
-        container(*parameters)
-        return container
 
 
 @dataclass(frozen=True)

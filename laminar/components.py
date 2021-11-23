@@ -257,9 +257,6 @@ class Flow:
         while pending:
             for layer in pending:
 
-                # Set dynamic layer configuration
-                object.__setattr__(layer.configuration, "container", layer.configuration.container.set(layer=layer))
-
                 self.configuration.executor.run(execution=execution, layer=layer)
 
                 finished.add(layer.name)

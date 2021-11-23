@@ -68,37 +68,3 @@ python main.py
 
 >>> 4 2000
 ```
-
-## Dynamic Configuration
-
-Not executions of the same flow need the same resources. Even if the data is being processed in the same way, the amount of data can affect how much cpu/memory needs to be allocated to accomplish the given task.
-
-The `Container` configuration can be subclassed and the `__call__` function overwritten to provide a dynamic configuration based off of the outputs of a previous step. `__call__` follows the same parameter rules as a `Layer` does and can also pull in arbitrary layers as inputs.
-
-```python
-from laminar import Flow, Layer
-from laminar.configurations.layers import Container
-
-flow = Flow("ConfiguredFlow")
-
-@flow.layer
-class Start(Layer):
-    def __call__(self) -> None:
-        self.foo = True
-
-class ConfiguredContainer(Container):
-    def __call__(self, one: One) -> None:
-        if one.foo:
-            self.cpu = 2
-        else:
-            self.memory = 5000
-
-@flow.register(container=ConfiguredContainer())
-class Configured(Layer):
-    ...
-
-if __name__ == "__main__":
-    flow()
-```
-
-Prior to the execution of the `Configured` layer, `ConfiguredContainer` will be provided layer `One` as an input parameter to `__call__` to dynamically overwrite values on itself.

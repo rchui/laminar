@@ -30,6 +30,7 @@ class One(Layer):
 class Two(Layer):
     def __call__(self, one: One) -> None:  # type: ignore
         self.bar = one.foo
+        print(self.bar)
 
 
 @flow.register(container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
@@ -52,13 +53,7 @@ class Five(Layer):
         print(self.baz)
 
 
-class FourContainer(layers.Container):
-    def __call__(self, one: One) -> None:  # type: ignore
-        if one.foo == "bar":
-            self.memory = 2000
-
-
-@flow.register(container=FourContainer(image="test"))
+@flow.register(container=container)
 class Four(Layer):
     def __call__(self, two: Two, five: Five) -> None:  # type: ignore
         self.end = [two.bar, list(five.baz)]
