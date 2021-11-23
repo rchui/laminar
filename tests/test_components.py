@@ -7,10 +7,11 @@ from unittest.mock import ANY, Mock, patch
 import cloudpickle
 import pytest
 
-from laminar import Flow, Layer, contexts
+from laminar import Flow, Layer
 from laminar.configurations import datastores
 from laminar.exceptions import FlowError, LayerError
 from laminar.settings import current
+from laminar.utils import contexts
 
 
 class TestLayer:
@@ -71,7 +72,7 @@ class TestLayer:
 
         @flow.register()
         class Test(Layer):
-            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:  # type: ignore
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
         assert flow.layer(Test).dependencies == ("Dep1", "Dep2")
@@ -134,7 +135,7 @@ class TestFLow:
 
         @flow.register()
         class Test(Layer):
-            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:  # type: ignore
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
         assert flow.dependencies == {"Dep1": (), "Dep2": (), "Test": ("Dep1", "Dep2")}
@@ -173,7 +174,7 @@ class TestFLow:
 
         @flow.register()
         class Test(Layer):
-            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:  # type: ignore
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
         assert {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test()}

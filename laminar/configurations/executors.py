@@ -6,7 +6,7 @@ import subprocess
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from laminar import contexts
+from laminar.utils import contexts
 
 logger = logging.getLogger(__name__)
 

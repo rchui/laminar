@@ -1,8 +1,7 @@
 # from dataclasses import dataclass
-import inspect
 import logging
 from copy import deepcopy
-from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, Union
 
 from ksuid import Ksuid
 
@@ -10,12 +9,11 @@ from laminar.configurations import datastores, executors, flows, layers
 from laminar.configurations.datastores import Accessor
 from laminar.exceptions import FlowError, LayerError
 from laminar.settings import current
+from laminar.types import HookType, LayerType, annotations
 
 logger = logging.getLogger(__name__)
 
 LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "namespace", "splits"}
-
-HookType = TypeVar("HookType", bound=Callable[..., layers.Configuration])
 
 
 class Layer:
@@ -100,9 +98,7 @@ class Layer:
 
     @property
     def _dependencies(self) -> Tuple["Layer", ...]:
-        return tuple(
-            self.flow.layer(parameter.annotation) for parameter in inspect.signature(self.__call__).parameters.values()
-        )
+        return tuple(self.flow.layer(annotation) for annotation in annotations(self.__call__))
 
     @property
     def dependencies(self) -> Tuple[str, ...]:
@@ -134,9 +130,6 @@ class Layer:
     @staticmethod
     def post(hook: HookType) -> HookType:
         return hook
-
-
-LayerType = TypeVar("LayerType", bound=Type[Layer])
 
 
 class Flow:
