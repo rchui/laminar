@@ -3,11 +3,13 @@
 * [Basics](https://rchui.github.io/laminar/basics)
 * [Scaling Up](https://rchui.github.io/laminar/scaling_up)
 * [Scaling Out](https://rchui.github.io/laminar/scaling_out)
+* [Hooks](https://rchui.github.io/laminar/hooks)
 
 ## Contents
 
 * TOC
 {:toc}
+
 
 ## Registering Layers
 

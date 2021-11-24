@@ -13,7 +13,7 @@ from dacite.core import from_dict
 from laminar.utils import fs
 
 if TYPE_CHECKING:
-    from laminar.components import Layer
+    from laminar import Layer
 else:
     Layer = "Layer"
 

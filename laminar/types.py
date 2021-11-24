@@ -1,14 +1,11 @@
 import inspect
 from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, TypeVar
 
-from laminar.configurations.layers import Configuration
-
 if TYPE_CHECKING:
     from laminar import Layer
 else:
     Layer = "Layer"
 
-HookType = TypeVar("HookType", bound=Callable[..., Configuration])
 LayerType = TypeVar("LayerType", bound=Type[Layer])
 
 

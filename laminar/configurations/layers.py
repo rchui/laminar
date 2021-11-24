@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 from laminar.configurations.datastores import Accessor, Archive
 
 if TYPE_CHECKING:
-    from laminar.components import Layer
+    from laminar import Layer
 else:
     Layer = "Layer"
 
@@ -31,7 +31,7 @@ class Container:
         object.__setattr__(self, "workdir", self.workdir.rstrip("/"))
 
 
-@dataclass(frozen=True)
+@dataclass
 class Parameter:
     """Input for configuring a ForEach."""
 
@@ -40,7 +40,7 @@ class Parameter:
     index: Optional[int] = 0
 
 
-@dataclass(frozen=True)
+@dataclass
 class ForEach:
     """Configures a layer to perform a grid-foreach over the configured properties.
 
@@ -143,7 +143,7 @@ class ForEach:
         return parameters
 
 
-@dataclass(frozen=True)
+@dataclass
 class Configuration:
     container: Container = Container()
     foreach: ForEach = ForEach()

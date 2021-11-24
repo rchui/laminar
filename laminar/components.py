@@ -3,13 +3,13 @@ import logging
 from copy import deepcopy
 from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, Union
 
-from ksuid import Ksuid
+from ksuid import KsuidMs
 
-from laminar.configurations import datastores, executors, flows, layers
+from laminar.configurations import datastores, executors, flows, hooks, layers
 from laminar.configurations.datastores import Accessor
 from laminar.exceptions import FlowError, LayerError
 from laminar.settings import current
-from laminar.types import HookType, LayerType, annotations
+from laminar.types import LayerType, annotations
 
 logger = logging.getLogger(__name__)
 
@@ -123,14 +123,6 @@ class Layer:
         for artifact, sequence in artifacts.items():
             self.flow.configuration.datastore.write(layer=self, name=artifact, values=sequence)
 
-    @staticmethod
-    def pre(hook: HookType) -> HookType:
-        return hook
-
-    @staticmethod
-    def post(hook: HookType) -> HookType:
-        return hook
-
 
 class Flow:
     """Collection of tasks that execute in a specific order.
@@ -223,7 +215,7 @@ class Flow:
 
         # Execute the flow.
         else:
-            self.execution = str(Ksuid())
+            self.execution = str(KsuidMs())
             self.schedule(execution=self.execution, dependencies=self.dependencies)
             self.execution = None
 
@@ -234,17 +226,20 @@ class Flow:
             layer (Layer): Layer of the flow to execute.
         """
 
+        logger.info("Starting layer '%s'.", layer.name)
+
         parameters = self._dependencies[layer]
         parameters = layer.configuration.foreach.set(layer=layer, parameters=parameters)
 
-        logger.info("Starting layer '%s'.", layer.name)
-        layer(*parameters)
-        logger.info("Finishing layer '%s'.", layer.name)
+        with hooks.context(layer=layer, annotation=hooks.annotation.execution):
+            layer(*parameters)
 
         artifacts = vars(layer)
         for artifact, value in artifacts.items():
             if artifact not in LAYER_RESERVED_KEYWORDS:
                 self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
+
+        logger.info("Finishing layer '%s'.", layer.name)
 
     def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
         """Schedule layers to run in sequence in the flow.

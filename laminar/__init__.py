@@ -1,4 +1,4 @@
-from laminar import components
+from laminar.components import Flow as Flow
+from laminar.components import Layer as Layer
 
-Flow = components.Flow
-Layer = components.Layer
+__all__ = ["Flow", "Layer"]

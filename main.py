@@ -1,11 +1,10 @@
 import logging
-from typing import List, Set
+from typing import Generator, List
 
 from laminar import Flow, Layer
-from laminar.configurations import datastores, executors, layers
+from laminar.configurations import datastores, executors, hooks, layers
 
 logging.basicConfig(level=logging.INFO)
-
 
 flow = Flow(name="TestFlow", datastore=datastores.Local(), executor=executors.Docker())
 # flow = Flow(name="TestFlow", datastore=datastores.Memory(), executor=executors.Thread())
@@ -22,9 +21,6 @@ class One(Layer):
         self.foo = "bar"
         self.shard(baz=["a", "b", "c"])
 
-    def __next__(self) -> Set[Layer]:
-        return self.next(Two)
-
 
 @flow.register(container=container)
 class Two(Layer):
@@ -40,6 +36,12 @@ class Three(Layer):
     def __call__(self, one: One) -> None:
         self.baz = one.baz
         print(self.baz)
+
+    @hooks.schedule
+    def configure_container(self, one: One) -> Generator[None, None, None]:
+        assert self.index is not None
+        self.configuration.container.memory = {"a": 1000, "b": 15000, "c": 2000}[one.baz[self.index]]
+        yield
 
 
 @flow.register(
@@ -61,5 +63,4 @@ class Four(Layer):
 
 
 if __name__ == "__main__":
-    # print(flow.dependencies)
     flow()
