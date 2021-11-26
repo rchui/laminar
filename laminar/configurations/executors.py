@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from laminar.configurations import hooks
-from laminar.utils import contexts
 
 logger = logging.getLogger(__name__)
 
@@ -29,21 +28,18 @@ class Thread(Executor):
 
         splits = layer.configuration.foreach.size(layer=layer)
         for index in range(splits):
-            layer = layer.flow.layer(layer)
+            layer = layer.flow.layer(layer, index=index, splits=splits)
 
-            with contexts.Attributes(layer, index=index, splits=splits), contexts.Attributes(
-                layer.flow, execution=execution
-            ):
-                with hooks.context(layer=layer, annotation=hooks.annotation.schedule):
-                    base_attributes = set(vars(layer))
+            with hooks.context(layer=layer, annotation=hooks.annotation.schedule):
+                base_attributes = set(vars(layer))
 
-                    layer.flow.execute(layer=layer)
+                layer.flow.execute(execution=execution, layer=layer)
 
-                    # Use the starting attributes to remove anything that was set while executing the layer
-                    execution_attributes = list(vars(layer))
-                    for key in execution_attributes:
-                        if key not in base_attributes:
-                            delattr(layer, key)
+                # Use the starting attributes to remove anything that was set while executing the layer
+                execution_attributes = list(vars(layer))
+                for key in execution_attributes:
+                    if key not in base_attributes:
+                        delattr(layer, key)
 
 
 @dataclass(frozen=True)
@@ -60,31 +56,28 @@ class Docker(Executor):
 
         splits = layer.configuration.foreach.size(layer=layer)
         for index in range(splits):
-            layer = layer.flow.layer(layer)
+            layer = layer.flow.layer(layer, index=index, splits=splits)
 
-            with contexts.Attributes(layer, index=index, splits=splits), contexts.Attributes(
-                layer.flow, execution=execution
-            ):
-                with hooks.context(layer=layer, annotation=hooks.annotation.schedule):
-                    command = " ".join(
-                        [
-                            "docker",
-                            "run",
-                            "--rm",
-                            "--interactive",
-                            "--tty",
-                            f"--cpus {layer.configuration.container.cpu}",
-                            f"--env LAMINAR_EXECUTION_ID={execution}",
-                            f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
-                            f"--env LAMINAR_LAYER_INDEX={index}",
-                            f"--env LAMINAR_LAYER_NAME={layer.name}",
-                            f"--env LAMINAR_LAYER_SPLITS={splits}",
-                            f"--memory {layer.configuration.container.memory}m",
-                            f"--volume {workspace}",
-                            f"--workdir {layer.configuration.container.workdir}",
-                            layer.configuration.container.image,
-                            layer.configuration.container.command,
-                        ]
-                    )
-                    logger.debug(command)
-                    subprocess.run(shlex.split(command), check=True)
+            with hooks.context(layer=layer, annotation=hooks.annotation.schedule):
+                command = " ".join(
+                    [
+                        "docker",
+                        "run",
+                        "--rm",
+                        "--interactive",
+                        "--tty",
+                        f"--cpus {layer.configuration.container.cpu}",
+                        f"--env LAMINAR_EXECUTION_ID={execution}",
+                        f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
+                        f"--env LAMINAR_LAYER_INDEX={index}",
+                        f"--env LAMINAR_LAYER_NAME={layer.name}",
+                        f"--env LAMINAR_LAYER_SPLITS={splits}",
+                        f"--memory {layer.configuration.container.memory}m",
+                        f"--volume {workspace}",
+                        f"--workdir {layer.configuration.container.workdir}",
+                        layer.configuration.container.image,
+                        layer.configuration.container.command,
+                    ]
+                )
+                logger.debug(command)
+                subprocess.run(shlex.split(command), check=True)

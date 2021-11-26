@@ -5,6 +5,7 @@ from laminar import Flow, Layer
 from laminar.configurations import datastores, executors, hooks, layers
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 flow = Flow(name="TestFlow", datastore=datastores.Local(), executor=executors.Docker())
 # flow = Flow(name="TestFlow", datastore=datastores.Memory(), executor=executors.Thread())
@@ -20,6 +21,12 @@ class One(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
         self.shard(baz=["a", "b", "c"])
+
+    @hooks.execution
+    def configure_hello(self) -> Generator[None, None, None]:
+        logger.info("hello before")
+        yield
+        logger.info("hello after")
 
 
 @flow.register(container=container)

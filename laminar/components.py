@@ -6,13 +6,14 @@ from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, Un
 from ksuid import KsuidMs
 
 from laminar.configurations import datastores, executors, flows, hooks, layers
-from laminar.configurations.datastores import Accessor
 from laminar.exceptions import FlowError, LayerError
 from laminar.settings import current
 from laminar.types import LayerType, annotations
+from laminar.utils import contexts
 
 logger = logging.getLogger(__name__)
 
+FLOW_RESREVED_KEYWORDS = {"execution"}
 LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "namespace", "splits"}
 
 
@@ -77,7 +78,7 @@ class Layer:
 
         # The layer has multiple splits. Create an accessor for all artifact splits.
         else:
-            value = Accessor(archive=self.configuration.foreach.join(layer=self, name=name), layer=self)
+            value = datastores.Accessor(archive=self.configuration.foreach.join(layer=self, name=name), layer=self)
 
         return value
 
@@ -211,35 +212,36 @@ class Flow:
 
         # Execute a layer in the flow.
         if self.execution and current.layer.name:
-            self.execute(layer=self.layer(current.layer.name))
+            self.execute(execution=self.execution, layer=self.layer(current.layer.name))
 
         # Execute the flow.
         else:
-            self.execution = str(KsuidMs())
-            self.schedule(execution=self.execution, dependencies=self.dependencies)
-            self.execution = None
+            self.schedule(execution=str(KsuidMs()), dependencies=self.dependencies)
 
-    def execute(self, *, layer: Layer) -> None:
+    def execute(self, *, execution: str, layer: Layer) -> None:
         """Execute a single layer of the flow.
 
         Args:
+            execution (str): ID of the execution being run.
             layer (Layer): Layer of the flow to execute.
         """
 
-        logger.info("Starting layer '%s'.", layer.name)
+        with contexts.Attributes(self, execution=execution):
 
-        parameters = self._dependencies[layer]
-        parameters = layer.configuration.foreach.set(layer=layer, parameters=parameters)
+            logger.info("Starting layer '%s'.", layer.name)
 
-        with hooks.context(layer=layer, annotation=hooks.annotation.execution):
-            layer(*parameters)
+            parameters = self._dependencies[layer]
+            parameters = layer.configuration.foreach.set(layer=layer, parameters=parameters)
 
-        artifacts = vars(layer)
-        for artifact, value in artifacts.items():
-            if artifact not in LAYER_RESERVED_KEYWORDS:
-                self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
+            with hooks.context(layer=layer, annotation=hooks.annotation.execution):
+                layer(*parameters)
 
-        logger.info("Finishing layer '%s'.", layer.name)
+            artifacts = vars(layer)
+            for artifact, value in artifacts.items():
+                if artifact not in LAYER_RESERVED_KEYWORDS:
+                    self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
+
+            logger.info("Finishing layer '%s'.", layer.name)
 
     def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
         """Schedule layers to run in sequence in the flow.
@@ -256,27 +258,29 @@ class Flow:
                 if child not in finished and set(parents).issubset(finished)
             }
 
-        finished: Set[str] = set()
-        pending = get_pending(dependencies=dependencies, finished=finished)
+        with contexts.Attributes(self, execution=execution):
 
-        if not pending:
-            raise FlowError(f"A cycle exists in the {self.name} flow. Dependencies: {dependencies}")
-
-        while pending:
-            for layer in pending:
-
-                self.configuration.executor.run(execution=execution, layer=layer)
-
-                finished.add(layer.name)
-
+            finished: Set[str] = set()
             pending = get_pending(dependencies=dependencies, finished=finished)
 
-            if not pending and (set(dependencies) - finished):
-                raise FlowError(
-                    f"A dependency exists for a step that is not registered with the {self.name} flow."
-                    f" Finished steps: {sorted(finished)}."
-                    f" Remaining dependencies: {dependencies}."
-                )
+            if not pending:
+                raise FlowError(f"A cycle exists in the {self.name} flow. Dependencies: {dependencies}")
+
+            while pending:
+                for layer in pending:
+
+                    self.configuration.executor.run(execution=execution, layer=layer)
+
+                    finished.add(layer.name)
+
+                pending = get_pending(dependencies=dependencies, finished=finished)
+
+                if not pending and (set(dependencies) - finished):
+                    raise FlowError(
+                        f"A dependency exists for a step that is not registered with the {self.name} flow."
+                        f" Finished steps: {sorted(finished)}."
+                        f" Remaining dependencies: {dependencies}."
+                    )
 
     def register(
         self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
