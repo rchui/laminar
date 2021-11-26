@@ -2,12 +2,12 @@
 
 import dataclasses
 import hashlib
-import json
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Union, overload
 
 import cloudpickle
+import yaml
 from dacite.core import from_dict
 
 from laminar.utils import fs
@@ -51,7 +51,7 @@ class Archive:
     @staticmethod
     def path(*, layer: Layer, index: int, name: str) -> str:
         assert layer.flow.execution is not None
-        return os.path.join(layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.json")
+        return os.path.join(layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.yaml")
 
     def dict(self) -> Dict[str, List[Dict[str, str]]]:
         return dataclasses.asdict(self)
@@ -119,7 +119,7 @@ class DataStore:
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
-            return Archive.parse(json.load(file))
+            return Archive.parse(yaml.safe_load(file))
 
     def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
         """Read an archive from the laminar datastore.
@@ -174,7 +174,7 @@ class DataStore:
 
     def _write_archive(self, *, path: str, archive: Archive) -> None:
         with fs.open(self.uri(path=path), "w") as file:
-            json.dump(archive.dict(), file)
+            yaml.safe_dump(archive.dict(), file)
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
         with fs.open(self.uri(path=path), "wb") as file:
@@ -214,7 +214,7 @@ class Local(DataStore):
         Path(uri).parent.mkdir(parents=True, exist_ok=True)
 
         with fs.open(self.uri(path=path), "w") as file:
-            json.dump(archive.dict(), file)
+            yaml.safe_dump(archive.dict(), file)
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
         uri = self.uri(path=path)
