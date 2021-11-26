@@ -4,7 +4,7 @@ import itertools
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
-from laminar.configurations.datastores import Accessor, Archive
+from laminar.configurations import datastores
 
 if TYPE_CHECKING:
     from laminar import Layer
@@ -57,7 +57,7 @@ class ForEach:
 
     parameters: Iterable[Parameter] = field(default_factory=list)
 
-    def join(self, *, layer: Layer, name: str) -> Archive:
+    def join(self, *, layer: Layer, name: str) -> datastores.Archive:
         """Join together multiple artifact splits of a layer into a single Archive.
 
         Args:
@@ -65,14 +65,14 @@ class ForEach:
             name (str): Name of the attribute to join archives for.
 
         Returns:
-            Archive: Archive created from multiple layer archives.
+            datastores.Archive: Archive created from multiple layer archives.
         """
 
         artifacts = [
             layer.flow.configuration.datastore.read_archive(layer=layer, index=index, name=name).artifacts
             for index in range(layer.configuration.foreach.size(layer=layer))
         ]
-        return Archive(artifacts=list(itertools.chain.from_iterable(artifacts)))
+        return datastores.Archive(artifacts=list(itertools.chain.from_iterable(artifacts)))
 
     def grid(self, *, layer: Layer) -> List[Dict[Layer, Dict[str, int]]]:
         """Generate a grid of all combinations of foreach inputs.
@@ -86,7 +86,7 @@ class ForEach:
         """
 
         parameters: List[Tuple[Layer, str]] = []
-        archives: List[Archive] = []
+        archives: List[datastores.Archive] = []
 
         for parameter in self.parameters:
             instance = layer.flow.layer(parameter.layer)
@@ -137,7 +137,7 @@ class ForEach:
                 value = getattr(parameter, attribute)
 
                 # Index only if the requested attribute is an Accessor
-                value = value[index] if isinstance(value, Accessor) else value
+                value = value[index] if isinstance(value, datastores.Accessor) else value
                 setattr(parameter, attribute, value)
 
         return parameters

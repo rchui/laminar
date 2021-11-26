@@ -6,9 +6,12 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Union, overload
 
+import boto3
+import botocore
 import cloudpickle
 import yaml
 from dacite.core import from_dict
+from mypy_boto3_s3.service_resource import S3ServiceResource
 
 from laminar.utils import fs
 
@@ -117,6 +120,9 @@ class DataStore:
     def uri(self, *, path: str) -> str:
         return os.path.join(self.root, path)
 
+    def exists(self, *, uri: str) -> bool:
+        return os.path.isfile(fs.parse_uri(uri).uri_path)
+
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
             return Archive.parse(yaml.safe_load(file))
@@ -125,9 +131,9 @@ class DataStore:
         """Read an archive from the laminar datastore.
 
         Args:
-            layer (Layer): Layer being read from.
-            index (int): Layer index being read from.
-            name (str): Name of the artifact the archive is for.
+            layer: Layer being read from.
+            index: Layer index being read from.
+            name: Name of the artifact the archive is for.
 
         Returns:
             Archive: Archive of the requested artifact.
@@ -231,6 +237,9 @@ class Memory(DataStore):
     root: str = "memory:///"
     workspace: Dict[str, Any] = dataclasses.field(default_factory=dict)
 
+    def exists(self, *, uri: str) -> bool:
+        return uri in self.workspace
+
     def _read_archive(self, *, path: str) -> Archive:
         return self.workspace[self.uri(path=path)]
 
@@ -247,3 +256,16 @@ class Memory(DataStore):
 @dataclasses.dataclass(frozen=True)
 class S3(DataStore):
     """Store the laminar workspace in AWS S3."""
+
+    def exists(self, *, uri: str) -> bool:
+        parts = fs.parse_uri(uri)
+
+        try:  # Check if file exists
+            s3: S3ServiceResource = boto3.resource("s3")
+            s3.Object(parts.bucket_id, parts.key_id).load()
+            return True
+        except botocore.exceptions.ClientError as exception:
+            if exception.response["Error"]["Code"] == "404":
+                return False
+            else:  # Something else went wrong. Fail
+                raise
