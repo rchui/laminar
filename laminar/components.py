@@ -1,4 +1,3 @@
-# from dataclasses import dataclass
 import logging
 from copy import deepcopy
 from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, Union
@@ -69,18 +68,9 @@ class Layer:
             return False
 
     def __getattr__(self, name: str) -> Any:
-        # Get the number of splits present in the current layer.
-        splits = self.configuration.foreach.size(layer=self)
-
-        # The layer has only one split. Get the artifact directly
-        if splits == 1:
-            value = self.flow.configuration.datastore.read(layer=self, index=0, name=name)
-
-        # The layer has multiple splits. Create an accessor for all artifact splits.
-        else:
-            value = datastores.Accessor(archive=self.configuration.foreach.join(layer=self, name=name), layer=self)
-
-        return value
+        return self.flow.configuration.datastore.read_artifact(
+            layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
+        )
 
     def __getstate__(self) -> Dict[str, Any]:
         return self.__dict__
