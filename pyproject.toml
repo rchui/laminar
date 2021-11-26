@@ -35,4 +35,4 @@ check_untyped_defs = true
 allow_untyped_defs = false
 
 [tool.pytest.ini_options]
-addopts = "--durations 10 --failed-first --strict-markers"
+addopts = "-vv --durations 10 --failed-first --strict-markers"

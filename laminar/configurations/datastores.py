@@ -28,8 +28,8 @@ class Artifact:
 
     hexdigest: str
 
-    def path(self) -> str:
-        return os.path.join("artifacts", f"{self.hexdigest}.gz")
+    def path(self, *, layer: Layer) -> str:
+        return os.path.join(layer.flow.name, "artifacts", f"{self.hexdigest}.gz")
 
     def dict(self) -> Dict[str, str]:
         return dataclasses.asdict(self)
@@ -51,7 +51,7 @@ class Archive:
     @staticmethod
     def path(*, layer: Layer, index: int, name: str) -> str:
         assert layer.flow.execution is not None
-        return os.path.join(layer.flow.name, layer.flow.execution, layer.name, str(index), f"{name}.json")
+        return os.path.join(layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.json")
 
     def dict(self) -> Dict[str, List[Dict[str, str]]]:
         return dataclasses.asdict(self)
@@ -82,13 +82,17 @@ class Accessor:
             if key >= len(self.archive):
                 raise IndexError
 
-            return self.layer.flow.configuration.datastore._read_artifact(path=self.archive.artifacts[key].path())
+            return self.layer.flow.configuration.datastore._read_artifact(
+                path=self.archive.artifacts[key].path(layer=self.layer)
+            )
 
         # Slicing for multiple splits
         elif isinstance(key, slice):
             values: List[Any] = []
             for artifact in self.archive.artifacts[key]:
-                values.append(self.layer.flow.configuration.datastore._read_artifact(path=artifact.path()))
+                values.append(
+                    self.layer.flow.configuration.datastore._read_artifact(path=artifact.path(layer=self.layer))
+                )
             return values
 
         else:
@@ -96,7 +100,7 @@ class Accessor:
 
     def __iter__(self) -> Generator[Any, None, None]:
         for artifact in self.archive.artifacts:
-            yield self.layer.flow.configuration.datastore._read_artifact(path=artifact.path())
+            yield self.layer.flow.configuration.datastore._read_artifact(path=artifact.path(layer=self.layer))
 
     def __len__(self) -> int:
         return len(self.archive)
@@ -148,7 +152,7 @@ class DataStore:
 
         # Read the artifact value
         if len(archive) == 1:
-            return self._read_artifact(path=archive.artifacts[0].path())
+            return self._read_artifact(path=archive.artifacts[0].path(layer=layer))
 
         # Create an accessor for the artifacts
         else:
@@ -196,7 +200,7 @@ class DataStore:
 
         # Write the artifact(s) value
         for artifact, content in artifacts.items():
-            self._write_artifact(path=artifact.path(), content=content)
+            self._write_artifact(path=artifact.path(layer=layer), content=content)
 
 
 @dataclasses.dataclass(frozen=True)

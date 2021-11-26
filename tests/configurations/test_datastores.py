@@ -18,8 +18,8 @@ class TestArtifact:
     def test_dict(self) -> None:
         assert self.artifact.dict() == {"hexdigest": "foo"}
 
-    def test_path(self) -> None:
-        assert self.artifact.path() == "artifacts/foo.gz"
+    def test_path(self, layer: Layer) -> None:
+        assert self.artifact.path(layer=layer) == f"{layer.flow.name}/artifacts/foo.gz"
 
 
 class TestArchive:
@@ -34,7 +34,7 @@ class TestArchive:
     def test_path(self, layer: Layer) -> None:
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive")
-            == f"{layer.flow.name}/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.json"
+            == f"{layer.flow.name}/archives/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.json"
         )
 
     def test_parse(self) -> None:
@@ -46,8 +46,8 @@ class TestAccessor:
     @pytest.fixture(autouse=True)
     def _accessor(self, layer: Layer) -> None:
         workspace: Dict[str, Any] = layer.flow.configuration.datastore.workspace  # type: ignore
-        workspace["memory:///artifacts/test-hexdigest-0.gz"] = "foo"
-        workspace["memory:///artifacts/test-hexdigest-1.gz"] = "bar"
+        workspace["memory:///TestFlow/artifacts/test-hexdigest-0.gz"] = "foo"
+        workspace["memory:///TestFlow/artifacts/test-hexdigest-1.gz"] = "bar"
 
         self.accessor = Accessor(
             archive=Archive(
@@ -102,7 +102,9 @@ class TestDatastore:
 
         assert self.datastore.read_archive(layer=layer, index=0, name="test-archive") == self.archive
 
-        mock_open.assert_called_once_with("path/to/root/TestFlow/test-execution/Layer/0/test-archive.json", "r")
+        mock_open.assert_called_once_with(
+            "path/to/root/TestFlow/archives/test-execution/Layer/0/test-archive.json", "r"
+        )
 
     @patch("laminar.utils.fs.open")
     def test__read_artifact(self, mock_open: Mock) -> None:
@@ -121,7 +123,7 @@ class TestDatastore:
             == "test-value"
         )
 
-        mock_open.assert_called_once_with("path/to/root/artifacts/foo.gz", "rb")
+        mock_open.assert_called_once_with("path/to/root/TestFlow/artifacts/foo.gz", "rb")
 
     def test_read_artifact_accessor(self, layer: Layer) -> None:
         assert self.datastore.read_artifact(layer=layer, archive=self.archive) == Accessor(
@@ -166,7 +168,7 @@ class TestDatastore:
         self.datastore.write(layer=layer, name="test-artifact", values=[True])
 
         mock_write_archive.assert_called_once_with(
-            path="TestFlow/test-execution/Layer/0/test-artifact.json",
+            path="TestFlow/archives/test-execution/Layer/0/test-artifact.json",
             archive=Archive(
                 artifacts=[
                     Artifact(hexdigest="112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc"),
@@ -174,6 +176,6 @@ class TestDatastore:
             ),
         )
         mock_write_artifact.assert_called_once_with(
-            path="artifacts/112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc.gz",
+            path="TestFlow/artifacts/112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc.gz",
             content=b"\x80\x04\x88.",
         )
