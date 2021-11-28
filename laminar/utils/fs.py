@@ -28,8 +28,45 @@ def open(uri: str, mode: Literal["wb"]) -> BinaryIO:
 
 @contextmanager  # type: ignore
 def open(uri: str, mode: Literal["r", "rb", "w", "wb"]) -> Union[BinaryIO, TextIO]:
+    """Open a file handler to a local or remote file.
+
+    Usage::
+
+        with fs.open("file:///...", "r") as file: ...
+        with fs.open("s3://...", "wb") as file: ...
+
+    Args:
+        uri (str): URI to the file to open.
+        mode (Literal[): Mode to open the file with.
+
+    Returns:
+        Union[BinaryIO, TextIO]: File handle to the local/remote file.
+    """
+
     if smart_open.parse_uri(uri).scheme == "file" and "w" in mode:
         Path(uri).parent.mkdir(parents=True, exist_ok=True)
 
     with smart_open.open(uri, mode) as file:
         yield file
+
+
+def exists(*, uri: str) -> bool:
+    """Check for the existance of a local/remote file.
+
+    Usage::
+
+        fs.exists("file:///...")
+        fs.exists("s3://...")
+
+    Args:
+        uri (str): URI to the file to check.
+
+    Returns:
+        bool: True if the file exists, else False.
+    """
+
+    try:
+        with open(uri, "rb"):
+            return True
+    except IOError:
+        return False

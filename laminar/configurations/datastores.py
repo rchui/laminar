@@ -118,11 +118,7 @@ class DataStore:
         return os.path.join(self.root, path)
 
     def exists(self, *, uri: str) -> bool:
-        try:
-            with fs.open(uri, "r"):
-                return True
-        except IOError:
-            return False
+        return fs.exists(uri=uri)
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
