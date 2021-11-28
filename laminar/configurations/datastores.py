@@ -6,12 +6,9 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Union, overload
 
-import boto3
-import botocore
 import cloudpickle
 import yaml
 from dacite.core import from_dict
-from mypy_boto3_s3.service_resource import S3ServiceResource
 
 from laminar.utils import fs
 
@@ -43,7 +40,7 @@ class Archive:
     """Handler for archives in the laminar datastore.
 
     Notes:
-        Archives are metadata for artifacts.r
+        Archives are metadata for artifacts.
     """
 
     artifacts: List[Artifact]
@@ -121,7 +118,11 @@ class DataStore:
         return os.path.join(self.root, path)
 
     def exists(self, *, uri: str) -> bool:
-        return os.path.isfile(fs.parse_uri(uri).uri_path)
+        try:
+            with fs.open(uri, "r"):
+                return True
+        except IOError:
+            return False
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
@@ -215,19 +216,10 @@ class Local(DataStore):
 
     root: str = str(Path.cwd() / ".laminar")
 
-    def _write_archive(self, *, path: str, archive: Archive) -> None:
-        uri = self.uri(path=path)
-        Path(uri).parent.mkdir(parents=True, exist_ok=True)
 
-        with fs.open(self.uri(path=path), "w") as file:
-            yaml.safe_dump(archive.dict(), file)
-
-    def _write_artifact(self, *, path: str, content: bytes) -> None:
-        uri = self.uri(path=path)
-        Path(uri).parent.mkdir(parents=True, exist_ok=True)
-
-        with fs.open(uri, "wb") as file:
-            file.write(content)
+@dataclasses.dataclass(frozen=True)
+class S3(DataStore):
+    """Store the laminar workspace in AWS S3."""
 
 
 @dataclasses.dataclass(frozen=True)
@@ -251,21 +243,3 @@ class Memory(DataStore):
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
         self.workspace[self.uri(path=path)] = cloudpickle.loads(content)
-
-
-@dataclasses.dataclass(frozen=True)
-class S3(DataStore):
-    """Store the laminar workspace in AWS S3."""
-
-    def exists(self, *, uri: str) -> bool:
-        parts = fs.parse_uri(uri)
-
-        try:  # Check if file exists
-            s3: S3ServiceResource = boto3.resource("s3")
-            s3.Object(parts.bucket_id, parts.key_id).load()
-            return True
-        except botocore.exceptions.ClientError as exception:
-            if exception.response["Error"]["Code"] == "404":
-                return False
-            else:  # Something else went wrong. Fail
-                raise

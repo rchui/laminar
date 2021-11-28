@@ -4,7 +4,6 @@ botocore
 boto3
 cloudpickle
 dacite
-boto3-stubs[s3]
 pydantic
 pyyaml
 smart_open
