@@ -33,8 +33,12 @@ class TestArchive:
 
     def test_path(self, layer: Layer) -> None:
         assert (
-            self.archive.path(layer=layer, index=0, name="test-archive")
+            self.archive.path(layer=layer, index=0, name="test-archive", cache=False)
             == f"{layer.flow.name}/archives/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.yaml"
+        )
+        assert (
+            self.archive.path(layer=layer, index=0, name="test-archive", cache=True)
+            == f"{layer.flow.name}/.cache/{layer.flow.execution}/{layer.name}/test-archive.yaml"
         )
 
     def test_parse(self) -> None:

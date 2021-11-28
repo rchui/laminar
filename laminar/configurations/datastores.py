@@ -4,7 +4,7 @@ import dataclasses
 import hashlib
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Union, overload
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Tuple, Union, overload
 
 import cloudpickle
 import yaml
@@ -16,6 +16,27 @@ if TYPE_CHECKING:
     from laminar import Layer
 else:
     Layer = "Layer"
+
+
+@dataclasses.dataclass(frozen=True)
+class Record:
+    """Handler for metadata about how a Layer was executed."""
+
+    flow: str
+    layer: str
+    splits: int
+
+    @staticmethod
+    def path(*, layer: Layer) -> str:
+        assert layer.flow.execution is not None
+        return os.path.join(layer.flow.name, ".cache", layer.flow.execution, layer.name, ".record.yaml")
+
+    def dict(self) -> Dict[str, Any]:
+        return dataclasses.asdict(self)
+
+    @staticmethod
+    def parse(source: Dict[str, Any]) -> "Record":
+        return from_dict(Record, source)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -49,9 +70,14 @@ class Archive:
         return len(self.artifacts)
 
     @staticmethod
-    def path(*, layer: Layer, index: int, name: str) -> str:
+    def path(*, layer: Layer, index: int, name: str, cache: bool = False) -> str:
         assert layer.flow.execution is not None
-        return os.path.join(layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.yaml")
+        if cache:
+            parts: Tuple[str, ...] = (layer.flow.name, ".cache", layer.flow.execution, layer.name, f"{name}.yaml")
+        else:
+            parts = (layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.yaml")
+
+        return os.path.join(*parts)
 
     def dict(self) -> Dict[str, List[Dict[str, str]]]:
         return dataclasses.asdict(self)
@@ -117,8 +143,8 @@ class DataStore:
     def uri(self, *, path: str) -> str:
         return os.path.join(self.root, path)
 
-    def exists(self, *, uri: str) -> bool:
-        return fs.exists(uri=uri)
+    def exists(self, *, path: str) -> bool:
+        return fs.exists(uri=self.uri(path=path))
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
@@ -137,6 +163,10 @@ class DataStore:
         """
 
         return self._read_archive(path=Archive.path(layer=layer, index=index, name=name))
+
+    def _write_archive(self, *, path: str, archive: Archive) -> None:
+        with fs.open(self.uri(path=path), "w") as file:
+            yaml.safe_dump(archive.dict(), file)
 
     def _read_artifact(self, *, path: str) -> Any:
         with fs.open(self.uri(path=path), "rb") as file:
@@ -161,6 +191,10 @@ class DataStore:
         else:
             return Accessor(archive=archive, layer=layer)
 
+    def _write_artifact(self, *, path: str, content: bytes) -> None:
+        with fs.open(self.uri(path=path), "wb") as file:
+            file.write(content)
+
     def read(self, *, layer: Layer, index: int, name: str) -> Any:
         """Read an artifact from the laminar datastore.
 
@@ -174,14 +208,6 @@ class DataStore:
         """
 
         return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
-
-    def _write_archive(self, *, path: str, archive: Archive) -> None:
-        with fs.open(self.uri(path=path), "w") as file:
-            yaml.safe_dump(archive.dict(), file)
-
-    def _write_artifact(self, *, path: str, content: bytes) -> None:
-        with fs.open(self.uri(path=path), "wb") as file:
-            file.write(content)
 
     def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
         """Write an artifact to the laminar datastore.
@@ -205,6 +231,36 @@ class DataStore:
         for artifact, content in artifacts.items():
             self._write_artifact(path=artifact.path(layer=layer), content=content)
 
+    def _read_record(self, *, path: str) -> Record:
+        with fs.open(self.uri(path=path), "r") as file:
+            return Record.parse(yaml.safe_load(file))
+
+    def read_record(self, *, layer: Layer) -> Record:
+        """Read a layer record from the laminar datastore.
+
+        Args:
+            layer: Layer to get the record for.
+
+        Returns:
+            Layer record
+        """
+
+        return self._read_record(path=Record.path(layer=layer))
+
+    def _write_record(self, *, path: str, record: Record) -> None:
+        with fs.open(self.uri(path=path), "w") as file:
+            yaml.safe_dump(record.dict(), file)
+
+    def write_record(self, *, layer: Layer, record: Record) -> None:
+        """Write a layer record to the laminar datastore.
+
+        Args:
+            layer: Layer the record is for.
+            record: Record to write.
+        """
+
+        return self._write_record(path=record.path(layer=layer), record=record)
+
 
 @dataclasses.dataclass(frozen=True)
 class Local(DataStore):
@@ -225,8 +281,8 @@ class Memory(DataStore):
     root: str = "memory:///"
     workspace: Dict[str, Any] = dataclasses.field(default_factory=dict)
 
-    def exists(self, *, uri: str) -> bool:
-        return uri in self.workspace
+    def exists(self, *, path: str) -> bool:
+        return self.uri(path=path) in self.workspace
 
     def _read_archive(self, *, path: str) -> Archive:
         return self.workspace[self.uri(path=path)]
@@ -239,3 +295,9 @@ class Memory(DataStore):
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
         self.workspace[self.uri(path=path)] = cloudpickle.loads(content)
+
+    def _read_record(self, *, path: str) -> Record:
+        return self.workspace[self.uri(path=path)]
+
+    def _write_record(self, *, path: str, record: Record) -> None:
+        self.workspace[self.uri(path=path)] = record

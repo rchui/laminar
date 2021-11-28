@@ -77,9 +77,9 @@ class TestForEach:
             {self.A(): {"foo": 1}, self.B(): {"bar": 1}},
         ]
 
-    def test_size(self) -> None:
+    def test_splits(self) -> None:
         layer = self.flow.layer(self.C)
-        assert layer.configuration.foreach.size(layer=layer) == 4
+        assert layer.configuration.foreach.splits(layer=layer) == 4
 
     def test_set(self) -> None:
         layer = self.flow.layer(self.C, index=0)

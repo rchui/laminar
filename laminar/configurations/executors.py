@@ -6,7 +6,7 @@ import subprocess
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from laminar.configurations import hooks
+from laminar.configurations import datastores, hooks
 
 logger = logging.getLogger(__name__)
 
@@ -25,21 +25,33 @@ class Executor:
 @dataclass(frozen=True)
 class Thread(Executor):
     def run(self, *, execution: str, layer: Layer) -> None:
+        """Execute a layer in a thread.
 
-        splits = layer.configuration.foreach.size(layer=layer)
+        Args:
+            execution (str): Flow execution ID
+            layer (Layer): Layer to execute
+        """
+
+        splits = layer.configuration.foreach.splits(layer=layer)
         for index in range(splits):
             layer = layer.flow.layer(layer, index=index, splits=splits)
 
             with hooks.context(layer=layer, annotation=hooks.annotation.schedule):
+                # Gather the starting attributes
                 base_attributes = set(vars(layer))
 
                 layer.flow.execute(execution=execution, layer=layer)
 
-                # Use the starting attributes to remove anything that was set while executing the layer
+                # Reset anything that was set while executing the layer
                 execution_attributes = list(vars(layer))
                 for key in execution_attributes:
                     if key not in base_attributes:
                         delattr(layer, key)
+
+        # Cache the layer execution metadata
+        layer.flow.configuration.datastore.write_record(
+            layer=layer, record=datastores.Record(flow=layer.flow.name, layer=layer.name, splits=splits)
+        )
 
 
 @dataclass(frozen=True)
@@ -54,7 +66,7 @@ class Docker(Executor):
 
         workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
 
-        splits = layer.configuration.foreach.size(layer=layer)
+        splits = layer.configuration.foreach.splits(layer=layer)
         for index in range(splits):
             layer = layer.flow.layer(layer, index=index, splits=splits)
 
@@ -81,3 +93,8 @@ class Docker(Executor):
                 )
                 logger.debug(command)
                 subprocess.run(shlex.split(command), check=True)
+
+        # Cache the layer execution metadata
+        layer.flow.configuration.datastore.write_record(
+            layer=layer, record=datastores.Record(flow=layer.flow.name, layer=layer.name, splits=splits)
+        )

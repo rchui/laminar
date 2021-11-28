@@ -1,6 +1,7 @@
 """Configurations for laminar layers."""
 
 import itertools
+import logging
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
@@ -10,6 +11,8 @@ if TYPE_CHECKING:
     from laminar import Layer
 else:
     Layer = "Layer"
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -28,7 +31,8 @@ class Container:
     workdir: str = "/laminar"
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "workdir", self.workdir.rstrip("/"))
+        if not self.workdir.endswith(("://", ":///")):
+            object.__setattr__(self, "workdir", self.workdir.rstrip("/"))
 
 
 @dataclass
@@ -68,11 +72,24 @@ class ForEach:
             datastores.Archive: Archive created from multiple layer archives.
         """
 
-        artifacts = [
-            layer.flow.configuration.datastore.read_archive(layer=layer, index=index, name=name).artifacts
-            for index in range(layer.configuration.foreach.size(layer=layer))
-        ]
-        return datastores.Archive(artifacts=list(itertools.chain.from_iterable(artifacts)))
+        datastore = layer.flow.configuration.datastore
+        cache_path = datastores.Archive.path(layer=layer, index=0, name=name, cache=True)
+
+        if datastore.exists(path=cache_path):
+            logger.debug("Cache hit for layer '%s', archive '%s'.", layer.name, name)
+            archive = datastore._read_archive(path=cache_path)
+
+        else:
+            logger.debug("Cache miss for layer '%s', archive '%s'.", layer.name, name)
+            artifacts = [
+                datastore.read_archive(layer=layer, index=index, name=name).artifacts
+                for index in range(layer.configuration.foreach.splits(layer=layer))
+            ]
+            archive = datastores.Archive(artifacts=list(itertools.chain.from_iterable(artifacts)))
+
+            datastore._write_archive(path=cache_path, archive=archive)
+
+        return archive
 
     def grid(self, *, layer: Layer) -> List[Dict[Layer, Dict[str, int]]]:
         """Generate a grid of all combinations of foreach inputs.
@@ -114,10 +131,16 @@ class ForEach:
 
         return grid
 
-    def size(self, *, layer: Layer) -> int:
-        """Get the size of the ForEach grid."""
+    def splits(self, *, layer: Layer) -> int:
+        """Get the splits of the ForEach grid."""
 
-        return len(self.grid(layer=layer))
+        if layer.flow.configuration.datastore.exists(path=datastores.Record.path(layer=layer)):
+            logger.debug("Cache hit for layer '%s' record.", layer.name)
+            return layer.flow.configuration.datastore.read_record(layer=layer).splits
+
+        else:
+            logger.debug("Cache miss for layer '%s' record.", layer.name)
+            return len(self.grid(layer=layer))
 
     def set(self, *, layer: Layer, parameters: Tuple[Layer, ...]) -> Tuple[Layer, ...]:
         """Set a foreach layer's parameters given the inputs from the foreach grid.

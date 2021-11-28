@@ -36,8 +36,8 @@ def open(uri: str, mode: Literal["r", "rb", "w", "wb"]) -> Union[BinaryIO, TextI
         with fs.open("s3://...", "wb") as file: ...
 
     Args:
-        uri (str): URI to the file to open.
-        mode (Literal[): Mode to open the file with.
+        uri: URI to the file to open.
+        mode: Mode to open the file with.
 
     Returns:
         Union[BinaryIO, TextIO]: File handle to the local/remote file.
@@ -59,7 +59,7 @@ def exists(*, uri: str) -> bool:
         fs.exists("s3://...")
 
     Args:
-        uri (str): URI to the file to check.
+        uri: URI to the file to check.
 
     Returns:
         bool: True if the file exists, else False.
