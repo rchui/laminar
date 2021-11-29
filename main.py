@@ -7,13 +7,14 @@ from laminar.configurations import datastores, executors, hooks, layers
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-flow = Flow(name="TestFlow", datastore=datastores.Local(), executor=executors.Docker())
-# flow = Flow(name="TestFlow", datastore=datastores.Memory(), executor=executors.Thread())
+flow = Flow(name="Dockerflow", datastore=datastores.Local(), executor=executors.Docker())
+flow2 = Flow(name="ThreadFlow", datastore=datastores.Local(), executor=executors.Thread())
 
 container = layers.Container(image="test")
 
 
 @flow.register(container=container)
+@flow2.register()
 class One(Layer):
     baz: List[str]
     foo: str
@@ -30,13 +31,18 @@ class One(Layer):
 
 
 @flow.register(container=container)
+@flow2.register()
 class Two(Layer):
     def __call__(self, one: One, three: "Three") -> None:
         self.bar = one.foo
         print(self.bar)
 
 
-@flow.register(container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
+three_foreach = layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")])
+
+
+@flow.register(container=container, foreach=three_foreach)
+@flow2.register(foreach=three_foreach)
 class Three(Layer):
     baz: List[str]
 
@@ -51,9 +57,11 @@ class Three(Layer):
         yield
 
 
-@flow.register(
-    container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
-)
+five_foreach = layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
+
+
+@flow.register(container=container, foreach=five_foreach)
+@flow2.register(foreach=five_foreach)
 class Five(Layer):
     baz: List[str]
 
@@ -63,6 +71,7 @@ class Five(Layer):
 
 
 @flow.register(container=container)
+@flow2.register()
 class Four(Layer):
     def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]
@@ -71,3 +80,4 @@ class Four(Layer):
 
 if __name__ == "__main__":
     flow()
+    flow2()

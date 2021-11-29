@@ -23,9 +23,6 @@ else:
 class Executor:
     concurrency: int = 1
 
-    def schedule(self, *, execution: str, layer: Layer) -> None:
-        ...
-
     def queue(self, *, flow: Flow, dependencies: Dict[str, Tuple[str, ...]]) -> Generator[Layer, None, None]:
         """Get layers in a topologically sorted order.
 
@@ -40,11 +37,15 @@ class Executor:
         for name in toposort.toposort_flatten(dependencies):
             yield flow.layer(name)
 
+    def execute(self, layer: Layer) -> None:
+        """Execute a layer.
 
-@dataclass(frozen=True)
-class Thread(Executor):
-    def schedule(self, *, execution: str, layer: Layer) -> None:
-        """Execute a layer in a thread.
+        Args:
+            layer: Layer to execute.
+        """
+
+    def schedule(self, *, layer: Layer) -> None:
+        """Schedule a layer for execution.
 
         Args:
             execution (str): Flow execution ID
@@ -56,64 +57,64 @@ class Thread(Executor):
             instance = layer.flow.layer(layer, index=index, splits=splits)
 
             with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
-                instance.flow.execute(execution=execution, layer=instance)
+                self.execute(layer=instance)
 
         # Cache the layer execution metadata
         layer.flow.configuration.datastore.write_record(
             layer=layer, record=datastores.Record(flow=layer.flow.name, layer=layer.name, splits=splits)
         )
+
+
+@dataclass(frozen=True)
+class Thread(Executor):
+    """Execute layers in threads."""
+
+    def execute(self, layer: Layer) -> None:
+        assert layer.flow.execution is not None
+        layer.flow.execute(execution=layer.flow.execution, layer=layer)
 
 
 @dataclass(frozen=True)
 class Docker(Executor):
-    def schedule(self, *, execution: str, layer: Layer) -> None:
-        """Execute a layer in a docker container.
+    """Execute layers in Docker containers."""
 
-        Args:
-            execution (str): Flow execution ID
-            layer (Layer): Layer to execute
-        """
+    def execute(self, layer: Layer) -> None:
+        assert layer.index is not None
+        assert layer.splits is not None
+        assert layer.flow.execution is not None
 
         workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
 
-        splits = layer.configuration.foreach.splits(layer=layer)
-        for index in range(splits):
-            instance = layer.flow.layer(layer, index=index, splits=splits)
-
-            with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
-                command = " ".join(
-                    [
-                        "docker",
-                        "run",
-                        "--rm",
-                        "--interactive",
-                        "--tty",
-                        f"--cpus {instance.configuration.container.cpu}",
-                        f"--env LAMINAR_EXECUTION_ID={execution}",
-                        f"--env LAMINAR_FLOW_NAME={instance.flow.name}",
-                        f"--env LAMINAR_LAYER_INDEX={index}",
-                        f"--env LAMINAR_LAYER_NAME={instance.name}",
-                        f"--env LAMINAR_LAYER_SPLITS={splits}",
-                        f"--memory {instance.configuration.container.memory}m",
-                        f"--volume {workspace}",
-                        f"--workdir {instance.configuration.container.workdir}",
-                        instance.configuration.container.image,
-                        instance.configuration.container.command,
-                    ]
-                )
-                logger.debug(command)
-                subprocess.run(shlex.split(command), check=True)
-
-        # Cache the layer execution metadata
-        layer.flow.configuration.datastore.write_record(
-            layer=layer, record=datastores.Record(flow=layer.flow.name, layer=layer.name, splits=splits)
+        command = " ".join(
+            [
+                "docker",
+                "run",
+                "--rm",
+                "--interactive",
+                "--tty",
+                f"--cpus {layer.configuration.container.cpu}",
+                f"--env LAMINAR_EXECUTION_ID={layer.flow.execution}",
+                f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
+                f"--env LAMINAR_LAYER_INDEX={layer.index}",
+                f"--env LAMINAR_LAYER_NAME={layer.name}",
+                f"--env LAMINAR_LAYER_SPLITS={layer.splits}",
+                f"--memory {layer.configuration.container.memory}m",
+                f"--volume {workspace}",
+                f"--workdir {layer.configuration.container.workdir}",
+                layer.configuration.container.image,
+                layer.configuration.container.command,
+            ]
         )
+        logger.debug(command)
+        subprocess.run(shlex.split(command), check=True)
 
 
 class AWS:
+    """Execute layers in AWS."""
+
     @dataclass(frozen=True)
     class Batch(Executor):
-        ...
+        """Execute layers in AWS Batch."""
 
 
 aws = AWS()

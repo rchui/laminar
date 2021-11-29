@@ -201,11 +201,11 @@ class Flow:
         """
 
         # Execute a layer in the flow.
-        if self.execution and current.layer.name:
+        if self.execution is not None and self.name == current.flow.name and current.layer.name is not None:
             self.execute(execution=self.execution, layer=self.layer(current.layer.name))
 
         # Execute the flow.
-        else:
+        elif self.execution is None:
             self.schedule(execution=str(KsuidMs()), dependencies=self.dependencies)
 
     def execute(self, *, execution: str, layer: Layer) -> None:
@@ -215,7 +215,7 @@ class Flow:
 
             flow = Flow(name="ExecuteFlow")
 
-            @flow.layer()
+            @flow.register()
             class A(Layer):
                 ...
 
@@ -252,7 +252,7 @@ class Flow:
 
         with contexts.Attributes(self, execution=execution):
             for layer in self.configuration.executor.queue(flow=self, dependencies=dependencies):
-                self.configuration.executor.schedule(execution=execution, layer=layer)
+                self.configuration.executor.schedule(layer=layer)
 
     def register(
         self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()

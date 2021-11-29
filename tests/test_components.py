@@ -144,7 +144,8 @@ class TestFLow:
     @patch("laminar.components.Flow.schedule")
     @patch("laminar.components.Flow.execute")
     def test_call(self, mock_execute: Mock, mock_schedule: Mock, flow: Flow) -> None:
-        flow()
+        with contexts.Attributes(flow, execution=None):
+            flow()
 
         mock_schedule.assert_called_once_with(dependencies={}, execution=ANY)
 
@@ -152,10 +153,10 @@ class TestFLow:
         class Test(Layer):
             ...
 
-        with contexts.Attributes(current.layer, name="Test"), contexts.Attributes(flow, execution="test-execution"):
+        # if self.execution is not None and self.name == current.flow.name and current.layer.name is not None:
+        with contexts.Attributes(current.layer, name="Test"), contexts.Attributes(current.flow, name="TestFlow"):
             flow()
-
-            assert mock_execute.call_args[-1]["layer"] == Test()
+        assert mock_execute.call_args[-1]["layer"] == Test()
 
     def test_execute(self) -> None:
         ...
