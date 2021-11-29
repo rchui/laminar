@@ -4,27 +4,46 @@ import logging
 import shlex
 import subprocess
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Generator, Tuple
+
+import toposort
 
 from laminar.configurations import datastores, hooks
 
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from laminar import Layer
+    from laminar import Flow, Layer
 else:
+    Flow = "Flow"
     Layer = "Layer"
 
 
 @dataclass(frozen=True)
 class Executor:
-    def run(self, *, execution: str, layer: Layer) -> None:
+    concurrency: int = 1
+
+    def schedule(self, *, execution: str, layer: Layer) -> None:
         ...
+
+    def queue(self, *, flow: Flow, dependencies: Dict[str, Tuple[str, ...]]) -> Generator[Layer, None, None]:
+        """Get layers in a topologically sorted order.
+
+        Args:
+            flow: Flow to sort layers for.
+            dependencies: Layers mapped to layers they're dependent on.
+
+        Yields:
+            Sorted layers.
+        """
+
+        for name in toposort.toposort_flatten(dependencies):
+            yield flow.layer(name)
 
 
 @dataclass(frozen=True)
 class Thread(Executor):
-    def run(self, *, execution: str, layer: Layer) -> None:
+    def schedule(self, *, execution: str, layer: Layer) -> None:
         """Execute a layer in a thread.
 
         Args:
@@ -34,19 +53,10 @@ class Thread(Executor):
 
         splits = layer.configuration.foreach.splits(layer=layer)
         for index in range(splits):
-            layer = layer.flow.layer(layer, index=index, splits=splits)
+            instance = layer.flow.layer(layer, index=index, splits=splits)
 
-            with hooks.context(layer=layer, annotation=hooks.annotation.schedule):
-                # Gather the starting attributes
-                base_attributes = set(vars(layer))
-
-                layer.flow.execute(execution=execution, layer=layer)
-
-                # Reset anything that was set while executing the layer
-                execution_attributes = list(vars(layer))
-                for key in execution_attributes:
-                    if key not in base_attributes:
-                        delattr(layer, key)
+            with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
+                instance.flow.execute(execution=execution, layer=instance)
 
         # Cache the layer execution metadata
         layer.flow.configuration.datastore.write_record(
@@ -56,7 +66,7 @@ class Thread(Executor):
 
 @dataclass(frozen=True)
 class Docker(Executor):
-    def run(self, *, execution: str, layer: Layer) -> None:
+    def schedule(self, *, execution: str, layer: Layer) -> None:
         """Execute a layer in a docker container.
 
         Args:
@@ -68,9 +78,9 @@ class Docker(Executor):
 
         splits = layer.configuration.foreach.splits(layer=layer)
         for index in range(splits):
-            layer = layer.flow.layer(layer, index=index, splits=splits)
+            instance = layer.flow.layer(layer, index=index, splits=splits)
 
-            with hooks.context(layer=layer, annotation=hooks.annotation.schedule):
+            with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
                 command = " ".join(
                     [
                         "docker",
@@ -78,17 +88,17 @@ class Docker(Executor):
                         "--rm",
                         "--interactive",
                         "--tty",
-                        f"--cpus {layer.configuration.container.cpu}",
+                        f"--cpus {instance.configuration.container.cpu}",
                         f"--env LAMINAR_EXECUTION_ID={execution}",
-                        f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
+                        f"--env LAMINAR_FLOW_NAME={instance.flow.name}",
                         f"--env LAMINAR_LAYER_INDEX={index}",
-                        f"--env LAMINAR_LAYER_NAME={layer.name}",
+                        f"--env LAMINAR_LAYER_NAME={instance.name}",
                         f"--env LAMINAR_LAYER_SPLITS={splits}",
-                        f"--memory {layer.configuration.container.memory}m",
+                        f"--memory {instance.configuration.container.memory}m",
                         f"--volume {workspace}",
-                        f"--workdir {layer.configuration.container.workdir}",
-                        layer.configuration.container.image,
-                        layer.configuration.container.command,
+                        f"--workdir {instance.configuration.container.workdir}",
+                        instance.configuration.container.image,
+                        instance.configuration.container.command,
                     ]
                 )
                 logger.debug(command)
@@ -98,3 +108,12 @@ class Docker(Executor):
         layer.flow.configuration.datastore.write_record(
             layer=layer, record=datastores.Record(flow=layer.flow.name, layer=layer.name, splits=splits)
         )
+
+
+class AWS:
+    @dataclass(frozen=True)
+    class Batch(Executor):
+        ...
+
+
+aws = AWS()

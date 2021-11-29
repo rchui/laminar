@@ -196,7 +196,7 @@ class Flow:
 
         Usage::
 
-            flow = Flow(name = "HelloFlow")
+            flow = Flow(name="HelloFlow")
             flow()
         """
 
@@ -211,17 +211,26 @@ class Flow:
     def execute(self, *, execution: str, layer: Layer) -> None:
         """Execute a single layer of the flow.
 
+        Usage::
+
+            flow = Flow(name="ExecuteFlow")
+
+            @flow.layer()
+            class A(Layer):
+                ...
+
+            flow.execute(execution="test-execution", layer=flow.layer(A, index=0, splits=2))
+
         Args:
             execution (str): ID of the execution being run.
             layer (Layer): Layer of the flow to execute.
         """
 
-        with contexts.Attributes(self, execution=execution):
+        with contexts.Attributes(layer.flow, execution=execution):
 
             logger.info("Starting layer '%s'.", layer.name)
 
-            parameters = self._dependencies[layer]
-            parameters = layer.configuration.foreach.set(layer=layer, parameters=parameters)
+            parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
             with hooks.context(layer=layer, annotation=hooks.annotation.execution):
                 layer(*parameters)
@@ -241,36 +250,9 @@ class Flow:
             dependencies (Dict[Layer, Tuple[Layer, ...]]): Mapping of layers to layers it depends on.
         """
 
-        def get_pending(*, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> Set[Layer]:
-            return {
-                self.layer(child)
-                for child, parents in dependencies.items()
-                if child not in finished and set(parents).issubset(finished)
-            }
-
         with contexts.Attributes(self, execution=execution):
-
-            finished: Set[str] = set()
-            pending = get_pending(dependencies=dependencies, finished=finished)
-
-            if not pending:
-                raise FlowError(f"A cycle exists in the {self.name} flow. Dependencies: {dependencies}")
-
-            while pending:
-                for layer in pending:
-
-                    self.configuration.executor.run(execution=execution, layer=layer)
-
-                    finished.add(layer.name)
-
-                pending = get_pending(dependencies=dependencies, finished=finished)
-
-                if not pending and (set(dependencies) - finished):
-                    raise FlowError(
-                        f"A dependency exists for a step that is not registered with the {self.name} flow."
-                        f" Finished steps: {sorted(finished)}."
-                        f" Remaining dependencies: {dependencies}."
-                    )
+            for layer in self.configuration.executor.queue(flow=self, dependencies=dependencies):
+                self.configuration.executor.schedule(execution=execution, layer=layer)
 
     def register(
         self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
@@ -304,6 +286,13 @@ class Flow:
 
     def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.
+
+        Usage::
+
+            flow.layer("A")
+            flow.layer(A)
+            flow.layer(A())
+            flow.layer(A(), index=0, splits=2)
 
         Args:
             layer (Union[str, Type[Layer], Layer]): Layer to get.

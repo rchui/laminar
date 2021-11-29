@@ -8,4 +8,5 @@ pydantic
 pyyaml
 smart_open
 svix-ksuid
+toposort
 types-PyYAML
