@@ -1,3 +1,7 @@
+class ExecutionError(Exception):
+    ...
+
+
 class FlowError(Exception):
     ...
 

@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Coroutine, Dict, Generator, List, Tuple
 import toposort
 
 from laminar.configurations import datastores, hooks
+from laminar.exceptions import ExecutionError
 
 logger = logging.getLogger(__name__)
 
@@ -137,7 +138,8 @@ class Docker(Executor):
             )
             logger.debug(command)
             process = await asyncio.create_subprocess_exec(*shlex.split(command))
-            await process.wait()
+            if await process.wait() != 0:
+                raise ExecutionError(f"Layer '{layer.name}' failed with exit code: {process.returncode}")
 
             return layer
 
