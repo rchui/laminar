@@ -3,6 +3,9 @@
 * [Basics](https://rchui.github.io/laminar/basics)
 * [Scaling Up](https://rchui.github.io/laminar/scaling_up)
 * [Scaling Out](https://rchui.github.io/laminar/scaling_out)
+* [Hooks](https://rchui.github.io/laminar/hooks)
+* [Flow Configuration](https://rchui.github.io/laminar/flow_configuration)
+* [Testing](https://rchui.github.io/laminar/testing)
 
 ## Contents
 
@@ -27,4 +30,4 @@ Flows in `laminar` are highly configurable, both statically at definition time, 
 
 ### Any Scale
 
-`laminar` flows can scale to any size of compute compute. From small locally run prototypes to tens of thousands of concurrent executions running in the cloud, `laminar` can handle it all.
+`laminar` flows can scale to any size of compute. From small locally run prototypes to tens of thousands of concurrent executions running in the cloud, `laminar` can handle it all.

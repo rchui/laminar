@@ -231,11 +231,13 @@ class Flow:
 
             logger.info("Starting layer '%s'.", layer.name)
 
+            # Setup the Layer parameter values
             parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
             with hooks.context(layer=layer, annotation=hooks.annotation.execution):
                 layer(*parameters)
 
+            # Write the layer artifacts back to the flow datastore.
             artifacts = vars(layer)
             for artifact, value in artifacts.items():
                 if artifact not in LAYER_RESERVED_KEYWORDS:

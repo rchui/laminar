@@ -4,12 +4,13 @@
 * [Scaling Up](https://rchui.github.io/laminar/scaling_up)
 * [Scaling Out](https://rchui.github.io/laminar/scaling_out)
 * [Hooks](https://rchui.github.io/laminar/hooks)
+* [Flow Configuration](https://rchui.github.io/laminar/flow_configuration)
+* [Testing](https://rchui.github.io/laminar/testing)
 
 ## Contents
 
 * TOC
 {:toc}
-
 
 ## Registering Layers
 
@@ -29,9 +30,50 @@ class Two(Layer):
     ...
 ```
 
+A `Layer` can be registered to multiple flows:
+
+```python
+from laminar import Flow, Layer
+
+flow1 = Flow("Flow1")
+flow2 = Flow("Flow2")
+
+@flow1.register()
+@flow2.register()
+class One(Layer):
+    ...
+
+@flow1.register():
+@flow2.register()
+class Two(Layer):
+    ...
+```
+
+## Executing Flows
+
+A `Flow` can be triggered to run all the registered layers by calling it. A `Layer.__call__` can be overriden to define what actions the `Layer` should perform.
+
+```python
+from laminar import Flow, Layer
+
+flow = Flow("TriggerFlow")
+
+@flow.register()
+class A(Layer):
+    def __call__(self) -> None:
+        print("hello world")
+
+if __name__ == "__main__":
+    flow()
+```
+
+```python
+>>> "hello world"
+```
+
 ## Dependencies
 
-Defining a `Layer` dependency is as easy as defining a function parameter. A registered `Layer` is inferred from the type annotation to determine which Layers depend on which other Layers. In this two `Layer` example, layer `Two` is dependent on layer `One`:
+Defining a `Layer` dependency is done by adding function parameters to `__call__`. A registered `Layer` is inferred from the type annotation to determine which Layers depend on which other Layers. In this two `Layer` example, layer `Two` is dependent on layer `One`:
 
 ```python
 # main.py

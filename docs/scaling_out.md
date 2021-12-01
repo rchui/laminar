@@ -4,12 +4,13 @@
 * [Scaling Up](https://rchui.github.io/laminar/scaling_up)
 * [Scaling Out](https://rchui.github.io/laminar/scaling_out)
 * [Hooks](https://rchui.github.io/laminar/hooks)
+* [Flow Configuration](https://rchui.github.io/laminar/flow_configuration)
+* [Testing](https://rchui.github.io/laminar/testing)
 
 ## Contents
 
 * TOC
 {:toc}
-
 
 ## Sharded Artifacts
 
