@@ -1,6 +1,7 @@
+import asyncio
 import logging
 from copy import deepcopy
-from typing import Any, Callable, Dict, Optional, Sequence, Set, Tuple, Type, Union
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Sequence, Set, Tuple, Type, Union
 
 from ksuid import KsuidMs
 
@@ -242,7 +243,8 @@ class Flow:
 
             logger.info("Finishing layer '%s'.", layer.name)
 
-    def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
+    @contexts.EventLoop
+    async def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
         """Schedule layers to run in sequence in the flow.
 
         Args:
@@ -250,9 +252,45 @@ class Flow:
             dependencies (Dict[Layer, Tuple[Layer, ...]]): Mapping of layers to layers it depends on.
         """
 
+        finished: Set[str] = set()
+        tasks: List[Awaitable[List[Layer]]] = []
+
         with contexts.Attributes(self, execution=execution):
             for layer in self.configuration.executor.queue(flow=self, dependencies=dependencies):
-                self.configuration.executor.schedule(layer=layer)
+
+                # If the layer is runnable, add it to the schedule
+                if set(dependencies[layer.name]).issubset(finished):
+                    logger.info("Scheduling layer '%s'.", layer.name)
+                    tasks.append(self.configuration.executor.schedule(layer=layer))
+
+                # If the layer is not runnable
+                else:
+                    while True:
+                        # Wait until the first task completes
+                        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+
+                        # Add all completed tasks to finished tasks
+                        if done:
+                            completed = [(await task)[0].name for task in done]
+                            logger.info("Marking layers as completed: %s", sorted(completed))
+                            finished.update(completed)
+
+                        # Reset tasks to run, add waiting layer if it is runnable
+                        tasks = list(pending)
+                        if set(dependencies[layer.name]).issubset(finished):
+                            logger.info("Scheduling layer '%s'.", layer.name)
+                            tasks.append(self.configuration.executor.schedule(layer=layer))
+                            break
+
+                        if not done and not pending:
+                            raise FlowError(
+                                f"Stuck waiting to schedule Layer '{layer.name}'."
+                                f" One of the layer dependencies '{sorted(dependencies[layer.name])}'"
+                                f" has not been added to Flow '{self.name}'."
+                            )
+
+            # Wait for any remaining tasks
+            await asyncio.wait(tasks, return_when=asyncio.ALL_COMPLETED)
 
     def register(
         self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()

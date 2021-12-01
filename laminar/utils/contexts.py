@@ -1,6 +1,9 @@
+import asyncio
 import contextlib
 import os
-from typing import Any, Dict
+from typing import Any, Dict, TypeVar, cast
+
+T = TypeVar("T", bound=Any)
 
 
 class Attributes(contextlib.ContextDecorator):
@@ -61,3 +64,21 @@ class Environment(contextlib.ContextDecorator):
 
         os.environ.clear()
         os.environ.update(self._variables)
+
+
+def EventLoop(func: T) -> T:
+    """Execute the decorated function in an asyncio event loop.
+
+    Usage::
+
+        from laminar.utils import contexts
+
+        @contexts.EventLoop
+        async def main() -> None:
+            ...
+    """
+
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        asyncio.run(func(*args, **kwargs))
+
+    return cast(T, wrapper)
