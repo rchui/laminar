@@ -1,5 +1,4 @@
-import inspect
-from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, TypeVar, get_type_hints
 
 if TYPE_CHECKING:
     from laminar import Layer
@@ -19,4 +18,4 @@ def annotations(function: Callable[..., Any]) -> Tuple[Any, ...]:
         Tuple[Any, ...]: Ordered type annotations.
     """
 
-    return tuple(parameter.annotation for parameter in inspect.signature(function).parameters.values())
+    return tuple(annotation for parameter, annotation in get_type_hints(function).items() if parameter != "return")

@@ -35,8 +35,7 @@ def schedule(hook: T) -> T:
 
 
 def dependencies(*, layer: Layer, hook: Callable[..., Generator[None, None, None]]) -> Tuple[Layer, ...]:
-    # Use [1:] to remove the `self` parameter from the hook hints
-    return tuple(layer.flow.layer(annotation) for annotation in annotations(hook)[1:])
+    return tuple(layer.flow.layer(annotation) for annotation in annotations(hook))
 
 
 def context(*, layer: Layer, annotation: annotation) -> ExitStack:

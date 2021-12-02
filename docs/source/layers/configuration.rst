@@ -32,4 +32,3 @@ Configurations are a part of the class definition of a ``Layer`` and are availab
 .. warning::
 
     If a hook changes a value in ``Layer.configuration``, that change will not be reflected in ``Layer.__call__``.
-
