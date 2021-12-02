@@ -165,7 +165,8 @@ Grid Search
     >>> 4 2 "b"
     >>> 5 3 "b"
 
-## ForEach Joins
+ForEach Joins
+-------------
 
 A ``ForEach`` layer does not need a special join step in order to merge branch values back together. A ``ForEach`` layer used as an input for a downstream layer will have attributes that follow the same rules as if it was created using ``Layer.shard()`` by returning an ``Accessor`` mapped to each ``ForEach`` task.
 

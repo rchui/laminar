@@ -50,6 +50,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#sharded-artifacts">Sharded Artifacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#foreach-loops">ForEach Loops</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#grid-search">Grid Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#foreach-joins">ForEach Joins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#chained-foreach">Chained ForEach</a></li>
 </ul>
 </li>
@@ -247,7 +248,9 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">5</span> <span class="mi">3</span> <span class="s2">&quot;b&quot;</span>
 </pre></div>
 </div>
-<p>## ForEach Joins</p>
+</section>
+<section id="foreach-joins">
+<h2>ForEach Joins<a class="headerlink" href="#foreach-joins" title="Permalink to this headline"></a></h2>
 <p>A <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> layer does not need a special join step in order to merge branch values back together. A <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> layer used as an input for a downstream layer will have attributes that follow the same rules as if it was created using <code class="docutils literal notranslate"><span class="pre">Layer.shard()</span></code> by returning an <code class="docutils literal notranslate"><span class="pre">Accessor</span></code> mapped to each <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> task.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 

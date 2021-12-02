@@ -27,6 +27,10 @@ format:
 	black .
 	isort .
 
+.PHONY: open
+open: docs
+	open docs/index.html
+
 .PHONY: run
 run: test
 	docker build -t test .
