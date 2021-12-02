@@ -6,7 +6,7 @@ clear:
 
 .PHONY: docs
 docs:
-	sphinx-build docs/source docs/
+	sphinx-build -a docs/source docs/
 
 .PHONY: env
 env:
