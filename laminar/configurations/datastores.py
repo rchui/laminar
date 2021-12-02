@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Tuple, Union, overload
+from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, Tuple, Union, overload
 
 import cloudpickle
 from dacite.core import from_dict
@@ -209,7 +209,7 @@ class DataStore:
 
         return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
 
-    def write(self, *, layer: Layer, name: str, values: Sequence[Any]) -> None:
+    def write(self, *, layer: Layer, name: str, values: Iterable[Any]) -> None:
         """Write an artifact to the laminar datastore.
 
         Args:

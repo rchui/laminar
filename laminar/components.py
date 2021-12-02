@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from copy import deepcopy
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Sequence, Set, Tuple, Type, Union
+from typing import Any, Awaitable, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union
 
 from ksuid import KsuidMs
 
@@ -96,7 +96,7 @@ class Layer:
     def dependencies(self) -> Tuple[str, ...]:
         return tuple(layer.name for layer in self._dependencies)
 
-    def shard(self, **artifacts: Sequence[Any]) -> None:
+    def shard(self, **artifacts: Iterable[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
 
         Notes:

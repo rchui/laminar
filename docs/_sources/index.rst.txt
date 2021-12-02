@@ -38,3 +38,12 @@ executions running in the cloud, ``laminar`` can handle it all.
     Introduction <self>
     Installation <getting_started/installation>
     Basics <getting_started/basics>
+
+.. toctree::
+    :maxdepth: 4
+    :caption: Layers
+    :hidden:
+
+    Scaling Up <layers/scaling_up>
+    Scaling Out <layers/scaling_out>
+    Configuration <layers/configuration>

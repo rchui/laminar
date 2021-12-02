@@ -82,6 +82,8 @@ A ``Layer`` is a unit of work, and can be customized to perform any action that 
 
     >>> "hello world"
 
+Each ``Layer`` in a ``Flow`` is executed in a Docker container by default.
+
 Dependencies
 ------------
 
