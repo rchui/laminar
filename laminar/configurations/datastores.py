@@ -2,12 +2,12 @@
 
 import dataclasses
 import hashlib
+import json
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Sequence, Tuple, Union, overload
 
 import cloudpickle
-import yaml
 from dacite.core import from_dict
 
 from laminar.utils import fs
@@ -29,7 +29,7 @@ class Record:
     @staticmethod
     def path(*, layer: Layer) -> str:
         assert layer.flow.execution is not None
-        return os.path.join(layer.flow.name, ".cache", layer.flow.execution, layer.name, ".record.yaml")
+        return os.path.join(layer.flow.name, ".cache", layer.flow.execution, layer.name, ".record.json")
 
     def dict(self) -> Dict[str, Any]:
         return dataclasses.asdict(self)
@@ -73,9 +73,9 @@ class Archive:
     def path(*, layer: Layer, index: int, name: str, cache: bool = False) -> str:
         assert layer.flow.execution is not None
         if cache:
-            parts: Tuple[str, ...] = (layer.flow.name, ".cache", layer.flow.execution, layer.name, f"{name}.yaml")
+            parts: Tuple[str, ...] = (layer.flow.name, ".cache", layer.flow.execution, layer.name, f"{name}.json")
         else:
-            parts = (layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.yaml")
+            parts = (layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.json")
 
         return os.path.join(*parts)
 
@@ -148,7 +148,7 @@ class DataStore:
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
-            return Archive.parse(yaml.safe_load(file))
+            return Archive.parse(json.load(file))
 
     def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
         """Read an archive from the laminar datastore.
@@ -166,7 +166,7 @@ class DataStore:
 
     def _write_archive(self, *, path: str, archive: Archive) -> None:
         with fs.open(self.uri(path=path), "w") as file:
-            yaml.safe_dump(archive.dict(), file)
+            json.dump(archive.dict(), file)
 
     def _read_artifact(self, *, path: str) -> Any:
         with fs.open(self.uri(path=path), "rb") as file:
@@ -233,7 +233,7 @@ class DataStore:
 
     def _read_record(self, *, path: str) -> Record:
         with fs.open(self.uri(path=path), "r") as file:
-            return Record.parse(yaml.safe_load(file))
+            return Record.parse(json.load(file))
 
     def read_record(self, *, layer: Layer) -> Record:
         """Read a layer record from the laminar datastore.
@@ -249,7 +249,7 @@ class DataStore:
 
     def _write_record(self, *, path: str, record: Record) -> None:
         with fs.open(self.uri(path=path), "w") as file:
-            yaml.safe_dump(record.dict(), file)
+            json.dump(record.dict(), file)
 
     def write_record(self, *, layer: Layer, record: Record) -> None:
         """Write a layer record to the laminar datastore.

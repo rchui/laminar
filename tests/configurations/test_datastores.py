@@ -1,12 +1,12 @@
 """Tests for laminar.configurations.datastores"""
 
 import io
+import json
 from typing import Any, Dict, List
 from unittest.mock import Mock, call, mock_open, patch
 
 import cloudpickle
 import pytest
-import yaml
 
 from laminar import Layer
 from laminar.configurations.datastores import Accessor, Archive, Artifact, DataStore
@@ -34,11 +34,11 @@ class TestArchive:
     def test_path(self, layer: Layer) -> None:
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive", cache=False)
-            == f"{layer.flow.name}/archives/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.yaml"
+            == f"{layer.flow.name}/archives/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.json"
         )
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive", cache=True)
-            == f"{layer.flow.name}/.cache/{layer.flow.execution}/{layer.name}/test-archive.yaml"
+            == f"{layer.flow.name}/.cache/{layer.flow.execution}/{layer.name}/test-archive.json"
         )
 
     def test_parse(self) -> None:
@@ -94,7 +94,7 @@ class TestDatastore:
 
     @patch("laminar.utils.fs.open")
     def test__read_archive(self, mock_open: Mock) -> None:
-        mock_open.return_value = io.StringIO(yaml.safe_dump(self.archive.dict()))
+        mock_open.return_value = io.StringIO(json.dumps(self.archive.dict()))
 
         assert self.datastore._read_archive(path="path/to/archive") == self.archive
 
@@ -102,12 +102,12 @@ class TestDatastore:
 
     @patch("laminar.utils.fs.open")
     def test_read_archive(self, mock_open: Mock, layer: Layer) -> None:
-        mock_open.return_value = io.StringIO(yaml.safe_dump(self.archive.dict()))
+        mock_open.return_value = io.StringIO(json.dumps(self.archive.dict()))
 
         assert self.datastore.read_archive(layer=layer, index=0, name="test-archive") == self.archive
 
         mock_open.assert_called_once_with(
-            "path/to/root/TestFlow/archives/test-execution/Layer/0/test-archive.yaml", "r"
+            "path/to/root/TestFlow/archives/test-execution/Layer/0/test-archive.json", "r"
         )
 
     @patch("laminar.utils.fs.open")
@@ -140,23 +140,23 @@ class TestDatastore:
 
         mock_open.assert_called_once_with("path/to/root/path/to/archive", "w")
         assert mock_open().write.call_args_list == [
-            call("artifacts"),
-            call(":"),
-            call("\n"),
-            call("-"),
-            call(" "),
-            call("hexdigest"),
-            call(":"),
-            call(" "),
-            call("foo"),
-            call("\n"),
-            call("-"),
-            call(" "),
-            call("hexdigest"),
-            call(":"),
-            call(" "),
-            call("bar"),
-            call("\n"),
+            call("{"),
+            call('"artifacts"'),
+            call(": "),
+            call("["),
+            call("{"),
+            call('"hexdigest"'),
+            call(": "),
+            call('"foo"'),
+            call("}"),
+            call(", "),
+            call("{"),
+            call('"hexdigest"'),
+            call(": "),
+            call('"bar"'),
+            call("}"),
+            call("]"),
+            call("}"),
         ]
 
     @patch("laminar.utils.fs.open", new_callable=mock_open)
@@ -172,7 +172,7 @@ class TestDatastore:
         self.datastore.write(layer=layer, name="test-artifact", values=[True])
 
         mock_write_archive.assert_called_once_with(
-            path="TestFlow/archives/test-execution/Layer/0/test-artifact.yaml",
+            path="TestFlow/archives/test-execution/Layer/0/test-artifact.json",
             archive=Archive(
                 artifacts=[
                     Artifact(hexdigest="112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc"),

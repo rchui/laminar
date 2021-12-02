@@ -79,10 +79,10 @@ class TestLayer:
 
     def test_getattr(self, flow: Flow) -> None:
         workspace: Dict[str, Any] = flow.configuration.datastore.workspace  # type: ignore
-        workspace["memory:///TestFlow/archives/test-execution/Layer/0/foo.yaml"] = datastores.Archive(
+        workspace["memory:///TestFlow/archives/test-execution/Layer/0/foo.json"] = datastores.Archive(
             artifacts=[datastores.Artifact(hexdigest="abc")]
         )
-        workspace["memory:///TestFlow/archives/test-execution/Layer/0/bar.yaml"] = datastores.Archive(
+        workspace["memory:///TestFlow/archives/test-execution/Layer/0/bar.json"] = datastores.Archive(
             artifacts=[datastores.Artifact(hexdigest="123"), datastores.Artifact(hexdigest="456")]
         )
 
@@ -103,7 +103,7 @@ class TestLayer:
         flow.layer(Layer, index=0).shard(foo=[True, False, None])
 
         assert flow.configuration.datastore.workspace == {  # type: ignore
-            "memory:///TestFlow/archives/test-execution/Layer/0/foo.yaml": datastores.Archive(
+            "memory:///TestFlow/archives/test-execution/Layer/0/foo.json": datastores.Archive(
                 artifacts=[
                     datastores.Artifact(hexdigest="112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc"),
                     datastores.Artifact(hexdigest="24a5341c9a6e30357187cbeaebee0a02714ee3b3d6cead951a613e96ffb746dc"),

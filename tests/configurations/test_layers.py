@@ -13,22 +13,22 @@ class TestForEach:
     @pytest.fixture(autouse=True)
     def _flow(self, flow: Flow) -> None:
         workspace: Dict[str, Any] = flow.configuration.datastore.workspace  # type: ignore
-        workspace["memory:///TestFlow/archives/test-execution/A/0/foo.yaml"] = Archive(
+        workspace["memory:///TestFlow/archives/test-execution/A/0/foo.json"] = Archive(
             artifacts=[Artifact(hexdigest="1"), Artifact(hexdigest="2")]
         )
-        workspace["memory:///TestFlow/archives/test-execution/B/0/bar.yaml"] = Archive(
+        workspace["memory:///TestFlow/archives/test-execution/B/0/bar.json"] = Archive(
             artifacts=[Artifact(hexdigest="3"), Artifact(hexdigest="4")]
         )
-        workspace["memory:///TestFlow/archives/test-execution/C/0/foo.yaml"] = Archive(
+        workspace["memory:///TestFlow/archives/test-execution/C/0/foo.json"] = Archive(
             artifacts=[Artifact(hexdigest="a")]
         )
-        workspace["memory:///TestFlow/archives/test-execution/C/1/foo.yaml"] = Archive(
+        workspace["memory:///TestFlow/archives/test-execution/C/1/foo.json"] = Archive(
             artifacts=[Artifact(hexdigest="b")]
         )
-        workspace["memory:///TestFlow/archives/test-execution/C/2/foo.yaml"] = Archive(
+        workspace["memory:///TestFlow/archives/test-execution/C/2/foo.json"] = Archive(
             artifacts=[Artifact(hexdigest="c")]
         )
-        workspace["memory:///TestFlow/archives/test-execution/C/3/foo.yaml"] = Archive(
+        workspace["memory:///TestFlow/archives/test-execution/C/3/foo.json"] = Archive(
             artifacts=[Artifact(hexdigest="d")]
         )
 
