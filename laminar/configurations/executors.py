@@ -150,6 +150,3 @@ class AWS:
     @dataclass(frozen=True)
     class Batch(Executor):
         """Execute layers in AWS Batch."""
-
-
-aws = AWS()

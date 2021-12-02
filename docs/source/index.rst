@@ -47,3 +47,27 @@ executions running in the cloud, ``laminar`` can handle it all.
     Scaling Up <layers/scaling_up>
     Scaling Out <layers/scaling_out>
     Configuration <layers/configuration>
+
+.. toctree::
+    :maxdepth: 4
+    :caption: Flows
+    :hidden:
+
+    Datastores <flows/datastores>
+    Executors <flows/executors>
+
+.. toctree::
+    :maxdepth: 4
+    :caption: Testing
+    :hidden:
+
+    Flows <testing/flows>
+    Layers <testing/layers>
+    Hooks <testing/hooks>
+
+.. toctree::
+    :maxdepth: 4
+    :caption: Advanced
+    :hidden:
+
+    Hooks <advanced/hooks>

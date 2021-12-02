@@ -270,11 +270,6 @@ class Local(DataStore):
 
 
 @dataclasses.dataclass(frozen=True)
-class S3(DataStore):
-    """Store the laminar workspace in AWS S3."""
-
-
-@dataclasses.dataclass(frozen=True)
 class Memory(DataStore):
     """Store the laminar workspace in memory."""
 
@@ -301,3 +296,9 @@ class Memory(DataStore):
 
     def _write_record(self, *, path: str, record: Record) -> None:
         self.workspace[self.uri(path=path)] = record
+
+
+class AWS:
+    @dataclasses.dataclass(frozen=True)
+    class S3(DataStore):
+        """Store the laminar workspace in AWS S3."""
