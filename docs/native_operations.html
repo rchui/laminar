@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Miscellaneous native operations &mdash; mypyc 0.910 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Native integer operations" href="int_operations.html" />
+    <link rel="prev" title="Compilation units" href="compilation_units.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> mypyc
+          </a>
+              <div class="version">
+                0.910
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">First steps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using mypyc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using_type_annotations.html">Using type annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="native_classes.html">Native classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="differences_from_python.html">Differences from Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation_units.html">Compilation units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Native operations reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Miscellaneous native operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#operators">Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#method-decorators">Method decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#statements">Statements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="int_operations.html">Native integer operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bool_operations.html">Native boolean operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="float_operations.html">Native float operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="str_operations.html">Native string operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="list_operations.html">Native list operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dict_operations.html">Native dict operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set_operations.html">Native set operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tuple_operations.html">Native tuple operations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="performance_tips_and_tricks.html">Performance tips and tricks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mypyc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Miscellaneous native operations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/native_operations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="miscellaneous-native-operations">
+<h1>Miscellaneous native operations<a class="headerlink" href="#miscellaneous-native-operations" title="Permalink to this headline">¶</a></h1>
+<p>This is a list of various non-type-specific operations that have
+custom native implementations.  If an operation has no native
+implementation, mypyc will use fallback generic implementations that
+are often not as fast.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Operations specific to various primitive types are described
+in the following sections.</p>
+</div>
+<section id="operators">
+<h2>Operators<a class="headerlink" href="#operators" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">is</span> <span class="pre">y</span></code> (this is very fast for all types)</p></li>
+</ul>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">isinstance(obj,</span> <span class="pre">type:</span> <span class="pre">type)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isinstance(obj,</span> <span class="pre">type:</span> <span class="pre">tuple)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cast(&lt;type&gt;,</span> <span class="pre">obj)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type(obj)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len(obj)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id(obj)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iter(obj)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next(iter:</span> <span class="pre">Iterator)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hash(obj)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getattr(obj,</span> <span class="pre">attr)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getattr(obj,</span> <span class="pre">attr,</span> <span class="pre">default)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setattr(obj,</span> <span class="pre">attr,</span> <span class="pre">value)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hasattr(obj,</span> <span class="pre">attr)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delattr(obj,</span> <span class="pre">name)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slice(start,</span> <span class="pre">stop,</span> <span class="pre">step)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">globals()</span></code></p></li>
+</ul>
+</section>
+<section id="method-decorators">
+<h2>Method decorators<a class="headerlink" href="#method-decorators" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;property</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;staticmethod</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;abc.abstractmethod</span></code></p></li>
+</ul>
+</section>
+<section id="statements">
+<h2>Statements<a class="headerlink" href="#statements" title="Permalink to this headline">¶</a></h2>
+<p>These variants of statements have custom implementations:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">...</span> <span class="pre">in</span> <span class="pre">seq:</span></code> (for loop over a sequence)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">...</span> <span class="pre">in</span> <span class="pre">enumerate(...):</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">...</span> <span class="pre">in</span> <span class="pre">zip(...):</span></code></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="compilation_units.html" class="btn btn-neutral float-left" title="Compilation units" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="int_operations.html" class="btn btn-neutral float-right" title="Native integer operations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, mypyc team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

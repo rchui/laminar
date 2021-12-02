@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; mypyc 0.910 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting started" href="getting_started.html" />
+    <link rel="prev" title="Welcome to mypyc documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> mypyc
+          </a>
+              <div class="version">
+                0.910
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">First steps</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-mypyc">Why mypyc?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-cases">Use cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#differences-from-cython">Differences from Cython</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-does-it-work">How does it work</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-status">Development status</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using mypyc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using_type_annotations.html">Using type annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="native_classes.html">Native classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="differences_from_python.html">Differences from Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation_units.html">Compilation units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Native operations reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="native_operations.html">Miscellaneous native operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="int_operations.html">Native integer operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bool_operations.html">Native boolean operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="float_operations.html">Native float operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="str_operations.html">Native string operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="list_operations.html">Native list operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dict_operations.html">Native dict operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set_operations.html">Native set operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tuple_operations.html">Native tuple operations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="performance_tips_and_tricks.html">Performance tips and tricks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mypyc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>Mypyc compiles Python modules to C extensions. It uses standard Python
+<a class="reference external" href="https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html">type hints</a> to
+generate fast code.</p>
+<p>The compiled language is a strict, <em>gradually typed</em> Python variant. It
+restricts the use of some dynamic Python features to gain performance,
+but it’s mostly compatible with standard Python.</p>
+<p>Mypyc uses <a class="reference external" href="http://www.mypy-lang.org/">mypy</a> to perform type
+checking and type inference. Most type system features in the stdlib
+<a class="reference external" href="https://docs.python.org/3/library/typing.html">typing</a> module are
+supported.</p>
+<p>Compiled modules can import arbitrary Python modules and third-party
+libraries. You can compile anything from a single performance-critical
+module to your entire codebase. You can run the modules you compile
+also as normal, interpreted Python modules.</p>
+<p>Existing code with type annotations is often <strong>1.5x to 5x</strong> faster
+when compiled. Code tuned for mypyc can be <strong>5x to 10x</strong> faster.</p>
+<p>Mypyc currently aims to speed up non-numeric code, such as server
+applications. Mypyc is also used to compile itself (and mypy).</p>
+<section id="why-mypyc">
+<h2>Why mypyc?<a class="headerlink" href="#why-mypyc" title="Permalink to this headline">¶</a></h2>
+<p><strong>Easy to get started.</strong> Compiled code has the look and feel of
+regular Python code. Mypyc supports familiar Python syntax and idioms.</p>
+<p><strong>Expressive types.</strong> Mypyc fully supports standard Python type hints.
+Mypyc has local type inference, generics, optional types, tuple types,
+union types, and more. Type hints act as machine-checked
+documentation, making code not only faster but also easier to
+understand and modify.</p>
+<p><strong>Python ecosystem.</strong> Mypyc runs on top of CPython, the
+standard Python implementation. You can use any third-party libraries,
+including C extensions, installed with pip. Mypyc uses only valid Python
+syntax, so all Python editors and IDEs work perfectly.</p>
+<p><strong>Fast program startup.</strong> Mypyc uses ahead-of-time compilation, so
+compilation does not slow down program startup. Slow program startup
+is a common issue with JIT compilers.</p>
+<p><strong>Migration path for existing code.</strong> Existing Python code often
+requires only minor changes to compile using mypyc.</p>
+<p><strong>Waiting for compilation is optional.</strong> Compiled code also runs as
+normal Python code. You can use interpreted Python during development,
+with familiar and fast workflows.</p>
+<p><strong>Runtime type safety.</strong> Mypyc protects you from segfaults and memory
+corruption. Any unexpected runtime type safety violation is a bug in
+mypyc. Runtime values are checked against type annotations. (Without
+mypyc, type annotations are ignored at runtime.)</p>
+<p><strong>Find errors statically.</strong> Mypyc uses mypy for static type checking
+that helps catch many bugs.</p>
+</section>
+<section id="use-cases">
+<h2>Use cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
+<p><strong>Fix only performance bottlenecks.</strong> Often most time is spent in a few
+Python modules or functions. Add type annotations and compile these
+modules for easy performance gains.</p>
+<p><strong>Compile it all.</strong> During development you can use interpreted mode,
+for a quick edit-run cycle. In releases all non-test code is compiled.
+This is how mypy achieved a 4x performance improvement over interpreted
+Python.</p>
+<p><strong>Take advantage of existing type hints.</strong> If you already use type
+annotations in your code, adopting mypyc will be easier. You’ve already
+done most of the work needed to use mypyc.</p>
+<p><strong>Alternative to a lower-level language.</strong> Instead of writing
+performance-critical code in C, C++, Cython or Rust, you may get good
+performance while staying in the comfort of Python.</p>
+<p><strong>Migrate C extensions.</strong> Maintaining C extensions is not always fun
+for a Python developer. With mypyc you may get performance similar to
+the original C, with the convenience of Python.</p>
+</section>
+<section id="differences-from-cython">
+<h2>Differences from Cython<a class="headerlink" href="#differences-from-cython" title="Permalink to this headline">¶</a></h2>
+<p>Mypyc targets many similar use cases as Cython. Mypyc does many things
+differently, however:</p>
+<ul class="simple">
+<li><p>No need to use non-standard syntax, such as <code class="docutils literal notranslate"><span class="pre">cpdef</span></code>, or extra
+decorators to get good performance. Clean, normal-looking
+type-annotated Python code can be fast without language extensions.
+This makes it practical to compile entire codebases without a
+developer productivity hit.</p></li>
+<li><p>Mypyc has first-class support for features in the <code class="docutils literal notranslate"><span class="pre">typing</span></code> module,
+such as tuple types, union types and generics.</p></li>
+<li><p>Mypyc has powerful type inference, provided by mypy. Variable type
+annotations are not needed for optimal performance.</p></li>
+<li><p>Mypyc fully integrates with mypy for robust and seamless static type
+checking.</p></li>
+<li><p>Mypyc performs strict enforcement of type annotations at runtime,
+resulting in better runtime type safety and easier debugging.</p></li>
+</ul>
+<p>Unlike Cython, mypyc doesn’t directly support interfacing with C libraries
+or speeding up numeric code.</p>
+</section>
+<section id="how-does-it-work">
+<h2>How does it work<a class="headerlink" href="#how-does-it-work" title="Permalink to this headline">¶</a></h2>
+<p>Mypyc uses several techniques to produce fast code:</p>
+<ul class="simple">
+<li><p>Mypyc uses <em>ahead-of-time compilation</em> to native code. This removes
+CPython interpreter overhead.</p></li>
+<li><p>Mypyc enforces type annotations (and type comments) at runtime,
+raising <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> if runtime values don’t match annotations.
+Value types only need to be checked in the boundaries between
+dynamic and static typing.</p></li>
+<li><p>Compiled code uses optimized, type-specific primitives.</p></li>
+<li><p>Mypyc uses <em>early binding</em> to resolve called functions and name
+references at compile time. Mypyc avoids many dynamic namespace
+lookups.</p></li>
+<li><p>Classes are compiled to <em>C extension classes</em>. They use <a class="reference external" href="https://en.wikipedia.org/wiki/Virtual_method_table">vtables</a> for fast
+method calls and attribute access.</p></li>
+<li><p>Mypyc treats compiled functions, classes, and attributes declared
+<code class="docutils literal notranslate"><span class="pre">Final</span></code> as immutable.</p></li>
+<li><p>Mypyc has memory-efficient, unboxed representions for integers and
+booleans.</p></li>
+</ul>
+</section>
+<section id="development-status">
+<h2>Development status<a class="headerlink" href="#development-status" title="Permalink to this headline">¶</a></h2>
+<p>Mypyc is currently alpha software. It’s only recommended for
+production use cases with careful testing, and if you are willing to
+contribute fixes or to work around issues you will encounter.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to mypyc documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="getting_started.html" class="btn btn-neutral float-right" title="Getting started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, mypyc team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
