@@ -4,6 +4,10 @@ include Make.rules
 clear:
 	rm -rf .laminar
 
+.PHONY: docs
+docs:
+	sphinx-build docs/source docs/
+
 .PHONY: env
 env:
 	python -m virtualenv .venv --clear
