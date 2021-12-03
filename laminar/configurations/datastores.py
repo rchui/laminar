@@ -135,6 +135,7 @@ class Accessor:
 @dataclasses.dataclass(frozen=True)
 class DataStore:
     root: str
+    cache: Dict[str, Any] = dataclasses.field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.root.endswith(("://", ":///")):
@@ -273,28 +274,27 @@ class Memory(DataStore):
     """Store the laminar workspace in memory."""
 
     root: str = "memory:///"
-    workspace: Dict[str, Any] = dataclasses.field(default_factory=dict)
 
     def exists(self, *, path: str) -> bool:
-        return self.uri(path=path) in self.workspace
+        return self.uri(path=path) in self.cache
 
     def _read_archive(self, *, path: str) -> Archive:
-        return self.workspace[self.uri(path=path)]
+        return self.cache[self.uri(path=path)]
 
     def _write_archive(self, *, path: str, archive: Archive) -> None:
-        self.workspace[self.uri(path=path)] = archive
+        self.cache[self.uri(path=path)] = archive
 
     def _read_artifact(self, *, path: str) -> Any:
-        return self.workspace[self.uri(path=path)]
+        return self.cache[self.uri(path=path)]
 
     def _write_artifact(self, *, path: str, content: bytes) -> None:
-        self.workspace[self.uri(path=path)] = cloudpickle.loads(content)
+        self.cache[self.uri(path=path)] = cloudpickle.loads(content)
 
     def _read_record(self, *, path: str) -> Record:
-        return self.workspace[self.uri(path=path)]
+        return self.cache[self.uri(path=path)]
 
     def _write_record(self, *, path: str, record: Record) -> None:
-        self.workspace[self.uri(path=path)] = record
+        self.cache[self.uri(path=path)] = record
 
 
 class AWS:

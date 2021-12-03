@@ -12,7 +12,7 @@ from laminar.configurations.layers import ForEach, Parameter
 class TestForEach:
     @pytest.fixture(autouse=True)
     def _flow(self, flow: Flow) -> None:
-        workspace: Dict[str, Any] = flow.configuration.datastore.workspace  # type: ignore
+        workspace: Dict[str, Any] = flow.configuration.datastore.cache
         workspace["memory:///TestFlow/archives/test-execution/A/0/foo.json"] = Archive(
             artifacts=[Artifact(hexdigest="1"), Artifact(hexdigest="2")]
         )

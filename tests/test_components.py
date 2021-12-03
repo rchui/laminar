@@ -78,7 +78,7 @@ class TestLayer:
         assert flow.layer(Test).dependencies == ("Dep1", "Dep2")
 
     def test_getattr(self, flow: Flow) -> None:
-        workspace: Dict[str, Any] = flow.configuration.datastore.workspace  # type: ignore
+        workspace: Dict[str, Any] = flow.configuration.datastore.cache
         workspace["memory:///TestFlow/archives/test-execution/Layer/0/foo.json"] = datastores.Archive(
             artifacts=[datastores.Artifact(hexdigest="abc")]
         )
@@ -102,7 +102,7 @@ class TestLayer:
         flow.register()(Layer)
         flow.layer(Layer, index=0).shard(foo=[True, False, None])
 
-        assert flow.configuration.datastore.workspace == {  # type: ignore
+        assert flow.configuration.datastore.cache == {
             "memory:///TestFlow/archives/test-execution/Layer/0/foo.json": datastores.Archive(
                 artifacts=[
                     datastores.Artifact(hexdigest="112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc"),
