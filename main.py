@@ -3,6 +3,7 @@ from typing import Generator, List
 
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors, hooks, layers
+from laminar.utils import unwrap
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -52,8 +53,7 @@ class Three(Layer):
 
     @hooks.schedule
     def configure_container(self, one: One) -> Generator[None, None, None]:
-        assert self.index is not None
-        self.configuration.container.memory = {"a": 1000, "b": 15000, "c": 2000}[one.baz[self.index]]
+        self.configuration.container.memory = {"a": 1000, "b": 15000, "c": 2000}[one.baz[unwrap(self.index)]]
         yield
 
 

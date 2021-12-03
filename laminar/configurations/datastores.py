@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, Tuple, U
 import cloudpickle
 from dacite.core import from_dict
 
-from laminar.utils import fs
+from laminar.utils import fs, unwrap
 
 if TYPE_CHECKING:
     from laminar import Layer
@@ -28,8 +28,7 @@ class Record:
 
     @staticmethod
     def path(*, layer: Layer) -> str:
-        assert layer.flow.execution is not None
-        return os.path.join(layer.flow.name, ".cache", layer.flow.execution, layer.name, ".record.json")
+        return os.path.join(layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, ".record.json")
 
     def dict(self) -> Dict[str, Any]:
         return dataclasses.asdict(self)
@@ -71,11 +70,12 @@ class Archive:
 
     @staticmethod
     def path(*, layer: Layer, index: int, name: str, cache: bool = False) -> str:
-        assert layer.flow.execution is not None
+        parts: Tuple[str, ...]
+
         if cache:
-            parts: Tuple[str, ...] = (layer.flow.name, ".cache", layer.flow.execution, layer.name, f"{name}.json")
+            parts = (layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, f"{name}.json")
         else:
-            parts = (layer.flow.name, "archives", layer.flow.execution, layer.name, str(index), f"{name}.json")
+            parts = (layer.flow.name, "archives", unwrap(layer.flow.execution), layer.name, str(index), f"{name}.json")
 
         return os.path.join(*parts)
 
@@ -224,8 +224,7 @@ class DataStore:
         }
         archive = Archive(artifacts=list(artifacts.keys()))
 
-        assert layer.index is not None
-        self._write_archive(path=Archive.path(layer=layer, index=layer.index, name=name), archive=archive)
+        self._write_archive(path=Archive.path(layer=layer, index=unwrap(layer.index), name=name), archive=archive)
 
         # Write the artifact(s) value
         for artifact, content in artifacts.items():

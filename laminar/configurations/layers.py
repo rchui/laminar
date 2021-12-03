@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
 from laminar.configurations import datastores
+from laminar.utils import unwrap
 
 if TYPE_CHECKING:
     from laminar import Layer
@@ -153,8 +154,7 @@ class ForEach:
             Tuple[Layer, ...]: Parameters with modified values for the foreach evaluation.
         """
 
-        assert layer.index is not None
-        inputs = self.grid(layer=layer)[layer.index]
+        inputs = self.grid(layer=layer)[unwrap(layer.index)]
         for parameter in parameters:
             for attribute, index in inputs.get(parameter, {}).items():
                 value = getattr(parameter, attribute)

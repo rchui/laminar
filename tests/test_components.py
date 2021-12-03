@@ -153,7 +153,6 @@ class TestFLow:
         class Test(Layer):
             ...
 
-        # if self.execution is not None and self.name == current.flow.name and current.layer.name is not None:
         with contexts.Attributes(current.layer, name="Test"), contexts.Attributes(current.flow, name="TestFlow"):
             flow()
         assert mock_execute.call_args[-1]["layer"] == Test()

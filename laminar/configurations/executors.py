@@ -10,6 +10,7 @@ import toposort
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import ExecutionError
+from laminar.utils import unwrap
 
 logger = logging.getLogger(__name__)
 
@@ -99,8 +100,7 @@ class Thread(Executor):
     """Execute layers in threads."""
 
     async def execute(self, layer: Layer) -> Layer:
-        assert layer.flow.execution is not None
-        layer.flow.execute(execution=layer.flow.execution, layer=layer)
+        layer.flow.execute(execution=unwrap(layer.flow.execution), layer=layer)
 
         return layer
 
@@ -110,10 +110,6 @@ class Docker(Executor):
     """Execute layers in Docker containers."""
 
     async def execute(self, layer: Layer) -> Layer:
-        assert layer.index is not None
-        assert layer.splits is not None
-        assert layer.flow.execution is not None
-
         async with self.semaphore:
             workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
 
@@ -124,11 +120,11 @@ class Docker(Executor):
                     "--rm",
                     "--interactive",
                     f"--cpus {layer.configuration.container.cpu}",
-                    f"--env LAMINAR_EXECUTION_ID={layer.flow.execution}",
+                    f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution)}",
                     f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
-                    f"--env LAMINAR_LAYER_INDEX={layer.index}",
+                    f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
                     f"--env LAMINAR_LAYER_NAME={layer.name}",
-                    f"--env LAMINAR_LAYER_SPLITS={layer.splits}",
+                    f"--env LAMINAR_LAYER_SPLITS={unwrap(layer.splits)}",
                     f"--memory {layer.configuration.container.memory}m",
                     f"--volume {workspace}",
                     f"--workdir {layer.configuration.container.workdir}",

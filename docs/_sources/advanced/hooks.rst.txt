@@ -130,9 +130,8 @@ Schedule hooks are particularly powerful when combined with the ``ForEach`` conf
 
         @hooks.schedule
         def configure_container(self, a: A) -> Generator[None, None, None]:
-            assert self.index is not None
             memory = {"a": 1000, "b": 15000, "c": 2000}
-            self.configuration.container.memory = memory[a.baz[self.index]]
+            self.configuration.container.memory = memory[a.baz[unwrap(self.index)]]
             yield
 
     if __name__ == "__main__":
