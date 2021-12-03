@@ -1,7 +1,8 @@
 import asyncio
 import logging
 from copy import deepcopy
-from typing import Any, Awaitable, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union
+from dataclasses import dataclass
+from typing import Any, Awaitable, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union, overload
 
 from ksuid import KsuidMs
 
@@ -17,6 +18,7 @@ FLOW_RESREVED_KEYWORDS = {"execution"}
 LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "namespace", "splits"}
 
 
+@dataclass
 class Layer:
     """Task to execute as part of a flow.
 
@@ -47,10 +49,19 @@ class Layer:
 
         cls.namespace = namespace
 
-    __call__: Callable[..., None]
+    __call__: Callable[..., None]  # type: ignore
 
     def __call__(self) -> None:  # type: ignore
         ...
+
+    def __repr__(self) -> str:
+        attributes = ", ".join(
+            f"{key}={value}"
+            for key, value in {
+                attr: getattr(self, attr, None) for attr in ("configuration", "flow", "index", "splits")
+            }.items()
+        )
+        return f"{self.name}({attributes})"
 
     def __deepcopy__(self, memo: Dict[int, Any]) -> "Layer":
         cls = self.__class__
@@ -69,9 +80,15 @@ class Layer:
             return False
 
     def __getattr__(self, name: str) -> Any:
-        return self.flow.configuration.datastore.read_artifact(
-            layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
-        )
+        if name not in self.__dict__:
+            try:
+                self.__dict__[name] = self.flow.configuration.datastore.read_artifact(
+                    layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
+                )
+            except RecursionError as error:
+                raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.") from error
+
+        return self.__dict__[name]
 
     def __getstate__(self) -> Dict[str, Any]:
         return self.__dict__
@@ -116,6 +133,7 @@ class Layer:
             self.flow.configuration.datastore.write(layer=self, name=artifact, values=sequence)
 
 
+@dataclass
 class Flow:
     """Collection of tasks that execute in a specific order.
 
@@ -126,6 +144,7 @@ class Flow:
         flow = Flow(name="HelloFlow")
     """
 
+    configuration: flows.Configuration
     execution: Optional[str] = current.execution.id
 
     def __init__(
@@ -188,7 +207,7 @@ class Flow:
                 dependents.setdefault(parent, set()).add(child)
         return dependents
 
-    def __call__(self) -> None:
+    def __call__(self, *, execution: Optional[str] = None) -> None:
         """Execute the flow or execute a layer in the flow.
 
         Notes:
@@ -207,7 +226,7 @@ class Flow:
 
         # Execute the flow.
         elif self.execution is None:
-            self.schedule(execution=str(KsuidMs()), dependencies=self.dependencies)
+            self.schedule(execution=execution or str(KsuidMs()), dependencies=self.dependencies)
 
     def execute(self, *, execution: str, layer: Layer) -> None:
         """Execute a single layer of the flow.
@@ -223,8 +242,8 @@ class Flow:
             flow.execute(execution="test-execution", layer=flow.layer(A, index=0, splits=2))
 
         Args:
-            execution (str): ID of the execution being run.
-            layer (Layer): Layer of the flow to execute.
+            execution: ID of the execution being run.
+            layer: Layer of the flow to execute.
         """
 
         with contexts.Attributes(layer.flow, execution=execution):
@@ -234,14 +253,20 @@ class Flow:
             # Setup the Layer parameter values
             parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
-            with hooks.context(layer=layer, annotation=hooks.annotation.execution):
-                layer(*parameters)
+            # Execute the layer
+            try:
+                with hooks.context(layer=layer, annotation=hooks.annotation.execution):
+                    layer(*parameters)
 
-            # Write the layer artifacts back to the flow datastore.
-            artifacts = vars(layer)
-            for artifact, value in artifacts.items():
-                if artifact not in LAYER_RESERVED_KEYWORDS:
-                    self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
+            # Catch and re-raise any exceptions
+            except Exception:
+                raise
+
+            # Write any layer artifacts to the flow datastore regardless of failure.
+            finally:
+                for artifact, value in vars(layer).items():
+                    if artifact not in LAYER_RESERVED_KEYWORDS:
+                        self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
@@ -250,9 +275,13 @@ class Flow:
         """Schedule layers to run in sequence in the flow.
 
         Args:
-            execution (str): ID of the execution being run.
-            dependencies (Dict[Layer, Tuple[Layer, ...]]): Mapping of layers to layers it depends on.
+            execution: ID of the execution being run.
+            dependencies: Mapping of layers to layers it depends on.
         """
+
+        logger.info("Flow: '%s'", self.name)
+        logger.info("Execution: '%s'", execution)
+        logger.info("Dependencies: '%s'", dependencies)
 
         pending = set(dependencies)
         runnable: Set[str] = set()
@@ -261,7 +290,7 @@ class Flow:
 
         with contexts.Attributes(self, execution=execution):
             while pending:
-                logger.info("Pending layers: %s", sorted(runnable))
+                logger.info("Pending layers: %s", sorted(pending))
 
                 # Find all runnable layers
                 for layer in pending:
@@ -331,7 +360,17 @@ class Flow:
 
         return wrapper
 
+    @overload
     def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
+        ...
+
+    @overload
+    def layer(self, layer: None = None, **attributes: Any) -> List[Layer]:
+        ...
+
+    def layer(
+        self, layer: Optional[Union[str, Type[Layer], Layer]] = None, **attributes: Any
+    ) -> Union[Layer, List[Layer]]:
         """Get a registered flow layer.
 
         Usage::
@@ -342,24 +381,60 @@ class Flow:
             flow.layer(A(), index=0, splits=2)
 
         Args:
-            layer (Union[str, Type[Layer], Layer]): Layer to get.
-            **attributes (Any): Keyword attributes to add to the Layer.
+            layer: Layer to get.
+            **attributes: Keyword attributes to add to the Layer.
 
         Returns:
-            Layer: Layer that was registered to the flow.
+            Layer that was registered to the flow.
         """
 
-        if isinstance(layer, Layer):
-            layer = layer.name
-        elif not isinstance(layer, str):
-            layer = layer().name
+        if layer is None:
+            raise NotImplementedError
 
-        # Deepcopy so that layer artifacts don't mess with other layer split executions
-        layer = deepcopy(self._registry[layer])
+        else:
+            if isinstance(layer, Layer):
+                layer = layer.name
+            elif not isinstance(layer, str):
+                layer = layer().name
 
-        # Inject the flow attribute to link the layer to the flow
-        layer.flow = self
-        for key, value in attributes.items():
-            setattr(layer, key, value)
+            # Deepcopy so that layer artifacts don't mess with other layer split executions
+            layer = deepcopy(self._registry[layer])
 
-        return layer
+            # Inject the flow attribute to link the layer to the flow
+            layer.flow = self
+            for key, value in attributes.items():
+                setattr(layer, key, value)
+
+            return layer
+
+    @overload
+    def results(self, execution: str) -> "Flow":
+        ...
+
+    @overload
+    def results(self, execution: None = None) -> List["Flow"]:
+        ...
+
+    def results(self, execution: Optional[str] = None) -> Union["Flow", List["Flow"]]:
+        """Configure the flow to get results for an execution
+
+        Usage::
+
+            from main import flow
+
+            flow.results("21lWJJaHlAYcSE5EtdtH1JmF7fv")
+
+        Args:
+            execution: ID of the execution to configure the flow for
+
+        Returns:
+            THe flow configured with the execution ID.
+        """
+
+        if execution is None:
+            raise NotImplementedError
+
+        else:
+            flow = deepcopy(self)
+            flow.execution = execution
+            return flow
