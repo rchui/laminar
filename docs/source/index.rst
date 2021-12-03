@@ -55,6 +55,7 @@ executions running in the cloud, ``laminar`` can handle it all.
 
     Datastores <flows/datastores>
     Executors <flows/executors>
+    Results <flows/results>
 
 .. toctree::
     :maxdepth: 4
@@ -70,4 +71,5 @@ executions running in the cloud, ``laminar`` can handle it all.
     :caption: Advanced
     :hidden:
 
+    Datastores <advanced/datastores>
     Hooks <advanced/hooks>
