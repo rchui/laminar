@@ -55,6 +55,27 @@ Once a ``Flow`` has all of its layers registered to it, it can be called in orde
     if __name__ == "__main__":
         flow()
 
+Multiple flows can also be executed in a row.
+
+.. code:: python
+
+    from laminar import Flow, Layer
+
+    flow1 = Flow("Flow1")
+    flow2 = Flow("Flow2")
+
+    @flow1.register()
+    class A(Layer):
+        ...
+
+    @flow2.register()
+    class B(Layer):
+        ...
+
+    if __name__ == "__main__":
+        flow1()
+        flow2()
+
 Performing Tasks
 ----------------
 
