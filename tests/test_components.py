@@ -105,14 +105,14 @@ class TestLayer:
         assert flow.configuration.datastore.cache == {
             "memory:///TestFlow/archives/test-execution/Layer/0/foo.json": datastores.Archive(
                 artifacts=[
-                    datastores.Artifact(hexdigest="112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc"),
-                    datastores.Artifact(hexdigest="24a5341c9a6e30357187cbeaebee0a02714ee3b3d6cead951a613e96ffb746dc"),
-                    datastores.Artifact(hexdigest="9c298d589a2158eb513cb52191144518a2acab2cb0c04f1df14fca0f712fa4a1"),
+                    datastores.Artifact(hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae"),
+                    datastores.Artifact(hexdigest="132915fa0f4abd3a7939610b8d088fbbcdff866e17b5cbb2c0bdcb37782f4da2"),
+                    datastores.Artifact(hexdigest="6c09635decb8153d3c12e3782a69fd2eb097426f912547d351a8647b27d5580a"),
                 ]
             ),
-            "memory:///TestFlow/artifacts/112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc.gz": True,
-            "memory:///TestFlow/artifacts/24a5341c9a6e30357187cbeaebee0a02714ee3b3d6cead951a613e96ffb746dc.gz": False,
-            "memory:///TestFlow/artifacts/9c298d589a2158eb513cb52191144518a2acab2cb0c04f1df14fca0f712fa4a1.gz": None,
+            "memory:///TestFlow/artifacts/5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae.gz": True,
+            "memory:///TestFlow/artifacts/132915fa0f4abd3a7939610b8d088fbbcdff866e17b5cbb2c0bdcb37782f4da2.gz": False,
+            "memory:///TestFlow/artifacts/6c09635decb8153d3c12e3782a69fd2eb097426f912547d351a8647b27d5580a.gz": None,
         }
 
 
@@ -188,8 +188,8 @@ class TestFLow:
 
         with pytest.raises(FlowError):
 
-            @flow.register()  # noqa
-            class Test(Layer):  # type: ignore
+            @flow.register()
+            class Test(Layer):  # type: ignore # noqa
                 ...
 
     def test_layer(self, flow: Flow) -> None:

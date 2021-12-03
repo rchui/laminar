@@ -174,12 +174,10 @@ class TestDatastore:
         mock_write_archive.assert_called_once_with(
             path="TestFlow/archives/test-execution/Layer/0/test-artifact.json",
             archive=Archive(
-                artifacts=[
-                    Artifact(hexdigest="112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc"),
-                ]
+                artifacts=[Artifact(hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae")]
             ),
         )
         mock_write_artifact.assert_called_once_with(
-            path="TestFlow/artifacts/112bda3b495d867b6a98c899fac7c25eb60ca4b6e6fe5ec7ab9299f93e8274bc.gz",
-            content=b"\x80\x04\x88.",
+            path="TestFlow/artifacts/5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae.gz",
+            content=b"\x80\x05\x88.",
         )

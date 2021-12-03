@@ -27,7 +27,7 @@ def open(uri: str, mode: Literal["wb"]) -> BinaryIO:
 
 
 @contextmanager  # type: ignore
-def open(uri: str, mode: Literal["r", "rb", "w", "wb"]) -> Union[BinaryIO, TextIO]:
+def open(uri: str, mode: Literal["r", "rb", "w", "wb"]) -> Union[BinaryIO, TextIO]:  # type: ignore
     """Open a file handler to a local or remote file.
 
     Usage::
