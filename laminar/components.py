@@ -223,10 +223,10 @@ class Flow:
         """
 
         # Execute a layer in the flow.
-        if self.execution is not None and self.name == current.flow.name and current.layer.name is not None:
+        if self.execution is not None and self.name == current.flow.name and current.layer.name in self._registry:
             self.execute(execution=self.execution, layer=self.layer(current.layer.name))
 
-        # Execute the flow.
+        # Schedule execution of the flow.
         elif self.execution is None:
             self.schedule(execution=execution or str(KsuidMs()), dependencies=self.dependencies)
 
@@ -316,17 +316,16 @@ class Flow:
                     )
 
                 # Wait until the first task completes
+                logger.info("Running layers: %s", sorted(set(dependencies) - pending - finished))
                 completed, incomplete = await asyncio.wait(running, return_when=asyncio.FIRST_COMPLETED)
 
                 # Add all completed tasks to finished tasks
                 names = {(await task)[0].name for task in completed}
-                logger.info("Completed layers: %s", sorted(names))
                 finished.update(names)
                 logger.info("Finished layers: %s", sorted(finished))
 
                 # Reset running tasks
                 running = set(incomplete)
-                logger.info("Running layers: %s", sorted(set(dependencies) - pending - finished))
 
             if running:
                 # Wait for any remaining tasks
