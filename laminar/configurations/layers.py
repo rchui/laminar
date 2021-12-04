@@ -167,6 +167,12 @@ class ForEach:
 
 
 @dataclass
+class Retry:
+    attempts: int = 1
+
+
+@dataclass
 class Configuration:
     container: Container = Container()
     foreach: ForEach = ForEach()
+    retry: Retry = Retry()

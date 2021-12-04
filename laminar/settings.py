@@ -20,6 +20,7 @@ class Current(BaseModel):
         class Config:
             env_prefix = "LAMINAR_LAYER_"
 
+        attempt: Optional[int] = None
         index: Optional[int] = None
         name: Optional[str] = None
         splits: Optional[int] = None

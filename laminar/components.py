@@ -32,6 +32,8 @@ class Layer:
 
     configuration: layers.Configuration
     flow: "Flow"
+
+    attempt: Optional[int] = current.layer.attempt
     index: Optional[int] = current.layer.index
     namespace: Optional[str] = None
     splits: Optional[int] = current.layer.splits
@@ -331,7 +333,10 @@ class Flow:
                 await asyncio.wait(running, return_when=asyncio.ALL_COMPLETED)
 
     def register(
-        self, container: layers.Container = layers.Container(), foreach: layers.ForEach = layers.ForEach()
+        self,
+        container: layers.Container = layers.Container(),
+        foreach: layers.ForEach = layers.ForEach(),
+        retry: layers.Retry = layers.Retry(),
     ) -> Callable[[LayerType], LayerType]:
         """Add a layer to the flow.
 
@@ -344,7 +349,7 @@ class Flow:
 
         def wrapper(Layer: LayerType) -> LayerType:
 
-            layer = Layer(configuration=layers.Configuration(container=container, foreach=foreach))
+            layer = Layer(configuration=layers.Configuration(container=container, foreach=foreach, retry=retry))
 
             if layer.name in self._registry:
                 raise FlowError(

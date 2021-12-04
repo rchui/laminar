@@ -67,12 +67,13 @@ class Executor:
 
         raise NotImplementedError
 
-    async def schedule(self, *, layer: Layer) -> List[Layer]:
+    async def schedule(self, *, layer: Layer, attempt: int = 1) -> List[Layer]:
         """Schedule a layer for execution.
 
         Args:
             execution: Flow execution ID
             layer: Layer to execute
+            attempt: Scheduling attempt for this layer
 
         Returns:
             Layer splits that were executed
@@ -81,7 +82,7 @@ class Executor:
         splits = layer.configuration.foreach.splits(layer=layer)
         tasks: List[Coroutine[Any, Any, Layer]] = []
         for index in range(splits):
-            instance = layer.flow.layer(layer, index=index, splits=splits)
+            instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
 
             with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
                 tasks.append(self.execute(layer=instance))
@@ -91,8 +92,22 @@ class Executor:
             layer=layer, record=datastores.Record(flow=layer.flow.name, layer=layer.name, splits=splits)
         )
 
-        # Combine all Coroutines into a Future so they can be waited together.
-        return await asyncio.gather(*tasks)
+        try:
+            # Combine all Coroutines into a Future so they can be waited on together
+            return await asyncio.gather(*tasks)
+        except Exception as error:
+            logger.error(
+                "Encountered unexpected error: %s(%s) on attempt '%d' of '%d'.",
+                type(error).__name__,
+                str(error),
+                attempt,
+                layer.configuration.retry.attempts,
+            )
+
+            # Attempt to reschedule the layer
+            if attempt < layer.configuration.retry.attempts:
+                return await self.schedule(layer=layer, attempt=attempt + 1)
+            raise
 
 
 @dataclass(frozen=True)
@@ -100,9 +115,10 @@ class Thread(Executor):
     """Execute layers in threads."""
 
     async def execute(self, layer: Layer) -> Layer:
-        layer.flow.execute(execution=unwrap(layer.flow.execution), layer=layer)
+        async with self.semaphore:
+            layer.flow.execute(execution=unwrap(layer.flow.execution), layer=layer)
 
-        return layer
+            return layer
 
 
 @dataclass(frozen=True)
@@ -122,6 +138,7 @@ class Docker(Executor):
                     f"--cpus {layer.configuration.container.cpu}",
                     f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution)}",
                     f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
+                    f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
                     f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
                     f"--env LAMINAR_LAYER_NAME={layer.name}",
                     f"--env LAMINAR_LAYER_SPLITS={unwrap(layer.splits)}",
