@@ -4,9 +4,7 @@ import asyncio
 import logging
 import shlex
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Coroutine, Dict, Generator, List, Tuple
-
-import toposort
+from typing import TYPE_CHECKING, Any, Coroutine, List, Optional
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import ExecutionError
@@ -15,15 +13,17 @@ from laminar.utils import unwrap
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from laminar import Flow, Layer
+    from laminar import Layer
 else:
-    Flow = "Flow"
     Layer = "Layer"
 
 
 @dataclass(frozen=True)
 class Executor:
+    """Generic base executor."""
+
     concurrency: int = 1
+    timeout: Optional[int] = None
 
     @property
     def semaphore(self) -> asyncio.Semaphore:
@@ -44,21 +44,7 @@ class Executor:
             object.__setattr__(self, attr, asyncio.Semaphore(self.concurrency))
         return getattr(self, attr)
 
-    def queue(self, *, flow: Flow, dependencies: Dict[str, Tuple[str, ...]]) -> Generator[Layer, None, None]:
-        """Get layers in a topologically sorted order.
-
-        Args:
-            flow: Flow to sort layers for.
-            dependencies: Layers mapped to layers they're dependent on.
-
-        Yields:
-            Sorted layers.
-        """
-
-        for name in toposort.toposort_flatten(dependencies):
-            yield flow.layer(name)
-
-    async def execute(self, layer: Layer) -> Layer:
+    async def execute(self, *, layer: Layer) -> Layer:
         """Execute a layer.
 
         Args:
@@ -114,7 +100,7 @@ class Executor:
 class Thread(Executor):
     """Execute layers in threads."""
 
-    async def execute(self, layer: Layer) -> Layer:
+    async def execute(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
             layer.flow.execute(execution=unwrap(layer.flow.execution), layer=layer)
 
@@ -125,7 +111,7 @@ class Thread(Executor):
 class Docker(Executor):
     """Execute layers in Docker containers."""
 
-    async def execute(self, layer: Layer) -> Layer:
+    async def execute(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
             workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
 
@@ -150,9 +136,21 @@ class Docker(Executor):
                 ]
             )
             logger.debug(command)
-            process = await asyncio.create_subprocess_exec(*shlex.split(command))
-            if await process.wait() != 0:
-                raise ExecutionError(f"Layer '{layer.name}' failed with exit code: {process.returncode}")
+
+            corou = asyncio.create_subprocess_exec(*shlex.split(command))
+            task = asyncio.create_task(corou)
+
+            try:
+                process = await asyncio.wait_for(task, timeout=self.timeout)
+                if await process.wait() != 0:
+                    raise ExecutionError(f"Layer '{layer.name}' failed with exit code: {process.returncode}")
+            except ExecutionError:
+                raise
+            except asyncio.TimeoutError as error:
+                raise ExecutionError(f"Layer '{layer.name}' timed out after '{self.timeout}' seconds.") from error
+            except Exception as error:
+                message = type(error).__name__ + (f":{error}" if str(error) else "")
+                raise ExecutionError(f"Layer '{layer.name}' failed with an unexpected error. {message}") from error
 
             return layer
 

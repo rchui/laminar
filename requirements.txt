@@ -7,5 +7,4 @@ dacite
 pydantic
 smart_open
 svix-ksuid
-toposort
 types-PyYAML

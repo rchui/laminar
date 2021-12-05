@@ -8,7 +8,7 @@ from laminar.utils import unwrap
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-flow = Flow(name="DockerFlow", datastore=datastores.Local(), executor=executors.Docker())
+flow = Flow(name="DockerFlow", datastore=datastores.Local(), executor=executors.Docker(concurrency=2))
 flow2 = Flow(name="ThreadFlow", datastore=datastores.Local(), executor=executors.Thread())
 
 container = layers.Container(image="test")
