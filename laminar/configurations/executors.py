@@ -92,6 +92,7 @@ class Executor:
 
             # Attempt to reschedule the layer
             if attempt < layer.configuration.retry.attempts:
+                await layer.configuration.retry.sleep(layer=layer, attempt=attempt)
                 return await self.schedule(layer=layer, attempt=attempt + 1)
             raise
 

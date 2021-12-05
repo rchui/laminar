@@ -1,7 +1,9 @@
 """Configurations for laminar layers."""
 
+import asyncio
 import itertools
 import logging
+import random
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
@@ -168,7 +170,46 @@ class ForEach:
 
 @dataclass
 class Retry:
+    """Configure a Layer to retry on failure using exponential backoff.
+
+    Notes:
+
+        Computes the retry backoff with:
+
+            >>> sleep = <delay> * (<backoff> ** (attempt - 1))
+            >>> sleep = sleep + random(0, sleep * <jitter>)
+
+    Usage::
+
+        @flow.register(retry=Retry(...))
+
+    Args:
+        attempts: Number of retries to make before failing
+        delay: Number of seconds to wait before retrying
+        backoff: Backoff factor to multiply to delay.
+        jitter: Factor to randomize delay.
+    """
+
     attempts: int = 1
+    delay: float = 0.1
+    backoff: float = 2.0
+    jitter: float = 0.1
+
+    async def sleep(self, *, layer: Layer, attempt: int) -> None:
+        """Exponentially backoff before retrying a layer.
+
+        Args:
+            layer: Layer being retried.
+            attempt: Attempt the layer is on.
+        """
+
+        sleep = layer.configuration.retry.delay * (layer.configuration.retry.backoff ** (attempt - 1))
+        sleep = sleep + random.uniform(0, sleep * layer.configuration.retry.jitter)
+        sleep = round(sleep, 2)
+
+        logger.info("Retrying layer '%s' after backing off for '%.2f' seconds.", layer.name, sleep)
+
+        await asyncio.sleep(sleep)
 
 
 @dataclass

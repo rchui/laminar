@@ -40,7 +40,7 @@ Maybe requests to other services can be flaky or maybe you want your ``Flow`` to
 
 ``Retry`` allows the user to configure the retry policy per layer.
 
-.. code::
+.. code:: python
 
     from laminar import Flow, Layer
     from laminar.configurations import layers
@@ -50,3 +50,9 @@ Maybe requests to other services can be flaky or maybe you want your ``Flow`` to
     @flow.register(retry=layers.Retry(attempts=3))
     class A(Layer):
         ...
+
+``Retry`` performs a jittered exponential backoff as the number of attempts increase. Each input to the retry backoff calculation can also be modified.
+
+.. code:: python
+
+    Retry(attempts=3, delay=0.1, backoff=2, jitter=0.1)
