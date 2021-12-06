@@ -8,7 +8,7 @@ Datastores
 Artifacts
 ---------
 
-An ``Artifact`` is a pickled and gzipped Python object and is written to ``<datastore-root>/artifacts/<hexdigest>``.
+An ``Artifact`` is a pickled and gzipped Python object and is written to ``<datastore-root>/artifacts/<hexdigest>.gz``. The ``<hexdigest>`` used to identify the ``Artifact`` is the SHA256 hexdigest of the underlying pickled Python object.
 
 Archives
 --------
