@@ -150,13 +150,12 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shard</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">Process</span><span class="p">(</span>
-    <span class="n">Layer</span><span class="p">,</span>
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
     <span class="n">foreach</span><span class="o">=</span><span class="n">ForEach</span><span class="p">(</span>
         <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="n">Parameter</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">Shard</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s2">&quot;foo&quot;</span><span class="p">)]</span>
     <span class="p">)</span>
-<span class="p">):</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">Process</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shard</span><span class="p">:</span> <span class="n">Shard</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
 
@@ -184,16 +183,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shard</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">Process</span><span class="p">(</span>
-    <span class="n">Layer</span><span class="p">,</span>
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
     <span class="n">foreach</span><span class="o">=</span><span class="n">ForEach</span><span class="p">(</span>
         <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
             <span class="n">Parameter</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">Shard</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s2">&quot;foo&quot;</span><span class="p">),</span>
             <span class="n">Parameter</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">Shard</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
         <span class="p">]</span>
     <span class="p">)</span>
-<span class="p">):</span>
+<span class="p">)</span>
+<span class="k">class</span> <span class="nc">Process</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shard</span><span class="p">:</span> <span class="n">Shard</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
 

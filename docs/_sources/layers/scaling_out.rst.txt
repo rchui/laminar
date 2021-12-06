@@ -58,13 +58,12 @@ Often it is better to break up a problem across many tasks instead of processing
         def __call__(self) -> None:
             self.shard(foo=[1, 2])
 
-    @flow.register()
-    class Process(
-        Layer,
+    @flow.register(
         foreach=ForEach(
             parameters=[Parameter(layer=Shard, attribute="foo")]
         )
-    ):
+    )
+    class Process(Layer):
         def __call__(self, shard: Shard) -> None:
             print(self.index, shard.foo)
 
@@ -95,16 +94,15 @@ Often it is better to break up a problem across many tasks instead of processing
             self.bar = "a"
             self.shard(foo=[1, 2])
 
-    @flow.register()
-    class Process(
-        Layer,
+    @flow.register(
         foreach=ForEach(
             parameters=[
                 Parameter(layer=Shard, attribute="foo"),
                 Parameter(layer=Shard, attribute="bar")
             ]
         )
-    ):
+    )
+    class Process(Layer):
         def __call__(self, shard: Shard) -> None:
             print(self.index, shard.foo, shard.bar)
 
