@@ -118,31 +118,31 @@ class Docker(Executor):
     """Execute layers in Docker containers."""
 
     async def execute(self, *, layer: Layer) -> Layer:
-        workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
-
-        command = " ".join(
-            [
-                "docker",
-                "run",
-                "--rm",
-                "--interactive",
-                f"--cpus {layer.configuration.container.cpu}",
-                f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution)}",
-                f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
-                f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
-                f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
-                f"--env LAMINAR_LAYER_NAME={layer.name}",
-                f"--env LAMINAR_LAYER_SPLITS={unwrap(layer.splits)}",
-                f"--memory {layer.configuration.container.memory}m",
-                f"--volume {workspace}",
-                f"--workdir {layer.configuration.container.workdir}",
-                layer.configuration.container.image,
-                layer.configuration.container.command,
-            ]
-        )
-        logger.debug(command)
-
         async with self.semaphore:
+            workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
+
+            command = " ".join(
+                [
+                    "docker",
+                    "run",
+                    "--rm",
+                    "--interactive",
+                    f"--cpus {layer.configuration.container.cpu}",
+                    f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution)}",
+                    f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
+                    f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
+                    f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
+                    f"--env LAMINAR_LAYER_NAME={layer.name}",
+                    f"--env LAMINAR_LAYER_SPLITS={unwrap(layer.splits)}",
+                    f"--memory {layer.configuration.container.memory}m",
+                    f"--volume {workspace}",
+                    f"--workdir {layer.configuration.container.workdir}",
+                    layer.configuration.container.image,
+                    layer.configuration.container.command,
+                ]
+            )
+            logger.debug(command)
+
             task = asyncio.create_task(asyncio.create_subprocess_exec(*shlex.split(command)))
 
             try:
@@ -202,29 +202,31 @@ class AWS:
                 await asyncio.sleep(self.poll)
 
         async def execute(self, *, layer: Layer, batch: Optional[BatchClient] = None) -> Layer:
-            container = layer.configuration.container
-
-            job_definition_hexdigest = hashlib.sha256((container.image + self.job_role_arn).encode()).hexdigest()
-            job_definition_name = f"laminar_{job_definition_hexdigest}"
-
-            batch = batch or boto3.client("batch")
-            describe_response = batch.describe_job_definitions(jobDefinitionName=job_definition_name)
-
-            # Job definition exists. Use existing one
-            if describe_response["jobDefinitions"]:
-                job_definition_arn = describe_response["jobDefinitions"][-1]["jobDefinitionArn"]
-
-            # Job definition doesn't exist. Create one.
-            else:
-                logger.info("Creating job definition '%s'.", job_definition_name)
-                register_response = batch.register_job_definition(
-                    jobDefinitionName=job_definition_name,
-                    type="container",
-                    containerProperties=ContainerPropertiesTypeDef(image=container.image, jobRoleArn=self.job_role_arn),
-                )
-                job_definition_arn = register_response["jobDefinitionArn"]
-
             async with self.semaphore:
+                container = layer.configuration.container
+
+                job_definition_hexdigest = hashlib.sha256((container.image + self.job_role_arn).encode()).hexdigest()
+                job_definition_name = f"laminar_{job_definition_hexdigest}"
+
+                batch = batch or boto3.client("batch")
+                describe_response = batch.describe_job_definitions(jobDefinitionName=job_definition_name)
+
+                # Job definition exists. Use existing one
+                if describe_response["jobDefinitions"]:
+                    job_definition_arn = describe_response["jobDefinitions"][-1]["jobDefinitionArn"]
+
+                # Job definition doesn't exist. Create one.
+                else:
+                    logger.info("Creating job definition '%s'.", job_definition_name)
+                    register_response = batch.register_job_definition(
+                        jobDefinitionName=job_definition_name,
+                        type="container",
+                        containerProperties=ContainerPropertiesTypeDef(
+                            image=container.image, jobRoleArn=self.job_role_arn
+                        ),
+                    )
+                    job_definition_arn = register_response["jobDefinitionArn"]
+
                 # Submit job to Batch
                 submit_response = batch.submit_job(
                     jobName=f"{layer.flow.name}-{layer.flow.execution}-{layer.name}-{layer.index}",
