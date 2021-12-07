@@ -24,7 +24,7 @@ bash zsh:
 
 .PHONY: format
 format:
-	black .
+	black --experimental-string-processing .
 	isort .
 
 .PHONY: open
