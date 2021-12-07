@@ -2,7 +2,7 @@ import asyncio
 import logging
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Awaitable, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union, overload
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union, overload
 
 from ksuid import KsuidMs
 
@@ -291,7 +291,7 @@ class Flow:
         pending = set(dependencies)
         runnable: Set[str] = set()
         finished: Set[str] = set()
-        running: Set[Awaitable[List[Layer]]] = set()
+        running: Set[asyncio.Task[List[Layer]]] = set()
 
         with contexts.Attributes(self, execution=execution):
             while pending:
@@ -307,7 +307,10 @@ class Flow:
                 if runnable:
                     logger.info("Runnable layers: %s", sorted(runnable))
                     running.update(
-                        (self.configuration.executor.schedule(layer=self.layer(layer)) for layer in runnable)
+                        (
+                            asyncio.create_task(self.configuration.executor.schedule(layer=self.layer(layer)))
+                            for layer in runnable
+                        )
                     )
                     runnable = set()
 
