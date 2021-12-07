@@ -77,20 +77,9 @@ class Executor:
 
             with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
                 tasks.append(self.execute(layer=instance))
-
-        # Cache the layer execution metadata
-        layer.flow.configuration.datastore.write_record(
-            layer=layer,
-            record=datastores.Record(
-                flow=datastores.Record.FlowRecord(name=layer.flow.name),
-                layer=datastores.Record.LayerRecord(name=layer.name),
-                execution=datastores.Record.ExecutionRecord(splits=splits),
-            ),
-        )
-
         try:
             # Combine all Coroutines into a Future so they can be waited on together
-            return await asyncio.gather(*tasks)
+            layers = await asyncio.gather(*tasks)
         except Exception as error:
             logger.error(
                 "Encountered unexpected error: %s(%s) on attempt '%d' of '%d'.",
@@ -106,6 +95,18 @@ class Executor:
                     await layer.configuration.retry.sleep(layer=layer, attempt=attempt)
                 return await self.schedule(layer=layer, attempt=attempt + 1)
             raise
+
+        # Cache the layer execution metadata
+        layer.flow.configuration.datastore.write_record(
+            layer=layer,
+            record=datastores.Record(
+                flow=datastores.Record.FlowRecord(name=layer.flow.name),
+                layer=datastores.Record.LayerRecord(name=layer.name),
+                execution=datastores.Record.ExecutionRecord(splits=splits),
+            ),
+        )
+
+        return layers
 
 
 @dataclass(frozen=True)
