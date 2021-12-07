@@ -18,6 +18,7 @@ ATTRIBUTE = "annotation"
 
 class annotation(str, Enum):
     execution = "hook::execution"
+    retry = "hook::retry"
     schedule = "hook::schedule"
 
     @staticmethod
@@ -28,6 +29,10 @@ class annotation(str, Enum):
 
 def execution(hook: T) -> T:
     return annotation.annotate(hook, annotation.execution)
+
+
+def retry(hook: T) -> T:
+    return annotation.annotate(hook, annotation.retry)
 
 
 def schedule(hook: T) -> T:

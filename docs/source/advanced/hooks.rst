@@ -71,6 +71,32 @@ For example, the execution hooks can be used to open connections to remote datab
     if __name__ == "__main__":
         flow()
 
+Retry Hooks
+-----------
+
+Retry hooks run just prior to waiting for a ``Layer``'s retry backoff. This is useful for situations where the ``Layer`` needs to be adjusted in response to a failure.
+
+For example, here we double the requested memory every time the ``Layer`` needs to retry.
+
+.. code:: python
+
+    from typing import Generator
+
+    from laminar import Flow, Layer
+    from laminar.configurations import hooks
+
+    flow = Flow("Flow")
+
+    @flow.register()
+    class A(Layer):
+        @hooks.retry
+        def configure_container(self) -> Generator[None, None, None]:
+            self.configuration.container.memory = self.configuration.container.memory * 2
+            yield
+
+    if __name__ == "__main__":
+        flow()
+
 Schedule Hooks
 --------------
 
@@ -89,9 +115,6 @@ For example, the schedule hooks can be used to dynamically adjust resource alloc
 
     @flow.register()
     class A(Layer):
-        def __call__(self) -> None:
-            self.cursor.execute("SELECT * FROM table")
-
         @hooks.schedule
         def configure_container(self) -> Generator[None, None, None]:
             self.configuration.container.cpu = 4
@@ -109,6 +132,7 @@ Schedule hooks are particularly powerful when combined with the ``ForEach`` conf
 
     from laminar import Flow, Layer
     from laminar.configurations import hooks
+    from laminar.utils import unwrap
 
     flow = Flow("Flow")
 
@@ -130,7 +154,7 @@ Schedule hooks are particularly powerful when combined with the ``ForEach`` conf
 
         @hooks.schedule
         def configure_container(self, a: A) -> Generator[None, None, None]:
-            memory = {"a": 1000, "b": 15000, "c": 2000}
+            memory = {"a": 1000, "b": 1500, "c": 2000}
             self.configuration.container.memory = memory[a.baz[unwrap(self.index)]]
             yield
 
@@ -161,14 +185,14 @@ Hooks can be defined on a ``Flow`` by subclassing the ``Flow`` class.
     from laminar import Flow, Layer
     from laminar.configurations import hooks
 
-    class TestFlow(Flow):
+    class HelloFlow(Flow):
         @hooks.execution
         def hello_world(self) -> Generator[None, None, None]:
             print(f"before {self.name}")
             yield
             print(f"after {self.name}")
 
-    flow = Flow('HelloFlow')
+    flow = HelloFlow(name='HelloFlow')
 
     @flow.register()
     class A(Layer):

@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="datastores.html">Datastores</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Hooks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#execution-hooks">Execution Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retry-hooks">Retry Hooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#schedule-hooks">Schedule Hooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#flow-hooks">Flow Hooks</a></li>
 </ul>
@@ -161,6 +162,29 @@
 </pre></div>
 </div>
 </section>
+<section id="retry-hooks">
+<h2>Retry Hooks<a class="headerlink" href="#retry-hooks" title="Permalink to this headline"></a></h2>
+<p>Retry hooks run just prior to waiting for a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>’s retry backoff. This is useful for situations where the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> needs to be adjusted in response to a failure.</p>
+<p>For example, here we double the requested memory every time the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> needs to retry.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
+
+<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Flow&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="nd">@hooks</span><span class="o">.</span><span class="n">retry</span>
+    <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">yield</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
 <section id="schedule-hooks">
 <h2>Schedule Hooks<a class="headerlink" href="#schedule-hooks" title="Permalink to this headline"></a></h2>
 <p>Schedule hooks run just prior to a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> being scheduled for execution. This is useful for situations where the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> needs to be configured in a certain way.</p>
@@ -174,9 +198,6 @@
 
 <span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM table&quot;</span><span class="p">)</span>
-
     <span class="nd">@hooks</span><span class="o">.</span><span class="n">schedule</span>
     <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">cpu</span> <span class="o">=</span> <span class="mi">4</span>
@@ -192,6 +213,7 @@
 
 <span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
+<span class="kn">from</span> <span class="nn">laminar.utils</span> <span class="kn">import</span> <span class="n">unwrap</span>
 
 <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Flow&quot;</span><span class="p">)</span>
 
@@ -213,7 +235,7 @@
 
     <span class="nd">@hooks</span><span class="o">.</span><span class="n">schedule</span>
     <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="n">memory</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">15000</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
+        <span class="n">memory</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">baz</span><span class="p">[</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]]</span>
         <span class="k">yield</span>
 
@@ -240,14 +262,14 @@
 <span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
 
-<span class="k">class</span> <span class="nc">TestFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">HelloFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
     <span class="nd">@hooks</span><span class="o">.</span><span class="n">execution</span>
     <span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;before </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">yield</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;after </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s1">&#39;HelloFlow&#39;</span><span class="p">)</span>
+<span class="n">flow</span> <span class="o">=</span> <span class="n">HelloFlow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;HelloFlow&#39;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
