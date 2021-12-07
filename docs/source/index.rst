@@ -58,14 +58,12 @@ Any Scale
     :caption: Advanced
     :hidden:
 
-    Datastores <advanced/datastores>
     Hooks <advanced/hooks>
+    Testing <advanced/testing>
 
 .. toctree::
     :maxdepth: 4
-    :caption: Testing
+    :caption: Technical Details
     :hidden:
 
-    Flows <testing/flows>
-    Layers <testing/layers>
-    Hooks <testing/hooks>
+    Datastores <technical/datastores>

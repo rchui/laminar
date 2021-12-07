@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Layers &mdash; laminar  documentation</title>
+  <title>Testing &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,7 +17,9 @@
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Datastores" href="../technical/datastores.html" />
+    <link rel="prev" title="Hooks" href="hooks.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,8 +56,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../flows/results.html">Results</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../advanced/hooks.html">Hooks</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hooks.html">Hooks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#flows">Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layers">Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hooks">Hooks</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
 <ul>
@@ -76,9 +84,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Layers</li>
+      <li>Testing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/testing/layers.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/advanced/testing.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -86,8 +94,52 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="layers">
-<h1>Layers<a class="headerlink" href="#layers" title="Permalink to this headline"></a></h1>
+  <section id="testing">
+<h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline"></a></h1>
+<section id="flows">
+<h2>Flows<a class="headerlink" href="#flows" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Memory</span></code> datastore and <code class="docutils literal notranslate"><span class="pre">Thread</span></code> executor allow flows to be configured for easy testing.</p>
+<p>Consider the following linear <code class="docutils literal notranslate"><span class="pre">Flow</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span><span class="p">,</span> <span class="n">executors</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">(),</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
+
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>
+
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span>
+
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">foo</span>
+</pre></div>
+</div>
+<p>Using the results API, it is trivial to execute the flow and make assertions on its outputs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar.utils</span> <span class="kn">import</span> <span class="n">unwrap</span>
+
+<span class="k">def</span> <span class="nf">test_flow</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">execution</span> <span class="o">=</span> <span class="n">flow</span><span class="p">()</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="n">unwrap</span><span class="p">(</span><span class="n">execution</span><span class="p">))</span>
+
+    <span class="k">assert</span> <span class="n">results</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span> <span class="o">==</span> <span class="s2">&quot;bar&quot;</span>
+    <span class="k">assert</span> <span class="n">results</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span> <span class="o">==</span> <span class="s2">&quot;bar&quot;</span>
+    <span class="k">assert</span> <span class="n">results</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span> <span class="o">==</span> <span class="s2">&quot;bar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="layers">
+<h2>Layers<a class="headerlink" href="#layers" title="Permalink to this headline"></a></h2>
 <p>A <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is just a Python classes, so their functionality can be tested directly by calling the class constructor and then calling it.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 
@@ -137,11 +189,29 @@
 </pre></div>
 </div>
 </section>
+<section id="hooks">
+<h2>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline"></a></h2>
+<p>Hooks are Python class methods and can be tested directly as well.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># test main.py</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">A</span>
+
+<span class="k">def</span> <span class="nf">test_configure_foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">configure_foo</span><span class="p">())</span>
+    <span class="k">assert</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span> <span class="o">==</span> <span class="s2">&quot;bar.baz&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hooks.html" class="btn btn-neutral float-left" title="Hooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../technical/datastores.html" class="btn btn-neutral float-right" title="Datastores" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
