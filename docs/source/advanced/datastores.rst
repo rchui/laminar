@@ -17,15 +17,11 @@ When an artifact is written in ``laminar``, it is written in two parts. Once as 
 
 The ``Archive`` schema is
 
-.. code:: json
+.. code:: yaml
 
-    {
-        "artifacts": [
-            {
-                "hexdigest": "str"
-            }
-        ]
-    }
+    artifacts:
+      - hexdigest: str
+      - ...
 
 and is written to ``<datastore-root>/archives/<execution>/<layer>/<index>/<artifact>.json``
 
@@ -47,12 +43,10 @@ After each ``Layer`` is executed, it leaves behind a ``Record``. Records detail 
 
 The ``Record`` schema is
 
-.. code:: json
+.. code:: yaml
 
-    {
-        "flow": "str",
-        "layer": "str",
-        "splits": "int"
-    }
+    flow: str
+    layer: str
+    splits: str
 
 and is written to ``<datastore-root>/.cache/<execution>/<layer>/.record.json``.
