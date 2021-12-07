@@ -80,7 +80,12 @@ class Executor:
 
         # Cache the layer execution metadata
         layer.flow.configuration.datastore.write_record(
-            layer=layer, record=datastores.Record(flow=layer.flow.name, layer=layer.name, splits=splits)
+            layer=layer,
+            record=datastores.Record(
+                flow=datastores.Record.FlowRecord(name=layer.flow.name),
+                layer=datastores.Record.LayerRecord(name=layer.name),
+                execution=datastores.Record.ExecutionRecord(splits=splits),
+            ),
         )
 
         try:

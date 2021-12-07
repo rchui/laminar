@@ -139,7 +139,7 @@ class ForEach:
 
         if layer.flow.configuration.datastore.exists(path=datastores.Record.path(layer=layer)):
             logger.debug("Cache hit for layer '%s' record.", layer.name)
-            return layer.flow.configuration.datastore.read_record(layer=layer).splits
+            return layer.flow.configuration.datastore.read_record(layer=layer).execution.splits
 
         else:
             logger.debug("Cache miss for layer '%s' record.", layer.name)

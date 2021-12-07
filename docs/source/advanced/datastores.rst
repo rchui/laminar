@@ -21,7 +21,6 @@ The ``Archive`` schema is
 
     artifacts:
       - hexdigest: str
-      - ...
 
 and is written to ``<datastore-root>/archives/<execution>/<layer>/<index>/<artifact>.json``
 
@@ -45,8 +44,11 @@ The ``Record`` schema is
 
 .. code:: yaml
 
-    flow: str
-    layer: str
-    splits: str
+    flow:
+      name: str
+    layer:
+      name: str
+    execution:
+      splits: int
 
 and is written to ``<datastore-root>/.cache/<execution>/<layer>/.record.json``.

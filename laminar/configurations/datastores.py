@@ -22,9 +22,21 @@ else:
 class Record:
     """Handler for metadata about how a Layer was executed."""
 
-    flow: str
-    layer: str
-    splits: int
+    @dataclasses.dataclass(frozen=True)
+    class FlowRecord:
+        name: str
+
+    @dataclasses.dataclass(frozen=True)
+    class LayerRecord:
+        name: str
+
+    @dataclasses.dataclass(frozen=True)
+    class ExecutionRecord:
+        splits: int
+
+    flow: FlowRecord
+    layer: LayerRecord
+    execution: ExecutionRecord
 
     @staticmethod
     def path(*, layer: Layer) -> str:

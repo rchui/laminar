@@ -115,7 +115,6 @@
 <p>The <code class="docutils literal notranslate"><span class="pre">Archive</span></code> schema is</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">artifacts</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">hexdigest</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">...</span>
 </pre></div>
 </div>
 <p>and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/archives/&lt;execution&gt;/&lt;layer&gt;/&lt;index&gt;/&lt;artifact&gt;.json</span></code></p>
@@ -131,9 +130,12 @@
 <h2>Record<a class="headerlink" href="#record" title="Permalink to this headline"></a></h2>
 <p>After each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is executed, it leaves behind a <code class="docutils literal notranslate"><span class="pre">Record</span></code>. Records detail the execution of a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> to aid in determining the size of downstream layers.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">Record</span></code> schema is</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flow</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
-<span class="nt">layer</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
-<span class="nt">splits</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flow</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
+<span class="nt">layer</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
+<span class="nt">execution</span><span class="p">:</span>
+  <span class="nt">splits</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">int</span>
 </pre></div>
 </div>
 <p>and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/.cache/&lt;execution&gt;/&lt;layer&gt;/.record.json</span></code>.</p>
