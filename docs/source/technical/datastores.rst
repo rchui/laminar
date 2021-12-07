@@ -26,7 +26,7 @@ and is written to ``<datastore-root>/archives/<execution>/<layer>/<index>/<artif
 
 Because each ``Layer`` is assigned a different index, multiple archives can exist for a single ``Artifact``. Archives can also be linked to one or more artifacts, and each ``Artifact`` is referenced via a SHA256 hexdigest that makes up the name of each stored ``Artifact``.
 
-``Layer.shard()`` and creates one archive with multiple linked artifacts. ``layers.ForEach`` creates multiple archives with one or many linked artifacts.
+``Layer.shard()`` creates one archive with multiple linked artifacts. ``layers.ForEach`` creates multiple archives with one or many linked artifacts.
 
 When the a flow's datastore reads an ``Archive`` it knows to create an ``Accessor`` if it has more than one ``Artifact`` hexdigest. A ``Layer`` also knows when multiple archives exist for an ``Artifact`` and will create an ``Accessor`` across all of them.
 

@@ -38,6 +38,10 @@ An example of an execution hook in action:
     >>> "in call"
     >>> "after call"
 
+.. warning::
+
+    Hook dependencies are not evaluated to determine ``Layer`` dependencies. Users are responsible for ensuring that they only use layers that have already been executed.
+
 Execution Hooks
 ---------------
 
@@ -71,6 +75,10 @@ For example, the execution hooks can be used to open connections to remote datab
     if __name__ == "__main__":
         flow()
 
+.. note::
+
+    Execution hooks are invoked on the ``Layer`` executor.
+
 Retry Hooks
 -----------
 
@@ -96,6 +104,10 @@ For example, here we double the requested memory every time the ``Layer`` needs 
 
     if __name__ == "__main__":
         flow()
+
+.. note::
+
+    Retry hooks are invoked on the ``Flow`` scheduler.
 
 Schedule Hooks
 --------------
@@ -168,6 +180,10 @@ Schedule hooks are particularly powerful when combined with the ``ForEach`` conf
     >>> "a" 1000
     >>> "b" 1500
     >>> "c" 2000
+
+.. note::
+
+    Schedule hooks are invoked on the ``Flow`` scheduler.
 
 Flow Hooks
 ----------

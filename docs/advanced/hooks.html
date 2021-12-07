@@ -131,6 +131,10 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;after call&quot;</span>
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Hook dependencies are not evaluated to determine <code class="docutils literal notranslate"><span class="pre">Layer</span></code> dependencies. Users are responsible for ensuring that they only use layers that have already been executed.</p>
+</div>
 <section id="execution-hooks">
 <h2>Execution Hooks<a class="headerlink" href="#execution-hooks" title="Permalink to this headline"></a></h2>
 <p>Execution hooks run just prior to the invocation of <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>. This is useful for situations when something needs to occur prior to a layer starting.</p>
@@ -160,6 +164,10 @@
     <span class="n">flow</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Execution hooks are invoked on the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> executor.</p>
+</div>
 </section>
 <section id="retry-hooks">
 <h2>Retry Hooks<a class="headerlink" href="#retry-hooks" title="Permalink to this headline"></a></h2>
@@ -182,6 +190,10 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow</span><span class="p">()</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Retry hooks are invoked on the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> scheduler.</p>
 </div>
 </section>
 <section id="schedule-hooks">
@@ -248,6 +260,10 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;b&quot;</span> <span class="mi">1500</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;c&quot;</span> <span class="mi">2000</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Schedule hooks are invoked on the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> scheduler.</p>
 </div>
 </section>
 <section id="flow-hooks">
