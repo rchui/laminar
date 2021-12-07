@@ -40,4 +40,5 @@ run: test
 .PHONY: test
 test:
 	black --check .
-	pytest --cov laminar --cov-report term-missing --flake8 --mypy --isort
+	pytest -m "not flow" --cov laminar --cov-report term-missing --flake8 --mypy --isort
+	pytest -m "flow"

@@ -2,6 +2,8 @@
 
 from typing import List
 
+import pytest
+
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 from laminar.configurations.layers import ForEach, Parameter
@@ -30,6 +32,7 @@ class C(Layer):
         self.foo = [value + i for i, value in enumerate(b.foo)]
 
 
+@pytest.mark.flow
 class TestForEach:
     def test_flow(self) -> None:
         execution = flow()

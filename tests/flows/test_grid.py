@@ -2,6 +2,8 @@
 
 from typing import List, Tuple
 
+import pytest
+
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 from laminar.configurations.layers import ForEach, Parameter
@@ -31,6 +33,7 @@ class C(Layer):
         self.result = list(b.result)
 
 
+@pytest.mark.flow
 class TestGrid:
     def test_flow(self) -> None:
         execution = flow()
@@ -74,6 +77,7 @@ class C2(Layer):
         self.result = list(b.result)
 
 
+@pytest.mark.flow
 class TestTwoGrid:
     def test_flow(eslf) -> None:
         execution = flow2()

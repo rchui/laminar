@@ -1,5 +1,7 @@
 """Test linear flows."""
 
+import pytest
+
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 from laminar.utils import unwrap
@@ -25,6 +27,7 @@ class C(Layer):
         self.foo = b.foo
 
 
+@pytest.mark.flow
 class TestLinear:
     def test_flow(self) -> None:
         execution = flow()

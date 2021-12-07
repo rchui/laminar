@@ -2,14 +2,15 @@
 
 import io
 import json
-from typing import Any, Dict, List
+from pathlib import Path
+from typing import Any, Dict, List, cast
 from unittest.mock import Mock, call, mock_open, patch
 
 import cloudpickle
 import pytest
 
 from laminar import Layer
-from laminar.configurations.datastores import Accessor, Archive, Artifact, DataStore
+from laminar.configurations.datastores import Accessor, Archive, Artifact, DataStore, Local, Record
 
 
 class TestArtifact:
@@ -81,16 +82,35 @@ class TestAccessor:
     def test_slice(self) -> None:
         assert self.accessor[:1] == ["foo"]
 
+    def test_index_out_of_bounds(self) -> None:
+        with pytest.raises(IndexError):
+            self.accessor[10]
+
+    def test_index_other(self) -> None:
+        with pytest.raises(TypeError):
+            self.accessor[cast(int, "a")]
+
 
 class TestDatastore:
     archive = Archive(artifacts=[Artifact(hexdigest="foo"), Artifact(hexdigest="bar")])
     datastore = DataStore(root="path/to/root/")
+    record = Record(
+        flow=Record.FlowRecord(name="test-flow"),
+        layer=Record.LayerRecord(name="test-layer"),
+        execution=Record.ExecutionRecord(splits=2),
+    )
 
     def test_init(self) -> None:
         assert self.datastore.root == "path/to/root"
 
     def test_uri(self) -> None:
         assert self.datastore.uri(path="other/path") == "path/to/root/other/path"
+
+    @patch("laminar.utils.fs.exists")
+    def test_exists(self, mock_exists: Mock) -> None:
+        self.datastore.exists(path="path/to/file")
+
+        mock_exists.assert_called_once_with(uri="path/to/root/path/to/file")
 
     @patch("laminar.utils.fs.open")
     def test__read_archive(self, mock_open: Mock) -> None:
@@ -134,12 +154,20 @@ class TestDatastore:
             archive=self.archive, layer=layer
         )
 
+    @patch("laminar.configurations.datastores.DataStore.read_artifact")
+    @patch("laminar.configurations.datastores.DataStore.read_archive")
+    def test_read(self, mock_archive: Mock, mock_artifact: Mock, layer: Layer) -> None:
+        self.datastore.read(layer=layer, index=0, name="test")
+
+        mock_archive.assert_called_once_with(layer=layer, index=0, name="test")
+        mock_artifact.assert_called_once_with(layer=layer, archive=mock_archive.return_value)
+
     @patch("laminar.utils.fs.open", new_callable=mock_open)
     def test__write_archive(self, mock_open: Mock) -> None:
         self.datastore._write_archive(path="path/to/archive", archive=self.archive)
 
         mock_open.assert_called_once_with("path/to/root/path/to/archive", "w")
-        assert mock_open().write.call_args_list == [
+        assert mock_open.return_value.write.call_args_list == [
             call("{"),
             call('"artifacts"'),
             call(": "),
@@ -181,3 +209,68 @@ class TestDatastore:
             path="TestFlow/artifacts/5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae.gz",
             content=b"\x80\x05\x88.",
         )
+
+    @patch("laminar.utils.fs.open")
+    def test__read_record(self, mock_open: Mock) -> None:
+        mock_open.return_value = io.StringIO(json.dumps(self.record.dict()))
+
+        assert self.datastore._read_record(path="path/to/record") == self.record
+
+        mock_open.assert_called_once_with("path/to/root/path/to/record", "r")
+
+    @patch("laminar.utils.fs.open")
+    def test_read_record(self, mock_open: Mock, layer: Layer) -> None:
+        mock_open.return_value = io.StringIO(json.dumps(self.record.dict()))
+
+        assert self.datastore.read_record(layer=layer) == self.record
+
+        mock_open.assert_called_once_with("path/to/root/TestFlow/.cache/test-execution/Layer/.record.json", "r")
+
+    @patch("laminar.utils.fs.open", new_callable=mock_open)
+    def test__write_record(self, mock_open: Mock) -> None:
+        self.datastore._write_record(path="path/to/record", record=self.record)
+
+        mock_open.assert_called_once_with("path/to/root/path/to/record", "w")
+        assert mock_open.return_value.write.call_args_list == [
+            call("{"),
+            call('"flow"'),
+            call(": "),
+            call("{"),
+            call('"name"'),
+            call(": "),
+            call('"test-flow"'),
+            call("}"),
+            call(", "),
+            call('"layer"'),
+            call(": "),
+            call("{"),
+            call('"name"'),
+            call(": "),
+            call('"test-layer"'),
+            call("}"),
+            call(", "),
+            call('"execution"'),
+            call(": "),
+            call("{"),
+            call('"splits"'),
+            call(": "),
+            call("2"),
+            call("}"),
+            call("}"),
+        ]
+
+    @patch("laminar.configurations.datastores.DataStore._write_record")
+    def test_write_record(self, mock_open: Mock, layer: Layer) -> None:
+        self.datastore.write_record(layer=layer, record=self.record)
+
+        mock_open.assert_called_once_with(path="TestFlow/.cache/test-execution/Layer/.record.json", record=self.record)
+
+
+class TestLocal:
+    @pytest.fixture(autouse=True)
+    def _datastore(self, tmp_path: Path) -> None:
+        self.datastore = Local(root=str(tmp_path))
+
+    def test_read_write(self, layer: Layer) -> None:
+        self.datastore.write(layer=layer, name="test", values=[[True, False]])
+        assert self.datastore.read(layer=layer, index=0, name="test") == [True, False]

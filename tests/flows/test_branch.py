@@ -1,5 +1,7 @@
 """Test branching flows."""
 
+import pytest
+
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 from laminar.utils import unwrap
@@ -31,6 +33,7 @@ class D(Layer):
         self.foo = [b.foo, c.foo]
 
 
+@pytest.mark.flow
 class TestBranch:
     def test_flow(self) -> None:
         execution = flow()

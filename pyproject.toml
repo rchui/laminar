@@ -36,3 +36,4 @@ allow_untyped_defs = false
 
 [tool.pytest.ini_options]
 addopts = "-vv --durations 10 --failed-first --strict-markers"
+markers = ["flow"]
