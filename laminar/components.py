@@ -209,7 +209,7 @@ class Flow:
                 dependents.setdefault(parent, set()).add(child)
         return dependents
 
-    def __call__(self, *, execution: Optional[str] = None) -> None:
+    def __call__(self, *, execution: Optional[str] = None) -> Optional[str]:
         """Execute the flow or execute a layer in the flow.
 
         Notes:
@@ -228,7 +228,10 @@ class Flow:
 
         # Schedule execution of the flow.
         elif self.execution is None:
-            self.schedule(execution=execution or str(KsuidMs()), dependencies=self.dependencies)
+            execution = execution or str(KsuidMs())
+            self.schedule(execution=execution, dependencies=self.dependencies)
+
+        return execution
 
     def execute(self, *, execution: str, layer: Layer) -> None:
         """Execute a single layer of the flow.
