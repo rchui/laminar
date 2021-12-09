@@ -5,6 +5,7 @@ coverage
 flake8<4.0.0
 isort
 mypy
+myst-parser
 pytest
 pytest-asyncio
 pytest-cov

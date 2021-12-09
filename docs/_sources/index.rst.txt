@@ -49,6 +49,7 @@ Any Scale
     :caption: Flows
     :hidden:
 
+    Parameters <flows/parameters>
     Datastores <flows/datastores>
     Executors <flows/executors>
     Results <flows/results>

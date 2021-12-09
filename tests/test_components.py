@@ -138,7 +138,7 @@ class TestFLow:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
-        assert flow.dependencies == {"Dep1": (), "Dep2": (), "Test": ("Dep1", "Dep2")}
+        assert flow.dependencies == {"Dep1": (), "Dep2": (), "Parameters": (), "Test": ("Dep1", "Dep2")}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
     @patch("laminar.components.Flow.schedule")
@@ -147,7 +147,7 @@ class TestFLow:
         with contexts.Attributes(flow, execution=None):
             flow()
 
-        mock_schedule.assert_called_once_with(dependencies={}, execution=ANY)
+        mock_schedule.assert_called_once_with(execution=ANY, dependencies={"Parameters": ()})
 
         @flow.register()
         class Test(Layer):
@@ -178,7 +178,7 @@ class TestFLow:
                 ...
 
         assert {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test()}
-        assert flow.dependencies == {"Dep1": (), "Dep2": (), "Test": ("Dep1", "Dep2")}
+        assert flow.dependencies == {"Dep1": (), "Dep2": (), "Parameters": (), "Test": ("Dep1", "Dep2")}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
     def test_layer_duplicate(self, flow: Flow) -> None:

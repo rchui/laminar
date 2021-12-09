@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parameters &mdash; laminar  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Datastores" href="datastores.html" />
+    <link rel="prev" title="Layer Configuration" href="../layers/configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> laminar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/basics.html">Basics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Layers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../layers/scaling_up.html">Scaling Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layers/scaling_out.html">Scaling Out</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layers/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Flows</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#passing-values">Passing Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execution-guard">Execution Guard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-entrypoints">Multiple Entrypoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datastores.html">Datastores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="executors.html">Executors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/hooks.html">Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/testing.html">Testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../technical/datastores.html">Datastores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/executions.html">Executions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">laminar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Parameters</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/flows/parameters.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="parameters">
+<h1>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline"></a></h1>
+<p>Flows can be parameterized so that the same logic can be executed multiple times with different inputs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It may be helpful to read <a class="reference internal" href="../technical/executions.html#executions"><span class="std std-ref">Technical Details: Execution</span></a> to get a better understanding of why execution guards and multiple entrypoints are useful.</p>
+</div>
+<section id="passing-values">
+<h2>Passing Values<a class="headerlink" href="#passing-values" title="Permalink to this headline"></a></h2>
+<p>There are two parts involved in parameterizing a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
+<ol class="simple">
+<li><p>Keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code> are written to the flow’s <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>.</p></li>
+<li><p>A special layer <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> is automatically registered to every <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and is able to reference any parameter with the same behavior as any other <code class="docutils literal notranslate"><span class="pre">Layer</span></code>.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
+
+<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<span class="kn">from</span> <span class="nn">laminar.components</span> <span class="kn">import</span> <span class="n">Parameters</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ParameterFlow&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;bar&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parameters</span></code> can be used as a parameter like any other <code class="docutils literal notranslate"><span class="pre">Layer</span></code> in a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. It will automatically reference artifacts in the flow’s <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> and return the corresponding values. In this way, any arbitrary parameters can be pass into the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
+</section>
+<section id="execution-guard">
+<h2>Execution Guard<a class="headerlink" href="#execution-guard" title="Permalink to this headline"></a></h2>
+<p>Because <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code> is the entrypoint for both scheduling a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and executing a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>, additional care must be taken to avoid inefficiently adding values to <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code></p>
+<p>Consider the following example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="o">...</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/really/big/csv&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Here we are reading a large CSV into a pandas DataFrame and passing that in as a parameter to the flow. There are two issues:</p>
+<ol class="simple">
+<li><p>We do not want to read the CSV every time we enter <code class="docutils literal notranslate"><span class="pre">main.py</span></code>.</p></li>
+<li><p>The CSV we need to read may not be present in the image the container is started in.</p></li>
+</ol>
+<p>To avoid this we can guard the CSV read with the <code class="docutils literal notranslate"><span class="pre">current</span></code> object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">from</span> <span class="nn">laminar.settings</span> <span class="kn">import</span> <span class="n">current</span>
+
+<span class="o">...</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># In a Layer execution</span>
+    <span class="k">if</span> <span class="n">current</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Scheduling a Flow</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/really/large/csv&quot;</span><span class="p">)}</span>
+
+    <span class="n">flow</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By guarding against layer execution, we can only make our entire <code class="docutils literal notranslate"><span class="pre">Flow</span></code> more efficient.</p>
+</section>
+<section id="multiple-entrypoints">
+<h2>Multiple Entrypoints<a class="headerlink" href="#multiple-entrypoints" title="Permalink to this headline"></a></h2>
+<p>An alternative approach involves setting up multiple entrypoints. Define a flow with an invocation of <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
+
+<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">layers</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ParameterFlow&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">container</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">Contaienr</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="s2">&quot;python execution.py&quot;</span><span class="p">))</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In one entrypoint add the parameters to <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># parameters.py</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">flow</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/really/large/csv&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In another invoke <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code> without parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># execution.py</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">flow</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To execute the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">parameters</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Here we guard against always loading the CSV by using separate entrypoints and configuring our container to use the <code class="docutils literal notranslate"><span class="pre">execution.py</span></code> entrypoint instead of the <code class="docutils literal notranslate"><span class="pre">parameters.py</span></code> entrypoin.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../layers/configuration.html" class="btn btn-neutral float-left" title="Layer Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="datastores.html" class="btn btn-neutral float-right" title="Datastores" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Ryan Chui.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

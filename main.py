@@ -2,6 +2,7 @@ import logging
 from typing import Generator, List
 
 from laminar import Flow, Layer
+from laminar.components import Parameters
 from laminar.configurations import datastores, executors, hooks, layers
 from laminar.utils import unwrap
 
@@ -20,8 +21,8 @@ class One(Layer):
     baz: List[str]
     foo: str
 
-    def __call__(self) -> None:
-        self.foo = "bar"
+    def __call__(self, parameters: Parameters) -> None:
+        self.foo = parameters.foo
         self.shard(baz=["a", "b", "c"])
 
     @hooks.execution
@@ -79,5 +80,5 @@ class Four(Layer):
 
 
 if __name__ == "__main__":
-    flow()
-    flow2()
+    flow(foo="bar")
+    flow2(foo="baz")

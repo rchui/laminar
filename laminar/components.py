@@ -14,8 +14,8 @@ from laminar.utils import contexts
 
 logger = logging.getLogger(__name__)
 
-FLOW_RESREVED_KEYWORDS = {"execution"}
-LAYER_RESERVED_KEYWORDS = {"configuration", "flow", "index", "namespace", "splits"}
+FLOW_RESREVED_KEYWORDS = {"configuration", "execution"}
+LAYER_RESERVED_KEYWORDS = {"attempt", "configuration", "flow", "index", "namespace", "splits"}
 
 
 @dataclass
@@ -135,6 +135,13 @@ class Layer:
             self.flow.configuration.datastore.write(layer=self, name=artifact, values=sequence)
 
 
+class Parameters(Layer):
+    ...
+
+
+FlowParameters = Parameters(configuration=layers.Configuration)
+
+
 @dataclass
 class Flow:
     """Collection of tasks that execute in a specific order.
@@ -177,7 +184,7 @@ class Flow:
 
         self.configuration = flows.Configuration(datastore=datastore, executor=executor)
 
-        self._registry: Dict[str, Layer] = {}
+        self._registry: Dict[str, Layer] = {FlowParameters.name: deepcopy(FlowParameters)}
 
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
@@ -209,7 +216,7 @@ class Flow:
                 dependents.setdefault(parent, set()).add(child)
         return dependents
 
-    def __call__(self, *, execution: Optional[str] = None) -> Optional[str]:
+    def __call__(self, *, execution: Optional[str] = None, **parameters: Any) -> Optional[str]:
         """Execute the flow or execute a layer in the flow.
 
         Notes:
@@ -219,7 +226,10 @@ class Flow:
         Usage::
 
             flow = Flow(name="HelloFlow")
+
             flow()
+            flow("execution-id")
+            flow("execution-id", foo="bar")
         """
 
         # Execute a layer in the flow.
@@ -229,6 +239,8 @@ class Flow:
         # Schedule execution of the flow.
         elif self.execution is None:
             execution = execution or str(KsuidMs())
+            if parameters:
+                self.parameters(execution=execution, **parameters)
             self.schedule(execution=execution, dependencies=self.dependencies)
 
         return execution
@@ -288,9 +300,9 @@ class Flow:
         logger.info("Execution: '%s'", execution)
         logger.info("Dependencies: '%s'", dependencies)
 
-        pending = set(dependencies)
+        finished = {FlowParameters.name}
+        pending = set(dependencies) - finished
         runnable: Set[str] = set()
-        finished: Set[str] = set()
         running: Set[asyncio.Task[List[Layer]]] = set()
 
         with contexts.Attributes(self, execution=execution):
@@ -416,6 +428,21 @@ class Flow:
                 setattr(layer, key, value)
 
             return layer
+
+    def parameters(self, *, execution: str, **artifacts: Any) -> None:
+        """Configure parameters for a flow execution
+
+        Args:
+            execution: ID of the execution to configure the flow parameters for.
+            artifacts: Key/value pairs of parameters to add to the flow.
+        """
+
+        with contexts.Attributes(self, execution=execution):
+            layer = self.layer(Parameters, index=0, splits=1, attempt=0)
+
+            for name, value in artifacts.items():
+                if name not in LAYER_RESERVED_KEYWORDS:
+                    self.configuration.datastore.write(layer=layer, name=name, values=[value])
 
     @overload
     def results(self, execution: str) -> "Flow":
