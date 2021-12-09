@@ -6,7 +6,7 @@ clear:
 
 .PHONY: docs
 docs:
-	sphinx-build -a docs/source docs/
+	sphinx-build -a docs/source docs/html
 
 .PHONY: env
 env:
@@ -29,7 +29,7 @@ format:
 
 .PHONY: open
 open: docs
-	open docs/index.html
+	open docs/html/index.html
 
 .PHONY: run
 run: test
