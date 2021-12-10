@@ -80,5 +80,8 @@ class Four(Layer):
 
 
 if __name__ == "__main__":
-    flow(foo="bar")
-    flow2(foo="baz")
+    execution = flow.parameters(foo="bar")
+    flow(execution=execution)
+
+    execution = flow2.parameters(foo="baz")
+    flow2(execution=execution)

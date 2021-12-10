@@ -110,8 +110,8 @@
 <h2>Passing Values<a class="headerlink" href="#passing-values" title="Permalink to this headline"></a></h2>
 <p>There are two parts involved in parameterizing a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
 <ol class="simple">
-<li><p>Keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code> are written to the flow’s <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>.</p></li>
-<li><p>A special layer <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> is automatically registered to every <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and is able to reference any parameter with the same behavior as any other <code class="docutils literal notranslate"><span class="pre">Layer</span></code>.</p></li>
+<li><p>Keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">Flow.parameters</span></code> are written to the flow’s <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>.</p></li>
+<li><p>A special layer <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> is automatically registered to every <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and is able to reference any <code class="docutils literal notranslate"><span class="pre">Flow</span></code> parameter with the same behavior as any other <code class="docutils literal notranslate"><span class="pre">Layer</span></code>.</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 
@@ -126,7 +126,8 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+    <span class="n">flow</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+    <span class="n">flow</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
@@ -134,18 +135,18 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;bar&quot;</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Parameters</span></code> can be used as a parameter like any other <code class="docutils literal notranslate"><span class="pre">Layer</span></code> in a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. It will automatically reference artifacts in the flow’s <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> and return the corresponding values. In this way, any arbitrary parameters can be pass into the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Parameters</span></code> can be used as a parameter like any other <code class="docutils literal notranslate"><span class="pre">Layer</span></code> in a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. It will automatically reference artifacts in the flow’s <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> and return the corresponding values. In this way, any arbitrary parameter can be passed into the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
 </section>
 <section id="execution-guard">
 <h2>Execution Guard<a class="headerlink" href="#execution-guard" title="Permalink to this headline"></a></h2>
-<p>Because <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code> is the entrypoint for both scheduling a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and executing a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>, additional care must be taken to avoid inefficiently adding values to <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code></p>
+<p>Because <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code> is the entrypoint for both scheduling a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> and executing a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>, additional care must be taken to avoid inefficiently calling <code class="docutils literal notranslate"><span class="pre">Flow.parameters</span></code>.</p>
 <p>Consider the following example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="o">...</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/really/big/csv&quot;</span><span class="p">))</span>
+    <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/large.csv&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Here we are reading a large CSV into a pandas DataFrame and passing that in as a parameter to the flow. There are two issues:</p>
@@ -154,22 +155,19 @@
 <li><p>The CSV we need to read may not be present in the image the container is started in.</p></li>
 </ol>
 <p>To avoid this we can guard the CSV read with the <code class="docutils literal notranslate"><span class="pre">current</span></code> object.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="kn">from</span> <span class="nn">laminar.settings</span> <span class="kn">import</span> <span class="n">current</span>
 
 <span class="o">...</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="c1"># In a Layer execution</span>
-    <span class="k">if</span> <span class="n">current</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
-
     <span class="c1"># Scheduling a Flow</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/really/large/csv&quot;</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="n">flow</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/large.csv&quot;</span><span class="p">))</span>
 
-    <span class="n">flow</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+    <span class="n">flow</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>By guarding against layer execution, we can only make our entire <code class="docutils literal notranslate"><span class="pre">Flow</span></code> more efficient.</p>
@@ -190,7 +188,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In one entrypoint add the parameters to <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code>:</p>
+<p>In one entrypoint add the parameters to <code class="docutils literal notranslate"><span class="pre">Flow.parameters</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># parameters.py</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -198,7 +196,8 @@
 <span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/really/large/csv&quot;</span><span class="p">))</span>
+    <span class="n">flow</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/large.csv&quot;</span><span class="p">))</span>
+    <span class="n">flow</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>In another invoke <code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code> without parameters:</p>

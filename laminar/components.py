@@ -115,6 +115,21 @@ class Layer:
     def dependencies(self) -> Tuple[str, ...]:
         return tuple(layer.name for layer in self._dependencies)
 
+    def execute(self, *parameters: "Layer") -> None:
+        """Execute a layer.
+
+        Args:
+            *parameters: Input layers to the layer.
+        """
+
+        # Attempt to write any existing layer artifacts before failing
+        try:
+            self(*parameters)
+        finally:
+            for artifact, value in vars(self).items():
+                if artifact not in LAYER_RESERVED_KEYWORDS:
+                    self.flow.configuration.datastore.write(layer=self, name=artifact, values=[value])
+
     def shard(self, **artifacts: Iterable[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
 
@@ -136,10 +151,10 @@ class Layer:
 
 
 class Parameters(Layer):
-    ...
+    """Special Layer for handling Flow parameters."""
 
 
-FlowParameters = Parameters(configuration=layers.Configuration)
+FlowParameters = Parameters(configuration=layers.Configuration())
 
 
 @dataclass
@@ -216,7 +231,7 @@ class Flow:
                 dependents.setdefault(parent, set()).add(child)
         return dependents
 
-    def __call__(self, *, execution: Optional[str] = None, **parameters: Any) -> Optional[str]:
+    def __call__(self, *, execution: Optional[str] = None) -> Optional[str]:
         """Execute the flow or execute a layer in the flow.
 
         Notes:
@@ -229,7 +244,6 @@ class Flow:
 
             flow()
             flow("execution-id")
-            flow("execution-id", foo="bar")
         """
 
         # Execute a layer in the flow.
@@ -239,8 +253,6 @@ class Flow:
         # Schedule execution of the flow.
         elif self.execution is None:
             execution = execution or str(KsuidMs())
-            if parameters:
-                self.parameters(execution=execution, **parameters)
             self.schedule(execution=execution, dependencies=self.dependencies)
 
         return execution
@@ -270,20 +282,8 @@ class Flow:
             # Setup the Layer parameter values
             parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
-            # Execute the layer
-            try:
-                with hooks.context(layer=layer, annotation=hooks.annotation.execution):
-                    layer(*parameters)
-
-            # Catch and re-raise any exceptions
-            except Exception:
-                raise
-
-            # Write any layer artifacts to the flow datastore regardless of failure.
-            finally:
-                for artifact, value in vars(layer).items():
-                    if artifact not in LAYER_RESERVED_KEYWORDS:
-                        self.configuration.datastore.write(layer=layer, name=artifact, values=[value])
+            with hooks.context(layer=layer, annotation=hooks.annotation.execution):
+                layer.execute(*parameters)
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
@@ -429,20 +429,37 @@ class Flow:
 
             return layer
 
-    def parameters(self, *, execution: str, **artifacts: Any) -> None:
+    def parameters(self, *, execution: Optional[str] = None, **artifacts: Any) -> str:
         """Configure parameters for a flow execution
+
+        Usage::
+
+            execution = flow.parameters(foo="bar:)
+            flow(execution=execution)
 
         Args:
             execution: ID of the execution to configure the flow parameters for.
             artifacts: Key/value pairs of parameters to add to the flow.
+
+        Returns:
+            ID of the execution the parameters were added to.
         """
 
+        execution = execution or str(KsuidMs())
         with contexts.Attributes(self, execution=execution):
+
+            # Property setup the layer for writing to the datastore
             layer = self.layer(Parameters, index=0, splits=1, attempt=0)
 
+            # Assign artifact values
             for name, value in artifacts.items():
                 if name not in LAYER_RESERVED_KEYWORDS:
-                    self.configuration.datastore.write(layer=layer, name=name, values=[value])
+                    setattr(layer, name, value)
+
+            # Fake an execution to write the artifacts to the datastore.
+            layer.execute()
+
+        return execution
 
     @overload
     def results(self, execution: str) -> "Flow":

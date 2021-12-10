@@ -115,6 +115,7 @@
 <dt class="sig sig-object py" id="laminar.components.Parameters">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.components.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.components.Parameters" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">laminar.components.Layer</span></code></a></p>
+<p>Special Layer for handling Flow parameters.</p>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -122,7 +123,10 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></p></td>
+<td><p>Execute a layer.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard</span></code></p></td>
 <td><p>Store each item of a sequence separately so that they may be loaded individually downstream.</p></td>
 </tr>
 </tbody>

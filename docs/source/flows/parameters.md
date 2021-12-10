@@ -10,8 +10,8 @@ It may be helpful to read [Technical Details: Execution](Executions) to get a be
 
 There are two parts involved in parameterizing a `Flow`.
 
-1. Keyword arguments passed to `Flow.__call__` are written to the flow's `Datastore`.
-1. A special layer `Parameters` is automatically registered to every `Flow` and is able to reference any parameter with the same behavior as any other `Layer`.
+1. Keyword arguments passed to `Flow.parameters` are written to the flow's `Datastore`.
+1. A special layer `Parameters` is automatically registered to every `Flow` and is able to reference any `Flow` parameter with the same behavior as any other `Layer`.
 
 ```python
 # main.py
@@ -27,7 +27,8 @@ class A(Layer):
         print(parameters.foo)
 
 if __name__ == "__main__":
-    flow(foo="bar")
+    flow.parameters(foo="bar")
+    flow()
 ```
 
 ```python
@@ -36,11 +37,11 @@ python main.py
 >>> "bar"
 ```
 
-`Parameters` can be used as a parameter like any other `Layer` in a `Flow`. It will automatically reference artifacts in the flow's `Datastore` and return the corresponding values. In this way, any arbitrary parameters can be pass into the `Flow`.
+`Parameters` can be used as a parameter like any other `Layer` in a `Flow`. It will automatically reference artifacts in the flow's `Datastore` and return the corresponding values. In this way, any arbitrary parameter can be passed into the `Flow`.
 
 ## Execution Guard
 
-Because `Flow.__call__` is the entrypoint for both scheduling a `Flow` and executing a `Layer`, additional care must be taken to avoid inefficiently adding values to `Flow.__call__`
+Because `Flow.__call__` is the entrypoint for both scheduling a `Flow` and executing a `Layer`, additional care must be taken to avoid inefficiently calling `Flow.parameters`.
 
 Consider the following example:
 
@@ -50,7 +51,7 @@ import pandas as pd
 ...
 
 if __name__ == "__main__":
-    flow(foo=pd.read_csv("path/to/really/big/csv"))
+    flow(foo=pd.read_csv("path/to/large.csv"))
 ```
 
 Here we are reading a large CSV into a pandas DataFrame and passing that in as a parameter to the flow. There are two issues:
@@ -61,22 +62,19 @@ Here we are reading a large CSV into a pandas DataFrame and passing that in as a
 To avoid this we can guard the CSV read with the `current` object.
 
 ```python
-import pandas
+import pandas as pd
+
 from laminar.settings import current
 
 ...
 
 if __name__ == "__main__":
 
-    # In a Layer execution
-    if current.execution.id:
-        parameters = {}
-
     # Scheduling a Flow
-    else:
-        parameters = {"foo": pd.read_csv("path/to/really/large/csv")}
+    if not current.execution.id:
+        flow.parameters(foo=pd.read_csv("path/to/large.csv"))
 
-    flow(**parameters)
+    flow()
 ```
 
 By guarding against layer execution, we can only make our entire `Flow` more efficient.
@@ -99,7 +97,7 @@ class A(Layer):
         print(parameters.foo)
 ```
 
-In one entrypoint add the parameters to `Flow.__call__`:
+In one entrypoint add the parameters to `Flow.parameters`:
 
 ```python
 # parameters.py
@@ -109,7 +107,8 @@ import pandas as pd
 from main import flow
 
 if __name__ == "__main__":
-    flow(foo=pd.read_csv("path/to/really/large/csv"))
+    flow.parameters(foo=pd.read_csv("path/to/large.csv"))
+    flow()
 ```
 
 In another invoke `Flow.__call__` without parameters:
