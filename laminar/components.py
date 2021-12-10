@@ -1,3 +1,5 @@
+"""Core components for build flows."""
+
 import asyncio
 import logging
 from copy import deepcopy
@@ -30,12 +32,18 @@ class Layer:
             ...
     """
 
+    #: Configurations for the Layer
     configuration: layers.Configuration
+    #: Flow the Layer is registered to
     flow: "Flow"
 
+    #: Current layer execution attempt
     attempt: Optional[int] = current.layer.attempt
+    #: Layer index in its splits
     index: Optional[int] = current.layer.index
+    #: Namespace the Layer is a part of
     namespace: Optional[str] = None
+    #: Number of splits in the layer execution
     splits: Optional[int] = current.layer.splits
 
     def __init__(self, **attributes: Any) -> None:
@@ -103,6 +111,8 @@ class Layer:
 
     @property
     def name(self) -> str:
+        """Name of the layer"""
+
         if self.namespace is None:
             return type(self).__name__
         return f"{self.namespace}.{type(self).__name__}"
@@ -113,6 +123,8 @@ class Layer:
 
     @property
     def dependencies(self) -> Tuple[str, ...]:
+        """Layers this layer depends on."""
+
         return tuple(layer.name for layer in self._dependencies)
 
     def execute(self, *parameters: "Layer") -> None:
@@ -168,7 +180,9 @@ class Flow:
         flow = Flow(name="HelloFlow")
     """
 
+    #: Configurations for the flow
     configuration: flows.Configuration
+    #: ID of the flow's current execution
     execution: Optional[str] = current.execution.id
 
     def __init__(

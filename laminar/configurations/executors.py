@@ -111,7 +111,12 @@ class Executor:
 
 @dataclass(frozen=True)
 class Thread(Executor):
-    """Execute layers in threads."""
+    """Execute layers in threads.
+
+    Usage::
+
+        Flow(executor=Thread())
+    """
 
     async def execute(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
@@ -122,7 +127,12 @@ class Thread(Executor):
 
 @dataclass(frozen=True)
 class Docker(Executor):
-    """Execute layers in Docker containers."""
+    """Execute layers in Docker containers.
+
+    Usage::
+
+        Flow(executor=Docker())
+    """
 
     async def execute(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
@@ -177,7 +187,12 @@ class AWS:
 
     @dataclass(frozen=True)
     class Batch(Executor, BaseBatch):
-        """Execute layers in AWS Batch."""
+        """Execute layers in AWS Batch.
+
+        Usage::
+
+            Flow(executor=AWS.Batch())
+        """
 
         async def wait(self, *, layer: Layer, job: str, batch: Optional[BatchClient] = None) -> Layer:
             """Wait on the completion of a Layer.

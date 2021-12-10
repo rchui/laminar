@@ -145,29 +145,29 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempt</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.attempt" title="laminar.components.Layer.attempt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempt</span></code></a></p></td>
+<td><p>Current layer execution attempt</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependencies</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.dependencies" title="laminar.components.Layer.dependencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependencies</span></code></a></p></td>
+<td><p>Layers this layer depends on.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.index" title="laminar.components.Layer.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
+<td><p>Layer index in its splits</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.name" title="laminar.components.Layer.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p>Name of the layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.namespace" title="laminar.components.Layer.namespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></a></p></td>
+<td><p>Namespace the Layer is a part of</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
+<td><p>Number of splits in the layer execution</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
+<td><p>Configurations for the Layer</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
+<td><p>Flow the Layer is registered to</p></td>
 </tr>
 </tbody>
 </table>
@@ -175,6 +175,24 @@
 <dt class="sig sig-object py" id="laminar.components.Layer.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Layer.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.components.Layer.attempt">
+<span class="sig-name descname"><span class="pre">attempt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.attempt" title="Permalink to this definition"></a></dt>
+<dd><p>Current layer execution attempt</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.components.Layer.configuration">
+<span class="sig-name descname"><span class="pre">configuration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.Configuration.html#laminar.configurations.layers.Configuration" title="laminar.configurations.layers.Configuration"><span class="pre">laminar.configurations.layers.Configuration</span></a></em><a class="headerlink" href="#laminar.components.Layer.configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Configurations for the Layer</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="laminar.components.Layer.dependencies">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dependencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Layer.dependencies" title="Permalink to this definition"></a></dt>
+<dd><p>Layers this layer depends on.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.components.Layer.execute">
@@ -185,6 +203,30 @@
 <dd class="field-odd"><p><strong>*parameters</strong> – Input layers to the layer.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.components.Layer.flow">
+<span class="sig-name descname"><span class="pre">flow</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">laminar.components.Flow</span></a></em><a class="headerlink" href="#laminar.components.Layer.flow" title="Permalink to this definition"></a></dt>
+<dd><p>Flow the Layer is registered to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.components.Layer.index">
+<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.index" title="Permalink to this definition"></a></dt>
+<dd><p>Layer index in its splits</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="laminar.components.Layer.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#laminar.components.Layer.name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the layer</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.components.Layer.namespace">
+<span class="sig-name descname"><span class="pre">namespace</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.namespace" title="Permalink to this definition"></a></dt>
+<dd><p>Namespace the Layer is a part of</p>
 </dd></dl>
 
 <dl class="py method">
@@ -204,6 +246,12 @@
 <dd class="field-odd"><p><strong>**artifacts</strong> – Sequence to break up and store.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.components.Layer.splits">
+<span class="sig-name descname"><span class="pre">splits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.splits" title="Permalink to this definition"></a></dt>
+<dd><p>Number of splits in the layer execution</p>
 </dd></dl>
 
 </dd></dl>

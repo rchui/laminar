@@ -1,9 +1,9 @@
-"""Configuraitons for laminar data sources."""
+"""Configurations for laminar data sources."""
 
-import dataclasses
 import hashlib
 import json
 import os
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, Tuple, Union, overload
 
@@ -18,19 +18,19 @@ else:
     Layer = "Layer"
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclass(frozen=True)
 class Record:
     """Handler for metadata about how a Layer was executed."""
 
-    @dataclasses.dataclass(frozen=True)
+    @dataclass(frozen=True)
     class FlowRecord:
         name: str
 
-    @dataclasses.dataclass(frozen=True)
+    @dataclass(frozen=True)
     class LayerRecord:
         name: str
 
-    @dataclasses.dataclass(frozen=True)
+    @dataclass(frozen=True)
     class ExecutionRecord:
         splits: int
 
@@ -43,14 +43,14 @@ class Record:
         return os.path.join(layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, ".record.json")
 
     def dict(self) -> Dict[str, Any]:
-        return dataclasses.asdict(self)
+        return asdict(self)
 
     @staticmethod
     def parse(source: Dict[str, Any]) -> "Record":
         return from_dict(Record, source)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclass(frozen=True)
 class Artifact:
     """Handler for artifacts in the laminar datastore.
 
@@ -64,10 +64,10 @@ class Artifact:
         return os.path.join(layer.flow.name, "artifacts", f"{self.hexdigest}.gz")
 
     def dict(self) -> Dict[str, str]:
-        return dataclasses.asdict(self)
+        return asdict(self)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclass(frozen=True)
 class Archive:
     """Handler for archives in the laminar datastore.
 
@@ -92,14 +92,14 @@ class Archive:
         return os.path.join(*parts)
 
     def dict(self) -> Dict[str, List[Dict[str, str]]]:
-        return dataclasses.asdict(self)
+        return asdict(self)
 
     @staticmethod
     def parse(source: Dict[str, List[Dict[str, str]]]) -> "Archive":
         return from_dict(Archive, source)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclass(frozen=True)
 class Accessor:
     """Artifact handler for sharded artifacts."""
 
@@ -144,10 +144,12 @@ class Accessor:
         return len(self.archive)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclass(frozen=True)
 class DataStore:
+    """Base flow datastore."""
+
     root: str
-    cache: Dict[str, Any] = dataclasses.field(default_factory=dict)
+    cache: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.root.endswith(("://", ":///")):
@@ -274,16 +276,26 @@ class DataStore:
         return self._write_record(path=record.path(layer=layer), record=record)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclass(frozen=True)
 class Local(DataStore):
-    """Store the laminar workspace on the local filesystem."""
+    """Store the laminar workspace on the local filesystem.
+
+    Usage::
+
+        Flow(datastore=Local())
+    """
 
     root: str = str(Path.cwd() / ".laminar")
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclass(frozen=True)
 class Memory(DataStore):
-    """Store the laminar workspace in memory."""
+    """Store the laminar workspace in memory.
+
+    Usage::
+
+        Flow(datastore=Memory())
+    """
 
     root: str = "memory:///"
 
@@ -310,6 +322,11 @@ class Memory(DataStore):
 
 
 class AWS:
-    @dataclasses.dataclass(frozen=True)
+    @dataclass(frozen=True)
     class S3(DataStore):
-        """Store the laminar workspace in AWS S3."""
+        """Store the laminar workspace in AWS S3.
+
+        Usage::
+
+            Flow(datastore=AWS.S3())
+        """
