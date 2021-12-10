@@ -3,6 +3,7 @@
 
 .. autoclass:: laminar.configurations.datastores.Memory
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -93,5 +94,9 @@
         
         ~laminar.configurations.datastores.Memory.cache
         
+    
+    
+
+    
     
     

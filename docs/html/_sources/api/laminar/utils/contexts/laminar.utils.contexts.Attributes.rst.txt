@@ -1,8 +1,9 @@
-Attributes
+﻿Attributes
 ==========
 
 .. autoclass:: laminar.utils.contexts.Attributes
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -51,5 +52,9 @@ Attributes
         
         
         
+    
+    
+
+    
     
     

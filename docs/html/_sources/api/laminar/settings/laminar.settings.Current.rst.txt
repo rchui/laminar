@@ -1,8 +1,9 @@
-Current
+﻿Current
 =======
 
 .. autoclass:: laminar.settings.Current
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -110,5 +111,9 @@ Current
         
         
         
+    
+    
+
+    
     
     

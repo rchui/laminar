@@ -1,8 +1,9 @@
-Parameters
+﻿Parameters
 ==========
 
 .. autoclass:: laminar.components.Parameters
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -86,5 +87,9 @@ Parameters
         
         ~laminar.components.Parameters.flow
         
+    
+    
+
+    
     
     

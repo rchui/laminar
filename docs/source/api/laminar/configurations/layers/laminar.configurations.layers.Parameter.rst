@@ -1,8 +1,9 @@
-Parameter
+﻿Parameter
 =========
 
 .. autoclass:: laminar.configurations.layers.Parameter
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -59,5 +60,9 @@ Parameter
         
         ~laminar.configurations.layers.Parameter.attribute
         
+    
+    
+
+    
     
     

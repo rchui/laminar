@@ -1,8 +1,9 @@
-ForEach
+﻿ForEach
 =======
 
 .. autoclass:: laminar.configurations.layers.ForEach
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -65,5 +66,9 @@ ForEach
         
         ~laminar.configurations.layers.ForEach.parameters
         
+    
+    
+
+    
     
     

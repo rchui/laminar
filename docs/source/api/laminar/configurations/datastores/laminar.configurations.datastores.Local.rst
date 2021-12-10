@@ -3,6 +3,7 @@
 
 .. autoclass:: laminar.configurations.datastores.Local
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -93,5 +94,9 @@
         
         ~laminar.configurations.datastores.Local.cache
         
+    
+    
+
+    
     
     

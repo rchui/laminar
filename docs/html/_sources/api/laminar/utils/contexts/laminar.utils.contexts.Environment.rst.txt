@@ -1,8 +1,9 @@
-Environment
+﻿Environment
 ===========
 
 .. autoclass:: laminar.utils.contexts.Environment
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -51,5 +52,9 @@ Environment
         
         
         
+    
+    
+
+    
     
     

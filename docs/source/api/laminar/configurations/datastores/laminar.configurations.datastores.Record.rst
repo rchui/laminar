@@ -1,8 +1,9 @@
-Record
+﻿Record
 ======
 
 .. autoclass:: laminar.configurations.datastores.Record
     :members:
+    :inherited-members:
     :show-inheritance:
 
     
@@ -68,5 +69,9 @@ Record
         
         ~laminar.configurations.datastores.Record.execution
         
+    
+    
+
+    
     
     
