@@ -1,9 +1,8 @@
-﻿Configuration
+Configuration
 =============
 
 .. autoclass:: laminar.configurations.layers.Configuration
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -60,9 +59,5 @@
         
         ~laminar.configurations.layers.Configuration.retry
         
-    
-    
-
-    
     
     

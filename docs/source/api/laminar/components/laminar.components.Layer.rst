@@ -1,9 +1,8 @@
-﻿Layer
+Layer
 =====
 
 .. autoclass:: laminar.components.Layer
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -87,9 +86,5 @@
         
         ~laminar.components.Layer.flow
         
-    
-    
-
-    
     
     

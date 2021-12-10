@@ -1,9 +1,8 @@
-﻿Archive
+Archive
 =======
 
 .. autoclass:: laminar.configurations.datastores.Archive
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -64,9 +63,5 @@
         
         ~laminar.configurations.datastores.Archive.artifacts
         
-    
-    
-
-    
     
     

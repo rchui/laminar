@@ -101,6 +101,7 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
@@ -123,15 +124,11 @@
       <ul>
         <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.__init__">(laminar.components.Layer method)</a>
 </li>
-        <li><a href="api/laminar/components/laminar.components.Parameters.html#laminar.components.Parameters.__init__">(laminar.components.Parameters method)</a>
-</li>
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Accessor.html#laminar.configurations.datastores.Accessor.__init__">(laminar.configurations.datastores.Accessor method)</a>
 </li>
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive.__init__">(laminar.configurations.datastores.Archive method)</a>
 </li>
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact.__init__">(laminar.configurations.datastores.Artifact method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.__init__">(laminar.configurations.datastores.AWS method)</a>
 </li>
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.__init__">(laminar.configurations.datastores.AWS.S3 method)</a>
 </li>
@@ -148,8 +145,6 @@
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.FlowRecord.__init__">(laminar.configurations.datastores.Record.FlowRecord method)</a>
 </li>
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.LayerRecord.__init__">(laminar.configurations.datastores.Record.LayerRecord method)</a>
-</li>
-        <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.AWS.html#laminar.configurations.executors.AWS.__init__">(laminar.configurations.executors.AWS method)</a>
 </li>
         <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.AWS.html#laminar.configurations.executors.AWS.BaseBatch.__init__">(laminar.configurations.executors.AWS.BaseBatch method)</a>
 </li>
@@ -173,14 +168,6 @@
 </li>
         <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.Retry.html#laminar.configurations.layers.Retry.__init__">(laminar.configurations.layers.Retry method)</a>
 </li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.__init__">(laminar.settings.Current method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution.__init__">(laminar.settings.Current.Execution method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Flow.__init__">(laminar.settings.Current.Flow method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.__init__">(laminar.settings.Current.Layer method)</a>
-</li>
         <li><a href="api/laminar/utils/contexts/laminar.utils.contexts.Attributes.html#laminar.utils.contexts.Attributes.__init__">(laminar.utils.contexts.Attributes method)</a>
 </li>
         <li><a href="api/laminar/utils/contexts/laminar.utils.contexts.Environment.html#laminar.utils.contexts.Environment.__init__">(laminar.utils.contexts.Environment method)</a>
@@ -200,10 +187,16 @@
 </li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive">Archive (class in laminar.configurations.datastores)</a>
 </li>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Accessor.html#laminar.configurations.datastores.Accessor.archive">archive (laminar.configurations.datastores.Accessor attribute)</a>
+</li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact">Artifact (class in laminar.configurations.datastores)</a>
 </li>
       <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.attempt">attempt (laminar.components.Layer attribute)</a>
+
+      <ul>
+        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.attempt">(laminar.settings.Current.Layer attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/utils/contexts/laminar.utils.contexts.Attributes.html#laminar.utils.contexts.Attributes">Attributes (class in laminar.utils.contexts)</a>
@@ -227,13 +220,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.cache">cache (laminar.configurations.datastores.DataStore attribute)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.cache">(laminar.configurations.datastores.Local attribute)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.cache">(laminar.configurations.datastores.Memory attribute)</a>
-</li>
-      </ul></li>
       <li><a href="api/laminar/configurations/flows/laminar.configurations.flows.Configuration.html#laminar.configurations.flows.Configuration">Configuration (class in laminar.configurations.flows)</a>
 
       <ul>
@@ -246,32 +233,12 @@
         <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.configuration">(laminar.components.Layer attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.construct">construct() (laminar.settings.Current class method)</a>
-
-      <ul>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution.construct">(laminar.settings.Current.Execution class method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Flow.construct">(laminar.settings.Current.Flow class method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.construct">(laminar.settings.Current.Layer class method)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.Container.html#laminar.configurations.layers.Container">Container (class in laminar.configurations.layers)</a>
 </li>
       <li><a href="api/laminar/configurations/laminar.configurations.hooks.html#laminar.configurations.hooks.context">context() (in module laminar.configurations.hooks)</a>
 </li>
-      <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.copy">copy() (laminar.settings.Current method)</a>
-
-      <ul>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution.copy">(laminar.settings.Current.Execution method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Flow.copy">(laminar.settings.Current.Flow method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.copy">(laminar.settings.Current.Layer method)</a>
-</li>
-      </ul></li>
       <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current">Current (class in laminar.settings)</a>
 </li>
       <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution">Current.Execution (class in laminar.settings)</a>
@@ -293,8 +260,6 @@
       <ul>
         <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.dependencies">(laminar.components.Layer property)</a>
 </li>
-        <li><a href="api/laminar/components/laminar.components.Parameters.html#laminar.components.Parameters.dependencies">(laminar.components.Parameters property)</a>
-</li>
       </ul></li>
       <li><a href="api/laminar/configurations/laminar.configurations.hooks.html#laminar.configurations.hooks.dependencies">dependencies() (in module laminar.configurations.hooks)</a>
 </li>
@@ -302,14 +267,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/components/laminar.components.Flow.html#laminar.components.Flow.dependents">dependents (laminar.components.Flow property)</a>
 </li>
-      <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.dict">dict() (laminar.settings.Current method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive.dict">dict() (laminar.configurations.datastores.Archive method)</a>
 
       <ul>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution.dict">(laminar.settings.Current.Execution method)</a>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact.dict">(laminar.configurations.datastores.Artifact method)</a>
 </li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Flow.dict">(laminar.settings.Current.Flow method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.dict">(laminar.settings.Current.Layer method)</a>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.dict">(laminar.configurations.datastores.Record method)</a>
 </li>
       </ul></li>
       <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Docker.html#laminar.configurations.executors.Docker">Docker (class in laminar.configurations.executors)</a>
@@ -329,8 +292,6 @@
       <ul>
         <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.execute">(laminar.components.Layer method)</a>
 </li>
-        <li><a href="api/laminar/components/laminar.components.Parameters.html#laminar.components.Parameters.execute">(laminar.components.Parameters method)</a>
-</li>
         <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.AWS.html#laminar.configurations.executors.AWS.Batch.execute">(laminar.configurations.executors.AWS.Batch method)</a>
 </li>
         <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Docker.html#laminar.configurations.executors.Docker.execute">(laminar.configurations.executors.Docker method)</a>
@@ -343,7 +304,11 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/components/laminar.components.Flow.html#laminar.components.Flow.execution">execution (laminar.components.Flow attribute)</a>
+
+      <ul>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.execution">(laminar.configurations.datastores.Record attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/laminar/configurations/laminar.configurations.hooks.html#laminar.configurations.hooks.execution">execution() (in module laminar.configurations.hooks)</a>
 </li>
       <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor">Executor (class in laminar.configurations.executors)</a>
@@ -351,11 +316,7 @@
       <li><a href="api/laminar/utils/laminar.utils.fs.html#laminar.utils.fs.exists">exists() (in module laminar.utils.fs)</a>
 
       <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.exists">(laminar.configurations.datastores.AWS.S3 method)</a>
-</li>
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.exists">(laminar.configurations.datastores.DataStore method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.exists">(laminar.configurations.datastores.Local method)</a>
 </li>
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.exists">(laminar.configurations.datastores.Memory method)</a>
 </li>
@@ -368,10 +329,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/components/laminar.components.Flow.html#laminar.components.Flow">Flow (class in laminar.components)</a>
 </li>
+      <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.flow">flow (laminar.components.Layer attribute)</a>
+
+      <ul>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.flow">(laminar.configurations.datastores.Record attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.flow">flow (laminar.components.Layer attribute)</a>
-</li>
       <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach">ForEach (class in laminar.configurations.layers)</a>
 </li>
   </ul></td>
@@ -385,11 +350,27 @@
   </ul></td>
 </tr></table>
 
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact.hexdigest">hexdigest (laminar.configurations.datastores.Artifact attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.index">index (laminar.components.Layer attribute)</a>
+      <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution.id">id (laminar.settings.Current.Execution attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.index">index (laminar.components.Layer attribute)</a>
+
+      <ul>
+        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.index">(laminar.settings.Current.Layer attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -398,16 +379,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach.join">join() (laminar.configurations.layers.ForEach method)</a>
 </li>
-      <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.json">json() (laminar.settings.Current method)</a>
-
-      <ul>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution.json">(laminar.settings.Current.Execution method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Flow.json">(laminar.settings.Current.Flow method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.json">(laminar.settings.Current.Layer method)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -516,6 +487,12 @@
       </ul></li>
       <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer">Layer (class in laminar.components)</a>
 </li>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Accessor.html#laminar.configurations.datastores.Accessor.layer">layer (laminar.configurations.datastores.Accessor attribute)</a>
+
+      <ul>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.layer">(laminar.configurations.datastores.Record attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/laminar/components/laminar.components.Flow.html#laminar.components.Flow.layer">layer() (laminar.components.Flow method)</a>
 </li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local">Local (class in laminar.configurations.datastores)</a>
@@ -570,7 +547,13 @@
       <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.name">name (laminar.components.Layer property)</a>
 
       <ul>
-        <li><a href="api/laminar/components/laminar.components.Parameters.html#laminar.components.Parameters.name">(laminar.components.Parameters property)</a>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.FlowRecord.name">(laminar.configurations.datastores.Record.FlowRecord attribute)</a>
+</li>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.LayerRecord.name">(laminar.configurations.datastores.Record.LayerRecord attribute)</a>
+</li>
+        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Flow.name">(laminar.settings.Current.Flow attribute)</a>
+</li>
+        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.name">(laminar.settings.Current.Layer attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -593,64 +576,46 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.Parameter.html#laminar.configurations.layers.Parameter">Parameter (class in laminar.configurations.layers)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/components/laminar.components.Parameters.html#laminar.components.Parameters">Parameters (class in laminar.components)</a>
 </li>
       <li><a href="api/laminar/components/laminar.components.Flow.html#laminar.components.Flow.parameters">parameters() (laminar.components.Flow method)</a>
 </li>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive.parse">parse() (laminar.configurations.datastores.Archive static method)</a>
+
+      <ul>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.parse">(laminar.configurations.datastores.Record static method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive.path">path() (laminar.configurations.datastores.Archive static method)</a>
+
+      <ul>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact.path">(laminar.configurations.datastores.Artifact method)</a>
+</li>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.path">(laminar.configurations.datastores.Record static method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.read">read() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read">(laminar.configurations.datastores.DataStore method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read">read() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.read">(laminar.configurations.datastores.Local method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read_archive">read_archive() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.read">(laminar.configurations.datastores.Memory method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read_artifact">read_artifact() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-      </ul></li>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.read_archive">read_archive() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read_archive">(laminar.configurations.datastores.DataStore method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read_record">read_record() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.read_archive">(laminar.configurations.datastores.Local method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.read_archive">(laminar.configurations.datastores.Memory method)</a>
-</li>
-      </ul></li>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.read_artifact">read_artifact() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read_artifact">(laminar.configurations.datastores.DataStore method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.read_artifact">(laminar.configurations.datastores.Local method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.read_artifact">(laminar.configurations.datastores.Memory method)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.read_record">read_record() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.read_record">(laminar.configurations.datastores.DataStore method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.read_record">(laminar.configurations.datastores.Local method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.read_record">(laminar.configurations.datastores.Memory method)</a>
-</li>
-      </ul></li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record">Record (class in laminar.configurations.datastores)</a>
 </li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.ExecutionRecord">Record.ExecutionRecord (class in laminar.configurations.datastores)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.FlowRecord">Record.FlowRecord (class in laminar.configurations.datastores)</a>
 </li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.LayerRecord">Record.LayerRecord (class in laminar.configurations.datastores)</a>
@@ -674,39 +639,27 @@
       <li><a href="api/laminar/configurations/laminar.configurations.hooks.html#laminar.configurations.hooks.schedule">schedule() (in module laminar.configurations.hooks)</a>
 
       <ul>
-        <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.AWS.html#laminar.configurations.executors.AWS.Batch.schedule">(laminar.configurations.executors.AWS.Batch method)</a>
-</li>
-        <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Docker.html#laminar.configurations.executors.Docker.schedule">(laminar.configurations.executors.Docker method)</a>
-</li>
         <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor.schedule">(laminar.configurations.executors.Executor method)</a>
 </li>
-        <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Thread.html#laminar.configurations.executors.Thread.schedule">(laminar.configurations.executors.Thread method)</a>
-</li>
       </ul></li>
-      <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.AWS.html#laminar.configurations.executors.AWS.Batch.semaphore">semaphore (laminar.configurations.executors.AWS.Batch property)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Docker.html#laminar.configurations.executors.Docker.semaphore">(laminar.configurations.executors.Docker property)</a>
+      <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor.semaphore">semaphore (laminar.configurations.executors.Executor property)</a>
 </li>
-        <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor.semaphore">(laminar.configurations.executors.Executor property)</a>
-</li>
-        <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.Thread.html#laminar.configurations.executors.Thread.semaphore">(laminar.configurations.executors.Thread property)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach.set">set() (laminar.configurations.layers.ForEach method)</a>
 </li>
       <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.shard">shard() (laminar.components.Layer method)</a>
-
-      <ul>
-        <li><a href="api/laminar/components/laminar.components.Parameters.html#laminar.components.Parameters.shard">(laminar.components.Parameters method)</a>
 </li>
-      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.Retry.html#laminar.configurations.layers.Retry.sleep">sleep() (laminar.configurations.layers.Retry method)</a>
 </li>
       <li><a href="api/laminar/components/laminar.components.Layer.html#laminar.components.Layer.splits">splits (laminar.components.Layer attribute)</a>
+
+      <ul>
+        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.ExecutionRecord.splits">(laminar.configurations.datastores.Record.ExecutionRecord attribute)</a>
 </li>
+        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.splits">(laminar.settings.Current.Layer attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach.splits">splits() (laminar.configurations.layers.ForEach method)</a>
 </li>
   </ul></td>
@@ -725,28 +678,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/laminar.utils.html#laminar.utils.unwrap">unwrap() (in module laminar.utils)</a>
 </li>
-      <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.update_forward_refs">update_forward_refs() (laminar.settings.Current class method)</a>
-
-      <ul>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Execution.update_forward_refs">(laminar.settings.Current.Execution class method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Flow.update_forward_refs">(laminar.settings.Current.Flow class method)</a>
-</li>
-        <li><a href="api/laminar/settings/laminar.settings.Current.html#laminar.settings.Current.Layer.update_forward_refs">(laminar.settings.Current.Layer class method)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.uri">uri() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.uri">(laminar.configurations.datastores.DataStore method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.uri">uri() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.uri">(laminar.configurations.datastores.Local method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.uri">(laminar.configurations.datastores.Memory method)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -755,48 +690,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.AWS.html#laminar.configurations.executors.AWS.Batch.wait">wait() (laminar.configurations.executors.AWS.Batch method)</a>
 </li>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.write">write() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write">(laminar.configurations.datastores.DataStore method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write">write() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.write">(laminar.configurations.datastores.Local method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.write">(laminar.configurations.datastores.Memory method)</a>
-</li>
-      </ul></li>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.write_archive">write_archive() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write_archive">(laminar.configurations.datastores.DataStore method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.write_archive">(laminar.configurations.datastores.Local method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.write_archive">(laminar.configurations.datastores.Memory method)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.write_artifact">write_artifact() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write_artifact">(laminar.configurations.datastores.DataStore method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write_archive">write_archive() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.write_artifact">(laminar.configurations.datastores.Local method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write_artifact">write_artifact() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.write_artifact">(laminar.configurations.datastores.Memory method)</a>
+      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write_record">write_record() (laminar.configurations.datastores.DataStore method)</a>
 </li>
-      </ul></li>
-      <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.html#laminar.configurations.datastores.AWS.S3.write_record">write_record() (laminar.configurations.datastores.AWS.S3 method)</a>
-
-      <ul>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write_record">(laminar.configurations.datastores.DataStore method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Local.html#laminar.configurations.datastores.Local.write_record">(laminar.configurations.datastores.Local method)</a>
-</li>
-        <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory.html#laminar.configurations.datastores.Memory.write_record">(laminar.configurations.datastores.Memory method)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 

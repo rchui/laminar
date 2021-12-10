@@ -24,29 +24,41 @@ class Record:
 
     @dataclass(frozen=True)
     class FlowRecord:
+        #: Name of the flow
         name: str
 
     @dataclass(frozen=True)
     class LayerRecord:
+        #: Name of the layer
         name: str
 
     @dataclass(frozen=True)
     class ExecutionRecord:
+        #: Number of splits in the layer
         splits: int
 
+    #: Flow record information
     flow: FlowRecord
+    #: Layer record information
     layer: LayerRecord
+    #: Execution record information
     execution: ExecutionRecord
 
     @staticmethod
     def path(*, layer: Layer) -> str:
+        """Get the path to the Record."""
+
         return os.path.join(layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, ".record.json")
 
     def dict(self) -> Dict[str, Any]:
+        """Convert the Record to a dict."""
+
         return asdict(self)
 
     @staticmethod
     def parse(source: Dict[str, Any]) -> "Record":
+        """Get a Record from a dict."""
+
         return from_dict(Record, source)
 
 
@@ -58,12 +70,17 @@ class Artifact:
         Artifacts are gziped, pickled layer instance attributes.
     """
 
+    #: SHA256 hexdigest of the artifact bytes.
     hexdigest: str
 
     def path(self, *, layer: Layer) -> str:
+        """Get the path to the Artifact."""
+
         return os.path.join(layer.flow.name, "artifacts", f"{self.hexdigest}.gz")
 
     def dict(self) -> Dict[str, str]:
+        """Convert the Artifact to a dict."""
+
         return asdict(self)
 
 
@@ -82,6 +99,8 @@ class Archive:
 
     @staticmethod
     def path(*, layer: Layer, index: int, name: str, cache: bool = False) -> str:
+        """Get the path to the Archive."""
+
         parts: Tuple[str, ...]
 
         if cache:
@@ -92,10 +111,14 @@ class Archive:
         return os.path.join(*parts)
 
     def dict(self) -> Dict[str, List[Dict[str, str]]]:
+        """Convert the Archive to a dict."""
+
         return asdict(self)
 
     @staticmethod
     def parse(source: Dict[str, List[Dict[str, str]]]) -> "Archive":
+        """Get an Archive from a dict."""
+
         return from_dict(Archive, source)
 
 
@@ -103,7 +126,9 @@ class Archive:
 class Accessor:
     """Artifact handler for sharded artifacts."""
 
+    #: Archive the accessor is reading from
     archive: Archive
+    #: Layer to read the archive with
     layer: "Layer"
 
     @overload

@@ -1,9 +1,8 @@
-﻿Artifact
+Artifact
 ========
 
 .. autoclass:: laminar.configurations.datastores.Artifact
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -60,9 +59,5 @@
         
         ~laminar.configurations.datastores.Artifact.hexdigest
         
-    
-    
-
-    
     
     

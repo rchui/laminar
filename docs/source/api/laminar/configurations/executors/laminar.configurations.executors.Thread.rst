@@ -1,9 +1,8 @@
-﻿Thread
+Thread
 ======
 
 .. autoclass:: laminar.configurations.executors.Thread
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -66,9 +65,5 @@
         
         ~laminar.configurations.executors.Thread.timeout
         
-    
-    
-
-    
     
     

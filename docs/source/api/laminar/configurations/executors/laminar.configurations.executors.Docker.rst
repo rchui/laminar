@@ -1,9 +1,8 @@
-﻿Docker
+Docker
 ======
 
 .. autoclass:: laminar.configurations.executors.Docker
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -66,9 +65,5 @@
         
         ~laminar.configurations.executors.Docker.timeout
         
-    
-    
-
-    
     
     

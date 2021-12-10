@@ -1,9 +1,8 @@
-﻿DataStore
+DataStore
 =========
 
 .. autoclass:: laminar.configurations.datastores.DataStore
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -94,9 +93,5 @@
         
         ~laminar.configurations.datastores.DataStore.cache
         
-    
-    
-
-    
     
     

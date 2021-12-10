@@ -1,9 +1,8 @@
-﻿AWS
+AWS
 ===
 
 .. autoclass:: laminar.configurations.datastores.AWS
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -48,9 +47,5 @@
         
         
         
-    
-    
-
-    
     
     

@@ -1,9 +1,8 @@
-﻿Container
+Container
 =========
 
 .. autoclass:: laminar.configurations.layers.Container
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -67,9 +66,5 @@
         
         ~laminar.configurations.layers.Container.workdir
         
-    
-    
-
-    
     
     

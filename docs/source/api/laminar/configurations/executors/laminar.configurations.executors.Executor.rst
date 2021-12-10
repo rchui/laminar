@@ -1,9 +1,8 @@
-﻿Executor
+Executor
 ========
 
 .. autoclass:: laminar.configurations.executors.Executor
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -66,9 +65,5 @@
         
         ~laminar.configurations.executors.Executor.timeout
         
-    
-    
-
-    
     
     

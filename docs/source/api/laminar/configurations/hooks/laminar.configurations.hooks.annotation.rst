@@ -1,9 +1,8 @@
-﻿annotation
+annotation
 ==========
 
 .. autoclass:: laminar.configurations.hooks.annotation
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -44,9 +43,5 @@
         
         
         
-    
-    
-
-    
     
     

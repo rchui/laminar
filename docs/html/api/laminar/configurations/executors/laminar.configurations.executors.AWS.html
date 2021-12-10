@@ -180,37 +180,6 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.executors.AWS.Batch.schedule">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Layer</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.executors.AWS.Batch.schedule" title="Permalink to this definition"></a></dt>
-<dd><p>Schedule a layer for execution.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>execution</strong> – Flow execution ID</p></li>
-<li><p><strong>layer</strong> – Layer to execute</p></li>
-<li><p><strong>attempt</strong> – Scheduling attempt for this layer</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Layer splits that were executed</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="laminar.configurations.executors.AWS.Batch.semaphore">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">semaphore</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">asyncio.locks.Semaphore</span></em><a class="headerlink" href="#laminar.configurations.executors.AWS.Batch.semaphore" title="Permalink to this definition"></a></dt>
-<dd><p>Create a semaphore that limits asyncio concurrency.</p>
-<p class="rubric">Notes</p>
-<p>Concurrency is controled by Executor.concurrency</p>
-<p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">semaphore</span><span class="p">:</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.executors.AWS.Batch.wait">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">mypy_boto3_batch.client.BatchClient</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Layer</span></span></span><a class="headerlink" href="#laminar.configurations.executors.AWS.Batch.wait" title="Permalink to this definition"></a></dt>
 <dd><p>Wait on the completion of a Layer.</p>
@@ -229,11 +198,6 @@
 </dd></dl>
 
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.executors.AWS.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.executors.AWS.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 

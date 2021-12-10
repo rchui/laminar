@@ -1,9 +1,8 @@
-﻿Accessor
+Accessor
 ========
 
 .. autoclass:: laminar.configurations.datastores.Accessor
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -60,9 +59,5 @@
         
         ~laminar.configurations.datastores.Accessor.layer
         
-    
-    
-
-    
     
     

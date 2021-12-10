@@ -1,9 +1,8 @@
-﻿Flow
+Flow
 ====
 
 .. autoclass:: laminar.components.Flow
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -84,9 +83,5 @@
         
         ~laminar.components.Flow.configuration
         
-    
-    
-
-    
     
     

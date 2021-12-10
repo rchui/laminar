@@ -28,14 +28,47 @@ class annotation(str, Enum):
 
 
 def execution(hook: T) -> T:
+    """Configure an execution hook.
+
+    Usage::
+
+        from laminar.configurations import hooks
+
+        @hooks.execution
+        def configure() -> Generator[None, None, None]:
+            ...
+    """
+
     return annotation.annotate(hook, annotation.execution)
 
 
 def retry(hook: T) -> T:
+    """Configure a retry hook.
+
+    Usage::
+
+        from laminar.configurations import hooks
+
+        @hooks.retry
+        def configure() -> Generator[None, None, None]:
+            ...
+    """
+
     return annotation.annotate(hook, annotation.retry)
 
 
 def schedule(hook: T) -> T:
+    """Configure a schedule hook.
+
+    Usage::
+
+        from laminar.configurations import hooks
+
+        @hooks.schedule
+        def configure() -> Generator[None, None, None]:
+            ...
+    """
+
     return annotation.annotate(hook, annotation.schedule)
 
 

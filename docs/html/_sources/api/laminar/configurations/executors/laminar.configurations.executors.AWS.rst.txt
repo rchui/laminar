@@ -1,9 +1,8 @@
-﻿AWS
+AWS
 ===
 
 .. autoclass:: laminar.configurations.executors.AWS
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -48,9 +47,5 @@
         
         
         
-    
-    
-
-    
     
     

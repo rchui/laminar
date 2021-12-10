@@ -1,9 +1,8 @@
-﻿Retry
+Retry
 =====
 
 .. autoclass:: laminar.configurations.layers.Retry
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -66,9 +65,5 @@
         
         ~laminar.configurations.layers.Retry.jitter
         
-    
-    
-
-    
     
     

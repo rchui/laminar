@@ -1,9 +1,8 @@
-﻿Configuration
+Configuration
 =============
 
 .. autoclass:: laminar.configurations.flows.Configuration
     :members:
-    :inherited-members:
     :show-inheritance:
 
     
@@ -57,9 +56,5 @@
         
         ~laminar.configurations.flows.Configuration.executor
         
-    
-    
-
-    
     
     

@@ -131,13 +131,13 @@
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.hooks.execution" title="laminar.configurations.hooks.execution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execution</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Configure an execution hook.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.hooks.retry" title="laminar.configurations.hooks.retry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">retry</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Configure a retry hook.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.hooks.schedule" title="laminar.configurations.hooks.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Configure a schedule hook.</p></td>
 </tr>
 </tbody>
 </table>
@@ -154,17 +154,44 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="laminar.configurations.hooks.execution">
 <span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">execution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.hooks.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.hooks.T</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.execution" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Configure an execution hook.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
+
+<span class="nd">@hooks</span><span class="o">.</span><span class="n">execution</span>
+<span class="k">def</span> <span class="nf">configure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="laminar.configurations.hooks.retry">
 <span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">retry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.hooks.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.hooks.T</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.retry" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Configure a retry hook.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
+
+<span class="nd">@hooks</span><span class="o">.</span><span class="n">retry</span>
+<span class="k">def</span> <span class="nf">configure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="laminar.configurations.hooks.schedule">
 <span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.hooks.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.hooks.T</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.schedule" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Configure a schedule hook.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
+
+<span class="nd">@hooks</span><span class="o">.</span><span class="n">schedule</span>
+<span class="k">def</span> <span class="nf">configure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <p class="rubric">Classes</p>
 <table class="longtable docutils align-default">
