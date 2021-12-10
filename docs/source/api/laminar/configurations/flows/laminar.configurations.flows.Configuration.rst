@@ -1,0 +1,60 @@
+Configuration
+=============
+
+.. autoclass:: laminar.configurations.flows.Configuration
+    :members:
+    :show-inheritance:
+
+    
+    
+    .. rubric:: Methods
+
+    .. autosummary::
+        :nosignatures:
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    .. autosummary::
+        :nosignatures:
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        ~laminar.configurations.flows.Configuration.datastore
+        
+        
+        ~laminar.configurations.flows.Configuration.executor
+        
+    
+    

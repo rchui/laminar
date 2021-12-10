@@ -6,7 +6,8 @@ clear:
 
 .PHONY: docs
 docs:
-	sphinx-build -a docs/source docs/html
+	rm -rf docs/source/api docs/html
+	sphinx-build -E -a -j auto docs/source docs/html
 
 .PHONY: env
 env:
