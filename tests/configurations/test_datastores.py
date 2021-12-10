@@ -189,10 +189,12 @@ class TestDatastore:
 
     @patch("laminar.utils.fs.open", new_callable=mock_open)
     def test__write_artifact(self, mock_open: Mock) -> None:
-        self.datastore._write_artifact(path="path/to/artifact", content=b"test-content")
+        self.datastore._write_artifact(path="path/to/artifact", value="test-content")
 
         mock_open.assert_called_once_with("path/to/root/path/to/artifact", "wb")
-        assert mock_open().write.call_args_list == [call(b"test-content")]
+        assert mock_open().write.call_args_list == [
+            call(b"\x80\x05\x95\x10\x00\x00\x00\x00\x00\x00\x00\x8c\x0ctest-content\x94.")
+        ]
 
     @patch("laminar.configurations.datastores.DataStore._write_artifact")
     @patch("laminar.configurations.datastores.DataStore._write_archive")
@@ -207,7 +209,7 @@ class TestDatastore:
         )
         mock_write_artifact.assert_called_once_with(
             path="TestFlow/artifacts/5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae.gz",
-            content=b"\x80\x05\x88.",
+            value=True,
         )
 
     @patch("laminar.utils.fs.open")

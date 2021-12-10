@@ -76,21 +76,20 @@ class ForEach:
         """
 
         datastore = layer.flow.configuration.datastore
-        cache_path = datastores.Archive.path(layer=layer, index=0, name=name, cache=True)
 
-        if datastore.exists(path=cache_path):
+        if datastore.exists(path=datastores.Archive.path(layer=layer, index=0, name=name, cache=True)):
             logger.debug("Cache hit for layer '%s', archive '%s'.", layer.name, name)
-            archive = datastore._read_archive(path=cache_path)
+            archive = datastore.read_archive(layer=layer, index=0, name=name, cache=True)
 
         else:
             logger.debug("Cache miss for layer '%s', archive '%s'.", layer.name, name)
-            artifacts = [
-                datastore.read_archive(layer=layer, index=index, name=name).artifacts
+            archives = [
+                datastore.read_archive(layer=layer, index=index, name=name)
                 for index in range(layer.configuration.foreach.splits(layer=layer))
             ]
-            archive = datastores.Archive(artifacts=list(itertools.chain.from_iterable(artifacts)))
+            artifacts = list(itertools.chain.from_iterable([archive.artifacts for archive in archives]))
 
-            datastore._write_archive(path=cache_path, archive=archive)
+            archive = datastore.write_archive(layer=layer, name=name, artifacts=artifacts, cache=True)
 
         return archive
 

@@ -1,4 +1,4 @@
-Local
+﻿Local
 =====
 
 .. autoclass:: laminar.configurations.datastores.Local
@@ -60,6 +60,12 @@ Local
         
         
         ~laminar.configurations.datastores.Local.write
+        
+        
+        ~laminar.configurations.datastores.Local.write_archive
+        
+        
+        ~laminar.configurations.datastores.Local.write_artifact
         
         
         ~laminar.configurations.datastores.Local.write_record

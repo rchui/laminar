@@ -83,5 +83,5 @@ if __name__ == "__main__":
     execution = flow.parameters(foo="bar")
     flow(execution=execution)
 
-    execution = flow2.parameters(foo="baz")
+    execution = flow2.parameters(foo="bar")
     flow2(execution=execution)

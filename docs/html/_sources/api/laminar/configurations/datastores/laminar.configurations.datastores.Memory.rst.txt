@@ -1,4 +1,4 @@
-Memory
+﻿Memory
 ======
 
 .. autoclass:: laminar.configurations.datastores.Memory
@@ -60,6 +60,12 @@ Memory
         
         
         ~laminar.configurations.datastores.Memory.write
+        
+        
+        ~laminar.configurations.datastores.Memory.write_archive
+        
+        
+        ~laminar.configurations.datastores.Memory.write_artifact
         
         
         ~laminar.configurations.datastores.Memory.write_record

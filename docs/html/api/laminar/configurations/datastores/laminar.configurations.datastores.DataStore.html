@@ -136,26 +136,32 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">exists</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.exists" title="laminar.configurations.datastores.DataStore.exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exists</span></code></a></p></td>
+<td><p>Check if a file exists in the datastore.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read" title="laminar.configurations.datastores.DataStore.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a></p></td>
-<td><p>Read an artifact from the laminar datastore.</p></td>
+<td><p>Read from the laminar datastore.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_archive" title="laminar.configurations.datastores.DataStore.read_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_archive</span></code></a></p></td>
 <td><p>Read an archive from the laminar datastore.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_artifact" title="laminar.configurations.datastores.DataStore.read_artifact"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_artifact</span></code></a></p></td>
-<td><p>REad an artifact form the laminar datastore.</p></td>
+<td><p>Read an artifact form the laminar datastore.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_record" title="laminar.configurations.datastores.DataStore.read_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record</span></code></a></p></td>
 <td><p>Read a layer record from the laminar datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.uri" title="laminar.configurations.datastores.DataStore.uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span></code></a></p></td>
+<td><p>Given a path, generate a URI in the datastore.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.write" title="laminar.configurations.datastores.DataStore.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a></p></td>
-<td><p>Write an artifact to the laminar datastore.</p></td>
+<td><p>Write to the laminar datastore.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.write_archive" title="laminar.configurations.datastores.DataStore.write_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_archive</span></code></a></p></td>
+<td><p>Write an archive to the laminar datastore.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.write_artifact" title="laminar.configurations.datastores.DataStore.write_artifact"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_artifact</span></code></a></p></td>
+<td><p>Write an arifact to the laminar datastore.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.write_record" title="laminar.configurations.datastores.DataStore.write_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_record</span></code></a></p></td>
 <td><p>Write a layer record to the laminar datastore.</p></td>
@@ -169,11 +175,11 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">root</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.root" title="laminar.configurations.datastores.DataStore.root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">root</span></code></a></p></td>
+<td><p>URI root of the datastore</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cache</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.cache" title="laminar.configurations.datastores.DataStore.cache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cache</span></code></a></p></td>
+<td><p>Internal datastore cache</p></td>
 </tr>
 </tbody>
 </table>
@@ -182,10 +188,30 @@
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.configurations.datastores.DataStore.cache" title="Permalink to this definition"></a></dt>
+<dd><p>Internal datastore cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.exists">
+<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.exists" title="Permalink to this definition"></a></dt>
+<dd><p>Check if a file exists in the datastore.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – Path from the datastore root to the file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the file exists else False</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.read">
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.read" title="Permalink to this definition"></a></dt>
-<dd><p>Read an artifact from the laminar datastore.</p>
+<dd><p>Read from the laminar datastore.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -205,7 +231,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.read_archive">
-<span class="sig-name descname"><span class="pre">read_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><span class="pre">laminar.configurations.datastores.Archive</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.read_archive" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><span class="pre">laminar.configurations.datastores.Archive</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.read_archive" title="Permalink to this definition"></a></dt>
 <dd><p>Read an archive from the laminar datastore.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -213,6 +239,7 @@
 <li><p><strong>layer</strong> – Layer being read from.</p></li>
 <li><p><strong>index</strong> – Layer index being read from.</p></li>
 <li><p><strong>name</strong> – Name of the artifact the archive is for.</p></li>
+<li><p><strong>cache</strong> – Read the archive from the cache.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -227,7 +254,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.read_artifact">
 <span class="sig-name descname"><span class="pre">read_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><span class="pre">laminar.configurations.datastores.Archive</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.read_artifact" title="Permalink to this definition"></a></dt>
-<dd><p>REad an artifact form the laminar datastore.</p>
+<dd><p>Read an artifact form the laminar datastore.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -258,10 +285,30 @@
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.root">
+<span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#laminar.configurations.datastores.DataStore.root" title="Permalink to this definition"></a></dt>
+<dd><p>URI root of the datastore</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.uri">
+<span class="sig-name descname"><span class="pre">uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.uri" title="Permalink to this definition"></a></dt>
+<dd><p>Given a path, generate a URI in the datastore.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – Path relative to the datastore root.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>URI to a location in the datastore.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.write">
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.write" title="Permalink to this definition"></a></dt>
-<dd><p>Write an artifact to the laminar datastore.</p>
+<dd><p>Write to the laminar datastore.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -269,6 +316,42 @@
 <li><p><strong>name</strong> – Name of the artifact being written.</p></li>
 <li><p><strong>values</strong> – Artifact values to store.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.write_archive">
+<span class="sig-name descname"><span class="pre">write_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact" title="laminar.configurations.datastores.Artifact"><span class="pre">laminar.configurations.datastores.Artifact</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><span class="pre">laminar.configurations.datastores.Archive</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.write_archive" title="Permalink to this definition"></a></dt>
+<dd><p>Write an archive to the laminar datastore.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – Layer being written.</p></li>
+<li><p><strong>name</strong> – Name of the archive being written.</p></li>
+<li><p><strong>artifacts</strong> – Artfacts associated with the archive.</p></li>
+<li><p><strong>cache</strong> – Write the archive to the cache.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Archive metadata written to the laminar datastore.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.write_artifact">
+<span class="sig-name descname"><span class="pre">write_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact" title="laminar.configurations.datastores.Artifact"><span class="pre">laminar.configurations.datastores.Artifact</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.write_artifact" title="Permalink to this definition"></a></dt>
+<dd><p>Write an arifact to the laminar datastore.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – Layer being written.</p></li>
+<li><p><strong>value</strong> – Value of the artifact to write.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Artifact metadata written to the laminar datastore.</p>
 </dd>
 </dl>
 </dd></dl>

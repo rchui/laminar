@@ -1,4 +1,4 @@
-DataStore
+﻿DataStore
 =========
 
 .. autoclass:: laminar.configurations.datastores.DataStore
@@ -60,6 +60,12 @@ DataStore
         
         
         ~laminar.configurations.datastores.DataStore.write
+        
+        
+        ~laminar.configurations.datastores.DataStore.write_archive
+        
+        
+        ~laminar.configurations.datastores.DataStore.write_artifact
         
         
         ~laminar.configurations.datastores.DataStore.write_record

@@ -115,23 +115,21 @@ class Accessor:
         ...
 
     def __getitem__(self, key: Union[int, slice]) -> Any:
+        datastore = self.layer.flow.configuration.datastore
+
         # Directly access an index
         if isinstance(key, int):
             if key >= len(self.archive):
                 raise IndexError
 
-            return self.layer.flow.configuration.datastore._read_artifact(
-                path=self.archive.artifacts[key].path(layer=self.layer)
-            )
+            return datastore.read_artifact(layer=self.layer, archive=Archive(artifacts=[self.archive.artifacts[key]]))
 
         # Slicing for multiple splits
         elif isinstance(key, slice):
-            values: List[Any] = []
-            for artifact in self.archive.artifacts[key]:
-                values.append(
-                    self.layer.flow.configuration.datastore._read_artifact(path=artifact.path(layer=self.layer))
-                )
-            return values
+            return [
+                datastore.read_artifact(layer=self.layer, archive=Archive(artifacts=[artifact]))
+                for artifact in self.archive.artifacts[key]
+            ]
 
         else:
             raise TypeError(f"{type(key)} is not a valid key type for Accessor.__getitem__")
@@ -148,7 +146,9 @@ class Accessor:
 class DataStore:
     """Base flow datastore."""
 
+    #: URI root of the datastore
     root: str
+    #: Internal datastore cache
     cache: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -156,39 +156,54 @@ class DataStore:
             object.__setattr__(self, "root", self.root.rstrip("/"))
 
     def uri(self, *, path: str) -> str:
+        """Given a path, generate a URI in the datastore.
+
+        Args:
+            path: Path relative to the datastore root.
+
+        Returns:
+            URI to a location in the datastore.
+        """
+
         return os.path.join(self.root, path)
 
     def exists(self, *, path: str) -> bool:
+        """Check if a file exists in the datastore.
+
+        Args:
+            path: Path from the datastore root to the file.
+
+        Returns:
+            True if the file exists else False
+        """
+
         return fs.exists(uri=self.uri(path=path))
 
     def _read_archive(self, *, path: str) -> Archive:
         with fs.open(self.uri(path=path), "r") as file:
             return Archive.parse(json.load(file))
 
-    def read_archive(self, *, layer: Layer, index: int, name: str) -> Archive:
+    def read_archive(self, *, layer: Layer, index: int, name: str, cache: bool = False) -> Archive:
         """Read an archive from the laminar datastore.
 
         Args:
             layer: Layer being read from.
             index: Layer index being read from.
             name: Name of the artifact the archive is for.
+            cache: Read the archive from the cache.
 
         Returns:
             Archive: Archive of the requested artifact.
         """
 
-        return self._read_archive(path=Archive.path(layer=layer, index=index, name=name))
-
-    def _write_archive(self, *, path: str, archive: Archive) -> None:
-        with fs.open(self.uri(path=path), "w") as file:
-            json.dump(archive.dict(), file)
+        return self._read_archive(path=Archive.path(layer=layer, index=index, name=name, cache=cache))
 
     def _read_artifact(self, *, path: str) -> Any:
         with fs.open(self.uri(path=path), "rb") as file:
             return cloudpickle.load(file)
 
     def read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
-        """REad an artifact form the laminar datastore.
+        """Read an artifact form the laminar datastore.
 
         Args:
             layer (Layer): Layer being read from.
@@ -206,12 +221,8 @@ class DataStore:
         else:
             return Accessor(archive=archive, layer=layer)
 
-    def _write_artifact(self, *, path: str, content: bytes) -> None:
-        with fs.open(self.uri(path=path), "wb") as file:
-            file.write(content)
-
     def read(self, *, layer: Layer, index: int, name: str) -> Any:
-        """Read an artifact from the laminar datastore.
+        """Read from the laminar datastore.
 
         Args:
             layer: Layer being read from.
@@ -224,8 +235,52 @@ class DataStore:
 
         return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
 
+    def _write_archive(self, *, path: str, archive: Archive) -> None:
+        with fs.open(self.uri(path=path), "w") as file:
+            json.dump(archive.dict(), file)
+
+    def write_archive(self, *, layer: Layer, name: str, artifacts: List[Artifact], cache: bool = False) -> Archive:
+        """Write an archive to the laminar datastore.
+
+        Args:
+            layer: Layer being written.
+            name: Name of the archive being written.
+            artifacts: Artfacts associated with the archive.
+            cache: Write the archive to the cache.
+
+        Returns:
+            Archive metadata written to the laminar datastore.
+        """
+
+        archive = Archive(artifacts=artifacts)
+        self._write_archive(
+            path=archive.path(layer=layer, index=unwrap(layer.index, 0), name=name, cache=cache), archive=archive
+        )
+
+        return archive
+
+    def _write_artifact(self, *, path: str, value: Any) -> None:
+        with fs.open(self.uri(path=path), "wb") as file:
+            cloudpickle.dump(value, file)
+
+    def write_artifact(self, *, layer: Layer, value: Any) -> Artifact:
+        """Write an arifact to the laminar datastore.
+
+        Args:
+            layer: Layer being written.
+            value: Value of the artifact to write.
+
+        Returns:
+            Artifact metadata written to the laminar datastore.
+        """
+
+        artifact = Artifact(hexdigest=hashlib.sha256(cloudpickle.dumps(value)).hexdigest())
+        self._write_artifact(path=artifact.path(layer=layer), value=value)
+
+        return artifact
+
     def write(self, *, layer: Layer, name: str, values: Iterable[Any]) -> None:
-        """Write an artifact to the laminar datastore.
+        """Write to the laminar datastore.
 
         Args:
             layer: Layer being written to.
@@ -233,17 +288,8 @@ class DataStore:
             values : Artifact values to store.
         """
 
-        artifacts = {
-            Artifact(hexdigest=hashlib.sha256(content).hexdigest()): content
-            for content in (cloudpickle.dumps(value) for value in values)
-        }
-        archive = Archive(artifacts=list(artifacts.keys()))
-
-        self._write_archive(path=Archive.path(layer=layer, index=unwrap(layer.index), name=name), archive=archive)
-
-        # Write the artifact(s) value
-        for artifact, content in artifacts.items():
-            self._write_artifact(path=artifact.path(layer=layer), content=content)
+        artifacts = [self.write_artifact(layer=layer, value=value) for value in values]
+        self.write_archive(layer=layer, name=name, artifacts=artifacts)
 
     def _read_record(self, *, path: str) -> Record:
         with fs.open(self.uri(path=path), "r") as file:
@@ -311,8 +357,8 @@ class Memory(DataStore):
     def _read_artifact(self, *, path: str) -> Any:
         return self.cache[self.uri(path=path)]
 
-    def _write_artifact(self, *, path: str, content: bytes) -> None:
-        self.cache[self.uri(path=path)] = cloudpickle.loads(content)
+    def _write_artifact(self, *, path: str, value: Any) -> None:
+        self.cache[self.uri(path=path)] = value
 
     def _read_record(self, *, path: str) -> Record:
         return self.cache[self.uri(path=path)]
