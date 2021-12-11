@@ -44,9 +44,6 @@
         ~laminar.configurations.datastores.DataStore.exists
         
         
-        ~laminar.configurations.datastores.DataStore.protocol
-        
-        
         ~laminar.configurations.datastores.DataStore.read
         
         
@@ -57,6 +54,9 @@
         
         
         ~laminar.configurations.datastores.DataStore.read_record
+        
+        
+        ~laminar.configurations.datastores.DataStore.serde
         
         
         ~laminar.configurations.datastores.DataStore.uri

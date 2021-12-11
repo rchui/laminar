@@ -23,7 +23,7 @@ from laminar.configurations import datastores, serde
 
 datastore = datastores.Local()
 
-@datastore.protocol(list)
+@datastore.serde(list)
 class ListProtcol(serde.Protocol[List[Any]]):
     def load(self, file: BinaryIO) -> List[Any]:
         return eval(file.read().decode())
@@ -43,7 +43,7 @@ flow = Flow("SerdeFlow", datastore=datastore)
 Here we define a `Protocol` to convert lists into byte strings and those are written to and read from the datastore. A `Protocol` can be registered to any vaild Python type and will intercept **exact type matches**.
 
 ```{note}
-The way that a `Protocol` knows what type is by performing a lookup with `type(value).__name__` in `Datastore.protocols`. This has some immediately obvious implications:
+The way that a `Protocol` knows what type is by performing a lookup with `type(value).__name__`. This has some immediately obvious implications:
 
 1. Protocols will not correctly intercept subclasses.
 1. Protocol registration can overwrite each other if the registered type name is the same.
@@ -62,8 +62,8 @@ from laminar.configurations import datastores, serde
 
 datastore = datastores.Local()
 
-@datastore.protocol(dict)
-@datastore.protocol(list)
+@datastore.serde(dict)
+@datastore.serde(list)
 class JsonProtocol(serde.Protocol[Union[Dict[str, Any], List[Any]]]):
     def load(self, file: BinaryIO) -> Union[Dict[str, Any], List[Any]]:
         return json.load(file)

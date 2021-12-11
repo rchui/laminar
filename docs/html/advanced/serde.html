@@ -120,7 +120,7 @@
 
 <span class="n">datastore</span> <span class="o">=</span> <span class="n">datastores</span><span class="o">.</span><span class="n">Local</span><span class="p">()</span>
 
-<span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="nd">@datastore</span><span class="o">.</span><span class="n">serde</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ListProtcol</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]):</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
@@ -140,7 +140,7 @@
 <p>Here we define a <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> to convert lists into byte strings and those are written to and read from the datastore. A <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> can be registered to any vaild Python type and will intercept <strong>exact type matches</strong>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The way that a <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> knows what type is by performing a lookup with <code class="docutils literal notranslate"><span class="pre">type(value).__name__</span></code> in <code class="docutils literal notranslate"><span class="pre">Datastore.protocols</span></code>. This has some immediately obvious implications:</p>
+<p>The way that a <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> knows what type is by performing a lookup with <code class="docutils literal notranslate"><span class="pre">type(value).__name__</span></code>. This has some immediately obvious implications:</p>
 <ol class="simple">
 <li><p>Protocols will not correctly intercept subclasses.</p></li>
 <li><p>Protocol registration can overwrite each other if the registered type name is the same.</p></li>
@@ -158,8 +158,8 @@
 
 <span class="n">datastore</span> <span class="o">=</span> <span class="n">datastores</span><span class="o">.</span><span class="n">Local</span><span class="p">()</span>
 
-<span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-<span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="nd">@datastore</span><span class="o">.</span><span class="n">serde</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+<span class="nd">@datastore</span><span class="o">.</span><span class="n">serde</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">JsonProtocol</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]):</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>

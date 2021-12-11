@@ -141,20 +141,20 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.exists" title="laminar.configurations.datastores.DataStore.exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exists</span></code></a></p></td>
 <td><p>Check if a file exists in the datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.protocol" title="laminar.configurations.datastores.DataStore.protocol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protocol</span></code></a></p></td>
-<td><p>Register a custom serde protocol for a type.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read" title="laminar.configurations.datastores.DataStore.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read" title="laminar.configurations.datastores.DataStore.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a></p></td>
 <td><p>Read from the laminar datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_archive" title="laminar.configurations.datastores.DataStore.read_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_archive</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_archive" title="laminar.configurations.datastores.DataStore.read_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_archive</span></code></a></p></td>
 <td><p>Read an archive from the laminar datastore.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_artifact" title="laminar.configurations.datastores.DataStore.read_artifact"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_artifact</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_artifact" title="laminar.configurations.datastores.DataStore.read_artifact"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_artifact</span></code></a></p></td>
 <td><p>Read an artifact form the laminar datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_record" title="laminar.configurations.datastores.DataStore.read_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.read_record" title="laminar.configurations.datastores.DataStore.read_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record</span></code></a></p></td>
 <td><p>Read a layer record from the laminar datastore.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.serde" title="laminar.configurations.datastores.DataStore.serde"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serde</span></code></a></p></td>
+<td><p>Register a custom serde protocol for a type.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.DataStore.uri" title="laminar.configurations.datastores.DataStore.uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span></code></a></p></td>
 <td><p>Given a path, generate a URI in the datastore.</p></td>
@@ -214,18 +214,6 @@
 <dd class="field-even"><p>True if the file exists else False</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.protocol">
-<span class="sig-name descname"><span class="pre">protocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.configurations.serde.ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.configurations.serde.ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.protocol" title="Permalink to this definition"></a></dt>
-<dd><p>Register a custom serde protocol for a type.</p>
-<p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">DataFrameProtocol</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -315,6 +303,18 @@
 <dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.root">
 <span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#laminar.configurations.datastores.DataStore.root" title="Permalink to this definition"></a></dt>
 <dd><p>URI root of the datastore</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.DataStore.serde">
+<span class="sig-name descname"><span class="pre">serde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.configurations.serde.ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.configurations.serde.ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.DataStore.serde" title="Permalink to this definition"></a></dt>
+<dd><p>Register a custom serde protocol for a type.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">DataFrameProtocol</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

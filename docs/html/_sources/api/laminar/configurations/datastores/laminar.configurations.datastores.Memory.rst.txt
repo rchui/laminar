@@ -44,9 +44,6 @@
         ~laminar.configurations.datastores.Memory.exists
         
         
-        ~laminar.configurations.datastores.Memory.protocol
-        
-        
         ~laminar.configurations.datastores.Memory.read
         
         
@@ -57,6 +54,9 @@
         
         
         ~laminar.configurations.datastores.Memory.read_record
+        
+        
+        ~laminar.configurations.datastores.Memory.serde
         
         
         ~laminar.configurations.datastores.Memory.uri

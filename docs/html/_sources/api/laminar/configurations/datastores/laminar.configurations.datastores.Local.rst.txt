@@ -44,9 +44,6 @@
         ~laminar.configurations.datastores.Local.exists
         
         
-        ~laminar.configurations.datastores.Local.protocol
-        
-        
         ~laminar.configurations.datastores.Local.read
         
         
@@ -57,6 +54,9 @@
         
         
         ~laminar.configurations.datastores.Local.read_record
+        
+        
+        ~laminar.configurations.datastores.Local.serde
         
         
         ~laminar.configurations.datastores.Local.uri
