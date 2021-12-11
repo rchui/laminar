@@ -17,6 +17,9 @@ if TYPE_CHECKING:
 else:
     Layer = "Layer"
 
+DEFAULT_HASH = hashlib.sha256
+DEFAULT_SERDE = cloudpickle
+
 
 @dataclass(frozen=True)
 class Record:
@@ -225,7 +228,7 @@ class DataStore:
 
     def _read_artifact(self, *, path: str) -> Any:
         with fs.open(self.uri(path=path), "rb") as file:
-            return cloudpickle.load(file)
+            return DEFAULT_SERDE.load(file)
 
     def read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
         """Read an artifact form the laminar datastore.
@@ -286,7 +289,7 @@ class DataStore:
 
     def _write_artifact(self, *, path: str, value: Any) -> None:
         with fs.open(self.uri(path=path), "wb") as file:
-            cloudpickle.dump(value, file)
+            DEFAULT_SERDE.dump(value, file)
 
     def write_artifact(self, *, layer: Layer, value: Any) -> Artifact:
         """Write an arifact to the laminar datastore.
@@ -299,7 +302,7 @@ class DataStore:
             Artifact metadata written to the laminar datastore.
         """
 
-        artifact = Artifact(hexdigest=hashlib.sha256(cloudpickle.dumps(value)).hexdigest())
+        artifact = Artifact(hexdigest=DEFAULT_HASH(DEFAULT_SERDE.dumps(value)).hexdigest())
         self._write_artifact(path=artifact.path(layer=layer), value=value)
 
         return artifact
