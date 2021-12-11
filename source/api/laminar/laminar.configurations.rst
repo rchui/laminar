@@ -1,4 +1,4 @@
-﻿configurations
+configurations
 ==============
 
 .. automodule:: laminar.configurations

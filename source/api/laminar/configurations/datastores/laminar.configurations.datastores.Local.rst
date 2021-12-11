@@ -1,4 +1,4 @@
-﻿Local
+Local
 =====
 
 .. autoclass:: laminar.configurations.datastores.Local

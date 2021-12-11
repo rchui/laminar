@@ -1,4 +1,4 @@
-﻿Artifact
+Artifact
 ========
 
 .. autoclass:: laminar.configurations.datastores.Artifact

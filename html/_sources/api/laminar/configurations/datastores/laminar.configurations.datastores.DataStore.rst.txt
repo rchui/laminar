@@ -1,4 +1,4 @@
-﻿DataStore
+DataStore
 =========
 
 .. autoclass:: laminar.configurations.datastores.DataStore

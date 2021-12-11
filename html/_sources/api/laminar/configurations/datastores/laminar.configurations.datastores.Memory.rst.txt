@@ -1,4 +1,4 @@
-﻿Memory
+Memory
 ======
 
 .. autoclass:: laminar.configurations.datastores.Memory
