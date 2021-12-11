@@ -1,4 +1,4 @@
-configurations
+﻿configurations
 ==============
 
 .. automodule:: laminar.configurations
@@ -34,4 +34,5 @@ configurations
    laminar.configurations.flows
    laminar.configurations.hooks
    laminar.configurations.layers
+   laminar.configurations.serde
 

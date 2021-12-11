@@ -75,7 +75,7 @@ class Layer:
 
     def __deepcopy__(self, memo: Dict[int, Any]) -> "Layer":
         cls = self.__class__
-        result = cls.__new__(cls)
+        result: Layer = cls.__new__(cls)
         memo[id(self)] = result
         for k, v in self.__dict__.items():
             setattr(result, k, deepcopy(v, memo))

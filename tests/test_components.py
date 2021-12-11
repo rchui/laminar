@@ -80,10 +80,13 @@ class TestLayer:
     def test_getattr(self, flow: Flow) -> None:
         workspace: Dict[str, Any] = flow.configuration.datastore.cache
         workspace["memory:///TestFlow/archives/test-execution/Layer/0/foo.json"] = datastores.Archive(
-            artifacts=[datastores.Artifact(hexdigest="abc")]
+            artifacts=[datastores.Artifact(dtype="str", hexdigest="abc")]
         )
         workspace["memory:///TestFlow/archives/test-execution/Layer/0/bar.json"] = datastores.Archive(
-            artifacts=[datastores.Artifact(hexdigest="123"), datastores.Artifact(hexdigest="456")]
+            artifacts=[
+                datastores.Artifact(dtype="str", hexdigest="123"),
+                datastores.Artifact(dtype="str", hexdigest="456"),
+            ]
         )
 
         workspace["memory:///TestFlow/artifacts/abc.gz"] = True
@@ -93,7 +96,10 @@ class TestLayer:
         assert flow.layer(Layer, index=0).foo is True
         assert flow.layer(Layer, index=0).bar == datastores.Accessor(
             archive=datastores.Archive(
-                artifacts=[datastores.Artifact(hexdigest="123"), datastores.Artifact(hexdigest="456")]
+                artifacts=[
+                    datastores.Artifact(dtype="str", hexdigest="123"),
+                    datastores.Artifact(dtype="str", hexdigest="456"),
+                ]
             ),
             layer=Layer(),
         )
@@ -103,16 +109,22 @@ class TestLayer:
         flow.layer(Layer, index=0).shard(foo=[True, False, None])
 
         assert flow.configuration.datastore.cache == {
-            "memory:///TestFlow/archives/test-execution/Layer/0/foo.json": datastores.Archive(
-                artifacts=[
-                    datastores.Artifact(hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae"),
-                    datastores.Artifact(hexdigest="132915fa0f4abd3a7939610b8d088fbbcdff866e17b5cbb2c0bdcb37782f4da2"),
-                    datastores.Artifact(hexdigest="6c09635decb8153d3c12e3782a69fd2eb097426f912547d351a8647b27d5580a"),
-                ]
-            ),
             "memory:///TestFlow/artifacts/5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae.gz": True,
             "memory:///TestFlow/artifacts/132915fa0f4abd3a7939610b8d088fbbcdff866e17b5cbb2c0bdcb37782f4da2.gz": False,
             "memory:///TestFlow/artifacts/6c09635decb8153d3c12e3782a69fd2eb097426f912547d351a8647b27d5580a.gz": None,
+            "memory:///TestFlow/archives/test-execution/Layer/0/foo.json": datastores.Archive(
+                artifacts=[
+                    datastores.Artifact(
+                        dtype="bool", hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae"
+                    ),
+                    datastores.Artifact(
+                        dtype="bool", hexdigest="132915fa0f4abd3a7939610b8d088fbbcdff866e17b5cbb2c0bdcb37782f4da2"
+                    ),
+                    datastores.Artifact(
+                        dtype="NoneType", hexdigest="6c09635decb8153d3c12e3782a69fd2eb097426f912547d351a8647b27d5580a"
+                    ),
+                ]
+            ),
         }
 
 

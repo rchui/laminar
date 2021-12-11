@@ -14,22 +14,22 @@ class TestForEach:
     def _flow(self, flow: Flow) -> None:
         workspace: Dict[str, Any] = flow.configuration.datastore.cache
         workspace["memory:///TestFlow/archives/test-execution/A/0/foo.json"] = Archive(
-            artifacts=[Artifact(hexdigest="1"), Artifact(hexdigest="2")]
+            artifacts=[Artifact(dtype="str", hexdigest="1"), Artifact(dtype="str", hexdigest="2")]
         )
         workspace["memory:///TestFlow/archives/test-execution/B/0/bar.json"] = Archive(
-            artifacts=[Artifact(hexdigest="3"), Artifact(hexdigest="4")]
+            artifacts=[Artifact(dtype="str", hexdigest="3"), Artifact(dtype="str", hexdigest="4")]
         )
         workspace["memory:///TestFlow/archives/test-execution/C/0/foo.json"] = Archive(
-            artifacts=[Artifact(hexdigest="a")]
+            artifacts=[Artifact(dtype="str", hexdigest="a")]
         )
         workspace["memory:///TestFlow/archives/test-execution/C/1/foo.json"] = Archive(
-            artifacts=[Artifact(hexdigest="b")]
+            artifacts=[Artifact(dtype="str", hexdigest="b")]
         )
         workspace["memory:///TestFlow/archives/test-execution/C/2/foo.json"] = Archive(
-            artifacts=[Artifact(hexdigest="c")]
+            artifacts=[Artifact(dtype="str", hexdigest="c")]
         )
         workspace["memory:///TestFlow/archives/test-execution/C/3/foo.json"] = Archive(
-            artifacts=[Artifact(hexdigest="d")]
+            artifacts=[Artifact(dtype="str", hexdigest="d")]
         )
 
         workspace["memory:///TestFlow/artifacts/1.gz"] = True
@@ -61,10 +61,10 @@ class TestForEach:
         layer = self.flow.layer(self.C)
         assert layer.configuration.foreach.join(layer=layer, name="foo") == Archive(
             artifacts=[
-                Artifact(hexdigest="a"),
-                Artifact(hexdigest="b"),
-                Artifact(hexdigest="c"),
-                Artifact(hexdigest="d"),
+                Artifact(dtype="str", hexdigest="a"),
+                Artifact(dtype="str", hexdigest="b"),
+                Artifact(dtype="str", hexdigest="c"),
+                Artifact(dtype="str", hexdigest="d"),
             ]
         )
 

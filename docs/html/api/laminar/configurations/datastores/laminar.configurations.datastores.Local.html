@@ -59,6 +59,7 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../advanced/hooks.html">Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/serde.html">Ser(De)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../advanced/testing.html">Testing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
@@ -85,6 +86,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.flows.html">flows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.serde.html">serde</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../laminar.exceptions.html">exceptions</a></li>
@@ -126,7 +128,7 @@
 <h1>Local<a class="headerlink" href="#local" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.Local">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.datastores.</span></span><span class="sig-name descname"><span class="pre">Local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'/Users/ryanc/Github/laminar/.laminar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.Local" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.datastores.</span></span><span class="sig-name descname"><span class="pre">Local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'/Users/ryanc/Github/laminar/.laminar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocols:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminar.configurations.serde.Protocol[Any]]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.Local" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore" title="laminar.configurations.datastores.DataStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">laminar.configurations.datastores.DataStore</span></code></a></p>
 <p>Store the laminar workspace on the local filesystem.</p>
 <p>Usage:</p>
@@ -143,31 +145,34 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">exists</span></code></p></td>
 <td><p>Check if a file exists in the datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">protocol</span></code></p></td>
+<td><p>Register a custom serde protocol for a type.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></p></td>
 <td><p>Read from the laminar datastore.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_archive</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_archive</span></code></p></td>
 <td><p>Read an archive from the laminar datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_artifact</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_artifact</span></code></p></td>
 <td><p>Read an artifact form the laminar datastore.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record</span></code></p></td>
 <td><p>Read a layer record from the laminar datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span></code></p></td>
 <td><p>Given a path, generate a URI in the datastore.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></p></td>
 <td><p>Write to the laminar datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_archive</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_archive</span></code></p></td>
 <td><p>Write an archive to the laminar datastore.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_artifact</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_artifact</span></code></p></td>
 <td><p>Write an arifact to the laminar datastore.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_record</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_record</span></code></p></td>
 <td><p>Write a layer record to the laminar datastore.</p></td>
 </tr>
 </tbody>
@@ -186,7 +191,7 @@
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.Local.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'/Users/ryanc/Github/laminar/.laminar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.Local.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'/Users/ryanc/Github/laminar/.laminar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocols:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminar.configurations.serde.Protocol[Any]]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.Local.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

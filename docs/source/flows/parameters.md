@@ -27,8 +27,8 @@ class A(Layer):
         print(parameters.foo)
 
 if __name__ == "__main__":
-    flow.parameters(foo="bar")
-    flow()
+    execution = flow.parameters(foo="bar")
+    flow(execution=execution)
 ```
 
 ```python
@@ -70,11 +70,13 @@ from laminar.settings import current
 
 if __name__ == "__main__":
 
+    execution = None
+
     # Scheduling a Flow
     if not current.execution.id:
-        flow.parameters(foo=pd.read_csv("path/to/large.csv"))
+        execution = flow.parameters(foo=pd.read_csv("path/to/large.csv"))
 
-    flow()
+    flow(execution=execution)
 ```
 
 By guarding against layer execution, we can only make our entire `Flow` more efficient.
@@ -107,8 +109,8 @@ import pandas as pd
 from main import flow
 
 if __name__ == "__main__":
-    flow.parameters(foo=pd.read_csv("path/to/large.csv"))
-    flow()
+    execution = flow.parameters(foo=pd.read_csv("path/to/large.csv"))
+    flow(execution=execution)
 ```
 
 In another invoke `Flow.__call__` without parameters:

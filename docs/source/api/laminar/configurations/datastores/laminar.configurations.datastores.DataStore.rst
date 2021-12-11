@@ -1,4 +1,4 @@
-DataStore
+﻿DataStore
 =========
 
 .. autoclass:: laminar.configurations.datastores.DataStore
@@ -42,6 +42,9 @@ DataStore
         
         
         ~laminar.configurations.datastores.DataStore.exists
+        
+        
+        ~laminar.configurations.datastores.DataStore.protocol
         
         
         ~laminar.configurations.datastores.DataStore.read
@@ -92,6 +95,9 @@ DataStore
         
         
         ~laminar.configurations.datastores.DataStore.cache
+        
+        
+        ~laminar.configurations.datastores.DataStore.protocols
         
     
     

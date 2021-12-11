@@ -1,4 +1,4 @@
-Memory
+﻿Memory
 ======
 
 .. autoclass:: laminar.configurations.datastores.Memory
@@ -42,6 +42,9 @@ Memory
         
         
         ~laminar.configurations.datastores.Memory.exists
+        
+        
+        ~laminar.configurations.datastores.Memory.protocol
         
         
         ~laminar.configurations.datastores.Memory.read
@@ -92,6 +95,9 @@ Memory
         
         
         ~laminar.configurations.datastores.Memory.cache
+        
+        
+        ~laminar.configurations.datastores.Memory.protocols
         
     
     

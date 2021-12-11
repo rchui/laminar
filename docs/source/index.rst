@@ -60,6 +60,7 @@ Any Scale
     :hidden:
 
     Hooks <advanced/hooks>
+    Ser(De) <advanced/serde>
     Testing <advanced/testing>
 
 .. toctree::

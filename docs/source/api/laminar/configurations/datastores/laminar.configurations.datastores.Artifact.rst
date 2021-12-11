@@ -1,4 +1,4 @@
-Artifact
+﻿Artifact
 ========
 
 .. autoclass:: laminar.configurations.datastores.Artifact
@@ -55,6 +55,9 @@ Artifact
         
         
         
+        
+        
+        ~laminar.configurations.datastores.Artifact.dtype
         
         
         ~laminar.configurations.datastores.Artifact.hexdigest

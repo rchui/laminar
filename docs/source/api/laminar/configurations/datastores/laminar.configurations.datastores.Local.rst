@@ -1,4 +1,4 @@
-Local
+﻿Local
 =====
 
 .. autoclass:: laminar.configurations.datastores.Local
@@ -42,6 +42,9 @@ Local
         
         
         ~laminar.configurations.datastores.Local.exists
+        
+        
+        ~laminar.configurations.datastores.Local.protocol
         
         
         ~laminar.configurations.datastores.Local.read
@@ -92,6 +95,9 @@ Local
         
         
         ~laminar.configurations.datastores.Local.cache
+        
+        
+        ~laminar.configurations.datastores.Local.protocols
         
     
     

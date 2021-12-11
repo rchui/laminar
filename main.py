@@ -4,15 +4,17 @@ from typing import Generator, List
 from laminar import Flow, Layer
 from laminar.components import Parameters
 from laminar.configurations import datastores, executors, hooks, layers
+from laminar.settings import current
 from laminar.utils import unwrap
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-flow = Flow(name="DockerFlow", datastore=datastores.Local(), executor=executors.Docker(concurrency=2))
-flow2 = Flow(name="ThreadFlow", datastore=datastores.Local(), executor=executors.Thread())
-
 container = layers.Container(image="test")
+datastore = datastores.Local()
+
+flow = Flow(name="DockerFlow", datastore=datastore, executor=executors.Docker(concurrency=2))
+flow2 = Flow(name="ThreadFlow", datastore=datastore, executor=executors.Thread())
 
 
 @flow.register(container=container)
@@ -80,8 +82,12 @@ class Four(Layer):
 
 
 if __name__ == "__main__":
-    execution = flow.parameters(foo="bar")
+    execution = None
+
+    if not current.execution.id:
+        execution = flow.parameters(foo="bar")
     flow(execution=execution)
 
-    execution = flow2.parameters(foo="bar")
+    if not current.execution.id:
+        execution = flow2.parameters(foo="bar")
     flow2(execution=execution)

@@ -59,6 +59,7 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../advanced/hooks.html">Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/serde.html">Ser(De)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../advanced/testing.html">Testing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
@@ -85,6 +86,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.flows.html">flows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.serde.html">serde</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../laminar.exceptions.html">exceptions</a></li>
@@ -126,7 +128,7 @@
 <h1>Artifact<a class="headerlink" href="#artifact" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.Artifact">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.datastores.</span></span><span class="sig-name descname"><span class="pre">Artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexdigest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.Artifact" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.datastores.</span></span><span class="sig-name descname"><span class="pre">Artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hexdigest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.Artifact" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handler for artifacts in the laminar datastore.</p>
 <p class="rubric">Notes</p>
@@ -153,20 +155,29 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.Artifact.hexdigest" title="laminar.configurations.datastores.Artifact.hexdigest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hexdigest</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.datastores.Artifact.dtype" title="laminar.configurations.datastores.Artifact.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
+<td><p>Data type of the artifact.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.datastores.Artifact.hexdigest" title="laminar.configurations.datastores.Artifact.hexdigest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hexdigest</span></code></a></p></td>
 <td><p>SHA256 hexdigest of the artifact bytes.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.Artifact.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexdigest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.Artifact.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hexdigest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.Artifact.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.datastores.Artifact.dict">
 <span class="sig-name descname"><span class="pre">dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.Artifact.dict" title="Permalink to this definition"></a></dt>
 <dd><p>Convert the Artifact to a dict.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.datastores.Artifact.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#laminar.configurations.datastores.Artifact.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Data type of the artifact.</p>
 </dd></dl>
 
 <dl class="py attribute">

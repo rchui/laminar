@@ -14,20 +14,22 @@ from laminar.configurations.datastores import Accessor, Archive, Artifact, DataS
 
 
 class TestArtifact:
-    artifact = Artifact(hexdigest="foo")
+    artifact = Artifact(dtype="str", hexdigest="foo")
 
     def test_dict(self) -> None:
-        assert self.artifact.dict() == {"hexdigest": "foo"}
+        assert self.artifact.dict() == {"dtype": "str", "hexdigest": "foo"}
 
     def test_path(self, layer: Layer) -> None:
         assert self.artifact.path(layer=layer) == f"{layer.flow.name}/artifacts/foo.gz"
 
 
 class TestArchive:
-    archive = Archive(artifacts=[Artifact(hexdigest="foo"), Artifact(hexdigest="bar")])
+    archive = Archive(artifacts=[Artifact(dtype="str", hexdigest="foo"), Artifact(dtype="str", hexdigest="bar")])
 
     def test_dict(self) -> None:
-        assert self.archive.dict() == {"artifacts": [{"hexdigest": "foo"}, {"hexdigest": "bar"}]}
+        assert self.archive.dict() == {
+            "artifacts": [{"dtype": "str", "hexdigest": "foo"}, {"dtype": "str", "hexdigest": "bar"}]
+        }
 
     def test_len(self) -> None:
         assert len(self.archive) == 2
@@ -43,7 +45,7 @@ class TestArchive:
         )
 
     def test_parse(self) -> None:
-        expected = {"artifacts": [{"hexdigest": "foo"}, {"hexdigest": "bar"}]}
+        expected = {"artifacts": [{"dtype": "str", "hexdigest": "foo"}, {"dtype": "str", "hexdigest": "bar"}]}
         assert Archive.parse(expected).dict() == expected
 
 
@@ -57,8 +59,8 @@ class TestAccessor:
         self.accessor = Accessor(
             archive=Archive(
                 artifacts=[
-                    Artifact(hexdigest="test-hexdigest-0"),
-                    Artifact(hexdigest="test-hexdigest-1"),
+                    Artifact(dtype="str", hexdigest="test-hexdigest-0"),
+                    Artifact(dtype="str", hexdigest="test-hexdigest-1"),
                 ]
             ),
             layer=layer,
@@ -92,7 +94,7 @@ class TestAccessor:
 
 
 class TestDatastore:
-    archive = Archive(artifacts=[Artifact(hexdigest="foo"), Artifact(hexdigest="bar")])
+    archive = Archive(artifacts=[Artifact(dtype="str", hexdigest="foo"), Artifact(dtype="str", hexdigest="bar")])
     datastore = DataStore(root="path/to/root/")
     record = Record(
         flow=Record.FlowRecord(name="test-flow"),
@@ -134,7 +136,7 @@ class TestDatastore:
     def test__read_artifact(self, mock_open: Mock) -> None:
         mock_open.return_value = io.BytesIO(cloudpickle.dumps([True, False, None]))
 
-        assert self.datastore._read_artifact(path="path/to/artifact") == [True, False, None]
+        assert self.datastore._read_artifact(path="path/to/artifact", dtype="bool") == [True, False, None]
 
         mock_open.assert_called_once_with("path/to/root/path/to/artifact", "rb")
 
@@ -143,7 +145,9 @@ class TestDatastore:
         mock_open.return_value = io.BytesIO(cloudpickle.dumps("test-value"))
 
         assert (
-            self.datastore.read_artifact(layer=layer, archive=Archive(artifacts=[Artifact(hexdigest="foo")]))
+            self.datastore.read_artifact(
+                layer=layer, archive=Archive(artifacts=[Artifact(dtype="str", hexdigest="foo")])
+            )
             == "test-value"
         )
 
@@ -167,18 +171,27 @@ class TestDatastore:
         self.datastore._write_archive(path="path/to/archive", archive=self.archive)
 
         mock_open.assert_called_once_with("path/to/root/path/to/archive", "w")
+        print(mock_open.return_value.write.call_args_list)
         assert mock_open.return_value.write.call_args_list == [
             call("{"),
             call('"artifacts"'),
             call(": "),
             call("["),
             call("{"),
+            call('"dtype"'),
+            call(": "),
+            call('"str"'),
+            call(", "),
             call('"hexdigest"'),
             call(": "),
             call('"foo"'),
             call("}"),
             call(", "),
             call("{"),
+            call('"dtype"'),
+            call(": "),
+            call('"str"'),
+            call(", "),
             call('"hexdigest"'),
             call(": "),
             call('"bar"'),
@@ -204,7 +217,9 @@ class TestDatastore:
         mock_write_archive.assert_called_once_with(
             path="TestFlow/archives/test-execution/Layer/0/test-artifact.json",
             archive=Archive(
-                artifacts=[Artifact(hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae")]
+                artifacts=[
+                    Artifact(dtype="bool", hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae")
+                ]
             ),
         )
         mock_write_artifact.assert_called_once_with(

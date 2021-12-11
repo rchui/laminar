@@ -47,7 +47,8 @@ class Executor:
         attr = "_semaphore"
         if not hasattr(self, attr):
             object.__setattr__(self, attr, asyncio.Semaphore(self.concurrency))
-        return getattr(self, attr)
+        semaphore: asyncio.Semaphore = getattr(self, attr)
+        return semaphore
 
     async def execute(self, *, layer: Layer) -> Layer:
         """Execute a layer.
@@ -106,7 +107,7 @@ class Executor:
             ),
         )
 
-        return layers
+        return list(layers)
 
 
 @dataclass(frozen=True)
