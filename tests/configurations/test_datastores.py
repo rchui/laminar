@@ -94,13 +94,23 @@ class TestAccessor:
 
 
 class TestDatastore:
-    archive = Archive(artifacts=[Artifact(dtype="str", hexdigest="foo"), Artifact(dtype="str", hexdigest="bar")])
-    datastore = DataStore(root="path/to/root/")
-    record = Record(
-        flow=Record.FlowRecord(name="test-flow"),
-        layer=Record.LayerRecord(name="test-layer"),
-        execution=Record.ExecutionRecord(splits=2),
-    )
+    @pytest.fixture(autouse=True)
+    def _archive(self) -> None:
+        self.archive = Archive(
+            artifacts=[Artifact(dtype="str", hexdigest="foo"), Artifact(dtype="str", hexdigest="bar")]
+        )
+
+    @pytest.fixture(autouse=True)
+    def _datastore(self) -> None:
+        self.datastore = DataStore(root="path/to/root/")
+
+    @pytest.fixture(autouse=True)
+    def _record(self) -> None:
+        self.record = Record(
+            flow=Record.FlowRecord(name="test-flow"),
+            layer=Record.LayerRecord(name="test-layer"),
+            execution=Record.ExecutionRecord(splits=2),
+        )
 
     def test_init(self) -> None:
         assert self.datastore.root == "path/to/root"
@@ -113,6 +123,11 @@ class TestDatastore:
         self.datastore.exists(path="path/to/file")
 
         mock_exists.assert_called_once_with(uri="path/to/root/path/to/file")
+
+    def test_serde(self) -> None:
+        mock_protocol = Mock()
+        self.datastore.serde(str)(mock_protocol)
+        assert self.datastore.protocols == {"str": mock_protocol.return_value}
 
     @patch("laminar.utils.fs.open")
     def test__read_archive(self, mock_open: Mock) -> None:

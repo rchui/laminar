@@ -19,6 +19,15 @@ class TestLayer:
         assert vars(Layer()) == {}
         assert Layer(foo="bar").foo == "bar"
 
+    def test_repr(self, layer: Layer) -> None:
+        assert (
+            layer.__repr__() == "Layer(configuration=Configuration(container=Container(command='python main.py', cpu=1,"
+            " image='python:3.9', memory=1500, workdir='/laminar'), foreach=ForEach(parameters=[]),"
+            " retry=Retry(attempts=1, delay=0.1, backoff=2.0, jitter=0.1)),"
+            " flow=Flow(configuration=Configuration(datastore=Memory(root='memory:///', cache={}, protocols={}),"
+            " executor=Thread(concurrency=1, timeout=86400)), execution='test-execution'), index=0, splits=2)"
+        )
+
     def test_subclass_init(self) -> None:
         assert Layer().namespace is None
 
@@ -213,3 +222,6 @@ class TestFLow:
         assert flow.layer(Test), Test()
         assert flow.layer(Test()), Test()
         assert flow.layer(Test, foo="bar").foo == "bar"
+
+    def test_results(self, flow: Flow) -> None:
+        assert flow.results("test-execution").execution == "test-execution"
