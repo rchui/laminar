@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Layer Configuration &mdash; laminar  documentation</title>
+  <title>Configuration &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -71,8 +71,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../technical/datastores.html">Datastores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../technical/executions.html">Executions</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../api/laminar.html">laminar</a></li>
 </ul>
 
@@ -90,7 +88,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Layer Configuration</li>
+      <li>Configuration</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/layers/configuration.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,8 +98,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="layer-configuration">
-<h1>Layer Configuration<a class="headerlink" href="#layer-configuration" title="Permalink to this headline"></a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h1>
 <section id="access">
 <h2>Access<a class="headerlink" href="#access" title="Permalink to this headline"></a></h2>
 <p>Configurations are a part of the class definition of a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> and are available as an atttribute of the <code class="docutils literal notranslate"><span class="pre">Layer</span></code>. All <code class="docutils literal notranslate"><span class="pre">Layer</span></code> configurations are nested underneath the <code class="docutils literal notranslate"><span class="pre">Layer.configuration</span></code> attribute.</p>
@@ -128,7 +126,7 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>If a hook changes a value in <code class="docutils literal notranslate"><span class="pre">Layer.configuration</span></code>, that change will not be reflected in <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>.</p>
+<p>If a <a class="reference internal" href="../advanced/hooks.html"><span class="doc std std-doc">hook</span></a> changes a value in <code class="docutils literal notranslate"><span class="pre">Layer.configuration</span></code>, that change will not be reflected in <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>.</p>
 </div>
 </section>
 <section id="namespace">

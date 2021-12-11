@@ -1,4 +1,4 @@
-# Layer Configuration
+# Configuration
 
 ## Access
 
@@ -28,7 +28,7 @@ python main.py
 ```
 
 ```{warning}
-If a hook changes a value in `Layer.configuration`, that change will not be reflected in `Layer.__call__`.
+If a [hook](../advanced/hooks) changes a value in `Layer.configuration`, that change will not be reflected in `Layer.__call__`.
 ```
 
 ## Namespace
