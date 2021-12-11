@@ -6,6 +6,8 @@ T = TypeVar("T")
 
 
 class Protocol(Generic[T]):
+    """Generic base class for defining ser(de) protocols."""
+
     def load(self, file: BinaryIO) -> T:
         """Deserialize a value from a file.
 

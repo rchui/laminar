@@ -11,7 +11,7 @@
 
 ## Protocols
 
-Users can define custom serialization and deserializations by subclassing `serde.Protocol` and registering it with a `Datastore`. This allows complete control and customizaiton over any type of data that needs to be stored.
+Users can define custom serialization and deserializations by subclassing `serde.Protocol` and registering it with a `Datastore`. This allows complete control and customization over how a type of data is managed by the `Datastore`.
 
 Consider the following contrived example:
 
@@ -81,34 +81,3 @@ flow = Flow("SerdeFlow", datastore=datastore)
 ```
 
 The `Datastore` registers both `list` and `dict` to the `JsonProtocol` which handles serializing and deserializing them to and from the `Datastore` as JSON.
-
-## Beyond the Datastore
-
-Because a `Protocol` controls how artifacts are serialized and deserialized to files, the `Protocol` can even choose not to write to the `Datastore`. The incoming `file` parameter can be totally ignored. Doing so will overwrite how `Datastore` reads and writes this type.
-
-```python
-import boto3
-
-from laminar import Flow, Layer
-from laminar.configurations import datastores, serde
-
-datastore = datastores.Local()
-
-@datastore.protocol(dict)
-class ListProtcol(serde.Protocol[List[Any]]):
-    dynamodb = boto3.resource('dynamodb')
-
-    def load(self, file: BinaryIO) -> List[Any]:
-        return dynamodb.Table(...).get_item(...)
-
-    def loads(self, stream: bytes) ->  List[Any]:
-        return eval(stream)
-
-    def dump(self, value: List[Any], file: BinaryIO) -> None:
-        dynamodb.Table(...).put_item(value)
-
-    def dumps(self, value: List[Any]) -> bytes:
-        return str(value)
-
-flow = Flow("SerdeFlow", datastore=datastore)
-```

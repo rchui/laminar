@@ -62,7 +62,6 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Ser(De)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#protocols">Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multiple-types">Multiple Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#beyond-the-datastore">Beyond the Datastore</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
@@ -112,7 +111,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> uses cloudpickle because it has great support for a wide variety of Python types and is an effective serialization format for inter-process communication but it may not be what you want.</p>
 <section id="protocols">
 <h2>Protocols<a class="headerlink" href="#protocols" title="Permalink to this headline"></a></h2>
-<p>Users can define custom serialization and deserializations by subclassing <code class="docutils literal notranslate"><span class="pre">serde.Protocol</span></code> and registering it with a <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>. This allows complete control and customizaiton over any type of data that needs to be stored.</p>
+<p>Users can define custom serialization and deserializations by subclassing <code class="docutils literal notranslate"><span class="pre">serde.Protocol</span></code> and registering it with a <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>. This allows complete control and customization over how a type of data is managed by the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>.</p>
 <p>Consider the following contrived example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
@@ -178,36 +177,6 @@
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> registers both <code class="docutils literal notranslate"><span class="pre">list</span></code> and <code class="docutils literal notranslate"><span class="pre">dict</span></code> to the <code class="docutils literal notranslate"><span class="pre">JsonProtocol</span></code> which handles serializing and deserializing them to and from the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> as JSON.</p>
-</section>
-<section id="beyond-the-datastore">
-<h2>Beyond the Datastore<a class="headerlink" href="#beyond-the-datastore" title="Permalink to this headline"></a></h2>
-<p>Because a <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> controls how artifacts are serialized and deserialized to files, the <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> can even choose not to write to the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>. The incoming <code class="docutils literal notranslate"><span class="pre">file</span></code> parameter can be totally ignored. Doing so will overwrite how <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> reads and writes this type.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
-
-<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
-<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span><span class="p">,</span> <span class="n">serde</span>
-
-<span class="n">datastore</span> <span class="o">=</span> <span class="n">datastores</span><span class="o">.</span><span class="n">Local</span><span class="p">()</span>
-
-<span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ListProtcol</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]):</span>
-    <span class="n">dynamodb</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;dynamodb&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">dynamodb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span>  <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">file</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dynamodb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">put_item</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;SerdeFlow&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastore</span><span class="p">)</span>
-</pre></div>
-</div>
 </section>
 </section>
 

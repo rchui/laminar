@@ -64,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#flows">Flows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#layers">Layers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hooks">Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ser-de">Ser(De)</a></li>
 </ul>
 </li>
 </ul>
@@ -92,7 +93,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Testing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/advanced/testing.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/advanced/testing.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -100,16 +101,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="testing">
+  <section class="tex2jax_ignore mathjax_ignore" id="testing">
 <h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline"></a></h1>
 <section id="flows">
 <h2>Flows<a class="headerlink" href="#flows" title="Permalink to this headline"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Memory</span></code> datastore and <code class="docutils literal notranslate"><span class="pre">Thread</span></code> executor allow flows to be configured for easy testing.</p>
 <p>Consider the following linear <code class="docutils literal notranslate"><span class="pre">Flow</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
-<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span><span class="p">,</span> <span class="n">executors</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span><span class="p">,</span> <span class="n">executors</span><span class="p">,</span> <span class="n">serde</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">(),</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
+<span class="n">datastore</span> <span class="o">=</span> <span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">()</span>
+
+<span class="nd">@datastore</span><span class="o">.</span><span class="n">protcol</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Int</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastore</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
 
 
 <span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
@@ -146,7 +154,7 @@
 </section>
 <section id="layers">
 <h2>Layers<a class="headerlink" href="#layers" title="Permalink to this headline"></a></h2>
-<p>A <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is just a Python classes, so their functionality can be tested directly by calling the class constructor and then calling it.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is a Python classes, so its functionality can be tested directly by calling the class constructor and then calling it.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
@@ -198,7 +206,7 @@
 <section id="hooks">
 <h2>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline"></a></h2>
 <p>Hooks are Python class methods and can be tested directly as well.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># test main.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># test_main.py</span>
 
 <span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">A</span>
 
@@ -206,6 +214,18 @@
     <span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
     <span class="nb">next</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">configure_foo</span><span class="p">())</span>
     <span class="k">assert</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span> <span class="o">==</span> <span class="s2">&quot;bar.baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="ser-de">
+<h2>Ser(De)<a class="headerlink" href="#ser-de" title="Permalink to this headline"></a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> is a Python class and can be tested directly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># test_main.py</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">Int</span>
+
+<span class="k">def</span> <span class="nf">test_int_protocol</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">Int</span><span class="p">()</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;1&quot;</span>
 </pre></div>
 </div>
 </section>
