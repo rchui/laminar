@@ -1,3 +1,6 @@
+"""Shared laminar exceptions."""
+
+
 class ExecutionError(Exception):
     """An error occured during execution."""
 

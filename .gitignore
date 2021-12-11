@@ -7,4 +7,4 @@ __pycache__
 # Sphinx
 objects.inv
 docs/html
-docs/api
+docs/source/api

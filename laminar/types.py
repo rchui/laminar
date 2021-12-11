@@ -1,3 +1,5 @@
+"""Shared laminar types."""
+
 from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, TypeVar, get_type_hints
 
 if TYPE_CHECKING:
