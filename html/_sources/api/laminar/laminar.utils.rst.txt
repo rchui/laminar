@@ -9,16 +9,6 @@ utils
 
     
     
-    .. rubric:: Functions
-
-    .. autosummary::
-        :nosignatures:
-    
-        unwrap
-
-    
-    .. autofunction:: unwrap
-    
     
 
     

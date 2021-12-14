@@ -24,11 +24,13 @@ datastores
         AWS
         Accessor
         Archive
+        ArchiveProtocol
         Artifact
         DataStore
         Local
         Memory
         Record
+        RecordProtocol
     
     
 

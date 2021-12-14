@@ -9,6 +9,16 @@ serde
 
     
     
+    .. rubric:: Functions
+
+    .. autosummary::
+        :nosignatures:
+    
+        dtype
+
+    
+    .. autofunction:: dtype
+    
     
 
     
@@ -21,7 +31,9 @@ serde
         :recursive:
         :nosignatures:
     
+        PickleProtocol
         Protocol
+        ProtocolMeta
     
     
 

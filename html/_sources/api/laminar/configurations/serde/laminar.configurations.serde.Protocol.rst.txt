@@ -46,6 +46,12 @@ Protocol
         
         ~laminar.configurations.serde.Protocol.loads
         
+        
+        ~laminar.configurations.serde.Protocol.read
+        
+        
+        ~laminar.configurations.serde.Protocol.write
+        
     
     
 

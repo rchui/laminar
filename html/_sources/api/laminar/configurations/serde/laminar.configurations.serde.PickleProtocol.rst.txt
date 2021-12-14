@@ -1,7 +1,7 @@
-Protocol
-========
+PickleProtocol
+==============
 
-.. autoclass:: laminar.configurations.serde.Protocol
+.. autoclass:: laminar.configurations.serde.PickleProtocol
     :members:
     :show-inheritance:
 
@@ -35,22 +35,22 @@ Protocol
         
         
         
-        ~laminar.configurations.serde.Protocol.dump
+        ~laminar.configurations.serde.PickleProtocol.dump
         
         
-        ~laminar.configurations.serde.Protocol.dumps
+        ~laminar.configurations.serde.PickleProtocol.dumps
         
         
-        ~laminar.configurations.serde.Protocol.load
+        ~laminar.configurations.serde.PickleProtocol.load
         
         
-        ~laminar.configurations.serde.Protocol.loads
+        ~laminar.configurations.serde.PickleProtocol.loads
         
         
-        ~laminar.configurations.serde.Protocol.read
+        ~laminar.configurations.serde.PickleProtocol.read
         
         
-        ~laminar.configurations.serde.Protocol.write
+        ~laminar.configurations.serde.PickleProtocol.write
         
     
     

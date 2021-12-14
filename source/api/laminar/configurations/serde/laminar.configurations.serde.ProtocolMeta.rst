@@ -1,7 +1,7 @@
-Protocol
-========
+ProtocolMeta
+============
 
-.. autoclass:: laminar.configurations.serde.Protocol
+.. autoclass:: laminar.configurations.serde.ProtocolMeta
     :members:
     :show-inheritance:
 
@@ -35,22 +35,11 @@ Protocol
         
         
         
-        ~laminar.configurations.serde.Protocol.dump
         
         
-        ~laminar.configurations.serde.Protocol.dumps
         
         
-        ~laminar.configurations.serde.Protocol.load
-        
-        
-        ~laminar.configurations.serde.Protocol.loads
-        
-        
-        ~laminar.configurations.serde.Protocol.read
-        
-        
-        ~laminar.configurations.serde.Protocol.write
+        ~laminar.configurations.serde.ProtocolMeta.mro
         
     
     
@@ -69,6 +58,14 @@ Protocol
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        ~laminar.configurations.serde.ProtocolMeta.dtype
         
     
     

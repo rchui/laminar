@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Protocol &mdash; laminar  documentation</title>
+  <title>PickleProtocol &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ProtocolMeta" href="laminar.configurations.serde.ProtocolMeta.html" />
-    <link rel="prev" title="PickleProtocol" href="laminar.configurations.serde.PickleProtocol.html" /> 
+    <link rel="next" title="Protocol" href="laminar.configurations.serde.Protocol.html" />
+    <link rel="prev" title="serde" href="../laminar.configurations.serde.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -75,8 +75,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../laminar.configurations.serde.html">serde</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.serde.PickleProtocol.html">PickleProtocol</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Protocol</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">PickleProtocol</a></li>
+<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.serde.Protocol.html">Protocol</a></li>
 <li class="toctree-l4"><a class="reference internal" href="laminar.configurations.serde.ProtocolMeta.html">ProtocolMeta</a></li>
 </ul>
 </li>
@@ -107,9 +107,9 @@
           <li><a href="../../../laminar.html">laminar</a> &raquo;</li>
           <li><a href="../../laminar.configurations.html">configurations</a> &raquo;</li>
           <li><a href="../laminar.configurations.serde.html">serde</a> &raquo;</li>
-      <li>Protocol</li>
+      <li>PickleProtocol</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/api/laminar/configurations/serde/laminar.configurations.serde.Protocol.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/api/laminar/configurations/serde/laminar.configurations.serde.PickleProtocol.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -117,13 +117,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="protocol">
-<h1>Protocol<a class="headerlink" href="#protocol" title="Permalink to this headline"></a></h1>
+  <section id="pickleprotocol">
+<h1>PickleProtocol<a class="headerlink" href="#pickleprotocol" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="laminar.configurations.serde.Protocol">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.serde.</span></span><span class="sig-name descname"><span class="pre">Protocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.serde.Protocol" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">laminar.configurations.serde.T</span></code>]</p>
-<p>Generic base class for defining ser(de) protocols.</p>
+<dt class="sig sig-object py" id="laminar.configurations.serde.PickleProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.serde.</span></span><span class="sig-name descname"><span class="pre">PickleProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.serde.PickleProtocol" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="laminar.configurations.serde.Protocol.html#laminar.configurations.serde.Protocol" title="laminar.configurations.serde.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">laminar.configurations.serde.Protocol</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+<p>Custom protocol for serializing Python objects using pickle.</p>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -131,22 +131,22 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.serde.Protocol.dump" title="laminar.configurations.serde.Protocol.dump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.serde.PickleProtocol.dump" title="laminar.configurations.serde.PickleProtocol.dump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code></a></p></td>
 <td><p>Serialize a value to a file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.serde.Protocol.dumps" title="laminar.configurations.serde.Protocol.dumps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.serde.PickleProtocol.dumps" title="laminar.configurations.serde.PickleProtocol.dumps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code></a></p></td>
 <td><p>Serialize a value to a byte string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.serde.Protocol.load" title="laminar.configurations.serde.Protocol.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.serde.PickleProtocol.load" title="laminar.configurations.serde.PickleProtocol.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
 <td><p>Deserialize a value from a file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.serde.Protocol.loads" title="laminar.configurations.serde.Protocol.loads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.serde.PickleProtocol.loads" title="laminar.configurations.serde.PickleProtocol.loads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code></a></p></td>
 <td><p>Deserialize a value from a byte stream.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.serde.Protocol.read" title="laminar.configurations.serde.Protocol.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></p></td>
 <td><p>Read a value from a URI with a custom protocol.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.serde.Protocol.write" title="laminar.configurations.serde.Protocol.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></p></td>
 <td><p>Write a value to a URI with a custom protocol.</p></td>
 </tr>
 </tbody>
@@ -161,8 +161,8 @@
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.serde.Protocol.dump">
-<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.serde.T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.serde.Protocol.dump" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="laminar.configurations.serde.PickleProtocol.dump">
+<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.serde.PickleProtocol.dump" title="Permalink to this definition"></a></dt>
 <dd><p>Serialize a value to a file.</p>
 <p>Usage:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
@@ -180,8 +180,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.serde.Protocol.dumps">
-<span class="sig-name descname"><span class="pre">dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.serde.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#laminar.configurations.serde.Protocol.dumps" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="laminar.configurations.serde.PickleProtocol.dumps">
+<span class="sig-name descname"><span class="pre">dumps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#laminar.configurations.serde.PickleProtocol.dumps" title="Permalink to this definition"></a></dt>
 <dd><p>Serialize a value to a byte string.</p>
 <p>Usage:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Protocol</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -198,8 +198,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.serde.Protocol.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.serde.T</span></span></span><a class="headerlink" href="#laminar.configurations.serde.Protocol.load" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="laminar.configurations.serde.PickleProtocol.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#laminar.configurations.serde.PickleProtocol.load" title="Permalink to this definition"></a></dt>
 <dd><p>Deserialize a value from a file.</p>
 <p>Usage:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
@@ -217,8 +217,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.serde.Protocol.loads">
-<span class="sig-name descname"><span class="pre">loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.serde.T</span></span></span><a class="headerlink" href="#laminar.configurations.serde.Protocol.loads" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="laminar.configurations.serde.PickleProtocol.loads">
+<span class="sig-name descname"><span class="pre">loads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#laminar.configurations.serde.PickleProtocol.loads" title="Permalink to this definition"></a></dt>
 <dd><p>Deserialize a value from a byte stream.</p>
 <p>Usage:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Protocol</span><span class="p">()</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -234,34 +234,6 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.serde.Protocol.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.serde.T</span></span></span><a class="headerlink" href="#laminar.configurations.serde.Protocol.read" title="Permalink to this definition"></a></dt>
-<dd><p>Read a value from a URI with a custom protocol.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>uri</strong> – URI to read from.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Value from the URI.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.serde.Protocol.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.serde.T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.serde.Protocol.write" title="Permalink to this definition"></a></dt>
-<dd><p>Write a value to a URI with a custom protocol.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> – Value to write to the URI.</p></li>
-<li><p><strong>uri</strong> – URI to write to.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -270,8 +242,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="laminar.configurations.serde.PickleProtocol.html" class="btn btn-neutral float-left" title="PickleProtocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="laminar.configurations.serde.ProtocolMeta.html" class="btn btn-neutral float-right" title="ProtocolMeta" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../laminar.configurations.serde.html" class="btn btn-neutral float-left" title="serde" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="laminar.configurations.serde.Protocol.html" class="btn btn-neutral float-right" title="Protocol" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,7 +1,7 @@
-Protocol
-========
+ArchiveProtocol
+===============
 
-.. autoclass:: laminar.configurations.serde.Protocol
+.. autoclass:: laminar.configurations.datastores.ArchiveProtocol
     :members:
     :show-inheritance:
 
@@ -35,22 +35,22 @@ Protocol
         
         
         
-        ~laminar.configurations.serde.Protocol.dump
+        ~laminar.configurations.datastores.ArchiveProtocol.dump
         
         
-        ~laminar.configurations.serde.Protocol.dumps
+        ~laminar.configurations.datastores.ArchiveProtocol.dumps
         
         
-        ~laminar.configurations.serde.Protocol.load
+        ~laminar.configurations.datastores.ArchiveProtocol.load
         
         
-        ~laminar.configurations.serde.Protocol.loads
+        ~laminar.configurations.datastores.ArchiveProtocol.loads
         
         
-        ~laminar.configurations.serde.Protocol.read
+        ~laminar.configurations.datastores.ArchiveProtocol.read
         
         
-        ~laminar.configurations.serde.Protocol.write
+        ~laminar.configurations.datastores.ArchiveProtocol.write
         
     
     

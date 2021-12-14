@@ -41,7 +41,7 @@ class C(Layer):
 Using the results API, it is trivial to execute the flow and make assertions on its outputs.
 
 ```python
-from laminar.utils import unwrap
+from laminar.types import unwrap
 
 def test_flow() -> None:
     execution = flow()

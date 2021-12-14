@@ -15,9 +15,11 @@ types
         :nosignatures:
     
         annotations
+        unwrap
 
     
     .. autofunction:: annotations
+    .. autofunction:: unwrap
     
     
 
