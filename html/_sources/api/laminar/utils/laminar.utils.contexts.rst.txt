@@ -32,7 +32,6 @@ contexts
         :nosignatures:
     
         Attributes
-        Environment
     
     
 
