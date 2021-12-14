@@ -13,6 +13,11 @@
 
 Users can define custom serialization and deserializations by subclassing `serde.Protocol` and registering it with a `Datastore`. This allows complete control and customization over how a type of data is managed by the `Datastore`.
 
+The minimal number of methods that must be overriden are:
+
+- `Protocol.dumps`
+- One of: `Protocol.load`, `Protocol.loads`
+
 Consider the following contrived example:
 
 ```python
@@ -43,7 +48,7 @@ flow = Flow("SerdeFlow", datastore=datastore)
 Here we define a `Protocol` to convert lists into byte strings and those are written to and read from the datastore. A `Protocol` can be registered to any vaild Python type and will intercept **exact type matches**.
 
 ```{note}
-The way that a `Protocol` knows what type is by performing a lookup with `type(value).__name__`. This has some immediately obvious implications:
+The way that a `Protocol` knows what type is by performing a lookup with the output of `serde.dtype()`. This has some immediately obvious implications:
 
 1. Protocols will not correctly intercept subclasses.
 1. Protocol registration can overwrite each other if the registered type name is the same.
@@ -51,7 +56,7 @@ The way that a `Protocol` knows what type is by performing a lookup with `type(v
 
 ## Multiple Types
 
-Here is a more complex example for serializing JSON:
+Here is an example for serializing JSON:
 
 ```python
 import json
@@ -68,16 +73,51 @@ class JsonProtocol(serde.Protocol[Union[Dict[str, Any], List[Any]]]):
     def load(self, file: BinaryIO) -> Union[Dict[str, Any], List[Any]]:
         return json.load(file)
 
-    def loads(self, stream: bytes) ->  Union[Dict[str, Any], List[Any]]:
-        return json.loads(stream.decode())
-
-    def dump(self, value: Union[Dict[str, Any], List[Any]], file: BinaryIO) -> None:
-        json.dump(value, file)
-
     def dumps(self, value: Union[Dict[str, Any], List[Any]]) -> bytes:
-        return json.dumps(value)
+        return json.dumps(value).encode()
 
 flow = Flow("SerdeFlow", datastore=datastore)
 ```
 
 The `Datastore` registers both `list` and `dict` to the `JsonProtocol` which handles serializing and deserializing them to and from the `Datastore` as JSON.
+
+## Beyond the Datastore
+
+In addition to serde protocols instructing datastores how to serialize and deserialize data, they can also instruct the `Datastore` how to read and write data by overriding `Protocol.read` and `Protocol.write`.
+
+```python
+from typing import Any, List
+
+from laminar import Flow, Layer
+from laminar.configurations import datastores, serde
+
+cache: Dict[str, List[Any]] = {}
+datastore = datastores.Local()
+
+
+@datastore.serde(list)
+class ListProtcol(serde.Protocol[List[Any]]):
+    def read(uri: str) -> List[Any]:
+        return cache[uri]
+
+    def write(value: List[Any], uri: str) -> None:
+        cache[uri] = value
+
+flow = Flow("SerdeFlow", datastore=datastore)
+```
+
+## Call Stack
+
+The `Protocol` call stack is chained. Each preceding method calls the later and the outputs of each traversing back up the call stack.
+
+By default `Protocol` serialization follows the following call structure:
+
+1. `Protocol.read`
+1. `Protocol.load`
+1. `Protocol.loads`
+
+By default `Protocol` deserialization follows the following call structure:
+
+1. `Protocol.write`
+1. `Protocol.dump`
+1. `Protocol.dumps`
