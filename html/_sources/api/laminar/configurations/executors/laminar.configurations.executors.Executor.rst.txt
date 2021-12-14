@@ -34,10 +34,10 @@ Executor
         
         
         
-        ~laminar.configurations.executors.Executor.execute
-        
-        
         ~laminar.configurations.executors.Executor.schedule
+        
+        
+        ~laminar.configurations.executors.Executor.submit
         
     
     

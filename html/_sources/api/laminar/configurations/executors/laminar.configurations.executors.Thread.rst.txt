@@ -34,10 +34,10 @@ Thread
         
         
         
-        ~laminar.configurations.executors.Thread.execute
-        
-        
         ~laminar.configurations.executors.Thread.schedule
+        
+        
+        ~laminar.configurations.executors.Thread.submit
         
     
     
