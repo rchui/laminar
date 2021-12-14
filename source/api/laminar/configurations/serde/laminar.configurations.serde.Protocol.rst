@@ -34,7 +34,6 @@ Protocol
         
         
         
-        
         ~laminar.configurations.serde.Protocol.dump
         
         
@@ -62,10 +61,6 @@ Protocol
     .. autosummary::
         :nosignatures:
     
-        
-        
-        
-        
         
         
         

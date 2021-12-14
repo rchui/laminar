@@ -34,7 +34,6 @@ PickleProtocol
         
         
         
-        
         ~laminar.configurations.serde.PickleProtocol.dump
         
         
@@ -62,10 +61,6 @@ PickleProtocol
     .. autosummary::
         :nosignatures:
     
-        
-        
-        
-        
         
         
         

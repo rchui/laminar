@@ -34,7 +34,6 @@ RecordProtocol
         
         
         
-        
         ~laminar.configurations.datastores.RecordProtocol.dump
         
         
@@ -62,10 +61,6 @@ RecordProtocol
     .. autosummary::
         :nosignatures:
     
-        
-        
-        
-        
         
         
         

@@ -34,7 +34,6 @@ ArchiveProtocol
         
         
         
-        
         ~laminar.configurations.datastores.ArchiveProtocol.dump
         
         
@@ -62,10 +61,6 @@ ArchiveProtocol
     .. autosummary::
         :nosignatures:
     
-        
-        
-        
-        
         
         
         

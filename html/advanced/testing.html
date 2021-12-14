@@ -111,7 +111,7 @@
 <span class="n">datastore</span> <span class="o">=</span> <span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">()</span>
 
 <span class="nd">@datastore</span><span class="o">.</span><span class="n">serde</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Int</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">Int</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
