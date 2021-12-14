@@ -25,6 +25,7 @@ exceptions
         ExecutionError
         FlowError
         LayerError
+        SchedulerError
     
     
 

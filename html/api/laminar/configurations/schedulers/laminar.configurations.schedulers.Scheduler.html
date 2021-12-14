@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thread &mdash; laminar  documentation</title>
+  <title>Scheduler &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="flows" href="../laminar.configurations.flows.html" />
-    <link rel="prev" title="Executor" href="laminar.configurations.executors.Executor.html" /> 
+    <link rel="next" title="serde" href="../laminar.configurations.serde.html" />
+    <link rel="prev" title="schedulers" href="../laminar.configurations.schedulers.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -70,17 +70,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../laminar.components.html">components</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../laminar.configurations.html">configurations</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.datastores.html">datastores</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../laminar.configurations.executors.html">executors</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.executors.AWS.html">AWS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.executors.Docker.html">Docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.executors.Executor.html">Executor</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Thread</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.executors.html">executors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.flows.html">flows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.schedulers.html">schedulers</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../laminar.configurations.schedulers.html">schedulers</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Scheduler</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.serde.html">serde</a></li>
 </ul>
 </li>
@@ -108,10 +105,10 @@
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../../laminar.html">laminar</a> &raquo;</li>
           <li><a href="../../laminar.configurations.html">configurations</a> &raquo;</li>
-          <li><a href="../laminar.configurations.executors.html">executors</a> &raquo;</li>
-      <li>Thread</li>
+          <li><a href="../laminar.configurations.schedulers.html">schedulers</a> &raquo;</li>
+      <li>Scheduler</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/api/laminar/configurations/executors/laminar.configurations.executors.Thread.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/api/laminar/configurations/schedulers/laminar.configurations.schedulers.Scheduler.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -119,17 +116,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="thread">
-<h1>Thread<a class="headerlink" href="#thread" title="Permalink to this headline"></a></h1>
+  <section id="scheduler">
+<h1>Scheduler<a class="headerlink" href="#scheduler" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="laminar.configurations.executors.Thread">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.executors.</span></span><span class="sig-name descname"><span class="pre">Thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concurrency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">86400</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.executors.Thread" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor" title="laminar.configurations.executors.Executor"><code class="xref py py-class docutils literal notranslate"><span class="pre">laminar.configurations.executors.Executor</span></code></a></p>
-<p>Execute layers in threads.</p>
-<p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Flow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">Thread</span><span class="p">())</span>
-</pre></div>
-</div>
+<dt class="sig sig-object py" id="laminar.configurations.schedulers.Scheduler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.schedulers.</span></span><span class="sig-name descname"><span class="pre">Scheduler</span></span><a class="headerlink" href="#laminar.configurations.schedulers.Scheduler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -137,11 +129,8 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></p></td>
-<td><p>Schedule a layer for execution.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.executors.Thread.submit" title="laminar.configurations.executors.Thread.submit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">submit</span></code></a></p></td>
-<td><p>Execute a layer.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -152,32 +141,12 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">concurrency</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">semaphore</span></code></p></td>
-<td><p>Create a semaphore that limits asyncio concurrency.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeout</span></code></p></td>
-<td><p></p></td>
-</tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.executors.Thread.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concurrency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">86400</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.executors.Thread.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="laminar.configurations.schedulers.Scheduler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.schedulers.Scheduler.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.executors.Thread.submit">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Layer</span></span></span><a class="headerlink" href="#laminar.configurations.executors.Thread.submit" title="Permalink to this definition"></a></dt>
-<dd><p>Execute a layer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>layer</strong> – Layer to execute.</p>
-</dd>
-</dl>
-</dd></dl>
 
 </dd></dl>
 
@@ -187,8 +156,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="laminar.configurations.executors.Executor.html" class="btn btn-neutral float-left" title="Executor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../laminar.configurations.flows.html" class="btn btn-neutral float-right" title="flows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../laminar.configurations.schedulers.html" class="btn btn-neutral float-left" title="schedulers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../laminar.configurations.serde.html" class="btn btn-neutral float-right" title="serde" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -56,5 +56,8 @@ Configuration
         
         ~laminar.configurations.flows.Configuration.executor
         
+        
+        ~laminar.configurations.flows.Configuration.scheduler
+        
     
     

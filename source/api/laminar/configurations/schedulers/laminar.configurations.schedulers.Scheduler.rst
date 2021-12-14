@@ -1,7 +1,7 @@
-Configuration
-=============
+Scheduler
+=========
 
-.. autoclass:: laminar.configurations.flows.Configuration
+.. autoclass:: laminar.configurations.schedulers.Scheduler
     :members:
     :show-inheritance:
 
@@ -33,6 +33,9 @@ Configuration
         
         
         
+        
+        ~laminar.configurations.schedulers.Scheduler.run
+        
     
     
 
@@ -48,16 +51,6 @@ Configuration
         
         
         
-        
-        
-        
-        ~laminar.configurations.flows.Configuration.datastore
-        
-        
-        ~laminar.configurations.flows.Configuration.executor
-        
-        
-        ~laminar.configurations.flows.Configuration.scheduler
         
     
     
