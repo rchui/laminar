@@ -63,7 +63,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#protocols">Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multiple-types">Multiple Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#beyond-the-datastore">Beyond the Datastore</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#call-stack">Call Stack</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
@@ -200,22 +199,6 @@
 <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;SerdeFlow&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastore</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="call-stack">
-<h2>Call Stack<a class="headerlink" href="#call-stack" title="Permalink to this headline"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> call stack is chained. Each preceding method calls the later and the outputs of each traversing back up the call stack.</p>
-<p>By default <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> serialization follows the following call structure:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.read</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.load</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.loads</span></code></p></li>
-</ol>
-<p>By default <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> deserialization follows the following call structure:</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.write</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.dump</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.dumps</span></code></p></li>
-</ol>
 </section>
 </section>
 

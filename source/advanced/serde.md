@@ -105,19 +105,3 @@ class ListProtcol(serde.Protocol):
 
 flow = Flow("SerdeFlow", datastore=datastore)
 ```
-
-## Call Stack
-
-The `Protocol` call stack is chained. Each preceding method calls the later and the outputs of each traversing back up the call stack.
-
-By default `Protocol` serialization follows the following call structure:
-
-1. `Protocol.read`
-1. `Protocol.load`
-1. `Protocol.loads`
-
-By default `Protocol` deserialization follows the following call structure:
-
-1. `Protocol.write`
-1. `Protocol.dump`
-1. `Protocol.dumps`
