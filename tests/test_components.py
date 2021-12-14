@@ -90,6 +90,22 @@ class TestLayer:
 
         assert flow.layer(Test).dependencies == ("Dep1", "Dep2")
 
+    def test__dependencies(self, flow: Flow) -> None:
+        @flow.register()
+        class Dep1(Layer):
+            ...
+
+        @flow.register()
+        class Dep2(Layer):
+            ...
+
+        @flow.register()
+        class Test(Layer):
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
+                ...
+
+        assert flow.layer(Test)._dependencies == (Dep1(), Dep2())
+
     def test_getattr(self, flow: Flow) -> None:
         workspace: Dict[str, Any] = flow.configuration.datastore.cache
         workspace["memory:///TestFlow/archives/test-execution/Layer/0/foo.json"] = Archive(

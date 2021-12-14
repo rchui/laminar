@@ -5,7 +5,7 @@ from typing import Any, Dict
 import pytest
 
 from laminar import Flow, Layer
-from laminar.configurations.datastores import Archive, Artifact
+from laminar.configurations.datastores import Archive, Artifact, Record
 from laminar.configurations.layers import ForEach, Parameter
 
 
@@ -53,9 +53,14 @@ class TestForEach:
         class C(Layer):
             ...
 
+        @self.flow.register(foreach=ForEach(parameters=[Parameter(layer=C, attribute="foo", index=None)]))
+        class D(Layer):
+            ...
+
         self.A = A
         self.B = B
         self.C = C
+        self.D = D
 
     def test_join(self) -> None:
         layer = self.flow.layer(self.C)
@@ -77,9 +82,28 @@ class TestForEach:
             {self.A(): {"foo": 1}, self.B(): {"bar": 1}},
         ]
 
+    def test_grid_none(self) -> None:
+        layer = self.flow.layer(self.D)
+        assert layer.configuration.foreach.grid(layer=layer) == [
+            {self.C(): {"foo": 0}},
+            {self.C(): {"foo": 1}},
+            {self.C(): {"foo": 2}},
+            {self.C(): {"foo": 3}},
+        ]
+
     def test_splits(self) -> None:
         layer = self.flow.layer(self.C)
         assert layer.configuration.foreach.splits(layer=layer) == 4
+
+    def test_splits_cache_hit(self) -> None:
+        self.flow.configuration.datastore.cache["memory:///TestFlow/.cache/test-execution/C/.record.json"] = Record(
+            flow=Record.FlowRecord("Testflow"),
+            layer=Record.LayerRecord(name="C"),
+            execution=Record.ExecutionRecord(splits=6),
+        )
+
+        layer = self.flow.layer(self.C)
+        assert layer.configuration.foreach.splits(layer=layer) == 6
 
     def test_set(self) -> None:
         layer = self.flow.layer(self.C, index=0)

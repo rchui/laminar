@@ -73,10 +73,22 @@ def schedule(hook: T) -> T:
 
 
 def dependencies(*, layer: Layer, hook: Callable[..., Generator[None, None, None]]) -> Tuple[Layer, ...]:
+    """Get the dependencies for a hook."""
+
     return tuple(layer.flow.layer(annotation) for annotation in annotations(hook))
 
 
 def context(*, layer: Layer, annotation: annotation) -> ExitStack:
+    """Get a context manager for all hooks of the annotated type.
+
+    Args:
+        layer: Layer the hooks are for.
+        annotation: Annotation to get hooks for.
+
+    Returns:
+        A context manager with all annotated hooks activated.
+    """
+
     stack = ExitStack()
     for hook in list(vars(type(layer.flow)).values()) + list(vars(type(layer)).values()):
         if getattr(hook, ATTRIBUTE, None) == annotation:
