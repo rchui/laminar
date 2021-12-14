@@ -62,6 +62,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Ser(De)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#protocols">Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multiple-types">Multiple Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#beyond-the-datastore">Beyond the Datastore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#call-stack">Call Stack</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
@@ -110,6 +112,11 @@
 <section id="protocols">
 <h2>Protocols<a class="headerlink" href="#protocols" title="Permalink to this headline"></a></h2>
 <p>Users can define custom serialization and deserializations by subclassing <code class="docutils literal notranslate"><span class="pre">serde.Protocol</span></code> and registering it with a <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>. This allows complete control and customization over how a type of data is managed by the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>.</p>
+<p>The minimal number of methods that must be overriden are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.dumps</span></code></p></li>
+<li><p>One of: <code class="docutils literal notranslate"><span class="pre">Protocol.load</span></code>, <code class="docutils literal notranslate"><span class="pre">Protocol.loads</span></code></p></li>
+</ul>
 <p>Consider the following contrived example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
@@ -138,7 +145,7 @@
 <p>Here we define a <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> to convert lists into byte strings and those are written to and read from the datastore. A <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> can be registered to any vaild Python type and will intercept <strong>exact type matches</strong>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The way that a <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> knows what type is by performing a lookup with <code class="docutils literal notranslate"><span class="pre">type(value).__name__</span></code>. This has some immediately obvious implications:</p>
+<p>The way that a <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> knows what type is by performing a lookup with the output of <code class="docutils literal notranslate"><span class="pre">serde.dtype()</span></code>. This has some immediately obvious implications:</p>
 <ol class="arabic simple">
 <li><p>Protocols will not correctly intercept subclasses.</p></li>
 <li><p>Protocol registration can overwrite each other if the registered type name is the same.</p></li>
@@ -147,7 +154,7 @@
 </section>
 <section id="multiple-types">
 <h2>Multiple Types<a class="headerlink" href="#multiple-types" title="Permalink to this headline"></a></h2>
-<p>Here is a more complex example for serializing JSON:</p>
+<p>Here is an example for serializing JSON:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -162,19 +169,53 @@
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span>  <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
-
-    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">file</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
 
 <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;SerdeFlow&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastore</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> registers both <code class="docutils literal notranslate"><span class="pre">list</span></code> and <code class="docutils literal notranslate"><span class="pre">dict</span></code> to the <code class="docutils literal notranslate"><span class="pre">JsonProtocol</span></code> which handles serializing and deserializing them to and from the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> as JSON.</p>
+</section>
+<section id="beyond-the-datastore">
+<h2>Beyond the Datastore<a class="headerlink" href="#beyond-the-datastore" title="Permalink to this headline"></a></h2>
+<p>In addition to serde protocols instructing datastores how to serialize and deserialize data, they can also instruct the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> how to read and write data by overriding <code class="docutils literal notranslate"><span class="pre">Protocol.read</span></code> and <code class="docutils literal notranslate"><span class="pre">Protocol.write</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span><span class="p">,</span> <span class="n">serde</span>
+
+<span class="n">cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">datastore</span> <span class="o">=</span> <span class="n">datastores</span><span class="o">.</span><span class="n">Local</span><span class="p">()</span>
+
+
+<span class="nd">@datastore</span><span class="o">.</span><span class="n">serde</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ListProtcol</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]):</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">uri</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cache</span><span class="p">[</span><span class="n">uri</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;SerdeFlow&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastore</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="call-stack">
+<h2>Call Stack<a class="headerlink" href="#call-stack" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> call stack is chained. Each preceding method calls the later and the outputs of each traversing back up the call stack.</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> serialization follows the following call structure:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.read</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.load</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.loads</span></code></p></li>
+</ol>
+<p>By default <code class="docutils literal notranslate"><span class="pre">Protocol</span></code> deserialization follows the following call structure:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.write</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.dump</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Protocol.dumps</span></code></p></li>
+</ol>
 </section>
 </section>
 
