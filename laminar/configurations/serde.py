@@ -1,12 +1,10 @@
 """Configurations for laminar serde."""
 
-from typing import Any, BinaryIO, Generic, TypeVar
+from typing import Any, BinaryIO, TypeVar
 
 import cloudpickle
 
 from laminar.utils import fs
-
-T = TypeVar("T")
 
 
 def dtype(cls: type) -> str:
@@ -21,13 +19,13 @@ class ProtocolMeta(type):
         return dtype(cls)
 
 
-class Protocol(Generic[T], metaclass=ProtocolMeta):
+class Protocol(metaclass=ProtocolMeta):
     """Generic base class for defining ser(de) protocols."""
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({', '.join([f'{key}={value}' for key, value in vars(self).items()])})"
 
-    def read(self, uri: str) -> T:
+    def read(self, uri: str) -> Any:
         """Read a value from a URI with a custom protocol.
 
         Args:
@@ -40,7 +38,7 @@ class Protocol(Generic[T], metaclass=ProtocolMeta):
         with fs.open(uri, "rb") as file:
             return self.load(file)
 
-    def load(self, file: BinaryIO) -> T:
+    def load(self, file: BinaryIO) -> Any:
         """Deserialize a value from a file.
 
         Usage::
@@ -57,7 +55,7 @@ class Protocol(Generic[T], metaclass=ProtocolMeta):
 
         return self.loads(file.read())
 
-    def loads(self, stream: bytes) -> T:
+    def loads(self, stream: bytes) -> Any:
         """Deserialize a value from a byte stream.
 
         Usage::
@@ -73,7 +71,7 @@ class Protocol(Generic[T], metaclass=ProtocolMeta):
 
         raise NotImplementedError
 
-    def write(self, value: T, uri: str) -> None:
+    def write(self, value: Any, uri: str) -> None:
         """Write a value to a URI with a custom protocol.
 
         Args:
@@ -84,7 +82,7 @@ class Protocol(Generic[T], metaclass=ProtocolMeta):
         with fs.open(uri, "wb") as file:
             self.dump(value, file)
 
-    def dump(self, value: T, file: BinaryIO) -> None:
+    def dump(self, value: Any, file: BinaryIO) -> None:
         """Serialize a value to a file.
 
         Usage::
@@ -99,7 +97,7 @@ class Protocol(Generic[T], metaclass=ProtocolMeta):
 
         file.write(self.dumps(value))
 
-    def dumps(self, value: T) -> bytes:
+    def dumps(self, value: Any) -> bytes:
         """Serialize a value to a byte string.
 
         Usage::
@@ -116,10 +114,10 @@ class Protocol(Generic[T], metaclass=ProtocolMeta):
         raise NotImplementedError
 
 
-ProtocolType = TypeVar("ProtocolType", bound=Protocol[Any])
+ProtocolType = TypeVar("ProtocolType", bound=Protocol)
 
 
-class PickleProtocol(Protocol[Any]):
+class PickleProtocol(Protocol):
     """Custom protocol for serializing Python objects using pickle."""
 
     def load(self, file: BinaryIO) -> Any:

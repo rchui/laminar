@@ -65,7 +65,7 @@ class Record:
         return from_dict(Record, source)
 
 
-class RecordProtocol(serde.Protocol[Record]):
+class RecordProtocol(serde.Protocol):
     """Custom protocol for serializing Records."""
 
     def load(self, file: BinaryIO) -> Record:
@@ -137,7 +137,7 @@ class Archive:
         return from_dict(Archive, source)
 
 
-class ArchiveProtocol(serde.Protocol[Archive]):
+class ArchiveProtocol(serde.Protocol):
     """Custom protocol for serializing Archives."""
 
     def load(self, file: BinaryIO) -> Archive:
@@ -203,7 +203,7 @@ class DataStore:
     #: Internal datastore cache
     cache: Dict[str, Any] = field(default_factory=dict)
     #: Custom serde protocols for reading/writing artifacts
-    protocols: Dict[str, serde.Protocol[Any]] = field(default_factory=dict)
+    protocols: Dict[str, serde.Protocol] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.root.endswith(("://", ":///")):
