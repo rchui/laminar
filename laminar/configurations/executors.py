@@ -50,7 +50,7 @@ class Executor:
         semaphore: asyncio.Semaphore = getattr(self, attr)
         return semaphore
 
-    async def execute(self, *, layer: Layer) -> Layer:
+    async def submit(self, *, layer: Layer) -> Layer:
         """Execute a layer.
 
         Args:
@@ -77,7 +77,7 @@ class Executor:
             instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
 
             with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
-                tasks.append(self.execute(layer=instance))
+                tasks.append(self.submit(layer=instance))
         try:
             # Combine all Coroutines into a Future so they can be waited on together
             layers = await asyncio.gather(*tasks)
@@ -119,7 +119,7 @@ class Thread(Executor):
         Flow(executor=Thread())
     """
 
-    async def execute(self, *, layer: Layer) -> Layer:
+    async def submit(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
             layer.flow.execute(execution=unwrap(layer.flow.execution), layer=layer)
 
@@ -135,7 +135,7 @@ class Docker(Executor):
         Flow(executor=Docker())
     """
 
-    async def execute(self, *, layer: Layer) -> Layer:
+    async def submit(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
             workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
 
@@ -224,7 +224,7 @@ class AWS:
 
                 await asyncio.sleep(self.poll)
 
-        async def execute(self, *, layer: Layer, batch: Optional[BatchClient] = None) -> Layer:
+        async def submit(self, *, layer: Layer, batch: Optional[BatchClient] = None) -> Layer:
             async with self.semaphore:
                 container = layer.configuration.container
 

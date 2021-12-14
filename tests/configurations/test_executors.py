@@ -34,10 +34,10 @@ class TestExecutor:
 
     async def test_execute(self, layer: Layer) -> None:
         with pytest.raises(NotImplementedError):
-            await self.executor.execute(layer=layer)
+            await self.executor.submit(layer=layer)
 
     async def test_schedule(self, layer: Layer) -> None:
-        with coroutine("laminar.configurations.executors.Executor.execute") as mock_execute:
+        with coroutine("laminar.configurations.executors.Executor.submit") as mock_execute:
             await self.executor.schedule(layer=layer)
 
             mock_execute.assert_called_once_with(layer=layer)
@@ -56,7 +56,7 @@ class TestThread:
     async def test_execute(self) -> None:
         mock_layer = Mock()
 
-        assert await self.executor.execute(layer=mock_layer) == mock_layer
+        assert await self.executor.submit(layer=mock_layer) == mock_layer
 
         mock_layer.flow.execute.assert_called_once_with(execution=mock_layer.flow.execution, layer=mock_layer)
 
@@ -70,7 +70,7 @@ class TestDocker:
         with patch("shlex.split") as mock_split:
             mock_split.return_value = command
 
-            assert await self.executor.execute(layer=layer) == layer
+            assert await self.executor.submit(layer=layer) == layer
 
         mock_split.assert_called_once_with(
             "docker run --rm --interactive --cpus 1 --env LAMINAR_EXECUTION_ID=test-execution --env"
@@ -85,11 +85,11 @@ class TestDocker:
             mock_split.return_value = command
 
             with pytest.raises(ExecutionError):
-                await self.executor.execute(layer=layer)
+                await self.executor.submit(layer=layer)
 
     async def test_execute_exeception(self, layer: Layer) -> None:
         with patch("shlex.split") as mock_split:
             mock_split.side_effect = Mock(side_effect=Exception())
 
             with pytest.raises(Exception):
-                await self.executor.execute(layer=layer)
+                await self.executor.submit(layer=layer)
