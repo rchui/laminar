@@ -34,9 +34,6 @@ Executor
         
         
         
-        ~laminar.configurations.executors.Executor.schedule
-        
-        
         ~laminar.configurations.executors.Executor.submit
         
     

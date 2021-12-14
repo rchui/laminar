@@ -34,9 +34,6 @@ Docker
         
         
         
-        ~laminar.configurations.executors.Docker.schedule
-        
-        
         ~laminar.configurations.executors.Docker.submit
         
     

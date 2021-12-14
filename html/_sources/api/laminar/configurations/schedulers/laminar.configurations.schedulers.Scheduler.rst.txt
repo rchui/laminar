@@ -36,6 +36,9 @@ Scheduler
         
         ~laminar.configurations.schedulers.Scheduler.run
         
+        
+        ~laminar.configurations.schedulers.Scheduler.schedule
+        
     
     
 
