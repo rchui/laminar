@@ -29,7 +29,7 @@ class TestLayer:
             " flow=Flow(configuration=Configuration(datastore=Memory(root='memory:///', cache={},"
             " protocols={'laminar.configurations.datastores.ArchiveProtocol': ArchiveProtocol(),"
             " 'laminar.configurations.datastores.RecordProtocol': RecordProtocol()}), executor=Thread(concurrency=1,"
-            " timeout=86400)), execution='test-execution'), index=0, splits=2)"
+            " timeout=86400), scheduler=Scheduler()), execution='test-execution'), index=0, splits=2)"
         )
 
     def test_subclass_init(self) -> None:

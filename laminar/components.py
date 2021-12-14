@@ -1,6 +1,5 @@
 """Core components for build flows."""
 
-import asyncio
 import logging
 from copy import deepcopy
 from dataclasses import dataclass
@@ -8,7 +7,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Ty
 
 from ksuid import KsuidMs
 
-from laminar.configurations import datastores, executors, flows, hooks, layers
+from laminar.configurations import datastores, executors, flows, hooks, layers, schedulers
 from laminar.exceptions import FlowError, LayerError
 from laminar.settings import current
 from laminar.types import LayerType, annotations
@@ -191,6 +190,7 @@ class Flow:
         name: str,
         datastore: datastores.DataStore = datastores.Local(),
         executor: executors.Executor = executors.Docker(),
+        scheduler: schedulers.Scheduler = schedulers.Scheduler(),
     ) -> None:
         """
         Args:
@@ -211,7 +211,7 @@ class Flow:
         if isinstance(datastore, datastores.Memory) and not isinstance(executor, executors.Thread):
             raise FlowError("The Memory datastore can only be used with the Thread executor.")
 
-        self.configuration = flows.Configuration(datastore=datastore, executor=executor)
+        self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
         self._registry: Dict[str, Layer] = {FlowParameters.name: deepcopy(FlowParameters)}
 
@@ -301,8 +301,7 @@ class Flow:
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
-    @contexts.EventLoop
-    async def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
+    def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
         """Schedule layers to run in sequence in the flow.
 
         Args:
@@ -310,58 +309,8 @@ class Flow:
             dependencies: Mapping of layers to layers it depends on.
         """
 
-        logger.info("Flow: '%s'", self.name)
-        logger.info("Execution: '%s'", execution)
-        logger.info("Dependencies: '%s'", dependencies)
-
-        finished = {FlowParameters.name}
-        pending = set(dependencies) - finished
-        runnable: Set[str] = set()
-        running: Set[asyncio.Task[List[Layer]]] = set()
-
         with contexts.Attributes(self, execution=execution):
-            while pending:
-                logger.info("Pending layers: %s", sorted(pending))
-
-                # Find all runnable layers
-                for layer in pending:
-                    if set(dependencies[layer]).issubset(finished):
-                        runnable.add(layer)
-                pending.difference_update(runnable)
-
-                # Schedule all runnable layers
-                if runnable:
-                    logger.info("Runnable layers: %s", sorted(runnable))
-                    running.update(
-                        (
-                            asyncio.create_task(self.configuration.executor.schedule(layer=self.layer(layer)))
-                            for layer in runnable
-                        )
-                    )
-                    runnable = set()
-
-                elif not runnable and not running and pending:
-                    raise FlowError(
-                        f"Stuck waiting to schedule: {sorted(pending)}."
-                        f" Finished layers: {sorted(finished)}."
-                        f" Remaining dependencies: { {task: sorted(dependencies[task]) for task in sorted(pending)} }"
-                    )
-
-                # Wait until the first task completes
-                logger.info("Running layers: %s", sorted(set(dependencies) - pending - finished))
-                completed, incomplete = await asyncio.wait(running, return_when=asyncio.FIRST_COMPLETED)
-
-                # Add all completed tasks to finished tasks
-                names = {(await task)[0].name for task in completed}
-                finished.update(names)
-                logger.info("Finished layers: %s", sorted(finished))
-
-                # Reset running tasks
-                running = set(incomplete)
-
-            if running:
-                # Wait for any remaining tasks
-                await asyncio.wait(running, return_when=asyncio.ALL_COMPLETED)
+            self.configuration.scheduler.run(flow=self, dependencies=dependencies, finished={FlowParameters.name})
 
     def register(
         self,

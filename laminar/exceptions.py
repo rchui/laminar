@@ -2,12 +2,16 @@
 
 
 class ExecutionError(Exception):
-    """An error occured during execution."""
+    """An error that occured during execution."""
 
 
 class FlowError(Exception):
-    """An error occured in a Flow."""
+    """An error that occured during Flow definition."""
 
 
 class LayerError(Exception):
-    """An error occured in a Layer."""
+    """An error that occured during Layer definition."""
+
+
+class SchedulerError(Exception):
+    """An error that occured during Flow scheduling."""

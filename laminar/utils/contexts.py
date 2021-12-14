@@ -2,8 +2,6 @@ import asyncio
 import contextlib
 from typing import Any, Dict, TypeVar, cast
 
-T = TypeVar("T", bound=Any)
-
 
 class Attributes(contextlib.ContextDecorator):
     def __init__(self, cls: object, **attributes: Any) -> None:
@@ -36,6 +34,9 @@ class Attributes(contextlib.ContextDecorator):
                 setattr(self.cls, key, self._attributes[key])
             else:
                 delattr(self.cls, key)
+
+
+T = TypeVar("T", bound=Any)
 
 
 def EventLoop(func: T) -> T:
