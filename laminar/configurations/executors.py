@@ -5,13 +5,12 @@ import hashlib
 import logging
 import shlex
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Coroutine, List, Optional
+from typing import TYPE_CHECKING, Optional
 
 import boto3
 from mypy_boto3_batch.client import BatchClient
 from mypy_boto3_batch.type_defs import ContainerOverridesTypeDef, ContainerPropertiesTypeDef, JobTimeoutTypeDef
 
-from laminar.configurations import datastores, hooks
 from laminar.exceptions import ExecutionError
 from laminar.types import unwrap
 
@@ -58,56 +57,6 @@ class Executor:
         """
 
         raise NotImplementedError
-
-    async def schedule(self, *, layer: Layer, attempt: int = 1) -> List[Layer]:
-        """Schedule a layer for execution.
-
-        Args:
-            execution: Flow execution ID
-            layer: Layer to execute
-            attempt: Scheduling attempt for this layer
-
-        Returns:
-            Layer splits that were executed
-        """
-
-        splits = layer.configuration.foreach.splits(layer=layer)
-        tasks: List[Coroutine[Any, Any, Layer]] = []
-        for index in range(splits):
-            instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
-
-            with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
-                tasks.append(self.submit(layer=instance))
-        try:
-            # Combine all Coroutines into a Future so they can be waited on together
-            layers = await asyncio.gather(*tasks)
-        except Exception as error:
-            logger.error(
-                "Encountered unexpected error: %s(%s) on attempt '%d' of '%d'.",
-                type(error).__name__,
-                str(error),
-                attempt,
-                layer.configuration.retry.attempts,
-            )
-
-            # Attempt to reschedule the layer
-            if attempt < layer.configuration.retry.attempts:
-                with hooks.context(layer=layer, annotation=hooks.annotation.retry):
-                    await layer.configuration.retry.sleep(layer=layer, attempt=attempt)
-                return await self.schedule(layer=layer, attempt=attempt + 1)
-            raise
-
-        # Cache the layer execution metadata
-        layer.flow.configuration.datastore.write_record(
-            layer=layer,
-            record=datastores.Record(
-                flow=datastores.Record.FlowRecord(name=layer.flow.name),
-                layer=datastores.Record.LayerRecord(name=layer.name),
-                execution=datastores.Record.ExecutionRecord(splits=splits),
-            ),
-        )
-
-        return list(layers)
 
 
 @dataclass(frozen=True)

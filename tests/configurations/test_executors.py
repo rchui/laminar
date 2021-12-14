@@ -2,26 +2,13 @@
 
 import asyncio
 import shlex
-from contextlib import contextmanager
-from typing import Any, Generator
 from unittest.mock import Mock, patch
 
 import pytest
 
 from laminar import Layer
-from laminar.configurations.datastores import Record
 from laminar.configurations.executors import Docker, Executor, Thread
 from laminar.exceptions import ExecutionError
-
-
-@contextmanager
-def coroutine(path: str) -> Generator[Mock, None, None]:
-    async def func(*args: Any, **kwargs: Any) -> None:
-        ...
-
-    with patch(path) as mock:
-        mock.return_value = func()
-        yield mock
 
 
 @pytest.mark.asyncio
@@ -32,28 +19,16 @@ class TestExecutor:
         assert self.executor.semaphore._value == 1
         assert self.executor.semaphore != asyncio.Semaphore(1)
 
-    async def test_execute(self, layer: Layer) -> None:
+    async def test_submit(self, layer: Layer) -> None:
         with pytest.raises(NotImplementedError):
             await self.executor.submit(layer=layer)
-
-    async def test_schedule(self, layer: Layer) -> None:
-        with coroutine("laminar.configurations.executors.Executor.submit") as mock_execute:
-            await self.executor.schedule(layer=layer)
-
-            mock_execute.assert_called_once_with(layer=layer)
-
-        assert layer.flow.configuration.datastore.read_record(layer=layer) == Record(
-            flow=Record.FlowRecord(name="TestFlow"),
-            layer=Record.LayerRecord(name="Layer"),
-            execution=Record.ExecutionRecord(splits=1),
-        )
 
 
 @pytest.mark.asyncio
 class TestThread:
     executor = Thread()
 
-    async def test_execute(self) -> None:
+    async def test_submit(self) -> None:
         mock_layer = Mock()
 
         assert await self.executor.submit(layer=mock_layer) == mock_layer
@@ -65,7 +40,7 @@ class TestThread:
 class TestDocker:
     executor = Docker()
 
-    async def test_execute(self, layer: Layer) -> None:
+    async def test_submit(self, layer: Layer) -> None:
         command = shlex.split("echo 'hello world'")
         with patch("shlex.split") as mock_split:
             mock_split.return_value = command
@@ -79,7 +54,7 @@ class TestDocker:
             " memory:///:/laminar/.laminar --workdir /laminar python:3.9 python main.py"
         )
 
-    async def test_execute_error_code(self, layer: Layer) -> None:
+    async def test_submit_error_code(self, layer: Layer) -> None:
         command = shlex.split("exit 1")
         with patch("shlex.split") as mock_split:
             mock_split.return_value = command
@@ -87,7 +62,7 @@ class TestDocker:
             with pytest.raises(ExecutionError):
                 await self.executor.submit(layer=layer)
 
-    async def test_execute_exeception(self, layer: Layer) -> None:
+    async def test_submit_exeception(self, layer: Layer) -> None:
         with patch("shlex.split") as mock_split:
             mock_split.side_effect = Mock(side_effect=Exception())
 
