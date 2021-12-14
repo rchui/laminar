@@ -13,7 +13,7 @@ from mypy_boto3_batch.type_defs import ContainerOverridesTypeDef, ContainerPrope
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import ExecutionError
-from laminar.utils import unwrap
+from laminar.types import unwrap
 
 logger = logging.getLogger(__name__)
 

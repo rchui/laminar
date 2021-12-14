@@ -5,21 +5,20 @@ import json
 import os
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, Iterable, List, Tuple, Type, Union, overload
+from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Dict, Generator, Iterable, List, Tuple, Type, Union, overload
 
-import cloudpickle
 from dacite.core import from_dict
 
 from laminar.configurations import serde
-from laminar.utils import fs, unwrap
+from laminar.types import unwrap
+from laminar.utils import fs
 
 if TYPE_CHECKING:
     from laminar import Layer
 else:
     Layer = "Layer"
 
-DEFAULT_HASH = hashlib.sha256
-DEFAULT_SERDE = cloudpickle
+DEFAULT_SERDE = serde.PickleProtocol()
 
 
 @dataclass(frozen=True)
@@ -64,6 +63,16 @@ class Record:
         """Get a Record from a dict."""
 
         return from_dict(Record, source)
+
+
+class RecordProtocol(serde.Protocol[Record]):
+    """Custom protocol for serializing Records."""
+
+    def load(self, file: BinaryIO) -> Record:
+        return Record.parse(json.load(file))
+
+    def dumps(self, value: Record) -> bytes:
+        return json.dumps(value.dict()).encode()
 
 
 @dataclass(frozen=True)
@@ -128,6 +137,16 @@ class Archive:
         return from_dict(Archive, source)
 
 
+class ArchiveProtocol(serde.Protocol[Archive]):
+    """Custom protocol for serializing Archives."""
+
+    def load(self, file: BinaryIO) -> Archive:
+        return Archive.parse(json.load(file))
+
+    def dumps(self, value: Archive) -> bytes:
+        return json.dumps(value.dict()).encode()
+
+
 @dataclass(frozen=True)
 class Accessor:
     """Artifact handler for sharded artifacts."""
@@ -190,6 +209,9 @@ class DataStore:
         if not self.root.endswith(("://", ":///")):
             object.__setattr__(self, "root", self.root.rstrip("/"))
 
+        self.protocols[ArchiveProtocol.dtype] = ArchiveProtocol()
+        self.protocols[RecordProtocol.dtype] = RecordProtocol()
+
     def uri(self, *, path: str) -> str:
         """Given a path, generate a URI in the datastore.
 
@@ -225,14 +247,10 @@ class DataStore:
         """
 
         def decorator(protocol: Type[serde.ProtocolType]) -> Type[serde.ProtocolType]:
-            self.protocols[dtype.__name__] = protocol()
+            self.protocols[f"{dtype.__module__}.{dtype.__name__}"] = protocol()
             return protocol
 
         return decorator
-
-    def _read_archive(self, *, path: str) -> Archive:
-        with fs.open(self.uri(path=path), "r") as file:
-            return Archive.parse(json.load(file))
 
     def read_archive(self, *, layer: Layer, index: int, name: str, cache: bool = False) -> Archive:
         """Read an archive from the laminar datastore.
@@ -247,11 +265,11 @@ class DataStore:
             Archive: Archive of the requested artifact.
         """
 
-        return self._read_archive(path=Archive.path(layer=layer, index=index, name=name, cache=cache))
-
-    def _read_artifact(self, *, path: str, dtype: str) -> Any:
-        with fs.open(self.uri(path=path), "rb") as file:
-            return self.protocols.get(dtype, DEFAULT_SERDE).load(file)
+        archive: Archive = self._read(
+            uri=self.uri(path=Archive.path(layer=layer, index=index, name=name, cache=cache)),
+            dtype=ArchiveProtocol.dtype,
+        )
+        return archive
 
     def read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
         """Read an artifact form the laminar datastore.
@@ -267,11 +285,14 @@ class DataStore:
         # Read the artifact value
         if len(archive) == 1:
             artifact = archive.artifacts[0]
-            return self._read_artifact(path=artifact.path(layer=layer), dtype=artifact.dtype)
+            return self._read(uri=self.uri(path=artifact.path(layer=layer)), dtype=artifact.dtype)
 
         # Create an accessor for the artifacts
         else:
             return Accessor(archive=archive, layer=layer)
+
+    def _read(self, *, uri: str, dtype: str) -> Any:
+        return self.protocols.get(dtype, DEFAULT_SERDE).read(uri)
 
     def read(self, *, layer: Layer, index: int, name: str) -> Any:
         """Read from the laminar datastore.
@@ -287,10 +308,6 @@ class DataStore:
 
         return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
 
-    def _write_archive(self, *, path: str, archive: Archive) -> None:
-        with fs.open(self.uri(path=path), "w") as file:
-            json.dump(archive.dict(), file)
-
     def write_archive(self, *, layer: Layer, name: str, artifacts: List[Artifact], cache: bool = False) -> Archive:
         """Write an archive to the laminar datastore.
 
@@ -305,15 +322,12 @@ class DataStore:
         """
 
         archive = Archive(artifacts=artifacts)
-        self._write_archive(
-            path=archive.path(layer=layer, index=unwrap(layer.index, 0), name=name, cache=cache), archive=archive
+        self._write(
+            value=archive,
+            uri=self.uri(path=archive.path(layer=layer, index=unwrap(layer.index, 0), name=name, cache=cache)),
+            dtype=ArchiveProtocol.dtype,
         )
-
         return archive
-
-    def _write_artifact(self, *, path: str, value: Any) -> None:
-        with fs.open(self.uri(path=path), "wb") as file:
-            self.protocols.get(type(value).__name__, DEFAULT_SERDE).dump(value, file)
 
     def write_artifact(self, *, layer: Layer, value: Any) -> Artifact:
         """Write an arifact to the laminar datastore.
@@ -327,10 +341,15 @@ class DataStore:
         """
 
         serializer = self.protocols.get(type(value).__name__, DEFAULT_SERDE)
-        artifact = Artifact(dtype=type(value).__name__, hexdigest=DEFAULT_HASH(serializer.dumps(value)).hexdigest())
-        self._write_artifact(path=artifact.path(layer=layer), value=value)
+        artifact = Artifact(
+            dtype=serde.dtype(type(value)), hexdigest=hashlib.sha256(serializer.dumps(value)).hexdigest()
+        )
+        self._write(value=value, uri=self.uri(path=artifact.path(layer=layer)), dtype=artifact.dtype)
 
         return artifact
+
+    def _write(self, *, value: Any, uri: str, dtype: str) -> None:
+        self.protocols.get(dtype, DEFAULT_SERDE).write(value, uri)
 
     def write(self, *, layer: Layer, name: str, values: Iterable[Any]) -> None:
         """Write to the laminar datastore.
@@ -344,10 +363,6 @@ class DataStore:
         artifacts = [self.write_artifact(layer=layer, value=value) for value in values]
         self.write_archive(layer=layer, name=name, artifacts=artifacts)
 
-    def _read_record(self, *, path: str) -> Record:
-        with fs.open(self.uri(path=path), "r") as file:
-            return Record.parse(json.load(file))
-
     def read_record(self, *, layer: Layer) -> Record:
         """Read a layer record from the laminar datastore.
 
@@ -358,11 +373,8 @@ class DataStore:
             Layer record
         """
 
-        return self._read_record(path=Record.path(layer=layer))
-
-    def _write_record(self, *, path: str, record: Record) -> None:
-        with fs.open(self.uri(path=path), "w") as file:
-            json.dump(record.dict(), file)
+        record: Record = self._read(uri=self.uri(path=Record.path(layer=layer)), dtype=RecordProtocol.dtype)
+        return record
 
     def write_record(self, *, layer: Layer, record: Record) -> None:
         """Write a layer record to the laminar datastore.
@@ -372,7 +384,7 @@ class DataStore:
             record: Record to write.
         """
 
-        return self._write_record(path=record.path(layer=layer), record=record)
+        self._write(value=record, uri=self.uri(path=record.path(layer=layer)), dtype=RecordProtocol.dtype)
 
 
 @dataclass(frozen=True)
@@ -401,25 +413,11 @@ class Memory(DataStore):
     def exists(self, *, path: str) -> bool:
         return self.uri(path=path) in self.cache
 
-    def _read_archive(self, *, path: str) -> Archive:
-        archive: Archive = self.cache[self.uri(path=path)]
-        return archive
+    def _read(self, *, uri: str, dtype: str) -> Any:
+        return self.cache[uri]
 
-    def _write_archive(self, *, path: str, archive: Archive) -> None:
-        self.cache[self.uri(path=path)] = archive
-
-    def _read_artifact(self, *, path: str, dtype: str) -> Any:
-        return self.cache[self.uri(path=path)]
-
-    def _write_artifact(self, *, path: str, value: Any) -> None:
-        self.cache[self.uri(path=path)] = value
-
-    def _read_record(self, *, path: str) -> Record:
-        record: Record = self.cache[self.uri(path=path)]
-        return record
-
-    def _write_record(self, *, path: str, record: Record) -> None:
-        self.cache[self.uri(path=path)] = record
+    def _write(self, *, value: Any, uri: str, dtype: str) -> None:
+        self.cache[uri] = value
 
 
 class AWS:

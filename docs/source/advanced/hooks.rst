@@ -144,7 +144,7 @@ Schedule hooks are particularly powerful when combined with the ``ForEach`` conf
 
     from laminar import Flow, Layer
     from laminar.configurations import hooks
-    from laminar.utils import unwrap
+    from laminar.types import unwrap
 
     flow = Flow("Flow")
 

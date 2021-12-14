@@ -7,7 +7,7 @@ import pytest
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 from laminar.configurations.layers import ForEach, Parameter
-from laminar.utils import unwrap
+from laminar.types import unwrap
 
 flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
 

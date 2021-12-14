@@ -20,12 +20,16 @@ class TestLayer:
         assert Layer(foo="bar").foo == "bar"
 
     def test_repr(self, layer: Layer) -> None:
+        print(layer.__repr__())
         assert (
-            layer.__repr__() == "Layer(configuration=Configuration(container=Container(command='python main.py', cpu=1,"
+            layer.__repr__()
+            == "Layer(configuration=Configuration(container=Container(command='python main.py', cpu=1,"
             " image='python:3.9', memory=1500, workdir='/laminar'), foreach=ForEach(parameters=[]),"
             " retry=Retry(attempts=1, delay=0.1, backoff=2.0, jitter=0.1)),"
-            " flow=Flow(configuration=Configuration(datastore=Memory(root='memory:///', cache={}, protocols={}),"
-            " executor=Thread(concurrency=1, timeout=86400)), execution='test-execution'), index=0, splits=2)"
+            " flow=Flow(configuration=Configuration(datastore=Memory(root='memory:///', cache={},"
+            " protocols={'laminar.configurations.datastores.ArchiveProtocol': ArchiveProtocol(),"
+            " 'laminar.configurations.datastores.RecordProtocol': RecordProtocol()}), executor=Thread(concurrency=1,"
+            " timeout=86400)), execution='test-execution'), index=0, splits=2)"
         )
 
     def test_subclass_init(self) -> None:
@@ -92,10 +96,7 @@ class TestLayer:
             artifacts=[Artifact(dtype="str", hexdigest="abc")]
         )
         workspace["memory:///TestFlow/archives/test-execution/Layer/0/bar.json"] = Archive(
-            artifacts=[
-                Artifact(dtype="str", hexdigest="123"),
-                Artifact(dtype="str", hexdigest="456"),
-            ]
+            artifacts=[Artifact(dtype="str", hexdigest="123"), Artifact(dtype="str", hexdigest="456")]
         )
 
         workspace["memory:///TestFlow/artifacts/abc.gz"] = True
@@ -104,12 +105,7 @@ class TestLayer:
 
         assert flow.layer(Layer, index=0).foo is True
         assert flow.layer(Layer, index=0).bar == Accessor(
-            archive=Archive(
-                artifacts=[
-                    Artifact(dtype="str", hexdigest="123"),
-                    Artifact(dtype="str", hexdigest="456"),
-                ]
-            ),
+            archive=Archive(artifacts=[Artifact(dtype="str", hexdigest="123"), Artifact(dtype="str", hexdigest="456")]),
             layer=Layer(),
         )
 
@@ -124,13 +120,16 @@ class TestLayer:
             "memory:///TestFlow/archives/test-execution/Layer/0/foo.json": Archive(
                 artifacts=[
                     Artifact(
-                        dtype="bool", hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae"
+                        dtype="builtins.bool",
+                        hexdigest="5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae",
                     ),
                     Artifact(
-                        dtype="bool", hexdigest="132915fa0f4abd3a7939610b8d088fbbcdff866e17b5cbb2c0bdcb37782f4da2"
+                        dtype="builtins.bool",
+                        hexdigest="132915fa0f4abd3a7939610b8d088fbbcdff866e17b5cbb2c0bdcb37782f4da2",
                     ),
                     Artifact(
-                        dtype="NoneType", hexdigest="6c09635decb8153d3c12e3782a69fd2eb097426f912547d351a8647b27d5580a"
+                        dtype="builtins.NoneType",
+                        hexdigest="6c09635decb8153d3c12e3782a69fd2eb097426f912547d351a8647b27d5580a",
                     ),
                 ]
             ),

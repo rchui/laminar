@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
 from laminar.configurations import datastores
-from laminar.utils import unwrap
+from laminar.types import unwrap
 
 if TYPE_CHECKING:
     from laminar import Layer

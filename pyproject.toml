@@ -13,6 +13,7 @@ exclude = '''
 )
 '''
 line-length = 120
+experimental-string-processing = true
 
 [tool.isort]
 line_length = 120

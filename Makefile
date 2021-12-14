@@ -24,7 +24,7 @@ bash zsh:
 
 .PHONY: format
 format:
-	black --experimental-string-processing .
+	black -C .
 	isort .
 
 .PHONY: open
@@ -32,13 +32,13 @@ open: docs
 	open docs/html/index.html
 
 .PHONY: run
-run: test
+run:
 	docker build -t test .
 	docker system prune --force
 	python main.py
 
 .PHONY: test
 test:
-	black --check .
+	black .
 	pytest -m "not flow" --cov laminar --cov-report term-missing --flake8 --mypy --isort
 	pytest -m "flow"

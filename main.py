@@ -5,7 +5,7 @@ from laminar import Flow, Layer
 from laminar.components import Parameters
 from laminar.configurations import datastores, executors, hooks, layers
 from laminar.settings import current
-from laminar.utils import unwrap
+from laminar.types import unwrap
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
