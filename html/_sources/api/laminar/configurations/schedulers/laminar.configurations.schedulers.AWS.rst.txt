@@ -1,7 +1,7 @@
-Passive
-=======
+AWS
+===
 
-.. autoclass:: laminar.configurations.schedulers.Passive
+.. autoclass:: laminar.configurations.schedulers.AWS
     :members:
     :show-inheritance:
 
@@ -43,8 +43,6 @@ Passive
     .. autosummary::
         :nosignatures:
     
-        
-        
         
         
         

@@ -33,6 +33,30 @@ Scheduler
         
         
         
+        
+        ~laminar.configurations.schedulers.Scheduler.compile
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.create
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.invoke
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.loop
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.runnable
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.running
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.schedule
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.wait
+        
     
     
 

@@ -55,7 +55,6 @@
 <li class="toctree-l1"><a class="reference internal" href="datastores.html">Datastores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="executors.html">Executors</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Schedulers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#active">Active</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#passive">Passive</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#aws-step-functions">AWS Step Functions</a></li>
 </ul>
@@ -104,23 +103,19 @@
   <section class="tex2jax_ignore mathjax_ignore" id="schedulers">
 <h1>Schedulers<a class="headerlink" href="#schedulers" title="Permalink to this headline"></a></h1>
 <p>A <code class="docutils literal notranslate"><span class="pre">Flow</span></code> supports multiple backend schedulers which configure how work is scheduled in the workflow.</p>
-<section id="active">
-<h2>Active<a class="headerlink" href="#active" title="Permalink to this headline"></a></h2>
-<p>By default, flows are configured to use the <code class="docutils literal notranslate"><span class="pre">Active</span></code> scheduler which runs as a process.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Active</span></code> scheduler:</p>
+<p>By default, flows are configured to use an <em>active</em> scheduler which runs as a process. The <em>active</em> scheduler:</p>
 <ol class="arabic simple">
 <li><p>Determines the order that layers should be executed in.</p></li>
 <li><p>Submits layers to the <code class="docutils literal notranslate"><span class="pre">Executor</span></code> for execution.</p></li>
-<li><p>Waits on the layers to complete.</p></li>
+<li><p>Waits on layers to complete to submit new layers for execution.</p></li>
 </ol>
-<p>it <em>actively</em> manages the task in the workflow until their completion and then exits.</p>
+<p>it <em>actively</em> manages the tasks in the workflow until their completion and then exits.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">schedulers</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ActiveFlow&quot;</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">schedulers</span><span class="o">.</span><span class="n">Active</span><span class="p">())</span>
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ScheduledFlow&quot;</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">schedulers</span><span class="o">.</span><span class="n">Scheduler</span><span class="p">())</span>
 </pre></div>
 </div>
-</section>
 <section id="passive">
 <h2>Passive<a class="headerlink" href="#passive" title="Permalink to this headline"></a></h2>
 <div class="admonition warning">

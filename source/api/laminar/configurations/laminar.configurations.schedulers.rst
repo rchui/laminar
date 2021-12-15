@@ -21,8 +21,7 @@ schedulers
         :recursive:
         :nosignatures:
     
-        Active
-        Passive
+        AWS
         Scheduler
     
     
