@@ -310,7 +310,7 @@ class Flow:
         """
 
         with contexts.Attributes(self, execution=execution):
-            self.configuration.scheduler.run(flow=self, dependencies=dependencies, finished={FlowParameters.name})
+            self.configuration.scheduler.loop(flow=self, dependencies=dependencies, finished={FlowParameters.name})
 
     def register(
         self,

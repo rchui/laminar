@@ -2,9 +2,10 @@
 
 import asyncio
 import logging
+from asyncio import Task
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Coroutine, Dict, List, Set, Tuple
+from typing import TYPE_CHECKING, Dict, List, Set, Tuple
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import SchedulerError
@@ -34,19 +35,20 @@ class Scheduler:
             Layer splits that were executed
         """
 
-        splits = layer.configuration.foreach.splits(layer=layer)
-        tasks: List[Coroutine[Any, Any, Layer]] = []
-
-        # Create a coroutine per layer split
-        for index in range(splits):
-            instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
-
-            with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
-                tasks.append(instance.flow.configuration.executor.submit(layer=instance))
-
         try:
-            # Combine all Coroutines into a Future so they can be waited on together
+            splits = layer.configuration.foreach.splits(layer=layer)
+            tasks: List[Task[Layer]] = []
+
+            # Create a task per layer split
+            for index in range(splits):
+                instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
+
+                with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
+                    tasks.append(asyncio.create_task(instance.flow.configuration.executor.submit(layer=instance)))
+
+            # Combine all tasks into a Future so they can be waited on together
             layers = await asyncio.gather(*tasks)
+
         except Exception as error:
             logger.error(
                 "Encountered unexpected error: %s(%s) on attempt '%d' of '%d'.",
@@ -75,8 +77,65 @@ class Scheduler:
 
         return list(layers)
 
+    def runnable(
+        self, *, dependencies: Dict[str, Tuple[str, ...]], pending: Set[str], finished: Set[str]
+    ) -> Tuple[Set[str], Set[str]]:
+        """Find all runnable layers.
+
+        Args:
+            dependencies: Layer dependencies
+            pending: Pending layers
+            finished: Finished layers
+
+        Returns:
+            * Remaining pending layers
+            * Runnable layers
+        """
+
+        runnable = {layer for layer in pending if set(dependencies[layer]).issubset(finished)}
+        return pending - runnable, runnable
+
+    def running(self, *, flow: Flow, runnable: Set[str], running: Set["Task[List[Layer]]"]) -> Set["Task[List[Layer]]"]:
+        """Schedule runnable layers.
+
+        Args:
+
+            flow: Flow that the layers are being run in.
+            runnalbe: Runnable layers.
+            running: Currently running layers.
+
+        Returns:
+            Async tasks for new and existing running layers.
+        """
+
+        return {*running, *(asyncio.create_task(self.schedule(layer=flow.layer(layer))) for layer in runnable)}
+
+    async def wait(
+        self, *, running: Set["Task[List[Layer]]"], finished: Set[str], condition: str
+    ) -> Tuple[Set["Task[List[Layer]]"], Set[str]]:
+        """Wait on the completion of running layers.
+
+        Args:
+            running: Running layers.
+            finished: Finished layers
+            condition: Condition to wait on.
+
+        Returns:
+            * Remaining running layers
+            * Finished layers
+        """
+
+        # Wait until the first task completes
+        completed, incomplete = await asyncio.wait(running, return_when=condition)
+
+        # Add all completed tasks to finished tasks
+        running = set(incomplete)
+        finished = {*finished, *{(await task)[0].name for task in completed}}
+
+        return running, finished
+
     @contexts.EventLoop
-    async def run(self, *, flow: Flow, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> None:
+    async def loop(self, *, flow: Flow, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> None:
         """Run the scheduling loop.
 
         Args:
@@ -97,42 +156,35 @@ class Scheduler:
 
         pending = set(dependencies) - finished
         runnable: Set[str] = set()
-        running: Set[asyncio.Task[List[Layer]]] = set()
+        running: Set[Task[List[Layer]]] = set()
+
+        def get_running() -> List[str]:
+            return sorted(set(dependencies) - pending - finished)
 
         while pending:
             logger.info("Pending layers: %s", sorted(pending))
+            pending, runnable = self.runnable(dependencies=dependencies, pending=pending, finished=finished)
 
-            # Find all runnable layers
-            for layer in pending:
-                if set(dependencies[layer]).issubset(finished):
-                    runnable.add(layer)
-            pending.difference_update(runnable)
-
-            # Schedule all runnable layers
-            if runnable:
-                logger.info("Runnable layers: %s", sorted(runnable))
-                running.update((asyncio.create_task(self.schedule(layer=flow.layer(layer))) for layer in runnable))
-                runnable = set()
-
-            elif not runnable and not running and pending:
+            if not runnable and not running and pending:
                 raise SchedulerError(
                     f"Stuck waiting to schedule: {sorted(pending)}."
                     f" Finished layers: {sorted(finished)}."
                     f" Remaining dependencies: { {task: sorted(dependencies[task]) for task in sorted(pending)} }"
                 )
 
-            # Wait until the first task completes
-            logger.info("Running layers: %s", sorted(set(dependencies) - pending - finished))
-            completed, incomplete = await asyncio.wait(running, return_when=asyncio.FIRST_COMPLETED)
+            logger.info("Runnable layers: %s", sorted(runnable))
+            running = self.running(flow=flow, runnable=runnable, running=running)
 
-            # Add all completed tasks to finished tasks
-            names = {(await task)[0].name for task in completed}
-            finished.update(names)
+            logger.info("Running layers: %s", get_running())
+            running, finished = await self.wait(running=running, finished=finished, condition=asyncio.FIRST_COMPLETED)
             logger.info("Finished layers: %s", sorted(finished))
 
-            # Reset running tasks
-            running = set(incomplete)
-
         if running:
-            # Wait for any remaining tasks
-            await asyncio.wait(running, return_when=asyncio.ALL_COMPLETED)
+            logger.info("Running layers: %s", get_running())
+            running, finished = await self.wait(running=running, finished=finished, condition=asyncio.ALL_COMPLETED)
+            logger.info("Finished layers: %s", sorted(finished))
+
+            if running:
+                raise SchedulerError(
+                    "Exited scheduling loop before all layers were finished running. Running layers: %s", get_running()
+                )
