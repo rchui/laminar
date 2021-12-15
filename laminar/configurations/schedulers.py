@@ -23,6 +23,13 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class Scheduler:
+    """Generic base scheduler"""
+
+
+@dataclass(frozen=True)
+class Active(Scheduler):
+    """Actively manages job scheduling by submitting and waiting for jobs."""
+
     async def schedule(self, *, layer: Layer, attempt: int = 1) -> List[Layer]:
         """Schedule layers for execution.
 
@@ -188,3 +195,8 @@ class Scheduler:
                 raise SchedulerError(
                     "Exited scheduling loop before all layers were finished running. Running layers: %s", get_running()
                 )
+
+
+@dataclass(frozen=True)
+class Passive(Scheduler):
+    """Compiles the flow to an intermediate representaiton that can be executed by another scheduler."""
