@@ -5,7 +5,7 @@ import logging
 from asyncio import Task
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Dict, List, Set, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Set, Tuple
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import SchedulerError
@@ -23,12 +23,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class Scheduler:
-    """Generic base scheduler"""
-
-
-@dataclass(frozen=True)
-class Active(Scheduler):
-    """Actively manages job scheduling by submitting and waiting for jobs."""
+    """Base scheduler"""
 
     async def schedule(self, *, layer: Layer, attempt: int = 1) -> List[Layer]:
         """Schedule layers for execution.
@@ -168,6 +163,7 @@ class Active(Scheduler):
         def get_running() -> List[str]:
             return sorted(set(dependencies) - pending - finished)
 
+        # Start the scheduling loop
         while pending:
             logger.info("Pending layers: %s", sorted(pending))
             pending, runnable = self.runnable(dependencies=dependencies, pending=pending, finished=finished)
@@ -186,17 +182,28 @@ class Active(Scheduler):
             running, finished = await self.wait(running=running, finished=finished, condition=asyncio.FIRST_COMPLETED)
             logger.info("Finished layers: %s", sorted(finished))
 
+        # Finish any remaining jobs.
         if running:
             logger.info("Running layers: %s", get_running())
             running, finished = await self.wait(running=running, finished=finished, condition=asyncio.ALL_COMPLETED)
             logger.info("Finished layers: %s", sorted(finished))
 
-            if running:
-                raise SchedulerError(
-                    "Exited scheduling loop before all layers were finished running. Running layers: %s", get_running()
-                )
+    def compile(self, *, flow: Flow) -> Dict[str, Any]:
+        raise NotImplementedError
+
+    def create(self, *, ir: Dict[str, Any]) -> None:
+        raise NotImplementedError
+
+    def invoke(self) -> None:
+        raise NotImplementedError
 
 
-@dataclass(frozen=True)
-class Passive(Scheduler):
-    """Compiles the flow to an intermediate representaiton that can be executed by another scheduler."""
+class AWS:
+    @dataclass(frozen=True)
+    class StepFunctions(Scheduler):
+        """Schedule flows in AWS Step Functions.
+
+        Usage::
+
+            Flow(scheduler=AWS.StepFunctions())
+        """

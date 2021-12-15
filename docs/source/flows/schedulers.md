@@ -2,23 +2,19 @@
 
 A ``Flow`` supports multiple backend schedulers which configure how work is scheduled in the workflow.
 
-## Active
-
-By default, flows are configured to use the `Active` scheduler which runs as a process.
-
-The `Active` scheduler:
+By default, flows are configured to use an *active* scheduler which runs as a process. The *active* scheduler:
 
 1. Determines the order that layers should be executed in.
 1. Submits layers to the `Executor` for execution.
-1. Waits on the layers to complete.
+1. Waits on layers to complete to submit new layers for execution.
 
-it *actively* manages the task in the workflow until their completion and then exits.
+it *actively* manages the tasks in the workflow until their completion and then exits.
 
 ```python
 from laminar import Flow
 from laminar.configurations import schedulers
 
-flow = Flow("ActiveFlow", scheduler=schedulers.Active())
+flow = Flow("ScheduledFlow", scheduler=schedulers.Scheduler())
 ```
 
 ## Passive
