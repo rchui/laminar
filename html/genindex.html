@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="flows/parameters.html">Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flows/datastores.html">Datastores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flows/executors.html">Executors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flows/schedulers.html">Schedulers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flows/results.html">Results</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
@@ -167,6 +168,10 @@
 </li>
         <li><a href="api/laminar/configurations/layers/laminar.configurations.layers.Retry.html#laminar.configurations.layers.Retry.__init__">(laminar.configurations.layers.Retry method)</a>
 </li>
+        <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Active.html#laminar.configurations.schedulers.Active.__init__">(laminar.configurations.schedulers.Active method)</a>
+</li>
+        <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Passive.html#laminar.configurations.schedulers.Passive.__init__">(laminar.configurations.schedulers.Passive method)</a>
+</li>
         <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler.__init__">(laminar.configurations.schedulers.Scheduler method)</a>
 </li>
         <li><a href="api/laminar/utils/contexts/laminar.utils.contexts.Attributes.html#laminar.utils.contexts.Attributes.__init__">(laminar.utils.contexts.Attributes method)</a>
@@ -179,6 +184,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Accessor.html#laminar.configurations.datastores.Accessor">Accessor (class in laminar.configurations.datastores)</a>
+</li>
+      <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Active.html#laminar.configurations.schedulers.Active">Active (class in laminar.configurations.schedulers)</a>
 </li>
       <li><a href="api/laminar/configurations/hooks/laminar.configurations.hooks.annotation.html#laminar.configurations.hooks.annotation">annotation (class in laminar.configurations.hooks)</a>
 </li>
@@ -631,6 +638,10 @@
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.parse">(laminar.configurations.datastores.Record static method)</a>
 </li>
       </ul></li>
+      <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Passive.html#laminar.configurations.schedulers.Passive">Passive (class in laminar.configurations.schedulers)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive.path">path() (laminar.configurations.datastores.Archive static method)</a>
 
       <ul>
@@ -639,8 +650,6 @@
         <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record.path">(laminar.configurations.datastores.Record static method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/laminar/configurations/serde/laminar.configurations.serde.PickleProtocol.html#laminar.configurations.serde.PickleProtocol">PickleProtocol (class in laminar.configurations.serde)</a>
 </li>
       <li><a href="api/laminar/configurations/serde/laminar.configurations.serde.Protocol.html#laminar.configurations.serde.Protocol">Protocol (class in laminar.configurations.serde)</a>
@@ -689,9 +698,9 @@
 </li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.root">root (laminar.configurations.datastores.DataStore attribute)</a>
 </li>
-      <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler.runnable">runnable() (laminar.configurations.schedulers.Scheduler method)</a>
+      <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Active.html#laminar.configurations.schedulers.Active.runnable">runnable() (laminar.configurations.schedulers.Active method)</a>
 </li>
-      <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler.running">running() (laminar.configurations.schedulers.Scheduler method)</a>
+      <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Active.html#laminar.configurations.schedulers.Active.running">running() (laminar.configurations.schedulers.Active method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -704,7 +713,7 @@
       <ul>
         <li><a href="api/laminar/components/laminar.components.Flow.html#laminar.components.Flow.schedule">(laminar.components.Flow method)</a>
 </li>
-        <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler.schedule">(laminar.configurations.schedulers.Scheduler method)</a>
+        <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Active.html#laminar.configurations.schedulers.Active.schedule">(laminar.configurations.schedulers.Active method)</a>
 </li>
       </ul></li>
       <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler">Scheduler (class in laminar.configurations.schedulers)</a>
@@ -770,7 +779,7 @@
       <li><a href="api/laminar/configurations/executors/laminar.configurations.executors.AWS.html#laminar.configurations.executors.AWS.Batch.wait">wait() (laminar.configurations.executors.AWS.Batch method)</a>
 
       <ul>
-        <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler.wait">(laminar.configurations.schedulers.Scheduler method)</a>
+        <li><a href="api/laminar/configurations/schedulers/laminar.configurations.schedulers.Active.html#laminar.configurations.schedulers.Active.wait">(laminar.configurations.schedulers.Active method)</a>
 </li>
       </ul></li>
       <li><a href="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore.write">write() (laminar.configurations.datastores.DataStore method)</a>

@@ -1,7 +1,7 @@
-Scheduler
-=========
+Passive
+=======
 
-.. autoclass:: laminar.configurations.schedulers.Scheduler
+.. autoclass:: laminar.configurations.schedulers.Passive
     :members:
     :show-inheritance:
 

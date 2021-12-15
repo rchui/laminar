@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Executors &mdash; laminar  documentation</title>
+  <title>Schedulers &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Schedulers" href="schedulers.html" />
-    <link rel="prev" title="Datastores" href="datastores.html" /> 
+    <link rel="next" title="Results" href="results.html" />
+    <link rel="prev" title="Executors" href="executors.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,13 +53,15 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datastores.html">Datastores</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Executors</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#thread">Thread</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#aws-batch">AWS.Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="executors.html">Executors</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Schedulers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#active">Active</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#passive">Passive</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aws-step-functions">AWS Step Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="schedulers.html">Schedulers</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
@@ -89,9 +91,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Executors</li>
+      <li>Schedulers</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/flows/executors.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/flows/schedulers.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -99,46 +101,40 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="executors">
-<h1>Executors<a class="headerlink" href="#executors" title="Permalink to this headline"></a></h1>
-<p>A <code class="docutils literal notranslate"><span class="pre">Flow</span></code> supports multiple backend executors which configure how work is executed in the workflow.</p>
-<section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline"></a></h2>
-<p>By default, flows are configured to use the <code class="docutils literal notranslate"><span class="pre">Docker</span></code> executor which launches each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> registered to a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> in its own docker container. The launched containers can be configured with the layer’s <code class="docutils literal notranslate"><span class="pre">Container</span></code> configuration.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="schedulers">
+<h1>Schedulers<a class="headerlink" href="#schedulers" title="Permalink to this headline"></a></h1>
+<p>A <code class="docutils literal notranslate"><span class="pre">Flow</span></code> supports multiple backend schedulers which configure how work is scheduled in the workflow.</p>
+<section id="active">
+<h2>Active<a class="headerlink" href="#active" title="Permalink to this headline"></a></h2>
+<p>By default, flows are configured to use the <code class="docutils literal notranslate"><span class="pre">Active</span></code> scheduler which runs as a process.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Active</span></code> scheduler:</p>
+<ol class="arabic simple">
+<li><p>Determines the order that layers should be executed in.</p></li>
+<li><p>Submits layers to the <code class="docutils literal notranslate"><span class="pre">Executor</span></code> for execution.</p></li>
+<li><p>Waits on the layers to complete.</p></li>
+</ol>
+<p>it <em>actively</em> manages the task in the workflow until their completion and then exits.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
-<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span><span class="p">,</span> <span class="n">layers</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">schedulers</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;DockerFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Docker</span><span class="p">())</span>
-
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">container</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="mi">1500</span><span class="p">))</span>
-<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
-    <span class="o">...</span>
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ActiveFlow&quot;</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">schedulers</span><span class="o">.</span><span class="n">Active</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
-<section id="thread">
-<h2>Thread<a class="headerlink" href="#thread" title="Permalink to this headline"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Thread</span></code> executor executes layers directly in the main Python process. This is very useful for testing.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
-<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span>
-
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ThreadFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
-</pre></div>
-</div>
-</section>
-<section id="aws-batch">
-<h2>AWS.Batch<a class="headerlink" href="#aws-batch" title="Permalink to this headline"></a></h2>
+<section id="passive">
+<h2>Passive<a class="headerlink" href="#passive" title="Permalink to this headline"></a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><code class="docutils literal notranslate"><span class="pre">AWS.Batch</span></code> is experimental.</p>
+<p>Passive schedulers are experimental.</p>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">AWS.Batch`</span></code> executor executes layers in AWS Batch compute service.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
-<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span>
-
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;BatchFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">Batch</span><span class="p">())</span>
-</pre></div>
+<p><code class="docutils literal notranslate"><span class="pre">Passive</span></code> schedulers don’t manage the execution of a workflow. Instead, they compile the flow’s directed acyclic graph into a format that can be used by other schedulers to manage the workflow. <code class="docutils literal notranslate"><span class="pre">Passive</span></code> schedulers provide a method for writing flows easily in <code class="docutils literal notranslate"><span class="pre">laminar</span></code> and executing them on another workflow engine.</p>
+<section id="aws-step-functions">
+<h3>AWS Step Functions<a class="headerlink" href="#aws-step-functions" title="Permalink to this headline"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Under construction</p>
 </div>
+</section>
 </section>
 </section>
 
@@ -146,8 +142,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="datastores.html" class="btn btn-neutral float-left" title="Datastores" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="schedulers.html" class="btn btn-neutral float-right" title="Schedulers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="executors.html" class="btn btn-neutral float-left" title="Executors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="results.html" class="btn btn-neutral float-right" title="Results" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

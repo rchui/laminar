@@ -18,7 +18,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Scheduler" href="schedulers/laminar.configurations.schedulers.Scheduler.html" />
+    <link rel="next" title="Active" href="schedulers/laminar.configurations.schedulers.Active.html" />
     <link rel="prev" title="Retry" href="layers/laminar.configurations.layers.Retry.html" /> 
 </head>
 
@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../flows/parameters.html">Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../flows/datastores.html">Datastores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../flows/executors.html">Executors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flows/schedulers.html">Schedulers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../flows/results.html">Results</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
@@ -75,6 +76,8 @@
 <li class="toctree-l3"><a class="reference internal" href="laminar.configurations.hooks.html">hooks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="laminar.configurations.layers.html">layers</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">schedulers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="schedulers/laminar.configurations.schedulers.Active.html">Active</a></li>
+<li class="toctree-l4"><a class="reference internal" href="schedulers/laminar.configurations.schedulers.Passive.html">Passive</a></li>
 <li class="toctree-l4"><a class="reference internal" href="schedulers/laminar.configurations.schedulers.Scheduler.html">Scheduler</a></li>
 </ul>
 </li>
@@ -125,8 +128,14 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="schedulers/laminar.configurations.schedulers.Active.html#laminar.configurations.schedulers.Active" title="laminar.configurations.schedulers.Active"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Active</span></code></a></p></td>
+<td><p>Actively manages job scheduling by submitting and waiting for jobs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="schedulers/laminar.configurations.schedulers.Passive.html#laminar.configurations.schedulers.Passive" title="laminar.configurations.schedulers.Passive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Passive</span></code></a></p></td>
+<td><p>Compiles the flow to an intermediate representaiton that can be executed by another scheduler.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler" title="laminar.configurations.schedulers.Scheduler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Scheduler</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Generic base scheduler</p></td>
 </tr>
 </tbody>
 </table>
@@ -137,7 +146,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="layers/laminar.configurations.layers.Retry.html" class="btn btn-neutral float-left" title="Retry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="schedulers/laminar.configurations.schedulers.Scheduler.html" class="btn btn-neutral float-right" title="Scheduler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="schedulers/laminar.configurations.schedulers.Active.html" class="btn btn-neutral float-right" title="Active" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
