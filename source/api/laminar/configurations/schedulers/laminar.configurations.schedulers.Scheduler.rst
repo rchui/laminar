@@ -34,10 +34,19 @@ Scheduler
         
         
         
-        ~laminar.configurations.schedulers.Scheduler.run
+        ~laminar.configurations.schedulers.Scheduler.loop
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.runnable
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.running
         
         
         ~laminar.configurations.schedulers.Scheduler.schedule
+        
+        
+        ~laminar.configurations.schedulers.Scheduler.wait
         
     
     
