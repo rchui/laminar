@@ -146,14 +146,14 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">concurrency</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.executors.Executor.concurrency" title="laminar.configurations.executors.Executor.concurrency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concurrency</span></code></a></p></td>
+<td><p>Number of tasks that can execute concurrently.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.executors.Executor.semaphore" title="laminar.configurations.executors.Executor.semaphore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semaphore</span></code></a></p></td>
 <td><p>Create a semaphore that limits asyncio concurrency.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeout</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.executors.Executor.timeout" title="laminar.configurations.executors.Executor.timeout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeout</span></code></a></p></td>
+<td><p>Number of seconds to wait before automatically failing.</p></td>
 </tr>
 </tbody>
 </table>
@@ -161,6 +161,12 @@
 <dt class="sig sig-object py" id="laminar.configurations.executors.Executor.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concurrency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">86400</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.executors.Executor.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.executors.Executor.concurrency">
+<span class="sig-name descname"><span class="pre">concurrency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#laminar.configurations.executors.Executor.concurrency" title="Permalink to this definition"></a></dt>
+<dd><p>Number of tasks that can execute concurrently.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="laminar.configurations.executors.Executor.semaphore">
@@ -184,6 +190,12 @@
 <dd class="field-odd"><p><strong>layer</strong> – Layer to execute.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.executors.Executor.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">86400</span></em><a class="headerlink" href="#laminar.configurations.executors.Executor.timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Number of seconds to wait before automatically failing.</p>
 </dd></dl>
 
 </dd></dl>
