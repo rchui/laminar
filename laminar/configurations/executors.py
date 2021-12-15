@@ -26,7 +26,9 @@ else:
 class Executor:
     """Generic base executor."""
 
+    #: Number of tasks that can execute concurrently.
     concurrency: int = 1
+    #: Number of seconds to wait before automatically failing.
     timeout: int = 86400
 
     @property

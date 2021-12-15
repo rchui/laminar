@@ -1,8 +1,13 @@
 include Make.rules
 
+.PHONY: clean
+clean: clear
+	rm -rf __pycache__ .mypy_cache .pytest_cache .venv .coverage
+
 .PHONY: clear
 clear:
 	rm -rf .laminar
+	rm -rf docs/source/api docs/html
 
 .PHONY: docs
 docs:
