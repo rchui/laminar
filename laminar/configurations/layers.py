@@ -4,6 +4,7 @@ import asyncio
 import itertools
 import logging
 import random
+import sys
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
@@ -22,15 +23,25 @@ logger = logging.getLogger(__name__)
 class Container:
     """Configures a layer's container properties.
 
+    Notes:
+
+        Most configurations map one-to-one with a configuration here:
+        https://docs.docker.com/engine/reference/commandline/container_run/
+
     Usage::
 
         @flow.register(container=Container(...))
     """
 
+    #: Command to execute in the container
     command: str = "python main.py"
+    #: vCPUs to allocate to the container
     cpu: int = 1
-    image: str = "python:3.9"
+    #: Image to create the container with
+    image: str = f"python:{'.'.join(map(str, sys.version_info[:2]))}"
+    #: Memory in megabytes
     memory: int = 1500
+    #: Directory to execute the command in
     workdir: str = "/laminar"
 
     def __post_init__(self) -> None:
@@ -42,8 +53,11 @@ class Container:
 class Parameter:
     """Input for configuring a ForEach."""
 
+    #: Layer the attribute is associated with.
     layer: Type["Layer"]
+    #: Attribute to iterate over.
     attribute: str
+    #: Layer index to reference attributes from.
     index: Optional[int] = 0
 
 
@@ -62,7 +76,7 @@ class ForEach:
         @flow.register(foreach=ForEach(...))
     """
 
-    parameters: Iterable[Parameter] = field(default_factory=list)
+    parameters: Iterable[Parameter] = field(default_factory=list)  #: Parameters to configure the foreach with.
 
     def join(self, *, layer: Layer, name: str) -> datastores.Archive:
         """Join together multiple artifact splits of a layer into a single Archive.
@@ -181,17 +195,15 @@ class Retry:
     Usage::
 
         @flow.register(retry=Retry(...))
-
-    Args:
-        attempts: Number of retries to make before failing
-        delay: Number of seconds to wait before retrying
-        backoff: Backoff factor to multiply to delay.
-        jitter: Factor to randomize delay.
     """
 
+    #: Number of retires to attempt before failing
     attempts: int = 1
+    #: Base number of seconds to wait before retrying
     delay: float = 0.1
+    #: Backoff factor to multiply delay with
     backoff: float = 2.0
+    #: Factor to randomize delay.
     jitter: float = 0.1
 
     async def sleep(self, *, layer: Layer, attempt: int) -> None:
@@ -213,6 +225,20 @@ class Retry:
 
 @dataclass
 class Configuration:
+    """Layer configurations.
+
+    Usage::
+
+        class A(Layer):
+            def __call__(self) -> None:
+                self.configuration.container
+                self.configuration.foreach
+                self.configuration.retry
+    """
+
+    #: Layer container configuration
     container: Container = Container()
+    #: Layer foreach configuration
     foreach: ForEach = ForEach()
+    #: Layer retry configuration
     retry: Retry = Retry()

@@ -189,13 +189,24 @@ class Scheduler:
             logger.info("Finished layers: %s", sorted(finished))
 
     def compile(self, *, flow: Flow) -> Dict[str, Any]:
+        """Compile an intermediate representation of the Flow."""
+
         raise NotImplementedError
 
     def create(self, *, ir: Dict[str, Any]) -> None:
+        """Create a delegated scheduler to schedule the Flow."""
+
         raise NotImplementedError
 
     def invoke(self) -> None:
+        """Invoke the delegated scheduler to start a Flow execution."""
+
         raise NotImplementedError
+
+
+@dataclass(frozen=True)
+class Delegated(Scheduler):
+    """Scheduler that compiles, creates, and invokes a Flow execution on another scheduler."""
 
 
 class AWS:

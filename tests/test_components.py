@@ -24,7 +24,7 @@ class TestLayer:
         assert (
             layer.__repr__()
             == "Layer(configuration=Configuration(container=Container(command='python main.py', cpu=1,"
-            " image='python:3.9', memory=1500, workdir='/laminar'), foreach=ForEach(parameters=[]),"
+            " image='python:3.8', memory=1500, workdir='/laminar'), foreach=ForEach(parameters=[]),"
             " retry=Retry(attempts=1, delay=0.1, backoff=2.0, jitter=0.1)),"
             " flow=Flow(configuration=Configuration(datastore=Memory(root='memory:///', cache={},"
             " protocols={'laminar.configurations.datastores.ArchiveProtocol': ArchiveProtocol(),"

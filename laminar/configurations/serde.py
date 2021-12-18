@@ -13,13 +13,13 @@ def dtype(cls: type) -> str:
     return f"{cls.__module__}.{cls.__name__}"
 
 
-class ProtocolMeta(type):
+class MetaProtocol(type):
     @property
     def dtype(cls) -> str:
         return dtype(cls)
 
 
-class Protocol(metaclass=ProtocolMeta):
+class Protocol(metaclass=MetaProtocol):
     """Generic base class for defining ser(de) protocols."""
 
     def __repr__(self) -> str:

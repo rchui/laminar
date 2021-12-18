@@ -133,8 +133,12 @@ class AWS:
 
     @dataclass(frozen=True)
     class BaseBatch:
+
+        #: Amazon resource name (ARN) of an Batch job queue.
         job_queue_arn: str
+        #: Amazon resource name (ARN) of an IAM role to attach to each Batch job.
         job_role_arn: str
+        #: Poll interval wait between requesting a Batch job's status.
         poll: float = 30.0
 
     @dataclass(frozen=True)

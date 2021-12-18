@@ -29,6 +29,7 @@ Containers are first class citizens in `laminar` flows. Containers are both used
 Introduction <self>
 Installation <getting_started/installation>
 Basics <getting_started/basics>
+Deployment <getting_started/deployment>
 ```
 
 ```{toctree}

@@ -2,6 +2,7 @@
 
 .. autoclass:: {{ fullname }}
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     {% block methods %}
