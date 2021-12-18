@@ -3,6 +3,7 @@ Protocol
 
 .. autoclass:: laminar.configurations.serde.Protocol
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

@@ -3,6 +3,7 @@ DataStore
 
 .. autoclass:: laminar.configurations.datastores.DataStore
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

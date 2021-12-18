@@ -3,6 +3,7 @@ Record
 
 .. autoclass:: laminar.configurations.datastores.Record
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

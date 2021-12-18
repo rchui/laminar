@@ -3,6 +3,7 @@ Retry
 
 .. autoclass:: laminar.configurations.layers.Retry
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

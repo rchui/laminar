@@ -3,6 +3,7 @@ RecordProtocol
 
 .. autoclass:: laminar.configurations.datastores.RecordProtocol
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

@@ -3,6 +3,7 @@ Container
 
 .. autoclass:: laminar.configurations.layers.Container
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

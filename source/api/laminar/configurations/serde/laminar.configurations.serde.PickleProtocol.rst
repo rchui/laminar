@@ -3,6 +3,7 @@ PickleProtocol
 
 .. autoclass:: laminar.configurations.serde.PickleProtocol
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

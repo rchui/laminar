@@ -42,6 +42,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/deployment.html">Deployment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Layers</span></p>
 <ul>
@@ -67,11 +68,12 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Datastores</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#artifacts">Artifacts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#archives">Archives</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#archive-cache">Archive Cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#archives">Archives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cache">Cache</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Archives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#record">Record</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#record">Record</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="executions.html">Executions</a></li>
@@ -94,7 +96,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Datastores</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/technical/datastores.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/technical/datastores.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -102,7 +104,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="datastores">
+  <section class="tex2jax_ignore mathjax_ignore" id="datastores">
 <h1>Datastores<a class="headerlink" href="#datastores" title="Permalink to this headline"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -110,7 +112,7 @@
 </div>
 <section id="artifacts">
 <h2>Artifacts<a class="headerlink" href="#artifacts" title="Permalink to this headline"></a></h2>
-<p>An <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> is a pickled and gzipped Python object and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/artifacts/&lt;hexdigest&gt;.gz</span></code>. The <code class="docutils literal notranslate"><span class="pre">&lt;hexdigest&gt;</span></code> used to identify the <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> is the SHA256 hexdigest of the underlying pickled Python object.</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> is a pickled and gzipped Python object and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/&lt;flow&gt;/artifacts/&lt;hexdigest&gt;.gz</span></code>. The <code class="docutils literal notranslate"><span class="pre">&lt;hexdigest&gt;</span></code> used to identify the <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> is the SHA256 hexdigest of the underlying pickled Python object.</p>
 </section>
 <section id="archives">
 <h2>Archives<a class="headerlink" href="#archives" title="Permalink to this headline"></a></h2>
@@ -120,19 +122,22 @@
   <span class="p p-Indicator">-</span> <span class="nt">hexdigest</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
 </pre></div>
 </div>
-<p>and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/archives/&lt;execution&gt;/&lt;layer&gt;/&lt;index&gt;/&lt;artifact&gt;.json</span></code></p>
+<p>and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/&lt;flow&gt;/archives/&lt;execution&gt;/&lt;layer&gt;/&lt;index&gt;/&lt;artifact&gt;.json</span></code></p>
 <p>Because each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is assigned a different index, multiple archives can exist for a single <code class="docutils literal notranslate"><span class="pre">Artifact</span></code>. Archives can also be linked to one or more artifacts, and each <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> is referenced via a SHA256 hexdigest that makes up the name of each stored <code class="docutils literal notranslate"><span class="pre">Artifact</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Layer.shard()</span></code> creates one archive with multiple linked artifacts. <code class="docutils literal notranslate"><span class="pre">layers.ForEach</span></code> creates multiple archives with one or many linked artifacts.</p>
 <p>When the a flow’s datastore reads an <code class="docutils literal notranslate"><span class="pre">Archive</span></code> it knows to create an <code class="docutils literal notranslate"><span class="pre">Accessor</span></code> if it has more than one <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> hexdigest. A <code class="docutils literal notranslate"><span class="pre">Layer</span></code> also knows when multiple archives exist for an <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> and will create an <code class="docutils literal notranslate"><span class="pre">Accessor</span></code> across all of them.</p>
-<section id="archive-cache">
-<h3>Archive Cache<a class="headerlink" href="#archive-cache" title="Permalink to this headline"></a></h3>
-<p>When an <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> with multiple archives is read, it will speed up future accesses by creating a combined <code class="docutils literal notranslate"><span class="pre">Archive</span></code> at <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/.cache/&lt;execution&gt;/&lt;layer&gt;/&lt;artifact&gt;.json</span></code></p>
 </section>
+<section id="cache">
+<h2>Cache<a class="headerlink" href="#cache" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> also maintains a cache under <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/&lt;flow&gt;/.cache</span></code>. The files in the cache are intended to speed up slow operations.</p>
+<section id="id1">
+<h3>Archives<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<p>When an <code class="docutils literal notranslate"><span class="pre">Artifact</span></code> with multiple archives is read, it will speed up future accesses by creating a combined <code class="docutils literal notranslate"><span class="pre">Archive</span></code> at <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/&lt;flow&gt;/.cache/&lt;execution&gt;/&lt;layer&gt;/&lt;artifact&gt;.json</span></code></p>
 </section>
 <section id="record">
-<h2>Record<a class="headerlink" href="#record" title="Permalink to this headline"></a></h2>
-<p>After each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is executed, it leaves behind a <code class="docutils literal notranslate"><span class="pre">Record</span></code>. Records detail the execution of a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> to aid in determining the size of downstream layers.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Record</span></code> schema is</p>
+<h3>Record<a class="headerlink" href="#record" title="Permalink to this headline"></a></h3>
+<p>After each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is executed, it leaves behind a <code class="docutils literal notranslate"><span class="pre">Record</span></code>. Records detail the execution metadata of a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Record</span></code> schema is:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">flow</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">str</span>
 <span class="nt">layer</span><span class="p">:</span>
@@ -141,7 +146,8 @@
   <span class="nt">splits</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">int</span>
 </pre></div>
 </div>
-<p>and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/.cache/&lt;execution&gt;/&lt;layer&gt;/.record.json</span></code>.</p>
+<p>and is written to <code class="docutils literal notranslate"><span class="pre">&lt;datastore-root&gt;/&lt;flow&gt;/.cache/&lt;execution&gt;/&lt;layer&gt;/.record.json</span></code>.</p>
+</section>
 </section>
 </section>
 

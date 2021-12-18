@@ -3,6 +3,7 @@ Parameter
 
 .. autoclass:: laminar.configurations.layers.Parameter
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

@@ -42,6 +42,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/deployment.html">Deployment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Layers</span></p>
 <ul>
@@ -123,6 +124,15 @@
 <dt class="sig sig-object py" id="laminar.configurations.flows.Configuration">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.flows.</span></span><span class="sig-name descname"><span class="pre">Configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datastore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore" title="laminar.configurations.datastores.DataStore"><span class="pre">laminar.configurations.datastores.DataStore</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Local(root='/home/runner/work/laminar/laminar/.laminar',</span> <span class="pre">cache={},</span> <span class="pre">protocols={'laminar.configurations.datastores.ArchiveProtocol':</span> <span class="pre">ArchiveProtocol(),</span> <span class="pre">'laminar.configurations.datastores.RecordProtocol':</span> <span class="pre">RecordProtocol()})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor" title="laminar.configurations.executors.Executor"><span class="pre">laminar.configurations.executors.Executor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Docker(concurrency=1,</span> <span class="pre">timeout=86400)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler" title="laminar.configurations.schedulers.Scheduler"><span class="pre">laminar.configurations.schedulers.Scheduler</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Scheduler()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.flows.Configuration" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Flow configurations.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">datastore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">executor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">scheduler</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -139,14 +149,14 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datastore</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.flows.Configuration.datastore" title="laminar.configurations.flows.Configuration.datastore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datastore</span></code></a></p></td>
+<td><p>Flow datastore configuration</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">executor</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.flows.Configuration.executor" title="laminar.configurations.flows.Configuration.executor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">executor</span></code></a></p></td>
+<td><p>Flow executor configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scheduler</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.flows.Configuration.scheduler" title="laminar.configurations.flows.Configuration.scheduler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scheduler</span></code></a></p></td>
+<td><p>Flow scheduler configuration</p></td>
 </tr>
 </tbody>
 </table>
@@ -154,6 +164,24 @@
 <dt class="sig sig-object py" id="laminar.configurations.flows.Configuration.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datastore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore" title="laminar.configurations.datastores.DataStore"><span class="pre">laminar.configurations.datastores.DataStore</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Local(root='/home/runner/work/laminar/laminar/.laminar',</span> <span class="pre">cache={},</span> <span class="pre">protocols={'laminar.configurations.datastores.ArchiveProtocol':</span> <span class="pre">ArchiveProtocol(),</span> <span class="pre">'laminar.configurations.datastores.RecordProtocol':</span> <span class="pre">RecordProtocol()})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor" title="laminar.configurations.executors.Executor"><span class="pre">laminar.configurations.executors.Executor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Docker(concurrency=1,</span> <span class="pre">timeout=86400)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler" title="laminar.configurations.schedulers.Scheduler"><span class="pre">laminar.configurations.schedulers.Scheduler</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Scheduler()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.flows.Configuration.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.flows.Configuration.datastore">
+<span class="sig-name descname"><span class="pre">datastore</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore" title="laminar.configurations.datastores.DataStore"><span class="pre">laminar.configurations.datastores.DataStore</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Local(root='/home/runner/work/laminar/laminar/.laminar',</span> <span class="pre">cache={},</span> <span class="pre">protocols={'laminar.configurations.datastores.ArchiveProtocol':</span> <span class="pre">ArchiveProtocol(),</span> <span class="pre">'laminar.configurations.datastores.RecordProtocol':</span> <span class="pre">RecordProtocol()})</span></em><a class="headerlink" href="#laminar.configurations.flows.Configuration.datastore" title="Permalink to this definition"></a></dt>
+<dd><p>Flow datastore configuration</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.flows.Configuration.executor">
+<span class="sig-name descname"><span class="pre">executor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor" title="laminar.configurations.executors.Executor"><span class="pre">laminar.configurations.executors.Executor</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Docker(concurrency=1,</span> <span class="pre">timeout=86400)</span></em><a class="headerlink" href="#laminar.configurations.flows.Configuration.executor" title="Permalink to this definition"></a></dt>
+<dd><p>Flow executor configuration</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.flows.Configuration.scheduler">
+<span class="sig-name descname"><span class="pre">scheduler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler" title="laminar.configurations.schedulers.Scheduler"><span class="pre">laminar.configurations.schedulers.Scheduler</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Scheduler()</span></em><a class="headerlink" href="#laminar.configurations.flows.Configuration.scheduler" title="Permalink to this definition"></a></dt>
+<dd><p>Flow scheduler configuration</p>
+</dd></dl>
 
 </dd></dl>
 

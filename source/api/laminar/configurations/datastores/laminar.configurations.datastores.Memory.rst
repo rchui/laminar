@@ -3,6 +3,7 @@ Memory
 
 .. autoclass:: laminar.configurations.datastores.Memory
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

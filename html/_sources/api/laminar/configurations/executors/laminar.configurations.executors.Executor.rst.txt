@@ -3,6 +3,7 @@ Executor
 
 .. autoclass:: laminar.configurations.executors.Executor
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

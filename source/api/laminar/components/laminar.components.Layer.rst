@@ -3,6 +3,7 @@ Layer
 
 .. autoclass:: laminar.components.Layer
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

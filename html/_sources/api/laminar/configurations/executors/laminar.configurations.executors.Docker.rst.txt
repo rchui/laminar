@@ -3,6 +3,7 @@ Docker
 
 .. autoclass:: laminar.configurations.executors.Docker
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

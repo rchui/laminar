@@ -3,6 +3,7 @@ annotation
 
 .. autoclass:: laminar.configurations.hooks.annotation
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

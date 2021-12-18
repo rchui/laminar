@@ -1,8 +1,9 @@
-ProtocolMeta
+MetaProtocol
 ============
 
-.. autoclass:: laminar.configurations.serde.ProtocolMeta
+.. autoclass:: laminar.configurations.serde.MetaProtocol
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     
@@ -39,7 +40,7 @@ ProtocolMeta
         
         
         
-        ~laminar.configurations.serde.ProtocolMeta.mro
+        ~laminar.configurations.serde.MetaProtocol.mro
         
     
     
@@ -65,7 +66,7 @@ ProtocolMeta
         
         
         
-        ~laminar.configurations.serde.ProtocolMeta.dtype
+        ~laminar.configurations.serde.MetaProtocol.dtype
         
     
     

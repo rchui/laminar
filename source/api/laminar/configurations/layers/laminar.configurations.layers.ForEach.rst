@@ -3,6 +3,7 @@ ForEach
 
 .. autoclass:: laminar.configurations.layers.ForEach
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

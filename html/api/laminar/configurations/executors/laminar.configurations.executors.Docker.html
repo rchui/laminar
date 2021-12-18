@@ -42,6 +42,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/deployment.html">Deployment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Layers</span></p>
 <ul>
@@ -153,7 +154,7 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">concurrency</span></code></p></td>
 <td><p>Number of tasks that can execute concurrently.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">semaphore</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.executors.Docker.semaphore" title="laminar.configurations.executors.Docker.semaphore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semaphore</span></code></a></p></td>
 <td><p>Create a semaphore that limits asyncio concurrency.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeout</span></code></p></td>
@@ -165,6 +166,19 @@
 <dt class="sig sig-object py" id="laminar.configurations.executors.Docker.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concurrency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">86400</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.executors.Docker.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="laminar.configurations.executors.Docker.semaphore">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">semaphore</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">asyncio.locks.Semaphore</span></em><a class="headerlink" href="#laminar.configurations.executors.Docker.semaphore" title="Permalink to this definition"></a></dt>
+<dd><p>Create a semaphore that limits asyncio concurrency.</p>
+<p class="rubric">Notes</p>
+<p>Concurrency is controled by Executor.concurrency</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">semaphore</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.executors.Docker.submit">

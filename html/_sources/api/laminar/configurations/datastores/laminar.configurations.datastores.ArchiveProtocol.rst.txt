@@ -3,6 +3,7 @@ ArchiveProtocol
 
 .. autoclass:: laminar.configurations.datastores.ArchiveProtocol
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

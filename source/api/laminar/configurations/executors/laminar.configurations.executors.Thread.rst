@@ -3,6 +3,7 @@ Thread
 
 .. autoclass:: laminar.configurations.executors.Thread
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

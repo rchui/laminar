@@ -3,6 +3,7 @@ AWS
 
 .. autoclass:: laminar.configurations.executors.AWS
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

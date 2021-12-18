@@ -22,6 +22,7 @@ schedulers
         :nosignatures:
     
         AWS
+        Delegated
         Scheduler
     
     

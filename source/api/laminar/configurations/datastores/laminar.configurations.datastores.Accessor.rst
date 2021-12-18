@@ -3,6 +3,7 @@ Accessor
 
 .. autoclass:: laminar.configurations.datastores.Accessor
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

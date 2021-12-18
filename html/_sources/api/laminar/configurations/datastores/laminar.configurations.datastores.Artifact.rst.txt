@@ -3,6 +3,7 @@ Artifact
 
 .. autoclass:: laminar.configurations.datastores.Artifact
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

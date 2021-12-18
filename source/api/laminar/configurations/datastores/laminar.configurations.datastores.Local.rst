@@ -3,6 +3,7 @@ Local
 
 .. autoclass:: laminar.configurations.datastores.Local
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

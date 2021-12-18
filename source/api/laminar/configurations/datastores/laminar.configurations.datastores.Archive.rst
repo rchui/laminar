@@ -3,6 +3,7 @@ Archive
 
 .. autoclass:: laminar.configurations.datastores.Archive
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

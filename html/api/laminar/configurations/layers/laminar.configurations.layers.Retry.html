@@ -42,6 +42,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/deployment.html">Deployment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Layers</span></p>
 <ul>
@@ -138,16 +139,6 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">retry</span><span class="o">=</span><span class="n">Retry</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>attempts</strong> – Number of retries to make before failing</p></li>
-<li><p><strong>delay</strong> – Number of seconds to wait before retrying</p></li>
-<li><p><strong>backoff</strong> – Backoff factor to multiply to delay.</p></li>
-<li><p><strong>jitter</strong> – Factor to randomize delay.</p></li>
-</ul>
-</dd>
-</dl>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -167,17 +158,17 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempts</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.layers.Retry.attempts" title="laminar.configurations.layers.Retry.attempts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempts</span></code></a></p></td>
+<td><p>Number of retires to attempt before failing</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">backoff</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.layers.Retry.backoff" title="laminar.configurations.layers.Retry.backoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backoff</span></code></a></p></td>
+<td><p>Backoff factor to multiply delay with</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">delay</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.layers.Retry.delay" title="laminar.configurations.layers.Retry.delay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delay</span></code></a></p></td>
+<td><p>Base number of seconds to wait before retrying</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">jitter</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.layers.Retry.jitter" title="laminar.configurations.layers.Retry.jitter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jitter</span></code></a></p></td>
+<td><p>Factor to randomize delay.</p></td>
 </tr>
 </tbody>
 </table>
@@ -185,6 +176,30 @@
 <dt class="sig sig-object py" id="laminar.configurations.layers.Retry.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.layers.Retry.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.layers.Retry.attempts">
+<span class="sig-name descname"><span class="pre">attempts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#laminar.configurations.layers.Retry.attempts" title="Permalink to this definition"></a></dt>
+<dd><p>Number of retires to attempt before failing</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.layers.Retry.backoff">
+<span class="sig-name descname"><span class="pre">backoff</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.0</span></em><a class="headerlink" href="#laminar.configurations.layers.Retry.backoff" title="Permalink to this definition"></a></dt>
+<dd><p>Backoff factor to multiply delay with</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.layers.Retry.delay">
+<span class="sig-name descname"><span class="pre">delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#laminar.configurations.layers.Retry.delay" title="Permalink to this definition"></a></dt>
+<dd><p>Base number of seconds to wait before retrying</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.layers.Retry.jitter">
+<span class="sig-name descname"><span class="pre">jitter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#laminar.configurations.layers.Retry.jitter" title="Permalink to this definition"></a></dt>
+<dd><p>Factor to randomize delay.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.layers.Retry.sleep">

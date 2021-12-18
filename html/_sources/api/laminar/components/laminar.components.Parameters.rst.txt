@@ -3,6 +3,7 @@ Parameters
 
 .. autoclass:: laminar.components.Parameters
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

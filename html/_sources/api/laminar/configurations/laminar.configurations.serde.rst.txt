@@ -31,9 +31,9 @@ serde
         :recursive:
         :nosignatures:
     
+        MetaProtocol
         PickleProtocol
         Protocol
-        ProtocolMeta
     
     
 

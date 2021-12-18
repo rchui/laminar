@@ -3,6 +3,7 @@ Current
 
 .. autoclass:: laminar.settings.Current
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

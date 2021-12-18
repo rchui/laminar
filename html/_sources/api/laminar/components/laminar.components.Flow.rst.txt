@@ -3,6 +3,7 @@ Flow
 
 .. autoclass:: laminar.components.Flow
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

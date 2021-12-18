@@ -3,6 +3,7 @@ Configuration
 
 .. autoclass:: laminar.configurations.flows.Configuration
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     

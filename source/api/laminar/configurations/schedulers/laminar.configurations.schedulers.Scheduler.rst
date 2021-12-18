@@ -3,6 +3,7 @@ Scheduler
 
 .. autoclass:: laminar.configurations.schedulers.Scheduler
     :members:
+    :inherited-members: BaseModel
     :show-inheritance:
 
     
