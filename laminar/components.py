@@ -3,7 +3,7 @@
 import logging
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union, overload
+from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple, Type, Union
 
 from ksuid import KsuidMs
 
@@ -349,17 +349,7 @@ class Flow:
 
         return wrapper
 
-    @overload
     def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
-        ...
-
-    @overload
-    def layer(self, layer: None = None, **attributes: Any) -> List[Layer]:
-        ...
-
-    def layer(
-        self, layer: Optional[Union[str, Type[Layer], Layer]] = None, **attributes: Any
-    ) -> Union[Layer, List[Layer]]:
         """Get a registered flow layer.
 
         Usage::
@@ -377,24 +367,20 @@ class Flow:
             Layer that was registered to the flow.
         """
 
-        if layer is None:
-            raise NotImplementedError
+        if isinstance(layer, Layer):
+            layer = layer.name
+        elif not isinstance(layer, str):
+            layer = layer().name
 
-        else:
-            if isinstance(layer, Layer):
-                layer = layer.name
-            elif not isinstance(layer, str):
-                layer = layer().name
+        # Deepcopy so that layer artifacts don't mess with other layer split executions
+        layer = deepcopy(self._registry[layer])
 
-            # Deepcopy so that layer artifacts don't mess with other layer split executions
-            layer = deepcopy(self._registry[layer])
+        # Inject the flow attribute to link the layer to the flow
+        layer.flow = self
+        for key, value in attributes.items():
+            setattr(layer, key, value)
 
-            # Inject the flow attribute to link the layer to the flow
-            layer.flow = self
-            for key, value in attributes.items():
-                setattr(layer, key, value)
-
-            return layer
+        return layer
 
     def parameters(self, *, execution: Optional[str] = None, **artifacts: Any) -> str:
         """Configure parameters for a flow execution
@@ -428,15 +414,7 @@ class Flow:
 
         return execution
 
-    @overload
     def results(self, execution: str) -> "Flow":
-        ...
-
-    @overload
-    def results(self, execution: None = None) -> List["Flow"]:
-        ...
-
-    def results(self, execution: Optional[str] = None) -> Union["Flow", List["Flow"]]:
         """Configure the flow to get results for an execution
 
         Usage::
@@ -452,10 +430,6 @@ class Flow:
             THe flow configured with the execution ID.
         """
 
-        if execution is None:
-            raise NotImplementedError
-
-        else:
-            flow = deepcopy(self)
-            flow.execution = execution
-            return flow
+        flow = deepcopy(self)
+        flow.execution = execution
+        return flow

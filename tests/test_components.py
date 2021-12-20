@@ -20,17 +20,7 @@ class TestLayer:
         assert Layer(foo="bar").foo == "bar"
 
     def test_repr(self, layer: Layer) -> None:
-        print(layer.__repr__())
-        assert (
-            layer.__repr__()
-            == "Layer(configuration=Configuration(container=Container(command='python main.py', cpu=1,"
-            " image='python:3.8', memory=1500, workdir='/laminar'), foreach=ForEach(parameters=[]),"
-            " retry=Retry(attempts=1, delay=0.1, backoff=2.0, jitter=0.1)),"
-            " flow=Flow(configuration=Configuration(datastore=Memory(root='memory:///', cache={},"
-            " protocols={'laminar.configurations.datastores.ArchiveProtocol': ArchiveProtocol(),"
-            " 'laminar.configurations.datastores.RecordProtocol': RecordProtocol()}), executor=Thread(concurrency=1,"
-            " timeout=86400), scheduler=Scheduler()), execution='test-execution'), index=0, splits=2)"
-        )
+        assert layer.__repr__() == "Layer(flow=TestFlow(execution='test-execution'), index=0, splits=2)"
 
     def test_subclass_init(self) -> None:
         assert Layer().namespace is None
