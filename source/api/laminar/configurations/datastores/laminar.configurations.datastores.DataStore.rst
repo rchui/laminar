@@ -38,7 +38,17 @@ DataStore
         
         
         
+        
         ~laminar.configurations.datastores.DataStore.exists
+        
+        
+        ~laminar.configurations.datastores.DataStore.list_artifacts
+        
+        
+        ~laminar.configurations.datastores.DataStore.list_executions
+        
+        
+        ~laminar.configurations.datastores.DataStore.list_layers
         
         
         ~laminar.configurations.datastores.DataStore.read

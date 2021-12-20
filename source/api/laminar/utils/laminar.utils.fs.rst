@@ -15,10 +15,12 @@ fs
         :nosignatures:
     
         exists
+        join
         open
 
     
     .. autofunction:: exists
+    .. autofunction:: join
     .. autofunction:: open
     
     

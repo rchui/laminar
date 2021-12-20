@@ -38,7 +38,17 @@ Local
         
         
         
+        
         ~laminar.configurations.datastores.Local.exists
+        
+        
+        ~laminar.configurations.datastores.Local.list_artifacts
+        
+        
+        ~laminar.configurations.datastores.Local.list_executions
+        
+        
+        ~laminar.configurations.datastores.Local.list_layers
         
         
         ~laminar.configurations.datastores.Local.read

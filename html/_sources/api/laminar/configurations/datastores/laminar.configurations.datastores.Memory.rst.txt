@@ -38,7 +38,17 @@ Memory
         
         
         
+        
         ~laminar.configurations.datastores.Memory.exists
+        
+        
+        ~laminar.configurations.datastores.Memory.list_artifacts
+        
+        
+        ~laminar.configurations.datastores.Memory.list_executions
+        
+        
+        ~laminar.configurations.datastores.Memory.list_layers
         
         
         ~laminar.configurations.datastores.Memory.read
