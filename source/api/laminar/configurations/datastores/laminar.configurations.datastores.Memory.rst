@@ -51,6 +51,9 @@ Memory
         ~laminar.configurations.datastores.Memory.list_layers
         
         
+        ~laminar.configurations.datastores.Memory.protocol
+        
+        
         ~laminar.configurations.datastores.Memory.read
         
         
@@ -61,9 +64,6 @@ Memory
         
         
         ~laminar.configurations.datastores.Memory.read_record
-        
-        
-        ~laminar.configurations.datastores.Memory.serde
         
         
         ~laminar.configurations.datastores.Memory.uri

@@ -51,6 +51,9 @@ Local
         ~laminar.configurations.datastores.Local.list_layers
         
         
+        ~laminar.configurations.datastores.Local.protocol
+        
+        
         ~laminar.configurations.datastores.Local.read
         
         
@@ -61,9 +64,6 @@ Local
         
         
         ~laminar.configurations.datastores.Local.read_record
-        
-        
-        ~laminar.configurations.datastores.Local.serde
         
         
         ~laminar.configurations.datastores.Local.uri

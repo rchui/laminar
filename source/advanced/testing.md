@@ -12,7 +12,7 @@ from laminar.configurations import datastores, executors, serde
 
 datastore = datastores.Memory()
 
-@datastore.serde(int)
+@datastore.protocol(int)
 class Int(serde.Protocol):
     def dumps(value: int) -> bytes:
         return str(value).encode()

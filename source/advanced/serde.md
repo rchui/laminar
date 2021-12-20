@@ -28,7 +28,7 @@ from laminar.configurations import datastores, serde
 
 datastore = datastores.Local()
 
-@datastore.serde(list)
+@datastore.protocol(list)
 class ListProtcol(serde.Protocol):
     def load(self, file: BinaryIO) -> List[Any]:
         return eval(file.read().decode())
@@ -67,8 +67,8 @@ from laminar.configurations import datastores, serde
 
 datastore = datastores.Local()
 
-@datastore.serde(dict)
-@datastore.serde(list)
+@datastore.protocol(dict)
+@datastore.protocol(list)
 class JsonProtocol(serde.Protocol):
     def load(self, file: BinaryIO) -> Union[Dict[str, Any], List[Any]]:
         return json.load(file)
@@ -95,7 +95,7 @@ cache: Dict[str, List[Any]] = {}
 datastore = datastores.Local()
 
 
-@datastore.serde(list)
+@datastore.protocol(list)
 class ListProtcol(serde.Protocol):
     def read(uri: str) -> List[Any]:
         return cache[uri]
