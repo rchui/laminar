@@ -247,7 +247,7 @@ class DataStore:
 
         return fs.exists(uri=self.uri(path=path))
 
-    def serde(self, dtype: type) -> Callable[[Type[serde.ProtocolType]], Type[serde.ProtocolType]]:
+    def protocol(self, dtype: type) -> Callable[[Type[serde.ProtocolType]], Type[serde.ProtocolType]]:
         """Register a custom serde protocol for a type.
 
         Usage::

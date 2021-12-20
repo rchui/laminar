@@ -124,9 +124,9 @@ class TestDatastore:
 
         mock_exists.assert_called_once_with(uri="path/to/root/path/to/file")
 
-    def test_serde(self) -> None:
+    def test_protocol(self) -> None:
         mock_protocol = Mock()
-        self.datastore.serde(str)(mock_protocol)
+        self.datastore.protocol(str)(mock_protocol)
         assert self.datastore.protocols["builtins.str"] == mock_protocol.return_value
 
     @patch("laminar.utils.fs.open")

@@ -1,4 +1,4 @@
-"""Unit tests for laminar.configurations.serde"""
+"""Unit tests for laminar.configurations.protocol"""
 
 from laminar.configurations import serde
 
