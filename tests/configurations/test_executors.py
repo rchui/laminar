@@ -51,7 +51,7 @@ class TestDocker:
             "docker run --rm --interactive --cpus 1 --env LAMINAR_EXECUTION_ID=test-execution --env"
             " LAMINAR_FLOW_NAME=TestFlow --env LAMINAR_LAYER_ATTEMPT=1 --env LAMINAR_LAYER_INDEX=0 --env"
             " LAMINAR_LAYER_NAME=Layer --env LAMINAR_LAYER_SPLITS=2 --memory 1500m --volume"
-            " memory:///:/laminar/.laminar --workdir /laminar python:3.8 python main.py"
+            f" memory:///:/laminar/.laminar --workdir /laminar {layer.configuration.container.image} python main.py"
         )
 
     async def test_submit_error_code(self, layer: Layer) -> None:
