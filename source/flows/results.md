@@ -79,3 +79,39 @@ from main import A, flow
 flow.results("21lYX2jVgfbdYqyuEPr8kWkf3vp").layer(A).foo
 >>> "bar"
 ```
+
+## Discovery
+
+You may not always know apriori what executions have been made, layers are registered, or artifacts exist. The configured `Datastore` has multiple `list_*` convenience functions to aid in that discovery.
+
+```python
+from main import flow
+
+# Access the configured datastore
+datastore = flow.configuration.datastore
+
+# List executions
+datastore.list_executions(flow=flow)
+>>> [
+  ResultsFlow(execution="21lYX2jVgfbdYqyuEPr8kWkf3vp"),
+  ...
+]
+
+# List layers
+flow = flow.results("21lYX2jVgfbdYqyuEPr8kWkf3vp")
+datastore.list_layers(flow=flow)
+>>> [
+  A(flow=ResultsFlow(execution="21lYX2jVgfbdYqyuEPr8kWkf3vp")),
+  ...
+]
+
+# List artifacts
+from main import A
+
+layer = flow.layer(A)
+datastore.list_artifacts(layer=layer)
+>>> [
+  "foo",
+  ...
+]
+```

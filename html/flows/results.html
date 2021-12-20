@@ -61,6 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#accessing-flows">Accessing Flows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#accessing-layers">Accessing Layers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#accessing-artifacts">Accessing Artifacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#discovery">Discovery</a></li>
 </ul>
 </li>
 </ul>
@@ -183,6 +184,41 @@
 
 <span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;bar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="discovery">
+<h2>Discovery<a class="headerlink" href="#discovery" title="Permalink to this headline"></a></h2>
+<p>You may not always know apriori what executions have been made, layers are registered, or artifacts exist. The configured <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> has multiple <code class="docutils literal notranslate"><span class="pre">list_*</span></code> convenience functions to aid in that discovery.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">flow</span>
+
+<span class="c1"># Access the configured datastore</span>
+<span class="n">datastore</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">datastore</span>
+
+<span class="c1"># List executions</span>
+<span class="n">datastore</span><span class="o">.</span><span class="n">list_executions</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span>
+  <span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">),</span>
+  <span class="o">...</span>
+<span class="p">]</span>
+
+<span class="c1"># List layers</span>
+<span class="n">flow</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
+<span class="n">datastore</span><span class="o">.</span><span class="n">list_layers</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span>
+  <span class="n">A</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)),</span>
+  <span class="o">...</span>
+<span class="p">]</span>
+
+<span class="c1"># List artifacts</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">A</span>
+
+<span class="n">layer</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">datastore</span><span class="o">.</span><span class="n">list_artifacts</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span>
+  <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+  <span class="o">...</span>
+<span class="p">]</span>
 </pre></div>
 </div>
 </section>
