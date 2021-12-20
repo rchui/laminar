@@ -65,10 +65,8 @@ class Layer:
 
     def __repr__(self) -> str:
         attributes = ", ".join(
-            f"{key}={value}"
-            for key, value in {
-                attr: getattr(self, attr, None) for attr in ("configuration", "flow", "index", "splits")
-            }.items()
+            f"{key}={repr(value)}"
+            for key, value in {attr: getattr(self, attr, None) for attr in ("flow", "index", "splits")}.items()
         )
         return f"{self.name}({attributes})"
 
@@ -168,7 +166,6 @@ class Parameters(Layer):
 FlowParameters = Parameters(configuration=layers.Configuration())
 
 
-@dataclass
 class Flow:
     """Collection of tasks that execute in a specific order.
 
@@ -270,6 +267,13 @@ class Flow:
             self.schedule(execution=execution, dependencies=self.dependencies)
 
         return execution
+
+    def __repr__(self) -> str:
+        attributes = ", ".join(
+            f"{key}={repr(value)}"
+            for key, value in {attr: getattr(self, attr, None) for attr in ("execution",)}.items()
+        )
+        return f"{self.name}({attributes})"
 
     def execute(self, *, execution: str, layer: Layer) -> None:
         """Execute a single layer of the flow.

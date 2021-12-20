@@ -1,9 +1,12 @@
+import os
 from contextlib import contextmanager
 from pathlib import Path
-from typing import BinaryIO, TextIO, Union, overload
+from typing import Any, BinaryIO, TextIO, Union, overload
 
 import smart_open
 from typing_extensions import Literal
+
+parse_uri = smart_open.parse_uri
 
 
 @overload
@@ -43,7 +46,7 @@ def open(uri: str, mode: Literal["r", "rb", "w", "wb"]) -> Union[BinaryIO, TextI
         Union[BinaryIO, TextIO]: File handle to the local/remote file.
     """
 
-    if smart_open.parse_uri(uri).scheme == "file" and "w" in mode:
+    if parse_uri(uri).scheme == "file" and "w" in mode:
         Path(uri).parent.mkdir(parents=True, exist_ok=True)
 
     with smart_open.open(uri, mode) as file:
@@ -70,3 +73,16 @@ def exists(*, uri: str) -> bool:
             return True
     except IOError:
         return False
+
+
+def join(*parts: Any) -> str:
+    """Join parts into a path
+
+    Args:
+        *parts: Parts to use to construct the URI.
+
+    Returns:
+        Parts joined together
+    """
+
+    return os.path.join(*map(str, parts))

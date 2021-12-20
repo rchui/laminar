@@ -2,11 +2,12 @@
 
 import hashlib
 import json
-import os
+import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Dict, Generator, Iterable, List, Tuple, Type, Union, overload
 
+import boto3
 from dacite.core import from_dict
 
 from laminar.configurations import serde
@@ -14,11 +15,21 @@ from laminar.types import unwrap
 from laminar.utils import fs
 
 if TYPE_CHECKING:
-    from laminar import Layer
+    from laminar import Flow, Layer
 else:
-    Layer = "Layer"
+    Flow, Layer = "Flow", "Layer"
 
 DEFAULT_SERDE = serde.PickleProtocol()
+
+ARCHIVE_PATTERN = re.compile(
+    r"^.+"  # Greedily match from start
+    r"\/(?P<flow>.+?)"  # Match flow name
+    r"\/archives"  # Match archive directory
+    r"\/(?P<execution>.+?)"  # Match execution id
+    r"(?:\/(?P<layer>.+?))?"  # Match layer name
+    r"(?:\/(?P<split>\d+?))?"  # Match split index
+    r"(?:\/(?P<artifact>.+?)\.json)?$"  # Match artifact name
+)
 
 
 @dataclass(frozen=True)
@@ -51,7 +62,7 @@ class Record:
     def path(*, layer: Layer) -> str:
         """Get the path to the Record."""
 
-        return os.path.join(layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, ".record.json")
+        return fs.join(layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, ".record.json")
 
     def dict(self) -> Dict[str, Any]:
         """Convert the Record to a dict."""
@@ -91,7 +102,7 @@ class Artifact:
     def path(self, *, layer: Layer) -> str:
         """Get the path to the Artifact."""
 
-        return os.path.join(layer.flow.name, "artifacts", f"{self.hexdigest}.gz")
+        return fs.join(layer.flow.name, "artifacts", f"{self.hexdigest}.gz")
 
     def dict(self) -> Dict[str, str]:
         """Convert the Artifact to a dict."""
@@ -123,7 +134,7 @@ class Archive:
         else:
             parts = (layer.flow.name, "archives", unwrap(layer.flow.execution), layer.name, str(index), f"{name}.json")
 
-        return os.path.join(*parts)
+        return fs.join(*parts)
 
     def dict(self) -> Dict[str, List[Dict[str, str]]]:
         """Convert the Archive to a dict."""
@@ -222,7 +233,7 @@ class DataStore:
             URI to a location in the datastore.
         """
 
-        return os.path.join(self.root, path)
+        return fs.join(self.root, path)
 
     def exists(self, *, path: str) -> bool:
         """Check if a file exists in the datastore.
@@ -291,6 +302,19 @@ class DataStore:
         else:
             return Accessor(archive=archive, layer=layer)
 
+    def read_record(self, *, layer: Layer) -> Record:
+        """Read a layer record from the laminar datastore.
+
+        Args:
+            layer: Layer to get the record for.
+
+        Returns:
+            Layer record
+        """
+
+        record: Record = self._read(uri=self.uri(path=Record.path(layer=layer)), dtype=RecordProtocol.dtype)
+        return record
+
     def _read(self, *, uri: str, dtype: str) -> Any:
         return self.protocols.get(dtype, DEFAULT_SERDE).read(uri)
 
@@ -348,6 +372,16 @@ class DataStore:
 
         return artifact
 
+    def write_record(self, *, layer: Layer, record: Record) -> None:
+        """Write a layer record to the laminar datastore.
+
+        Args:
+            layer: Layer the record is for.
+            record: Record to write.
+        """
+
+        self._write(value=record, uri=self.uri(path=record.path(layer=layer)), dtype=RecordProtocol.dtype)
+
     def _write(self, *, value: Any, uri: str, dtype: str) -> None:
         self.protocols.get(dtype, DEFAULT_SERDE).write(value, uri)
 
@@ -363,28 +397,55 @@ class DataStore:
         artifacts = [self.write_artifact(layer=layer, value=value) for value in values]
         self.write_archive(layer=layer, name=name, artifacts=artifacts)
 
-    def read_record(self, *, layer: Layer) -> Record:
-        """Read a layer record from the laminar datastore.
+    def list_executions(self, *, flow: Flow) -> List[str]:
+        """List all executions.
 
         Args:
-            layer: Layer to get the record for.
+            flow: Flow to list executions for.
 
         Returns:
-            Layer record
+            All executions.
         """
 
-        record: Record = self._read(uri=self.uri(path=Record.path(layer=layer)), dtype=RecordProtocol.dtype)
-        return record
+        return sorted(set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives")), group="execution")))
 
-    def write_record(self, *, layer: Layer, record: Record) -> None:
-        """Write a layer record to the laminar datastore.
+    def list_layers(self, *, flow: Flow) -> List[str]:
+        """List all layers in an execution.
 
         Args:
-            layer: Layer the record is for.
-            record: Record to write.
+            flow: Flow to list layers for.
+
+        Returns:
+            All layers.
         """
 
-        self._write(value=record, uri=self.uri(path=record.path(layer=layer)), dtype=RecordProtocol.dtype)
+        return sorted(
+            set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives", unwrap(flow.execution))), group="layer"))
+        )
+
+    def list_artifacts(self, *, layer: Layer) -> List[str]:
+        """List all artifacts in a layer execution.
+
+        Args:
+            layer: Layer to list artifacts for.
+
+        Returns:
+            All artifacts.
+        """
+
+        return sorted(
+            set(
+                self._list(
+                    prefix=self.uri(
+                        path=fs.join(layer.flow.name, "archives", unwrap(layer.flow.execution), layer.name, "0")
+                    ),
+                    group="artifact",
+                )
+            )
+        )
+
+    def _list(self, *, prefix: str, group: str) -> Iterable[str]:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True)
@@ -397,6 +458,12 @@ class Local(DataStore):
     """
 
     root: str = str(Path.cwd() / ".laminar")
+
+    def _list(self, *, prefix: str, group: str) -> Iterable[str]:
+        for path in map(str, Path(prefix).glob("*")):
+            match = ARCHIVE_PATTERN.match(path)
+            if match is not None:
+                yield match.group(group)
 
 
 @dataclass(frozen=True)
@@ -419,6 +486,13 @@ class Memory(DataStore):
     def _write(self, *, value: Any, uri: str, dtype: str) -> None:
         self.cache[uri] = value
 
+    def _list(self, *, prefix: str, group: str) -> Iterable[str]:
+        for path in self.cache:
+            if path.startswith(prefix):
+                match = ARCHIVE_PATTERN.match(path)
+                if match is not None:
+                    yield match.group(group)
+
 
 class AWS:
     @dataclass(frozen=True)
@@ -429,3 +503,13 @@ class AWS:
 
             Flow(datastore=AWS.S3())
         """
+
+        def _list(self, *, prefix: str, group: str) -> Iterable[str]:
+            parts = fs.parse_uri(prefix)
+
+            s3 = boto3.resource("s3")
+            bucket = s3.Bucket(name=parts.bucket)
+            for response in bucket.objects.filter(Prefix=parts.key_id):
+                match = ARCHIVE_PATTERN.match(response.key)
+                if match is not None:
+                    yield match.group(group)

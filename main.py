@@ -4,7 +4,6 @@ from typing import Generator, List
 from laminar import Flow, Layer
 from laminar.components import Parameters
 from laminar.configurations import datastores, executors, hooks, layers
-from laminar.settings import current
 from laminar.types import unwrap
 
 logging.basicConfig(level=logging.INFO)
@@ -84,10 +83,10 @@ class Four(Layer):
 if __name__ == "__main__":
     execution = None
 
-    if not current.execution.id:
+    if not flow.execution:
         execution = flow.parameters(foo="bar")
     flow(execution=execution)
 
-    if not current.execution.id:
+    if not flow2.execution:
         execution = flow2.parameters(foo="bar")
     flow2(execution=execution)

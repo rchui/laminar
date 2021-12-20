@@ -2,7 +2,7 @@
 
 botocore
 boto3
-boto3-stubs[batch]
+boto3-stubs[batch, s3]
 cloudpickle
 dacite
 pydantic
