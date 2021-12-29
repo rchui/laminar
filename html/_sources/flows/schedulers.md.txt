@@ -17,13 +17,13 @@ from laminar.configurations import schedulers
 flow = Flow("ScheduledFlow", scheduler=schedulers.Scheduler())
 ```
 
-## Passive
+## Delegated
 
 ```{warning}
-Passive schedulers are experimental.
+Delegated schedulers are experimental.
 ```
 
-`Passive` schedulers don't manage the execution of a workflow. Instead, they compile the flow's directed acyclic graph into a format that can be used by other schedulers to manage the workflow. `Passive` schedulers provide a method for writing flows easily in `laminar` and executing them on another workflow engine.
+`Delegated` schedulers don't manage the execution of a workflow. Instead, they compile the flow's directed acyclic graph into a format that can be used by other schedulers to manage the workflow. `Delegated` schedulers provide a method for writing flows easily in `laminar` and executing them on another workflow engine.
 
 ### AWS Step Functions
 

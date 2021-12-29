@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Branching &mdash; laminar  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="Scaling Out" href="scaling_out.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> laminar
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/basics.html">Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/deployment.html">Deployment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Layers</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="scaling_up.html">Scaling Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scaling_out.html">Scaling Out</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Branching</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conditions">Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#executed">Executed</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Flows</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flows/parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flows/datastores.html">Datastores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flows/executors.html">Executors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flows/schedulers.html">Schedulers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flows/results.html">Results</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/hooks.html">Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/serde.html">Ser(De)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/testing.html">Testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../technical/datastores.html">Datastores</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technical/executions.html">Executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/laminar.html">laminar</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">laminar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Branching</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/layers/branching.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="branching">
+<h1>Branching<a class="headerlink" href="#branching" title="Permalink to this headline"></a></h1>
+<p>Branching allows users to define complex workflows. It also enables parallel executions of non-dependent layers, which can enable significant performance improvements.</p>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
+<p>Basic branching can achieved by adding layers as parameters to <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;HelloFlow&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>When defined in this way, layer <code class="docutils literal notranslate"><span class="pre">A</span></code> will run first and layers <code class="docutils literal notranslate"><span class="pre">B</span></code> and <code class="docutils literal notranslate"><span class="pre">C</span></code> after in parallel because there is no defined dependencies between them.</p>
+</section>
+<section id="conditions">
+<h2>Conditions<a class="headerlink" href="#conditions" title="Permalink to this headline"></a></h2>
+<p>Conditional branching is a common flow control operation, such as <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">...</span> <span class="pre">else</span> <span class="pre">...</span></code>, that directs a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> along a subset of paths. As the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> is traversed, conditions are evaluated and paths are chosen.</p>
+<p>Conditions are defined on layers in <code class="docutils literal notranslate"><span class="pre">Layer.__enter__</span></code> and returns a <code class="docutils literal notranslate"><span class="pre">bool</span></code> value to indicate whether the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> should be executed or not. Because <code class="docutils literal notranslate"><span class="pre">Layer.__enter__</span></code> is a class method, users can include complex logic to determine conditions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span> <span class="o">&lt;=</span> <span class="mf">.5</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>In this <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, 50% of the time <code class="docutils literal notranslate"><span class="pre">B</span></code> will be executed and the other 50% it will be skipped. Notice that like <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>, <code class="docutils literal notranslate"><span class="pre">Layer.__enter__</span></code> can also use layers as parameters in order to evaluate complex conditions.</p>
+<p>Consequently, 50% of the time <code class="docutils literal notranslate"><span class="pre">D</span></code> will also be skipped. This is because by default layers will be executed <strong>only if all layers it depends on are executed</strong>. Entire subtrees will potentially be skipped if even if a single <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is set to be skipped.</p>
+<p>We can prevent this from occuring by ending the conditional branch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Now regardless of whether <code class="docutils literal notranslate"><span class="pre">B</span></code> is executed, <code class="docutils literal notranslate"><span class="pre">D</span></code> will always execute. This implies that not only can every layer can have individual execution conditions, but also every <code class="docutils literal notranslate"><span class="pre">Flow</span></code> branch. This enables flows to be extremely flexible in their execution.</p>
+<p>But if <code class="docutils literal notranslate"><span class="pre">D</span></code> always executes, how do we know when <code class="docutils literal notranslate"><span class="pre">B</span></code> does?</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Conditions are not evaluated to determine <code class="docutils literal notranslate"><span class="pre">Layer</span></code> dependencies. Users are responsible for ensuring that they only use layers that have already been executed.</p>
+</div>
+</section>
+<section id="executed">
+<h2>Executed<a class="headerlink" href="#executed" title="Permalink to this headline"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Layer.executed</span></code> is a property that evaluates whether or not a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> has been executed. With this logic we can extend <code class="docutils literal notranslate"><span class="pre">D</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">foo</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">executed</span> <span class="k">else</span> <span class="n">c</span><span class="o">.</span><span class="n">foo</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">D</span></code> now uses the value from <code class="docutils literal notranslate"><span class="pre">B.foo</span></code> if <code class="docutils literal notranslate"><span class="pre">B</span></code> was executed, else it uses the value from <code class="docutils literal notranslate"><span class="pre">C.foo</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scaling_out.html" class="btn btn-neutral float-left" title="Scaling Out" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Ryan Chui.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

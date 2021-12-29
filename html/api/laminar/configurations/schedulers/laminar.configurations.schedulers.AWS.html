@@ -48,6 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../layers/scaling_up.html">Scaling Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../layers/scaling_out.html">Scaling Out</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../layers/branching.html">Branching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../layers/configuration.html">Configuration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Flows</span></p>
@@ -230,6 +231,28 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Layer splits that were executed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.configurations.schedulers.AWS.StepFunctions.skippable">
+<span class="sig-name descname"><span class="pre">skippable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Flow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runnable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finished</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.schedulers.AWS.StepFunctions.skippable" title="Permalink to this definition"></a></dt>
+<dd><p>Find all skippable layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow</strong> – Flow being scheduled.</p></li>
+<li><p><strong>runnable</strong> – Runnable layers.</p></li>
+<li><p><strong>finished</strong> – Finished layers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>Runnable layers</p></li>
+<li><p>Finished layers</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>

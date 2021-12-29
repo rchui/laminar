@@ -48,6 +48,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../layers/scaling_up.html">Scaling Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers/scaling_out.html">Scaling Out</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layers/branching.html">Branching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers/configuration.html">Configuration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Flows</span></p>
@@ -56,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="datastores.html">Datastores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="executors.html">Executors</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Schedulers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#passive">Passive</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#delegated">Delegated</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#aws-step-functions">AWS Step Functions</a></li>
 </ul>
 </li>
@@ -117,13 +118,13 @@
 <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ScheduledFlow&quot;</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">schedulers</span><span class="o">.</span><span class="n">Scheduler</span><span class="p">())</span>
 </pre></div>
 </div>
-<section id="passive">
-<h2>Passive<a class="headerlink" href="#passive" title="Permalink to this headline"></a></h2>
+<section id="delegated">
+<h2>Delegated<a class="headerlink" href="#delegated" title="Permalink to this headline"></a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Passive schedulers are experimental.</p>
+<p>Delegated schedulers are experimental.</p>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Passive</span></code> schedulers don’t manage the execution of a workflow. Instead, they compile the flow’s directed acyclic graph into a format that can be used by other schedulers to manage the workflow. <code class="docutils literal notranslate"><span class="pre">Passive</span></code> schedulers provide a method for writing flows easily in <code class="docutils literal notranslate"><span class="pre">laminar</span></code> and executing them on another workflow engine.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Delegated</span></code> schedulers don’t manage the execution of a workflow. Instead, they compile the flow’s directed acyclic graph into a format that can be used by other schedulers to manage the workflow. <code class="docutils literal notranslate"><span class="pre">Delegated</span></code> schedulers provide a method for writing flows easily in <code class="docutils literal notranslate"><span class="pre">laminar</span></code> and executing them on another workflow engine.</p>
 <section id="aws-step-functions">
 <h3>AWS Step Functions<a class="headerlink" href="#aws-step-functions" title="Permalink to this headline"></a></h3>
 <div class="admonition note">

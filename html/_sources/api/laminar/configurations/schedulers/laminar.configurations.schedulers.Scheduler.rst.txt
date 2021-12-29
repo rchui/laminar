@@ -56,6 +56,9 @@ Scheduler
         ~laminar.configurations.schedulers.Scheduler.schedule
         
         
+        ~laminar.configurations.schedulers.Scheduler.skippable
+        
+        
         ~laminar.configurations.schedulers.Scheduler.wait
         
     

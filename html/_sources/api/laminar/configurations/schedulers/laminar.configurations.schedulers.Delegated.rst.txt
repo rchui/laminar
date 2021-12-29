@@ -56,6 +56,9 @@ Delegated
         ~laminar.configurations.schedulers.Delegated.schedule
         
         
+        ~laminar.configurations.schedulers.Delegated.skippable
+        
+        
         ~laminar.configurations.schedulers.Delegated.wait
         
     
