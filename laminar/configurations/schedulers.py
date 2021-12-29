@@ -45,7 +45,7 @@ class Scheduler:
             for index in range(splits):
                 instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
 
-                with hooks.context(layer=instance, annotation=hooks.Annotation.submit):
+                with hooks.context(layer=instance, annotation=hooks.Annotation.submission):
                     tasks.append(asyncio.create_task(instance.flow.configuration.executor.submit(layer=instance)))
 
             # Combine all tasks into a Future so they can be waited on together

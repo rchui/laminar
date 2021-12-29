@@ -53,7 +53,7 @@ class Three(Layer):
         self.baz = one.baz
         print(self.baz)
 
-    @hooks.submit
+    @hooks.submission
     def configure_container(self, one: One) -> Generator[None, None, None]:
         self.configuration.container.memory = {"a": 1000, "b": 15000, "c": 2000}[one.baz[unwrap(self.index)]]
         yield

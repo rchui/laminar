@@ -19,7 +19,7 @@ ATTRIBUTE = "annotation"
 class Annotation(str, Enum):
     execution = "hook::execution"
     retry = "hook::retry"
-    submit = "hook::submit"
+    submission = "hook::submission"
 
     @staticmethod
     def annotate(hook: T, annotation: "Annotation") -> T:
@@ -61,19 +61,19 @@ def retry(hook: T) -> T:
     return Annotation.annotate(hook, Annotation.retry)
 
 
-def submit(hook: T) -> T:
-    """Configure a submit hook.
+def submission(hook: T) -> T:
+    """Configure a submission hook.
 
     Usage::
 
         from laminar.configurations import hooks
 
-        @hooks.submit
+        @hooks.submission
         def configure() -> Generator[None, None, None]:
             ...
     """
 
-    return Annotation.annotate(hook, Annotation.submit)
+    return Annotation.annotate(hook, Annotation.submission)
 
 
 def dependencies(*, layer: Layer, hook: Callable[..., Generator[None, None, None]]) -> Tuple[Layer, ...]:
