@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Set, Tuple
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import SchedulerError
-from laminar.types import unwrap
+from laminar.types import annotations, unwrap
 from laminar.utils import contexts
 
 if TYPE_CHECKING:
@@ -97,6 +97,32 @@ class Scheduler:
         runnable = {layer for layer in pending if set(dependencies[layer]).issubset(finished)}
         return pending - runnable, runnable
 
+    def skippable(self, *, flow: Flow, runnable: Set[str], finished: Set[str]) -> Tuple[Set[str], Set[str]]:
+        """Find all skippable layers.
+
+        Args:
+            flow: Flow being scheduled.
+            runnable: Runnable layers.
+            finished: Finished layers.
+
+        Returns:
+            * Runnable layers
+            * Finished layers
+        """
+
+        skippable: Set[str] = set()
+
+        for layer in runnable:
+            instance = flow.layer(layer)
+            parameters = tuple(flow.layer(annotation) for annotation in annotations(instance.__enter__))
+
+            if not instance.__enter__(*parameters):
+                skippable.add(layer)
+
+        if skippable:
+            logger.info("Skipping layers: %s", sorted(skippable))
+        return runnable - skippable, finished | skippable
+
     def running(self, *, flow: Flow, runnable: Set[str], running: Set["Task[List[Layer]]"]) -> Set["Task[List[Layer]]"]:
         """Schedule runnable layers.
 
@@ -128,12 +154,11 @@ class Scheduler:
         """
 
         # Wait until the first task completes
-        complete, incomplete = await asyncio.wait(running, return_when=condition)
+        completed, incomplete = await asyncio.wait(running, return_when=condition)
 
         # Add all completed tasks to finished tasks
         running = set(incomplete)
-        completed = {(await task)[0].name for task in complete}
-        finished = finished | completed
+        finished = finished | {(await task)[0].name for task in completed}
 
         return running, finished
 
@@ -161,9 +186,6 @@ class Scheduler:
         runnable: Set[str] = set()
         running: Set[Task[List[Layer]]] = set()
 
-        def get_running() -> List[str]:
-            return sorted(set(dependencies) - pending - finished)
-
         # Start the scheduling loop
         while pending:
             logger.info("Pending layers: %s", sorted(pending))
@@ -178,13 +200,16 @@ class Scheduler:
                 )
 
             logger.info("Runnable layers: %s", sorted(runnable))
+            runnable, finished = self.skippable(flow=flow, runnable=runnable, finished=finished)
+
             running = self.running(flow=flow, runnable=runnable, running=running)
 
             # Determine async task wait condition
             condition = asyncio.FIRST_COMPLETED if pending else asyncio.ALL_COMPLETED
 
-            logger.info("Running layers: %s", get_running())
-            running, finished = await self.wait(running=running, finished=finished, condition=condition)
+            logger.info("Running layers: %s", sorted(set(dependencies) - pending - finished))
+            if running:
+                running, finished = await self.wait(running=running, finished=finished, condition=condition)
             logger.info("Finished layers: %s", sorted(finished))
 
     def compile(self, *, flow: Flow) -> Dict[str, Any]:

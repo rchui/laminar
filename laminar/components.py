@@ -78,6 +78,15 @@ class Layer:
             setattr(result, k, deepcopy(v, memo))
         return result
 
+    __enter__: Callable[..., bool]  # type: ignore
+
+    def __enter__(self) -> bool:  # type: ignore
+        return all(
+            self.flow.layer(annotation).executed
+            for annotation in annotations(self.__call__)
+            if annotation is not Parameters
+        )
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
             return self.name == other
@@ -94,6 +103,11 @@ class Layer:
                 )
             except RecursionError as error:
                 raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.") from error
+            except FileNotFoundError as error:
+                message = f"Object '{self.name}' has no attribute '{name}'."
+                if not self.executed:
+                    message = message + f" Layer {self.name} was not executed."
+                raise AttributeError(message) from error
 
         return self.__dict__[name]
 
@@ -105,6 +119,12 @@ class Layer:
 
     def __setstate__(self, slots: Dict[str, Any]) -> None:
         self.__dict__ = slots
+
+    @property
+    def executed(self) -> bool:
+        """True if the layer was executed, else False."""
+
+        return self.flow.configuration.datastore.exists(path=datastores.Record.path(layer=self.flow.layer(self)))
 
     @property
     def name(self) -> str:
@@ -124,7 +144,7 @@ class Layer:
 
         return tuple(layer.name for layer in self._dependencies)
 
-    def execute(self, *parameters: "Layer") -> None:
+    def _execute(self, *parameters: "Layer") -> None:
         """Execute a layer.
 
         Args:
@@ -161,9 +181,6 @@ class Layer:
 
 class Parameters(Layer):
     """Special Layer for handling Flow parameters."""
-
-
-FlowParameters = Parameters(configuration=layers.Configuration())
 
 
 class Flow:
@@ -210,7 +227,7 @@ class Flow:
 
         self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
-        self._registry: Dict[str, Layer] = {FlowParameters.name: deepcopy(FlowParameters)}
+        self._registry: Dict[str, Layer] = {"Parameters": Parameters(configuration=layers.Configuration())}
 
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
@@ -301,7 +318,7 @@ class Flow:
             parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
             with hooks.context(layer=layer, annotation=hooks.Annotation.execution):
-                layer.execute(*parameters)
+                layer._execute(*parameters)
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
@@ -314,7 +331,7 @@ class Flow:
         """
 
         with contexts.Attributes(self, execution=execution):
-            self.configuration.scheduler.loop(flow=self, dependencies=dependencies, finished={FlowParameters.name})
+            self.configuration.scheduler.loop(flow=self, dependencies=dependencies, finished={"Parameters"})
 
     def register(
         self,
@@ -410,7 +427,7 @@ class Flow:
                     setattr(layer, name, value)
 
             # Fake an execution to write the artifacts to the datastore.
-            layer.execute()
+            layer._execute()
 
         return execution
 

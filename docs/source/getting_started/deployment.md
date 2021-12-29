@@ -72,4 +72,3 @@ docker push -t my/laminar/image
 ```{tip}
 Docker has an extensive [getting started guide](https://docs.docker.com/get-started/) for a more in-depth dive into containers.
 ```
-

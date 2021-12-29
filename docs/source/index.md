@@ -39,6 +39,7 @@ Deployment <getting_started/deployment>
 
 Scaling Up <layers/scaling_up>
 Scaling Out <layers/scaling_out>
+Branching <layers/branching>
 Configuration <layers/configuration>
 ```
 
