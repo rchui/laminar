@@ -8,26 +8,26 @@ class TestAnnotation:
         def func() -> None:
             ...
 
-        func = hooks.annotation.annotate(func, hooks.annotation.execution)
-        assert getattr(func, hooks.ATTRIBUTE) == hooks.annotation.execution
+        func = hooks.Annotation.annotate(func, hooks.Annotation.execution)
+        assert hooks.Annotation.get(func) == hooks.Annotation.execution
 
     def test_execution(self) -> None:
         def func() -> None:
             ...
 
         func = hooks.execution(func)
-        assert getattr(func, hooks.ATTRIBUTE) == hooks.annotation.execution
+        assert hooks.Annotation.get(func) == hooks.Annotation.execution
 
     def test_retry(self) -> None:
         def func() -> None:
             ...
 
         func = hooks.retry(func)
-        assert getattr(func, hooks.ATTRIBUTE) == hooks.annotation.retry
+        assert hooks.Annotation.get(func) == hooks.Annotation.retry
 
-    def test_schedule(self) -> None:
+    def test_submit(self) -> None:
         def func() -> None:
             ...
 
-        func = hooks.schedule(func)
-        assert getattr(func, hooks.ATTRIBUTE) == hooks.annotation.schedule
+        func = hooks.submit(func)
+        assert hooks.Annotation.get(func) == hooks.Annotation.submit

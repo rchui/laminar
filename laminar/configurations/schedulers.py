@@ -45,7 +45,7 @@ class Scheduler:
             for index in range(splits):
                 instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
 
-                with hooks.context(layer=instance, annotation=hooks.annotation.schedule):
+                with hooks.context(layer=instance, annotation=hooks.Annotation.submit):
                     tasks.append(asyncio.create_task(instance.flow.configuration.executor.submit(layer=instance)))
 
             # Combine all tasks into a Future so they can be waited on together
@@ -62,7 +62,7 @@ class Scheduler:
 
             # Attempt to reschedule the layer
             if attempt < layer.configuration.retry.attempts:
-                with hooks.context(layer=layer, annotation=hooks.annotation.retry):
+                with hooks.context(layer=layer, annotation=hooks.Annotation.retry):
                     await layer.configuration.retry.sleep(layer=layer, attempt=attempt)
                 return await self.schedule(layer=layer, attempt=attempt + 1)
             raise
@@ -110,7 +110,7 @@ class Scheduler:
             Async tasks for new and existing running layers.
         """
 
-        return {*running, *(asyncio.create_task(self.schedule(layer=flow.layer(layer))) for layer in runnable)}
+        return running | {asyncio.create_task(self.schedule(layer=flow.layer(layer))) for layer in runnable}
 
     async def wait(
         self, *, running: Set["Task[List[Layer]]"], finished: Set[str], condition: str
@@ -128,11 +128,12 @@ class Scheduler:
         """
 
         # Wait until the first task completes
-        completed, incomplete = await asyncio.wait(running, return_when=condition)
+        complete, incomplete = await asyncio.wait(running, return_when=condition)
 
         # Add all completed tasks to finished tasks
         running = set(incomplete)
-        finished = {*finished, *{(await task)[0].name for task in completed}}
+        completed = {(await task)[0].name for task in complete}
+        finished = finished | completed
 
         return running, finished
 
@@ -168,6 +169,7 @@ class Scheduler:
             logger.info("Pending layers: %s", sorted(pending))
             pending, runnable = self.runnable(dependencies=dependencies, pending=pending, finished=finished)
 
+            # There are pending layers but nothing is runnable or running.
             if not runnable and not running and pending:
                 raise SchedulerError(
                     f"Stuck waiting to schedule: {sorted(pending)}."
@@ -178,14 +180,11 @@ class Scheduler:
             logger.info("Runnable layers: %s", sorted(runnable))
             running = self.running(flow=flow, runnable=runnable, running=running)
 
-            logger.info("Running layers: %s", get_running())
-            running, finished = await self.wait(running=running, finished=finished, condition=asyncio.FIRST_COMPLETED)
-            logger.info("Finished layers: %s", sorted(finished))
+            # Determine async task wait condition
+            condition = asyncio.FIRST_COMPLETED if pending else asyncio.ALL_COMPLETED
 
-        # Finish any remaining jobs.
-        if running:
             logger.info("Running layers: %s", get_running())
-            running, finished = await self.wait(running=running, finished=finished, condition=asyncio.ALL_COMPLETED)
+            running, finished = await self.wait(running=running, finished=finished, condition=condition)
             logger.info("Finished layers: %s", sorted(finished))
 
     def compile(self, *, flow: Flow) -> Dict[str, Any]:

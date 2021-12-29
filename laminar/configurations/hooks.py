@@ -2,7 +2,7 @@
 
 from contextlib import ExitStack, contextmanager
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Callable, Generator, Tuple, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Generator, Optional, Tuple, TypeVar
 
 from laminar.types import annotations
 
@@ -16,15 +16,19 @@ T = TypeVar("T", bound=Any)
 ATTRIBUTE = "annotation"
 
 
-class annotation(str, Enum):
+class Annotation(str, Enum):
     execution = "hook::execution"
     retry = "hook::retry"
-    schedule = "hook::schedule"
+    submit = "hook::submit"
 
     @staticmethod
-    def annotate(hook: T, annotation: "annotation") -> T:
+    def annotate(hook: T, annotation: "Annotation") -> T:
         setattr(hook, ATTRIBUTE, annotation)
         return hook
+
+    @staticmethod
+    def get(hook: Callable[..., Generator[None, None, None]]) -> Optional[str]:
+        return getattr(hook, ATTRIBUTE, None)
 
 
 def execution(hook: T) -> T:
@@ -39,7 +43,7 @@ def execution(hook: T) -> T:
             ...
     """
 
-    return annotation.annotate(hook, annotation.execution)
+    return Annotation.annotate(hook, Annotation.execution)
 
 
 def retry(hook: T) -> T:
@@ -54,22 +58,22 @@ def retry(hook: T) -> T:
             ...
     """
 
-    return annotation.annotate(hook, annotation.retry)
+    return Annotation.annotate(hook, Annotation.retry)
 
 
-def schedule(hook: T) -> T:
-    """Configure a schedule hook.
+def submit(hook: T) -> T:
+    """Configure a submit hook.
 
     Usage::
 
         from laminar.configurations import hooks
 
-        @hooks.schedule
+        @hooks.submit
         def configure() -> Generator[None, None, None]:
             ...
     """
 
-    return annotation.annotate(hook, annotation.schedule)
+    return Annotation.annotate(hook, Annotation.submit)
 
 
 def dependencies(*, layer: Layer, hook: Callable[..., Generator[None, None, None]]) -> Tuple[Layer, ...]:
@@ -78,7 +82,7 @@ def dependencies(*, layer: Layer, hook: Callable[..., Generator[None, None, None
     return tuple(layer.flow.layer(annotation) for annotation in annotations(hook))
 
 
-def context(*, layer: Layer, annotation: annotation) -> ExitStack:
+def context(*, layer: Layer, annotation: Annotation) -> ExitStack:
     """Get a context manager for all hooks of the annotated type.
 
     Args:
@@ -91,7 +95,7 @@ def context(*, layer: Layer, annotation: annotation) -> ExitStack:
 
     stack = ExitStack()
     for hook in list(vars(type(layer.flow)).values()) + list(vars(type(layer)).values()):
-        if getattr(hook, ATTRIBUTE, None) == annotation:
+        if Annotation.get(hook) == annotation:
             # Gather any layer dependencies the hook may have
             parameters = dependencies(layer=layer, hook=hook)
 

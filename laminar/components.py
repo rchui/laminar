@@ -300,7 +300,7 @@ class Flow:
             # Setup the Layer parameter values
             parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
-            with hooks.context(layer=layer, annotation=hooks.annotation.execution):
+            with hooks.context(layer=layer, annotation=hooks.Annotation.execution):
                 layer.execute(*parameters)
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
