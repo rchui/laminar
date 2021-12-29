@@ -37,7 +37,7 @@ Annotation
         ~laminar.configurations.hooks.Annotation.retry
         
         
-        ~laminar.configurations.hooks.Annotation.submit
+        ~laminar.configurations.hooks.Annotation.submission
         
         
         

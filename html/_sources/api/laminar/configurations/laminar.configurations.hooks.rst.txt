@@ -18,14 +18,14 @@ hooks
         dependencies
         execution
         retry
-        submit
+        submission
 
     
     .. autofunction:: context
     .. autofunction:: dependencies
     .. autofunction:: execution
     .. autofunction:: retry
-    .. autofunction:: submit
+    .. autofunction:: submission
     
     
 

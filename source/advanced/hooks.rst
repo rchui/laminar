@@ -127,7 +127,7 @@ For example, the submit hooks can be used to dynamically adjust resource allocat
 
     @flow.register()
     class A(Layer):
-        @hooks.submit
+        @hooks.submission
         def configure_container(self) -> Generator[None, None, None]:
             self.configuration.container.cpu = 4
             self.configuration.container.memory = 2000
@@ -164,7 +164,7 @@ Submit hooks are particularly powerful when combined with the ``ForEach`` config
         def __call__(self, a: A) -> None:
             print(a.baz, self.configuration.container.memory)
 
-        @hooks.submit
+        @hooks.submission
         def configure_container(self, a: A) -> Generator[None, None, None]:
             memory = {"a": 1000, "b": 1500, "c": 2000}
             self.configuration.container.memory = memory[a.baz[unwrap(self.index)]]
