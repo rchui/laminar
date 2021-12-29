@@ -136,7 +136,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Flow.schedule</span></code> is called and the first set of runnable tasks are identified</p></li>
 <li><p>The number of splits for each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is determined.</p></li>
-<li><p>For each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> split, the <a class="reference external" href="../advanced/hooks.html#schedule-hooks">schedule hook</a> is invoked.</p></li>
+<li><p>For each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> split, the <a class="reference external" href="../advanced/hooks.html#submit-hooks">submit hook</a> is invoked.</p></li>
 <li><p>For each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> split, the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is submitted to the executor it is being run on (thread, docker, batch, etc.)</p></li>
 </ol>
 <p class="rubric">Executor</p>

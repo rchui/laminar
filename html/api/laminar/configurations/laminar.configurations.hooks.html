@@ -18,7 +18,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="annotation" href="hooks/laminar.configurations.hooks.annotation.html" />
+    <link rel="next" title="Annotation" href="hooks/laminar.configurations.hooks.Annotation.html" />
     <link rel="prev" title="Configuration" href="flows/laminar.configurations.flows.Configuration.html" /> 
 </head>
 
@@ -75,7 +75,7 @@
 <li class="toctree-l3"><a class="reference internal" href="laminar.configurations.executors.html">executors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="laminar.configurations.flows.html">flows</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">hooks</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="hooks/laminar.configurations.hooks.annotation.html">annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hooks/laminar.configurations.hooks.Annotation.html">Annotation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="laminar.configurations.layers.html">layers</a></li>
@@ -139,14 +139,14 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.hooks.retry" title="laminar.configurations.hooks.retry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">retry</span></code></a></p></td>
 <td><p>Configure a retry hook.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.hooks.schedule" title="laminar.configurations.hooks.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
-<td><p>Configure a schedule hook.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.hooks.submit" title="laminar.configurations.hooks.submit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">submit</span></code></a></p></td>
+<td><p>Configure a submit hook.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="laminar.configurations.hooks.context">
-<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="hooks/laminar.configurations.hooks.annotation.html#laminar.configurations.hooks.annotation" title="laminar.configurations.hooks.annotation"><span class="pre">laminar.configurations.hooks.annotation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">contextlib.ExitStack</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.context" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="hooks/laminar.configurations.hooks.Annotation.html#laminar.configurations.hooks.Annotation" title="laminar.configurations.hooks.Annotation"><span class="pre">laminar.configurations.hooks.Annotation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">contextlib.ExitStack</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.context" title="Permalink to this definition"></a></dt>
 <dd><p>Get a context manager for all hooks of the annotated type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -196,13 +196,13 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="laminar.configurations.hooks.schedule">
-<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.hooks.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.hooks.T</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.schedule" title="Permalink to this definition"></a></dt>
-<dd><p>Configure a schedule hook.</p>
+<dt class="sig sig-object py" id="laminar.configurations.hooks.submit">
+<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.hooks.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.hooks.T</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Configure a submit hook.</p>
 <p>Usage:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
 
-<span class="nd">@hooks</span><span class="o">.</span><span class="n">schedule</span>
+<span class="nd">@hooks</span><span class="o">.</span><span class="n">submit</span>
 <span class="k">def</span> <span class="nf">configure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="o">...</span>
 </pre></div>
@@ -216,7 +216,7 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="hooks/laminar.configurations.hooks.annotation.html#laminar.configurations.hooks.annotation" title="laminar.configurations.hooks.annotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hooks/laminar.configurations.hooks.Annotation.html#laminar.configurations.hooks.Annotation" title="laminar.configurations.hooks.Annotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Annotation</span></code></a></p></td>
 <td><p>An enumeration.</p></td>
 </tr>
 </tbody>
@@ -228,7 +228,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="flows/laminar.configurations.flows.Configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="hooks/laminar.configurations.hooks.annotation.html" class="btn btn-neutral float-right" title="annotation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="hooks/laminar.configurations.hooks.Annotation.html" class="btn btn-neutral float-right" title="Annotation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

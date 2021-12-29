@@ -31,7 +31,7 @@ The following is a rough outline of the call structure of a ``Flow`` execution.
 1. ``Flow.__call__``
 2. ``Flow.schedule`` is called and the first set of runnable tasks are identified
 3. The number of splits for each ``Layer`` is determined.
-4. For each ``Layer`` split, the `schedule hook <../advanced/hooks.html#schedule-hooks>`_ is invoked.
+4. For each ``Layer`` split, the `submit hook <../advanced/hooks.html#submit-hooks>`_ is invoked.
 5. For each ``Layer`` split, the ``Layer`` is submitted to the executor it is being run on (thread, docker, batch, etc.)
 
 .. rubric:: Executor

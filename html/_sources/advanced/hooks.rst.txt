@@ -109,12 +109,12 @@ For example, here we double the requested memory every time the ``Layer`` needs 
 
     Retry hooks are invoked on the ``Flow`` scheduler.
 
-Schedule Hooks
+Submit Hooks
 --------------
 
-Schedule hooks run just prior to a ``Layer`` being scheduled for execution. This is useful for situations where the ``Layer`` needs to be configured in a certain way.
+Submit hooks run just prior to a ``Layer`` being submitted for execution. This is useful for situations where the ``Layer`` needs to be configured in a certain way.
 
-For example, the schedule hooks can be used to dynamically adjust resource allocation for a ``Layer``.
+For example, the submit hooks can be used to dynamically adjust resource allocation for a ``Layer``.
 
 .. code:: python
 
@@ -127,7 +127,7 @@ For example, the schedule hooks can be used to dynamically adjust resource alloc
 
     @flow.register()
     class A(Layer):
-        @hooks.schedule
+        @hooks.submit
         def configure_container(self) -> Generator[None, None, None]:
             self.configuration.container.cpu = 4
             self.configuration.container.memory = 2000
@@ -136,7 +136,7 @@ For example, the schedule hooks can be used to dynamically adjust resource alloc
     if __name__ == "__main__":
         flow()
 
-Schedule hooks are particularly powerful when combined with the ``ForEach`` configuration. Each ``ForEach`` split can be configured differently based on the input parameters.
+Submit hooks are particularly powerful when combined with the ``ForEach`` configuration. Each ``ForEach`` split can be configured differently based on the input parameters.
 
 .. code:: python
 
@@ -164,7 +164,7 @@ Schedule hooks are particularly powerful when combined with the ``ForEach`` conf
         def __call__(self, a: A) -> None:
             print(a.baz, self.configuration.container.memory)
 
-        @hooks.schedule
+        @hooks.submit
         def configure_container(self, a: A) -> Generator[None, None, None]:
             memory = {"a": 1000, "b": 1500, "c": 2000}
             self.configuration.container.memory = memory[a.baz[unwrap(self.index)]]
@@ -183,7 +183,7 @@ Schedule hooks are particularly powerful when combined with the ``ForEach`` conf
 
 .. note::
 
-    Schedule hooks are invoked on the ``Flow`` scheduler.
+    Submit hooks are invoked on the ``Flow`` scheduler.
 
 Flow Hooks
 ----------

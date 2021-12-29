@@ -1,7 +1,7 @@
-annotation
+Annotation
 ==========
 
-.. autoclass:: laminar.configurations.hooks.annotation
+.. autoclass:: laminar.configurations.hooks.Annotation
     :members:
     :inherited-members: BaseModel
     :show-inheritance:
@@ -15,7 +15,10 @@ annotation
     
         
         
-        ~laminar.configurations.hooks.annotation.annotate
+        ~laminar.configurations.hooks.Annotation.annotate
+        
+        
+        ~laminar.configurations.hooks.Annotation.get
         
     
     
@@ -28,13 +31,13 @@ annotation
         :nosignatures:
     
         
-        ~laminar.configurations.hooks.annotation.execution
+        ~laminar.configurations.hooks.Annotation.execution
         
         
-        ~laminar.configurations.hooks.annotation.retry
+        ~laminar.configurations.hooks.Annotation.retry
         
         
-        ~laminar.configurations.hooks.annotation.schedule
+        ~laminar.configurations.hooks.Annotation.submit
         
         
         

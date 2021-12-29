@@ -18,14 +18,14 @@ hooks
         dependencies
         execution
         retry
-        schedule
+        submit
 
     
     .. autofunction:: context
     .. autofunction:: dependencies
     .. autofunction:: execution
     .. autofunction:: retry
-    .. autofunction:: schedule
+    .. autofunction:: submit
     
     
 
@@ -39,7 +39,7 @@ hooks
         :recursive:
         :nosignatures:
     
-        annotation
+        Annotation
     
     
 
