@@ -38,7 +38,7 @@ class Container:
     #: vCPUs to allocate to the container
     cpu: int = 1
     #: Image to create the container with
-    image: str = f"python:{'.'.join(map(str, sys.version_info[:2]))}"
+    image: str = f"rchui/laminar:{'.'.join(map(str, sys.version_info[:2]))}"
     #: Memory in megabytes
     memory: int = 1500
     #: Directory to execute the command in

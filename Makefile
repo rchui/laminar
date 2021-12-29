@@ -38,7 +38,8 @@ open: docs
 
 .PHONY: run
 run:
-	docker build -t test .
+	docker build -t rchui/laminar:3.8 .
+	docker build -t rchui/laminar:test-local -f Dockerfile.test .
 	docker system prune --force
 	python main.py
 

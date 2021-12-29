@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:latest
-FROM python:3.8
+FROM python:3.8-slim
 
 WORKDIR /laminar
 
@@ -9,7 +9,6 @@ RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=cache,target=/root/.cache/pip \
     apt-get update \
     && apt-get install -y --no-install-recommends \
-    && pip install --upgrade pip \
-    && pip install --requirement requirements.txt
-
-COPY . ./
+    && python -m pip install --upgrade pip \
+    && python -m pip install --requirement requirements.txt \
+    && rm requirements.txt

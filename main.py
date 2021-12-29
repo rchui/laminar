@@ -9,7 +9,7 @@ from laminar.types import unwrap
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-container = layers.Container(image="test")
+container = layers.Container(image="rchui/laminar:test-local")
 datastore = datastores.Local()
 
 flow = Flow(name="DockerFlow", datastore=datastore, executor=executors.Docker(concurrency=2))
