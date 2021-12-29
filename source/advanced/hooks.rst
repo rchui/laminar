@@ -109,12 +109,12 @@ For example, here we double the requested memory every time the ``Layer`` needs 
 
     Retry hooks are invoked on the ``Flow`` scheduler.
 
-Submit Hooks
+Submission Hooks
 --------------
 
-Submit hooks run just prior to a ``Layer`` being submitted for execution. This is useful for situations where the ``Layer`` needs to be configured in a certain way.
+Submission hooks run just prior to a ``Layer`` being submitted for execution. This is useful for situations where the ``Layer`` needs to be configured in a certain way.
 
-For example, the submit hooks can be used to dynamically adjust resource allocation for a ``Layer``.
+For example, the submission hooks can be used to dynamically adjust resource allocation for a ``Layer``.
 
 .. code:: python
 
@@ -136,7 +136,7 @@ For example, the submit hooks can be used to dynamically adjust resource allocat
     if __name__ == "__main__":
         flow()
 
-Submit hooks are particularly powerful when combined with the ``ForEach`` configuration. Each ``ForEach`` split can be configured differently based on the input parameters.
+Submission hooks are particularly powerful when combined with the ``ForEach`` configuration. Each ``ForEach`` split can be configured differently based on the input parameters.
 
 .. code:: python
 
@@ -183,7 +183,7 @@ Submit hooks are particularly powerful when combined with the ``ForEach`` config
 
 .. note::
 
-    Submit hooks are invoked on the ``Flow`` scheduler.
+    Submission hooks are invoked on the ``Flow`` scheduler.
 
 Flow Hooks
 ----------
