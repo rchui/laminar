@@ -23,4 +23,5 @@ class TestParameter:
 
         results = flow.results(execution)
 
+        assert results.layer(Parameters).foo == "bar"
         assert results.layer(A).foo == "bar"

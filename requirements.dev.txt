@@ -1,7 +1,7 @@
 --requirement requirements.txt
 
 black
-coverage
+coverage[toml]
 flake8<4.0.0
 isort
 mypy

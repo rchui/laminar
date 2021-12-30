@@ -15,6 +15,12 @@ exclude = '''
 line-length = 120
 experimental-string-processing = true
 
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: not covered",
+  "@overload",
+]
+
 [tool.isort]
 line_length = 120
 profile = "black"
@@ -32,5 +38,5 @@ strict = true
 addopts = "-vv --durations 10 --failed-first --strict-markers"
 markers = [
   "asyncio",
-  "flow"
+  "flow",
 ]
