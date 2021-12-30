@@ -81,11 +81,7 @@ class Layer:
     __enter__: Callable[..., bool]  # type: ignore
 
     def __enter__(self) -> bool:  # type: ignore
-        return all(
-            self.flow.layer(annotation).executed
-            for annotation in annotations(self.__call__)
-            if annotation is not Parameters
-        )
+        return all(layer.executed for layer in self._dependencies if not isinstance(layer, Parameters))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
@@ -136,7 +132,7 @@ class Layer:
 
     @property
     def _dependencies(self) -> Tuple["Layer", ...]:
-        return tuple(self.flow.layer(annotation) for annotation in annotations(self.__call__))
+        return annotations(self.flow, self.__call__)
 
     @property
     def dependencies(self) -> Tuple[str, ...]:

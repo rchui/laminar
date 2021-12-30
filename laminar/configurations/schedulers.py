@@ -114,7 +114,7 @@ class Scheduler:
 
         for layer in runnable:
             instance = flow.layer(layer)
-            parameters = tuple(flow.layer(annotation) for annotation in annotations(instance.__enter__))
+            parameters = annotations(instance.flow, instance.__enter__)
 
             if not instance.__enter__(*parameters):
                 skippable.add(layer)

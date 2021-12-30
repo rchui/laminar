@@ -2,7 +2,7 @@
 
 from contextlib import ExitStack, contextmanager
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Callable, Generator, Optional, Tuple, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Generator, Optional, TypeVar
 
 from laminar.types import annotations
 
@@ -76,12 +76,6 @@ def submission(hook: T) -> T:
     return Annotation.annotate(hook, Annotation.submission)
 
 
-def dependencies(*, layer: Layer, hook: Callable[..., Generator[None, None, None]]) -> Tuple[Layer, ...]:
-    """Get the dependencies for a hook."""
-
-    return tuple(layer.flow.layer(annotation) for annotation in annotations(hook))
-
-
 def context(*, layer: Layer, annotation: Annotation) -> ExitStack:
     """Get a context manager for all hooks of the annotated type.
 
@@ -97,7 +91,7 @@ def context(*, layer: Layer, annotation: Annotation) -> ExitStack:
     for hook in list(vars(type(layer.flow)).values()) + list(vars(type(layer)).values()):
         if Annotation.get(hook) == annotation:
             # Gather any layer dependencies the hook may have
-            parameters = dependencies(layer=layer, hook=hook)
+            parameters = annotations(layer.flow, hook)
 
             # Create a context for each hook and register it with the exit stack
             hook_context = contextmanager(hook)

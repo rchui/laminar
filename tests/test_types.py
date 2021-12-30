@@ -11,19 +11,19 @@ class TestAnnotations:
         def test(a: str, b: bool, c: int) -> None:
             ...
 
-        assert types.annotations(test) == (str, bool, int)
+        assert types.hints(test) == (str, bool, int)
 
     def test_custom(self) -> None:
         def test(a: Accessor, b: Archive) -> None:
             ...
 
-        assert types.annotations(test) == (Accessor, Archive)
+        assert types.hints(test) == (Accessor, Archive)
 
     def test_forward_reference(self) -> None:
         def test(a: "Test") -> None:
             ...
 
-        assert types.annotations(test) == (Test,)
+        assert types.hints(test) == (Test,)
 
 
 class Test:

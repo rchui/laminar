@@ -3,16 +3,16 @@
 from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, Type, TypeVar, get_type_hints
 
 if TYPE_CHECKING:
-    from laminar import Layer
+    from laminar import Flow, Layer
 else:
-    Layer = "Layer"
+    Flow, Layer = "Flow", "Layer"
 
 T = TypeVar("T")
 LayerType = TypeVar("LayerType", bound=Type[Layer])
 
 
-def annotations(function: Callable[..., Any]) -> Tuple[Any, ...]:
-    """Get the type annotations for a given function.
+def hints(function: Callable[..., Any]) -> Tuple[Any, ...]:
+    """Get the type hints for a given function.
 
     Args:
         function (Callable[..., Any]): Function to get annotations for.
@@ -22,6 +22,20 @@ def annotations(function: Callable[..., Any]) -> Tuple[Any, ...]:
     """
 
     return tuple(annotation for parameter, annotation in get_type_hints(function).items() if parameter != "return")
+
+
+def annotations(flow: Flow, func: Callable[..., Any]) -> Tuple[Layer, ...]:
+    """Get the layer annotations for a given function.
+
+    Args:
+        flow: Flow to get layers for.
+        func: Function to get layer annotations for.
+
+    Returns:
+        Type[Layer, ...]: Ordered layer type annotations.
+    """
+
+    return tuple(flow.layer(annotation) for annotation in hints(func))
 
 
 def unwrap(option: Optional[T], default: Optional[T] = None) -> T:
