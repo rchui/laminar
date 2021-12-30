@@ -15,14 +15,12 @@ hooks
         :nosignatures:
     
         context
-        dependencies
         execution
         retry
         submission
 
     
     .. autofunction:: context
-    .. autofunction:: dependencies
     .. autofunction:: execution
     .. autofunction:: retry
     .. autofunction:: submission

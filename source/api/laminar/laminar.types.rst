@@ -15,10 +15,12 @@ types
         :nosignatures:
     
         annotations
+        hints
         unwrap
 
     
     .. autofunction:: annotations
+    .. autofunction:: hints
     .. autofunction:: unwrap
     
     
