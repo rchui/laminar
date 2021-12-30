@@ -118,11 +118,11 @@
 <p>Images are the built units and become containers at runtime. Images are built to a specification like a Dockerfile. A minimal Dockerfile might look like:</p>
 <div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="c"># Dockerfile</span>
 
-<span class="k">FROM</span> <span class="s">rchui/laminar</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">rchui/laminar</span>
 
-<span class="k">WORKDIR</span><span class="s"> /laminar</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/laminar</span>
 
-<span class="k">COPY</span> . ./
+<span class="k">COPY</span><span class="w"> </span>. ./
 </pre></div>
 </div>
 <p>And can be built with:</p>
@@ -143,12 +143,12 @@
 <p>This requirements file can be integrated into your Dockerfile so that your requirements are installed when the image is built.</p>
 <div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="c"># Dockerfile</span>
 
-<span class="k">FROM</span> <span class="s">rchui/laminar</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">rchui/laminar</span>
 
-<span class="k">WORKDIR</span><span class="s"> /laminar</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/laminar</span>
 
-<span class="k">COPY</span> . ./
-<span class="k">RUN</span> pip install --requirement requirements.txt
+<span class="k">COPY</span><span class="w"> </span>. ./
+<span class="k">RUN</span><span class="w"> </span>pip install --requirement requirements.txt
 </pre></div>
 </div>
 <p>There are many great articles about how to create small, efficient Python images: https://snyk.io/blog/best-practices-containerizing-python-docker/</p>
