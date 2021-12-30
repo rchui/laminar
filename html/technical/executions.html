@@ -92,7 +92,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Executions</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/technical/executions.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/technical/executions.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -100,7 +100,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="executions">
+  <section class="tex2jax_ignore mathjax_ignore" id="executions">
 <h1>Executions<a class="headerlink" href="#executions" title="Permalink to this headline"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -124,7 +124,7 @@
 <td><p>Compiles the DAG, excecutes layers in a specific order, and polls for completion.</p></td>
 </tr>
 <tr class="row-odd"><td><p>Executor</p></td>
-<td><p>Executes a single <code class="docutils literal notranslate"><span class="pre">Layer</span></code> and writes its results to the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>.</p></td>
+<td><p>Executes a single <cite>Layer</cite> and writes its results to the <cite>Datastore</cite>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -137,7 +137,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Flow.schedule</span></code> is called and the first set of runnable tasks are identified</p></li>
 <li><p>The number of splits for each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is determined.</p></li>
-<li><p>For each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> split, the <a class="reference external" href="../advanced/hooks.html#submit-hooks">submit hook</a> is invoked.</p></li>
+<li><p>For each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> split, the <code class="docutils literal notranslate"><span class="pre">submit</span> <span class="pre">hook</span> <span class="pre">&lt;../advanced/hooks.html#submit-hooks&gt;</span></code>_ is invoked.</p></li>
 <li><p>For each <code class="docutils literal notranslate"><span class="pre">Layer</span></code> split, the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is submitted to the executor it is being run on (thread, docker, batch, etc.)</p></li>
 </ol>
 <p class="rubric">Executor</p>
@@ -145,14 +145,14 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Flow.__call__</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Flow.execute</span></code> is called and the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is prepared for execution.</p></li>
 <li><p>The parameters for <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code> are prepared.</p></li>
-<li><p>The <a class="reference external" href="../advanced/hooks.html#execution-hooks">execution hook</a> is invoked.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">execution</span> <span class="pre">hook</span> <span class="pre">&lt;../advanced/hooks.html#execution-hooks&gt;</span></code>_ is invoked.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Layer</span></code> artifacts are written to the <code class="docutils literal notranslate"><span class="pre">Datastore</span></code>.</p></li>
 </ol>
 <p class="rubric">Scheduler</p>
 <ol class="arabic simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is waited on for completion.</p></li>
-<li><p>If the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> fails, the <a class="reference external" href="../advanced/hooks.html#retry-hooks">retry hook</a> is invoked and the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> retries.</p></li>
+<li><p>If the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> fails, the <code class="docutils literal notranslate"><span class="pre">retry</span> <span class="pre">hook</span> <span class="pre">&lt;../advanced/hooks.html#retry-hooks&gt;</span></code>_ is invoked and the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> retries.</p></li>
 <li><p>The layer’s <code class="docutils literal notranslate"><span class="pre">Record</span></code> is written to the <code class="docutils literal notranslate"><span class="pre">DataStore</span></code>.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is marked as complete by the scheduler.</p></li>
 <li><p>New runnable layers are identified and scheduled. Return to [3].</p></li>

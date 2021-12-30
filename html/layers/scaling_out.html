@@ -95,7 +95,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Scaling Out</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/layers/scaling_out.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/layers/scaling_out.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -103,7 +103,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="scaling-out">
+  <section class="tex2jax_ignore mathjax_ignore" id="scaling-out">
 <h1>Scaling Out<a class="headerlink" href="#scaling-out" title="Permalink to this headline"></a></h1>
 <section id="sharded-artifacts">
 <h2>Sharded Artifacts<a class="headerlink" href="#sharded-artifacts" title="Permalink to this headline"></a></h2>
@@ -174,7 +174,8 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> will infer from the defined <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> and attribute to fork over. The number of tasks to create in the <code class="docutils literal notranslate"><span class="pre">Process</span></code> layer is determined by the size of <code class="docutils literal notranslate"><span class="pre">Parameter</span></code>. Any <code class="docutils literal notranslate"><span class="pre">Layer</span></code> attribute can be defined as a <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> parameter, including ones that have not been sharded.</p>
+<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> will infer from the defined <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> and attribute to fork over. The number of tasks to create in the <code class="docutils literal notranslate"><span class="pre">Process</span></code> layer is determined by the size of <code class="docutils literal notranslate"><span class="pre">Parameter</span></code>. Any <code class="docutils literal notranslate"><span class="pre">Layer</span></code> attribute can be defined as a <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> parameter, including ones that have not been
+sharded.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 
 <span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>

@@ -93,7 +93,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Executors</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/flows/executors.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/flows/executors.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -101,7 +101,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="executors">
+  <section class="tex2jax_ignore mathjax_ignore" id="executors">
 <h1>Executors<a class="headerlink" href="#executors" title="Permalink to this headline"></a></h1>
 <p>A <code class="docutils literal notranslate"><span class="pre">Flow</span></code> supports multiple backend executors which configure how work is executed in the workflow.</p>
 <section id="docker">
@@ -134,11 +134,11 @@
 <p class="admonition-title">Warning</p>
 <p><code class="docutils literal notranslate"><span class="pre">AWS.Batch</span></code> is experimental.</p>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">AWS.Batch`</span></code> executor executes layers in AWS Batch compute service.</p>
+<p>The `AWS.Batch`` executor executes layers on the <a class="reference external" href="https://aws.amazon.com/batch/">AWS Batch</a> compute service.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;BatchFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">Batch</span><span class="p">())</span>
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;BatchFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">Batch</span><span class="p">(</span><span class="n">job_queue_arn</span><span class="o">=...</span><span class="p">,</span> <span class="n">job_role_arn</span><span class="o">=...</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
