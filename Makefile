@@ -1,4 +1,5 @@
 include Make.rules
+include Make.tf
 
 .PHONY: clean
 clean: clear
