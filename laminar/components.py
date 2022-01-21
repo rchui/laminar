@@ -1,9 +1,9 @@
 """Core components for build flows."""
 
+import copy
 import logging
-from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple, Type, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union
 
 from ksuid import KsuidMs
 
@@ -75,7 +75,7 @@ class Layer:
         result: Layer = cls.__new__(cls)
         memo[id(self)] = result
         for k, v in self.__dict__.items():
-            setattr(result, k, deepcopy(v, memo))
+            setattr(result, k, copy.deepcopy(v, memo))
         return result
 
     __enter__: Callable[..., bool]  # type: ignore
@@ -139,6 +139,17 @@ class Layer:
         """Layers this layer depends on."""
 
         return tuple(layer.name for layer in self._dependencies)
+
+    @property
+    def hooks(self) -> Dict[str, List[Callable[..., Any]]]:
+        """Hooks attached to this layer."""
+
+        _hooks: Dict[str, List[Callable[..., Any]]] = {}
+        for entry in list(vars(type(self.flow)).values()) + list(vars(type(self)).values()):
+            annotation = hooks.Annotation.get(entry)
+            if annotation is not None:
+                _hooks.setdefault(annotation, []).append(entry)
+        return _hooks
 
     def _execute(self, *parameters: "Layer") -> None:
         """Execute a layer.
@@ -356,7 +367,7 @@ class Flow:
                 )
 
             # First register the layer without the flow attribute
-            self._registry[layer.name] = deepcopy(layer)
+            self._registry[layer.name] = copy.deepcopy(layer)
 
             return Layer
 
@@ -386,7 +397,7 @@ class Flow:
             layer = layer().name
 
         # Deepcopy so that layer artifacts don't mess with other layer split executions
-        layer = deepcopy(self._registry[layer])
+        layer = copy.deepcopy(self._registry[layer])
 
         # Inject the flow attribute to link the layer to the flow
         layer.flow = self
@@ -443,6 +454,6 @@ class Flow:
             THe flow configured with the execution ID.
         """
 
-        flow = deepcopy(self)
+        flow = copy.deepcopy(self)
         flow.execution = execution
         return flow

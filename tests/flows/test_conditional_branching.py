@@ -15,6 +15,7 @@ class A(Layer):
         self.foo = "bar"
 
 
+# Always skip B
 @flow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
@@ -24,17 +25,26 @@ class B(Layer):
         return False
 
 
+# C executes because A executed
 @flow.register()
 class C(Layer):
     def __call__(self, a: A) -> None:
         self.foo = "baz"
 
 
+# D skips because B was skipped
 @flow.register()
 class D(Layer):
-    def __call__(self, b: B, c: C) -> None:
-        if b.executed:
-            self.foo = [b.foo, c.foo]
+    def __call__(self, b: B) -> None:
+        self.foo = b.foo
+
+
+# Force E to execute even though D skipped
+@flow.register()
+class E(Layer):
+    def __call__(self, c: C, d: D) -> None:
+        if d.executed:
+            self.foo = [c.foo, d.foo]
         else:
             self.foo = [c.foo]
 
@@ -49,8 +59,11 @@ class TestConditionalBranching:
 
         results = flow.results(unwrap(execution))
 
+        assert results.layer(A).executed is True
         assert results.layer(A).foo == "bar"
         assert results.layer(B).executed is False
+        assert results.layer(C).executed is True
         assert results.layer(C).foo == "baz"
-        assert results.layer(D).executed is True
-        assert results.layer(D).foo == ["baz"]
+        assert results.layer(D).executed is False
+        assert results.layer(E).executed is True
+        assert results.layer(E).foo == ["baz"]

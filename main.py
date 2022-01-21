@@ -54,9 +54,8 @@ class Three(Layer):
         print(self.baz)
 
     @hooks.submission
-    def configure_container(self, one: One) -> Generator[None, None, None]:
+    def configure_container(self, one: One) -> None:
         self.configuration.container.memory = {"a": 1000, "b": 15000, "c": 2000}[one.baz[unwrap(self.index)]]
-        yield
 
 
 five_foreach = layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])

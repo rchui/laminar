@@ -1,5 +1,6 @@
 """Configurations for laminar hooks."""
 
+import inspect
 from contextlib import ExitStack, contextmanager
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Generator, Optional, TypeVar
@@ -27,7 +28,7 @@ class Annotation(str, Enum):
         return hook
 
     @staticmethod
-    def get(hook: Callable[..., Generator[None, None, None]]) -> Optional[str]:
+    def get(hook: Callable[..., Generator[Any, None, None]]) -> Optional[str]:
         return getattr(hook, ATTRIBUTE, None)
 
 
@@ -77,7 +78,7 @@ def submission(hook: T) -> T:
 
 
 def context(*, layer: Layer, annotation: Annotation) -> ExitStack:
-    """Get a context manager for all hooks of the annotated type.
+    """Get a context manager and results for all hooks of the annotated type.
 
     Args:
         layer: Layer the hooks are for.
@@ -88,13 +89,17 @@ def context(*, layer: Layer, annotation: Annotation) -> ExitStack:
     """
 
     stack = ExitStack()
-    for hook in list(vars(type(layer.flow)).values()) + list(vars(type(layer)).values()):
-        if Annotation.get(hook) == annotation:
-            # Gather any layer dependencies the hook may have
-            parameters = annotations(layer.flow, hook)
+    for hook in layer.hooks.get(annotation, []):
+        # Gather any layer dependencies the hook may have
+        parameters = annotations(layer.flow, hook)
 
-            # Create a context for each hook and register it with the exit stack
-            hook_context = contextmanager(hook)
-            stack.enter_context(hook_context(layer, *parameters))
+        # Create a context manager for the generator and register it with the exit stack
+        if inspect.isgeneratorfunction(hook):
+            manager = contextmanager(hook)
+            stack.enter_context(manager(layer, *parameters))
+
+        # Call the hook function
+        else:
+            hook(layer, *parameters)
 
     return stack
