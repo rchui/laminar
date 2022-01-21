@@ -2,7 +2,7 @@
 
 Flows can be parameterized so that the same logic can be executed multiple times with different inputs.
 
-```{note}
+```{tip}
 It may be helpful to read [Technical Details: Execution](../technical/executions) to get a better understanding of why execution guards and multiple entrypoints are useful.
 ```
 

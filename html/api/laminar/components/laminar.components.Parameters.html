@@ -146,16 +146,19 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.executed" title="laminar.components.Parameters.executed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">executed</span></code></a></p></td>
 <td><p>True if the layer was executed, else False.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Parameters.hooks" title="laminar.components.Parameters.hooks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
+<td><p>Hooks attached to this layer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></p></td>
 <td><p>Layer index in its splits</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.name" title="laminar.components.Parameters.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Parameters.name" title="laminar.components.Parameters.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td><p>Name of the layer</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></p></td>
 <td><p>Namespace the Layer is a part of</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></p></td>
 <td><p>Number of splits in the layer execution</p></td>
 </tr>
 </tbody>
@@ -175,6 +178,12 @@
 <dt class="sig sig-object py" id="laminar.components.Parameters.executed">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">executed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#laminar.components.Parameters.executed" title="Permalink to this definition"></a></dt>
 <dd><p>True if the layer was executed, else False.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="laminar.components.Parameters.hooks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hooks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Parameters.hooks" title="Permalink to this definition"></a></dt>
+<dd><p>Hooks attached to this layer.</p>
 </dd></dl>
 
 <dl class="py property">

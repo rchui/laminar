@@ -49,6 +49,8 @@ Current
         
         
         
+        
+        
         ~laminar.settings.Current.construct
         
         
@@ -94,6 +96,8 @@ Current
     .. autosummary::
         :nosignatures:
     
+        
+        
         
         
         

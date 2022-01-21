@@ -62,10 +62,15 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Hooks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#execution-hooks">Execution Hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#retry-hooks">Retry Hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#submission-hooks">Submission Hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#flow-hooks">Flow Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-hooks">Multiple Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#types">Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#execution-hooks">Execution Hooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retry-hooks">Retry Hooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submission-hooks">Submission Hooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flow-hooks">Flow Hooks</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="serde.html">Ser(De)</a></li>
@@ -104,8 +109,8 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="hooks">
 <h1>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> supports a hook system for users to extend the existing functionality and dynamically adjust the flow in response to changes that occur at execution time. Hooks are Python generators that can perform actions before and after events occur within the flow.</p>
-<p>An example of an execution hook in action:</p>
+<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> supports a hook system for users to extend the existing functionality and dynamically adjust the flow in response to changes that occur at execution time. Hooks are Python generators or functions that can perform actions before and after events occur within the flow.</p>
+<p>Hooks are defined by adding decorators.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
@@ -121,28 +126,60 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;in call&quot;</span><span class="p">)</span>
 
     <span class="nd">@hooks</span><span class="o">.</span><span class="n">execution</span>
-    <span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">configure_before_after</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;before call&quot;</span><span class="p">)</span>
         <span class="k">yield</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;after call&quot;</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">flow</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;before call&quot;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;in call&quot;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;after call&quot;</span>
+<p>A hook defined as a generator will yield until the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> has completed executing before finishing. A hook defined as a function will immediately return before the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> has been executed.</p>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
+<p>Hooks, like other <code class="docutils literal notranslate"><span class="pre">Layer</span></code> functions, can use other layers as dependencies.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@hooks</span><span class="o">.</span><span class="n">submission</span>
+<span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">memory</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">foo</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>The values from those <code class="docutils literal notranslate"><span class="pre">Layer</span></code> dependencies can be used to inform the business logic within each hook.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Hook dependencies are not evaluated to determine <code class="docutils literal notranslate"><span class="pre">Layer</span></code> dependencies. Users are responsible for ensuring that they only use layers that have already been executed.</p>
 </div>
+</section>
+<section id="multiple-hooks">
+<h2>Multiple Hooks<a class="headerlink" href="#multiple-hooks" title="Permalink to this headline"></a></h2>
+<p>Any number of each type of hook can be defined for a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>. Here is a replication of <code class="docutils literal notranslate"><span class="pre">configure_before_after</span></code> from the above execution hook with two hooks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Flow&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;in call&quot;</span><span class="p">)</span>
+
+    <span class="nd">@hooks</span><span class="o">.</span><span class="n">execution</span>
+    <span class="k">def</span> <span class="nf">configure_entry_1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;before call&quot;</span><span class="p">)</span>
+
+    <span class="nd">@hooks</span><span class="o">.</span><span class="n">execution</span>
+    <span class="k">def</span> <span class="nf">configure_entry_1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="k">yield</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;after call&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Hooks of the same type are executed roughly in the order that they are defined in the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> (but not necessarily guaranteed). Using multiple hooks allows for deep and dynamic customization of the entire <code class="docutils literal notranslate"><span class="pre">Layer</span></code> lifecycle.</p>
+</section>
+<section id="types">
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this headline"></a></h2>
 <section id="execution-hooks">
-<h2>Execution Hooks<a class="headerlink" href="#execution-hooks" title="Permalink to this headline"></a></h2>
+<h3>Execution Hooks<a class="headerlink" href="#execution-hooks" title="Permalink to this headline"></a></h3>
 <p>Execution hooks run just prior to the invocation of <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>. This is useful for situations when something needs to occur prior to a layer starting.</p>
 <p>For example, the execution hooks can be used to open connections to remote databases.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
@@ -176,12 +213,10 @@
 </div>
 </section>
 <section id="retry-hooks">
-<h2>Retry Hooks<a class="headerlink" href="#retry-hooks" title="Permalink to this headline"></a></h2>
+<h3>Retry Hooks<a class="headerlink" href="#retry-hooks" title="Permalink to this headline"></a></h3>
 <p>Retry hooks run just prior to waiting for a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>’s retry backoff. This is useful for situations where the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> needs to be adjusted in response to a failure.</p>
 <p>For example, here we double the requested memory every time the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> needs to retry.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
-
-<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
 
 <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Flow&quot;</span><span class="p">)</span>
@@ -189,9 +224,8 @@
 <span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="nd">@hooks</span><span class="o">.</span><span class="n">retry</span>
-    <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">*</span> <span class="mi">2</span>
-        <span class="k">yield</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow</span><span class="p">()</span>
@@ -203,7 +237,7 @@
 </div>
 </section>
 <section id="submission-hooks">
-<h2>Submission Hooks<a class="headerlink" href="#submission-hooks" title="Permalink to this headline"></a></h2>
+<h3>Submission Hooks<a class="headerlink" href="#submission-hooks" title="Permalink to this headline"></a></h3>
 <p>Submission hooks run just prior to a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> being submitted for execution. This is useful for situations where the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> needs to be configured in a certain way.</p>
 <p>For example, the submission hooks can be used to dynamically adjust resource allocation for a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
@@ -216,19 +250,16 @@
 <span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="nd">@hooks</span><span class="o">.</span><span class="n">submission</span>
-    <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">cpu</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="mi">2000</span>
-        <span class="k">yield</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Submission hooks are particularly powerful when combined with the <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> configuration. Each <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> split can be configured differently based on the input parameters.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
-
-<span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">hooks</span>
 <span class="kn">from</span> <span class="nn">laminar.types</span> <span class="kn">import</span> <span class="n">unwrap</span>
 
@@ -251,10 +282,9 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">baz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span><span class="p">)</span>
 
     <span class="nd">@hooks</span><span class="o">.</span><span class="n">submission</span>
-    <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">memory</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">baz</span><span class="p">[</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]]</span>
-        <span class="k">yield</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow</span><span class="p">()</span>
@@ -273,7 +303,7 @@
 </div>
 </section>
 <section id="flow-hooks">
-<h2>Flow Hooks<a class="headerlink" href="#flow-hooks" title="Permalink to this headline"></a></h2>
+<h3>Flow Hooks<a class="headerlink" href="#flow-hooks" title="Permalink to this headline"></a></h3>
 <p>Hooks can also be added to a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> instead of a <code class="docutils literal notranslate"><span class="pre">Layer</span></code>. These hooks behave the same way, except they are are invoked on every <code class="docutils literal notranslate"><span class="pre">Layer</span></code> within a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. This is useful for situations where the same setup/teardown needs to occur on every <code class="docutils literal notranslate"><span class="pre">Layer</span></code>.</p>
 <p>Hooks can be defined on a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> by subclassing the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> class.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
@@ -316,6 +346,7 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;after B&quot;</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 

@@ -153,22 +153,25 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.executed" title="laminar.components.Layer.executed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">executed</span></code></a></p></td>
 <td><p>True if the layer was executed, else False.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.index" title="laminar.components.Layer.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.hooks" title="laminar.components.Layer.hooks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
+<td><p>Hooks attached to this layer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.index" title="laminar.components.Layer.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
 <td><p>Layer index in its splits</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.name" title="laminar.components.Layer.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.name" title="laminar.components.Layer.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td><p>Name of the layer</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.namespace" title="laminar.components.Layer.namespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.namespace" title="laminar.components.Layer.namespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></a></p></td>
 <td><p>Namespace the Layer is a part of</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
 <td><p>Number of splits in the layer execution</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
 <td><p>Configurations for the Layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
 <td><p>Flow the Layer is registered to</p></td>
 </tr>
 </tbody>
@@ -206,6 +209,12 @@
 <dt class="sig sig-object py" id="laminar.components.Layer.flow">
 <span class="sig-name descname"><span class="pre">flow</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">laminar.components.Flow</span></a></em><a class="headerlink" href="#laminar.components.Layer.flow" title="Permalink to this definition"></a></dt>
 <dd><p>Flow the Layer is registered to</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="laminar.components.Layer.hooks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hooks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Layer.hooks" title="Permalink to this definition"></a></dt>
+<dd><p>Hooks attached to this layer.</p>
 </dd></dl>
 
 <dl class="py attribute">

@@ -72,6 +72,9 @@ Layer
         ~laminar.components.Layer.executed
         
         
+        ~laminar.components.Layer.hooks
+        
+        
         ~laminar.components.Layer.index
         
         
