@@ -13,7 +13,7 @@ exclude = '''
 )
 '''
 line-length = 120
-experimental-string-processing = true
+preview = true
 
 [tool.coverage.report]
 exclude_lines = [

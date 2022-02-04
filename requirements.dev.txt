@@ -2,7 +2,7 @@
 
 black
 coverage[toml]
-flake8<4.0.0
+flake8
 isort
 mypy
 myst-parser
