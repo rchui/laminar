@@ -2,10 +2,11 @@ name: integration
 on: [push]
 jobs:
   test:
-    name: ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} - ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macOS-latest]
         python-version: ['3.8', '3.9', '3.10']
     env:
       PY_COLORS: "1"
