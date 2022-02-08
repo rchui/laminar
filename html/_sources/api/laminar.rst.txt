@@ -35,4 +35,5 @@
    laminar.settings
    laminar.types
    laminar.utils
+   laminar.version
 
