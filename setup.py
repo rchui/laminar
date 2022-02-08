@@ -21,7 +21,6 @@ with open(README, "r") as readme, open(REQUIREMENTS, "r") as requirements:
             "Programming Language :: Python",
             "Programming Language :: Python :: 3",
             "Programming Language :: Python :: 3 :: Only",
-            "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
@@ -37,6 +36,10 @@ with open(README, "r") as readme, open(REQUIREMENTS, "r") as requirements:
         long_description_content_type="text/markdown",
         name="laminar",
         packages=find_packages(exclude=["tests"]),
+        project_urls={
+            "Homepage": "https://github.com/rchui/laminar",
+            "Documentation": "https://rchui.github.io/laminar/html/index.html",
+        },
         python_requires=">=3.8",
         url="https://github.com/rchui/laminar",
         version=str(SourceFileLoader("version", VERSION).load_module().VERSION),
