@@ -6,6 +6,9 @@
 
 # Python
 __pycache__
+build
+dist
+laminar.egg-info
 
 # Sphinx
 objects.inv
