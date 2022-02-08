@@ -186,14 +186,14 @@
 </section>
 <section id="processes">
 <h2>Processes<a class="headerlink" href="#processes" title="Permalink to this headline"></a></h2>
-<p>A <code class="docutils literal notranslate"><span class="pre">laminar</span></code> deployment consists of two parts; a scheduler and an executor.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">laminar</span></code> deployment consists of starting a scheduler process.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>It may be helpful to read <a class="reference internal" href="../technical/executions.html"><span class="doc std std-doc">Technical Details: Execution</span></a> to get a better understanding of how the processes interact.</p>
 </div>
 <section id="schedulers">
 <h3>Schedulers<a class="headerlink" href="#schedulers" title="Permalink to this headline"></a></h3>
-<p>The scheduler submits layers for execution and tracks their completion. The scheduler is a long running process that runs for the lifetime of a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> execution. Scheduler processes should be run on reliable infrastructure that has high availability guarantees as the scheduler process will not recover on failure.</p>
+<p>The scheduler starts executor processes and tracks their completion. The scheduler is a long running process that runs for the lifetime of a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> execution. Scheduler processes should be run on reliable infrastructure that has high availability guarantees as the scheduler process will not recover on failure.</p>
 <p>Consider the following simple flow:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 
@@ -246,11 +246,11 @@
 </section>
 <section id="container">
 <h4>Container<a class="headerlink" href="#container" title="Permalink to this headline"></a></h4>
-<p>Although scheduler processes can be started manually, we recommend that users also run the scheduler in a container. Using the previously built image:</p>
+<p>Although scheduler processes can be started outside of a container, we recommend that users also run the scheduler in one. Using the previously built image:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">my</span><span class="o">/</span><span class="n">laminar</span><span class="o">/</span><span class="n">image</span> <span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<p>This command will starts a <code class="docutils literal notranslate"><span class="pre">my/laminar/image</span></code> Docker container and execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">main.py</span></code> within it. Because the container contains all python package dependencies bundled within it, there is no need to install packages before invocation.</p>
+<p>This command will starts a <code class="docutils literal notranslate"><span class="pre">my/laminar/image</span></code> Docker container and executes <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">main.py</span></code> within it. Because the container contains all python package dependencies bundled within it, there is no need to install packages before invocation.</p>
 </section>
 </section>
 <section id="executors">

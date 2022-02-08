@@ -85,7 +85,7 @@ docker run my/laminar/image echo "hello world"
 
 ## Processes
 
-A `laminar` deployment consists of two parts; a scheduler and an executor.
+A `laminar` deployment consists of starting a scheduler process.
 
 ```{note}
 It may be helpful to read [Technical Details: Execution](../technical/executions) to get a better understanding of how the processes interact.
@@ -93,7 +93,7 @@ It may be helpful to read [Technical Details: Execution](../technical/executions
 
 ### Schedulers
 
-The scheduler submits layers for execution and tracks their completion. The scheduler is a long running process that runs for the lifetime of a `Flow` execution. Scheduler processes should be run on reliable infrastructure that has high availability guarantees as the scheduler process will not recover on failure.
+The scheduler starts executor processes and tracks their completion. The scheduler is a long running process that runs for the lifetime of a `Flow` execution. Scheduler processes should be run on reliable infrastructure that has high availability guarantees as the scheduler process will not recover on failure.
 
 Consider the following simple flow:
 
@@ -155,12 +155,12 @@ python main.py
 
 #### Container
 
-Although scheduler processes can be started manually, we recommend that users also run the scheduler in a container. Using the previously built image:
+Although scheduler processes can be started outside of a container, we recommend that users also run the scheduler in one. Using the previously built image:
 ```
 docker run my/laminar/image python main.py
 ```
 
-This command will starts a `my/laminar/image` Docker container and execute `python main.py` within it. Because the container contains all python package dependencies bundled within it, there is no need to install packages before invocation.
+This command will starts a `my/laminar/image` Docker container and executes `python main.py` within it. Because the container contains all python package dependencies bundled within it, there is no need to install packages before invocation.
 
 ### Executors
 
