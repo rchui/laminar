@@ -1,15 +1,14 @@
-#!/usr/bin/env python3
 import os
 import re
 import sys
 
-from pydantic.version import VERSION
+import laminar
 
 
 def main(env_var: str = "GITHUB_REF") -> int:
     git_ref = os.getenv(env_var, "none")
     tag = re.sub("^refs/tags/v*", "", git_ref.lower())
-    version = VERSION.lower()
+    version = laminar.__version__.lower()
 
     if tag == version:
         print(f"✓ {env_var} env var {git_ref!r} matches package version: {tag!r} == {version!r}")

@@ -90,7 +90,7 @@ jobs:
         run: make check
 
       - name: tag
-        run: tests/tag.py
+        run: python tests/tag.py
 
       - name: promote
         run: twine upload dist/*
