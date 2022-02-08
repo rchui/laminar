@@ -47,6 +47,10 @@ run:
 	docker system prune --force
 	python main.py
 
+.PHONY: tag
+tag:
+	python tests/tag.py
+
 .PHONY: test
 test:
 	$(VENV) black .
@@ -55,9 +59,9 @@ test:
 
 .PHONY: upgrade
 upgrade:
-	$(PIP) --upgrade pip
-	$(PIP) --upgrade --requirement requirements.txt
-	$(PIP) --upgrade --requirement requirements.dev.txt
+	$(VENV) $(INSTALL) pip
+	$(VENV) $(INSTALL) --requirement requirements.txt
+	$(VENV) $(INSTALL) --requirement requirements.dev.txt
 
 .PHONY: venv
 venv:

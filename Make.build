@@ -1,3 +1,4 @@
+include Make.rules
 
 .PHONY: build
 build:
@@ -10,4 +11,5 @@ check:
 
 .PHONY: setup
 setup:
-	python -m pip install --upgrade twine pip build
+	$(INSTALL) pip
+	$(INSTALL) --requirement requirements.dev.txt

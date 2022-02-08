@@ -77,20 +77,20 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: install
-        run: make setup
-
       - name: dist
         uses: actions/download-artifact@v2
         with:
           name: dist
           path: dist
 
+      - name: install
+        run: make setup
+
       - name: check
         run: make check
 
       - name: tag
-        run: python tests/tag.py
+        run: make tag
 
       - name: promote
         run: twine upload dist/*
