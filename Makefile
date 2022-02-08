@@ -1,32 +1,35 @@
+include Make.build
 include Make.rules
 include Make.tf
 
+.PHONY: bash zsh
+bash zsh:
+	$(VENV) /bin/$@
+
 .PHONY: clean
 clean: clear
-	rm -rf __pycache__ .mypy_cache .pytest_cache .venv .coverage
+	rm -rf \
+		__pycache__ \
+		.coverage \
+		.mypy_cache \
+		.pytest_cache \
+		.venv
 
 .PHONY: clear
 clear:
-	rm -rf .laminar
-	rm -rf docs/source/api docs/html
+	rm -rf \
+		.laminar \
+		build \
+		dist \
+		docs/html \
+		docs/source/api
 
 .PHONY: docs
 docs:
 	sphinx-build -a docs/source docs/html
 
 .PHONY: env
-env:
-	python -m virtualenv .venv --clear
-	$(MAKE) upgrade
-
-.PHONY: upgrade
-upgrade:
-	$(PIP) --upgrade pip
-	$(PIP) --upgrade --requirement requirements.dev.txt
-
-.PHONY: bash zsh
-bash zsh:
-	$(VENV) /bin/$@
+env: venv upgrade
 
 .PHONY: format
 format:
@@ -46,6 +49,16 @@ run:
 
 .PHONY: test
 test:
-	black .
-	pytest -m "not flow" --cov laminar --cov-report term-missing --flake8 --mypy --isort
-	pytest -m "flow"
+	$(VENV) black .
+	$(VENV) pytest -m "not flow" --cov laminar --cov-report term-missing --flake8 --mypy --isort
+	$(VENV) pytest -m "flow"
+
+.PHONY: upgrade
+upgrade:
+	$(PIP) --upgrade pip
+	$(PIP) --upgrade --requirement requirements.txt
+	$(PIP) --upgrade --requirement requirements.dev.txt
+
+.PHONY: venv
+venv:
+	python -m venv .venv --clear
