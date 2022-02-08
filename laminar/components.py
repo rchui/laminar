@@ -8,14 +8,14 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Ty
 from ksuid import KsuidMs
 
 from laminar.configurations import datastores, executors, flows, hooks, layers, schedulers
-from laminar.exceptions import FlowError, LayerError
+from laminar.exceptions import ExecutionError, FlowError, LayerError
 from laminar.settings import current
 from laminar.types import LayerType, annotations
 from laminar.utils import contexts
 
 logger = logging.getLogger(__name__)
 
-FLOW_RESREVED_KEYWORDS = {"configuration", "execution"}
+FLOW_RESERVED_KEYWORDS = {"configuration", "execution"}
 LAYER_RESERVED_KEYWORDS = {"attempt", "configuration", "flow", "index", "namespace", "splits"}
 
 
@@ -266,7 +266,7 @@ class Flow:
                 dependents.setdefault(parent, set()).add(child)
         return dependents
 
-    def __call__(self, *, execution: Optional[str] = None) -> Optional[str]:
+    def __call__(self, *, execution: Optional[str] = None, **attributes: Any) -> Optional[str]:
         """Execute the flow or execute a layer in the flow.
 
         Notes:
@@ -288,6 +288,7 @@ class Flow:
         # Schedule execution of the flow.
         elif self.execution is None:
             execution = execution or str(KsuidMs())
+            self.parameters(execution=execution, **attributes)
             self.schedule(execution=execution, dependencies=self.dependencies)
 
         return execution
@@ -430,11 +431,15 @@ class Flow:
 
             # Assign artifact values
             for name, value in artifacts.items():
-                if name not in LAYER_RESERVED_KEYWORDS:
-                    setattr(layer, name, value)
+                if name in LAYER_RESERVED_KEYWORDS:
+                    raise ExecutionError(
+                        "A flow parameter is in the list of layer reserved keywords:"
+                        f" {sorted(LAYER_RESERVED_KEYWORDS)}. Given {name}."
+                    )
+                setattr(layer, name, value)
 
             # Fake an execution to write the artifacts to the datastore.
-            layer._execute()
+            self.execute(execution=execution, layer=layer)
 
         return execution
 
