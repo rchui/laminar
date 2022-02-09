@@ -20,7 +20,7 @@ class TestLayer:
         assert Layer(foo="bar").foo == "bar"
 
     def test_repr(self, layer: Layer) -> None:
-        assert layer.__repr__() == "Layer(flow=TestFlow(execution='test-execution'), index=0, splits=2)"
+        assert layer.__repr__() == "Layer(flow=TestFlow(execution=Execution(id=test-execution)), index=0, splits=2)"
 
     def test_subclass_init(self) -> None:
         assert Layer().namespace is None
@@ -170,7 +170,7 @@ class TestFLow:
     @patch("laminar.components.Flow.schedule")
     @patch("laminar.components.Flow.execute")
     def test_call(self, mock_execute: Mock, mock_schedule: Mock, flow: Flow) -> None:
-        with contexts.Attributes(flow, execution=None):
+        with contexts.Attributes(flow.execution, id=None):
             flow()
 
         mock_schedule.assert_called_once_with(execution=ANY, dependencies={"Parameters": ()})
@@ -229,4 +229,4 @@ class TestFLow:
         assert flow.layer(Test, foo="bar").foo == "bar"
 
     def test_results(self, flow: Flow) -> None:
-        assert flow.results("test-execution").execution == "test-execution"
+        assert flow.results("test-execution").execution.id == "test-execution"

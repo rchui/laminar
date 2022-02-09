@@ -62,7 +62,7 @@ class Record:
     def path(*, layer: Layer) -> str:
         """Get the path to the Record."""
 
-        return fs.join(layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, ".record.json")
+        return fs.join(layer.flow.name, ".cache", unwrap(layer.flow.execution.id), layer.name, ".record.json")
 
     def dict(self) -> Dict[str, Any]:
         """Convert the Record to a dict."""
@@ -130,9 +130,16 @@ class Archive:
         parts: Tuple[str, ...]
 
         if cache:
-            parts = (layer.flow.name, ".cache", unwrap(layer.flow.execution), layer.name, f"{name}.json")
+            parts = (layer.flow.name, ".cache", unwrap(layer.flow.execution.id), layer.name, f"{name}.json")
         else:
-            parts = (layer.flow.name, "archives", unwrap(layer.flow.execution), layer.name, str(index), f"{name}.json")
+            parts = (
+                layer.flow.name,
+                "archives",
+                unwrap(layer.flow.execution.id),
+                layer.name,
+                str(index),
+                f"{name}.json",
+            )
 
         return fs.join(*parts)
 
@@ -420,7 +427,11 @@ class DataStore:
         """
 
         return sorted(
-            set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives", unwrap(flow.execution))), group="layer"))
+            set(
+                self._list(
+                    prefix=self.uri(path=fs.join(flow.name, "archives", unwrap(flow.execution.id))), group="layer"
+                )
+            )
         )
 
     def list_artifacts(self, *, layer: Layer) -> List[str]:
@@ -437,7 +448,7 @@ class DataStore:
             set(
                 self._list(
                     prefix=self.uri(
-                        path=fs.join(layer.flow.name, "archives", unwrap(layer.flow.execution), layer.name, "0")
+                        path=fs.join(layer.flow.name, "archives", unwrap(layer.flow.execution.id), layer.name, "0")
                     ),
                     group="artifact",
                 )

@@ -179,7 +179,7 @@ class Scheduler:
         finished = deepcopy(finished)
 
         logger.info("Flow: '%s'", flow.name)
-        logger.info("Execution: '%s'", unwrap(flow.execution))
+        logger.info("Execution: '%s'", unwrap(flow.execution.id))
         logger.info("Dependencies: '%s'", dependencies)
 
         pending = set(dependencies) - finished

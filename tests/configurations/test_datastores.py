@@ -37,11 +37,11 @@ class TestArchive:
     def test_path(self, layer: Layer) -> None:
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive", cache=False)
-            == f"{layer.flow.name}/archives/{layer.flow.execution}/{layer.name}/{layer.index}/test-archive.json"
+            == f"{layer.flow.name}/archives/{layer.flow.execution.id}/{layer.name}/{layer.index}/test-archive.json"
         )
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive", cache=True)
-            == f"{layer.flow.name}/.cache/{layer.flow.execution}/{layer.name}/test-archive.json"
+            == f"{layer.flow.name}/.cache/{layer.flow.execution.id}/{layer.name}/test-archive.json"
         )
 
     def test_parse(self) -> None:

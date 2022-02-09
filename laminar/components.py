@@ -190,6 +190,20 @@ class Parameters(Layer):
     """Special Layer for handling Flow parameters."""
 
 
+class Execution:
+    def __init__(self, *, id: Optional[str], flow: "Flow") -> None:
+        self.id = id
+        self.flow = flow
+
+    def __call__(self, id: str) -> "Execution":
+        execution = copy.deepcopy(self)
+        execution.id = id
+        return execution
+
+    def __repr__(self) -> str:
+        return f"Execution(id={self.id})"
+
+
 class Flow:
     """Collection of tasks that execute in a specific order.
 
@@ -202,8 +216,6 @@ class Flow:
 
     #: Configurations for the flow
     configuration: flows.Configuration
-    #: ID of the flow's current execution
-    execution: Optional[str] = current.execution.id
 
     def __init__(
         self,
@@ -228,6 +240,7 @@ class Flow:
             )
 
         self.name = name
+        self.execution = Execution(id=current.execution.id, flow=self)
 
         if isinstance(datastore, datastores.Memory) and not isinstance(executor, executors.Thread):
             raise FlowError("The Memory datastore can only be used with the Thread executor.")
@@ -282,11 +295,11 @@ class Flow:
         """
 
         # Execute a layer in the flow.
-        if self.execution is not None and self.name == current.flow.name and current.layer.name in self._registry:
-            self.execute(execution=self.execution, layer=self.layer(current.layer.name))
+        if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self._registry:
+            self.execute(execution=self.execution.id, layer=self.layer(current.layer.name))
 
         # Schedule execution of the flow.
-        elif self.execution is None:
+        elif self.execution.id is None:
             execution = execution or str(KsuidMs())
             self.parameters(execution=execution, **attributes)
             self.schedule(execution=execution, dependencies=self.dependencies)
@@ -318,7 +331,7 @@ class Flow:
             layer: Layer of the flow to execute.
         """
 
-        with contexts.Attributes(layer.flow, execution=execution):
+        with contexts.Attributes(layer.flow.execution, id=execution):
 
             logger.info("Starting layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
@@ -338,7 +351,7 @@ class Flow:
             dependencies: Mapping of layers to layers it depends on.
         """
 
-        with contexts.Attributes(self, execution=execution):
+        with contexts.Attributes(self.execution, id=execution):
             self.configuration.scheduler.loop(flow=self, dependencies=dependencies, finished={"Parameters"})
 
     def register(
@@ -424,7 +437,7 @@ class Flow:
         """
 
         execution = execution or str(KsuidMs())
-        with contexts.Attributes(self, execution=execution):
+        with contexts.Attributes(self.execution, id=execution):
 
             # Property setup the layer for writing to the datastore
             layer = self.layer(Parameters, index=0, splits=1, attempt=0)
@@ -460,5 +473,5 @@ class Flow:
         """
 
         flow = copy.deepcopy(self)
-        flow.execution = execution
+        flow.execution = Execution(id=execution, flow=flow)
         return flow

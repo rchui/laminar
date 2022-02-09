@@ -72,7 +72,7 @@ class Thread(Executor):
 
     async def submit(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
-            layer.flow.execute(execution=unwrap(layer.flow.execution), layer=layer)
+            layer.flow.execute(execution=unwrap(layer.flow.execution.id), layer=layer)
 
             return layer
 
@@ -97,7 +97,7 @@ class Docker(Executor):
                     "--rm",
                     "--interactive",
                     f"--cpus {layer.configuration.container.cpu}",
-                    f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution)}",
+                    f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution.id)}",
                     f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
                     f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
                     f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
@@ -207,7 +207,7 @@ class AWS:
 
                 # Submit job to Batch
                 submit_response = batch.submit_job(
-                    jobName=f"{layer.flow.name}-{layer.flow.execution}-{layer.name}-{layer.index}",
+                    jobName=f"{layer.flow.name}-{layer.flow.execution.id}-{layer.name}-{layer.index}",
                     jobDefinition=job_definition_arn,
                     jobQueue=self.job_queue_arn,
                     containerOverrides=ContainerOverridesTypeDef(
