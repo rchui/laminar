@@ -10,7 +10,7 @@ It may be helpful to read [Technical Details: Execution](../technical/executions
 
 There are two parts involved in parameterizing a `Flow`.
 
-1. Keyword arguments passed to `Flow.parameters` are written to the flow's `Datastore`.
+1. Keyword arguments passed to `Flow.__call__` are written to the flow's `Datastore`.
 1. A special layer `Parameters` is automatically registered to every `Flow` and is able to reference any `Flow` parameter with the same behavior as any other `Layer`.
 
 ```python
@@ -27,8 +27,7 @@ class A(Layer):
         print(parameters.foo)
 
 if __name__ == "__main__":
-    execution = flow.parameters(foo="bar")
-    flow(execution=execution)
+    flow(foo="bar")
 ```
 
 ```python
@@ -41,7 +40,7 @@ python main.py
 
 ## Execution Guard
 
-Because `Flow.__call__` is the entrypoint for both scheduling a `Flow` and executing a `Layer`, additional care must be taken to avoid inefficiently calling `Flow.parameters`.
+Because `Flow.__call__` is the entrypoint for both scheduling a `Flow` and executing a `Layer`, additional care must be taken to avoid inefficiently calling `Flow.__call__`.
 
 Consider the following example:
 
@@ -74,7 +73,7 @@ if __name__ == "__main__":
 
     # Scheduling a Flow
     if not current.execution.id:
-        execution = flow.parameters(foo=pd.read_csv("path/to/large.csv"))
+        execution = flow(foo=pd.read_csv("path/to/large.csv"))
 
     flow(execution=execution)
 ```
@@ -99,7 +98,7 @@ class A(Layer):
         print(parameters.foo)
 ```
 
-In one entrypoint add the parameters to `Flow.parameters`:
+In one entrypoint add the parameters to `Flow.__call__`:
 
 ```python
 # parameters.py
@@ -109,8 +108,7 @@ import pandas as pd
 from main import flow
 
 if __name__ == "__main__":
-    execution = flow.parameters(foo=pd.read_csv("path/to/large.csv"))
-    flow(execution=execution)
+    flow(foo=pd.read_csv("path/to/large.csv"))
 ```
 
 In another invoke `Flow.__call__` without parameters:
