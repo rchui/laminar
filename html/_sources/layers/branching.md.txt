@@ -87,15 +87,15 @@ But if `D` always executes, how do we know when `B` does?
 Conditions are not evaluated to determine `Layer` dependencies. Users are responsible for ensuring that they only use layers that have already been executed.
 ```
 
-## Finished
+## State
 
-`Layer.finished` is a property that evaluates whether or not a `Layer` has been finished. With this logic we can extend `D`.
+`Layer.state` is a property that returns a `State` object that can evaluate the state that a layer is currently in. `State.finished` will tell you whether or not a `Layer` has been finished. With this logic we can extend `D`.
 
 ```python
 @flow.register()
 class D(Layer):
     def __call__(self, b: B, c: C) -> None:
-        self.foo = b.foo if b.finished else c.foo
+        self.foo = b.foo if b.state.finished else c.foo
 
     def __enter__(self) -> bool:
         return True

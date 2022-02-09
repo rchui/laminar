@@ -155,25 +155,17 @@
 <li><p>We do not want to read the CSV every time we enter <code class="docutils literal notranslate"><span class="pre">main.py</span></code>.</p></li>
 <li><p>The CSV we need to read may not be present in the image the container is started in.</p></li>
 </ol>
-<p>To avoid this we can guard the CSV read with the <code class="docutils literal notranslate"><span class="pre">current</span></code> object.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Flow.execution</span></code> is a property that returns an <code class="docutils literal notranslate"><span class="pre">Execution</span></code> object that can evaluate the state of a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. <code class="docutils literal notranslate"><span class="pre">Execution.running</span></code> will tell you whether or not the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> is running. With this, we can guard against the CSV read:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="kn">from</span> <span class="nn">laminar.settings</span> <span class="kn">import</span> <span class="n">current</span>
 
 <span class="o">...</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-
-    <span class="n">execution</span> <span class="o">=</span> <span class="kc">None</span>
-
     <span class="c1"># Scheduling a Flow</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="n">execution</span> <span class="o">=</span> <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/large.csv&quot;</span><span class="p">))</span>
-
-    <span class="n">flow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="n">execution</span><span class="p">)</span>
+    <span class="n">flow</span><span class="p">()</span> <span class="k">if</span> <span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">running</span> <span class="k">else</span> <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;path/to/large.csv&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>By guarding against layer execution, we can only make our entire <code class="docutils literal notranslate"><span class="pre">Flow</span></code> more efficient.</p>
+<p>By only reading data before the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> starts, we can only make our entire <code class="docutils literal notranslate"><span class="pre">Flow</span></code> more efficient.</p>
 </section>
 <section id="multiple-entrypoints">
 <h2>Multiple Entrypoints<a class="headerlink" href="#multiple-entrypoints" title="Permalink to this headline"></a></h2>

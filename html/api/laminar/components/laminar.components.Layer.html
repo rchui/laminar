@@ -71,7 +71,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../technical/executions.html">Executions</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../laminar.html">laminar</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../laminar.components.html">components</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="laminar.components.Execution.html">Execution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="laminar.components.Flow.html">Flow</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Layer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="laminar.components.Parameters.html">Parameters</a></li>
@@ -152,29 +151,29 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.dependencies" title="laminar.components.Layer.dependencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependencies</span></code></a></p></td>
 <td><p>Layers this layer depends on.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.finished" title="laminar.components.Layer.finished"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finished</span></code></a></p></td>
-<td><p>True if the layer was executed, else False.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.hooks" title="laminar.components.Layer.hooks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.hooks" title="laminar.components.Layer.hooks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
 <td><p>Hooks attached to this layer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.index" title="laminar.components.Layer.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.index" title="laminar.components.Layer.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
 <td><p>Layer index in its splits</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.name" title="laminar.components.Layer.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.name" title="laminar.components.Layer.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td><p>Name of the layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.namespace" title="laminar.components.Layer.namespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.namespace" title="laminar.components.Layer.namespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></a></p></td>
 <td><p>Namespace the Layer is a part of</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
 <td><p>Number of splits in the layer execution</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
 <td><p>Configurations for the Layer</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
 <td><p>Flow the Layer is registered to</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.state" title="laminar.components.Layer.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
+<td><p>Layer state</p></td>
 </tr>
 </tbody>
 </table>
@@ -199,12 +198,6 @@
 <dt class="sig sig-object py" id="laminar.components.Layer.dependencies">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dependencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Layer.dependencies" title="Permalink to this definition"></a></dt>
 <dd><p>Layers this layer depends on.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="laminar.components.Layer.finished">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finished</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#laminar.components.Layer.finished" title="Permalink to this definition"></a></dt>
-<dd><p>True if the layer was executed, else False.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -260,6 +253,12 @@
 <dt class="sig sig-object py" id="laminar.components.Layer.splits">
 <span class="sig-name descname"><span class="pre">splits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.splits" title="Permalink to this definition"></a></dt>
 <dd><p>Number of splits in the layer execution</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.components.Layer.state">
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.State.html#laminar.configurations.layers.State" title="laminar.configurations.layers.State"><span class="pre">laminar.configurations.layers.State</span></a></em><a class="headerlink" href="#laminar.components.Layer.state" title="Permalink to this definition"></a></dt>
+<dd><p>Layer state</p>
 </dd></dl>
 
 </dd></dl>

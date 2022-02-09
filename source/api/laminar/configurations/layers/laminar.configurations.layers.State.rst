@@ -1,7 +1,7 @@
-Execution
-=========
+State
+=====
 
-.. autoclass:: laminar.components.Execution
+.. autoclass:: laminar.configurations.layers.State
     :members:
     :inherited-members: BaseModel
     :show-inheritance:
@@ -33,11 +33,6 @@ Execution
         
         
         
-        
-        
-        
-        ~laminar.components.Execution.layer
-        
     
     
 
@@ -51,6 +46,19 @@ Execution
         
         
         
+        
+        
+        
+        
+        
+        
+        ~laminar.configurations.layers.State.finished
+        
+        
+        ~laminar.configurations.layers.State.running
+        
+        
+        ~laminar.configurations.layers.State.layer
         
     
     
