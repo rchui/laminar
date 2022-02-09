@@ -37,7 +37,7 @@ class TestForEach:
     def test_flow(self) -> None:
         execution = flow()
 
-        results = flow.results(unwrap(execution))
+        results = flow.execution(unwrap(execution))
 
         assert list(results.layer(A).foo) == [1, 2, 3]
         assert list(results.layer(B).foo) == [1, 3, 7]

@@ -57,7 +57,7 @@ class TestConditionalBranching:
     def test_flow(self) -> None:
         execution = flow()
 
-        results = flow.results(unwrap(execution))
+        results = flow.execution(unwrap(execution))
 
         assert results.layer(A).executed is True
         assert results.layer(A).foo == "bar"

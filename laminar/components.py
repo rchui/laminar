@@ -203,6 +203,26 @@ class Execution:
     def __repr__(self) -> str:
         return f"Execution(id={self.id})"
 
+    def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
+        """Get a registered flow layer.
+
+        Usage::
+
+            flow.execution(...).layer("A")
+            flow.execution(...).layer(A)
+            flow.execution(...).layer(A())
+            flow.execution(...).layer(A(), index=0, splits=2)
+
+        Args:
+            layer: Layer to get.
+            **attributes: Keyword attributes to add to the Layer.
+
+        Returns:
+            Layer that is registered to the flow.
+        """
+
+        return self.flow.layer(layer, **attributes)
+
 
 class Flow:
     """Collection of tasks that execute in a specific order.
@@ -402,7 +422,7 @@ class Flow:
             **attributes: Keyword attributes to add to the Layer.
 
         Returns:
-            Layer that was registered to the flow.
+            Layer that is registered to the flow.
         """
 
         if isinstance(layer, Layer):
@@ -455,23 +475,3 @@ class Flow:
             self.execute(execution=execution, layer=layer)
 
         return execution
-
-    def results(self, execution: str) -> "Flow":
-        """Configure the flow to get results for an execution
-
-        Usage::
-
-            from main import flow
-
-            flow.results("21lWJJaHlAYcSE5EtdtH1JmF7fv")
-
-        Args:
-            execution: ID of the execution to configure the flow for
-
-        Returns:
-            THe flow configured with the execution ID.
-        """
-
-        flow = copy.deepcopy(self)
-        flow.execution = Execution(id=execution, flow=flow)
-        return flow

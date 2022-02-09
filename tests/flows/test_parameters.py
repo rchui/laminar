@@ -21,7 +21,7 @@ class TestParameter:
         execution = flow.parameters(foo="bar")
         flow(execution=execution)
 
-        results = flow.results(execution)
+        results = flow.execution(execution)
 
         assert results.layer(Parameters).foo == "bar"
         assert results.layer(A).foo == "bar"

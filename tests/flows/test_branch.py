@@ -38,7 +38,7 @@ class TestBranch:
     def test_flow(self) -> None:
         execution = flow()
 
-        results = flow.results(unwrap(execution))
+        results = flow.execution(unwrap(execution))
 
         assert results.layer(A).foo == "bar"
         assert results.layer(B).foo == "bar"

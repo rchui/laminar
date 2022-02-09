@@ -46,7 +46,7 @@ from laminar.types import unwrap
 def test_flow() -> None:
     execution = flow()
 
-    results = flow.results(unwrap(execution))
+    results = flow.execution(unwrap(execution))
 
     assert results.layer(A).foo == "bar"
     assert results.layer(B).foo == "bar"

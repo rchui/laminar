@@ -38,7 +38,7 @@ class TestGrid:
     def test_flow(self) -> None:
         execution = flow()
 
-        results = flow.results(unwrap(execution))
+        results = flow.execution(unwrap(execution))
 
         assert list(results.layer(A).foo) == [1, 2, 3]
         assert list(results.layer(A).bar) == ["a", "b"]
@@ -82,7 +82,7 @@ class TestTwoGrid:
     def test_flow(eslf) -> None:
         execution = flow2()
 
-        results = flow2.results(unwrap(execution))
+        results = flow2.execution(unwrap(execution))
 
         assert list(results.layer(A12).foo) == [1, 2, 3]
         assert list(results.layer(A22).bar) == ["a", "b"]

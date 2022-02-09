@@ -229,4 +229,4 @@ class TestFLow:
         assert flow.layer(Test, foo="bar").foo == "bar"
 
     def test_results(self, flow: Flow) -> None:
-        assert flow.results("test-execution").execution.id == "test-execution"
+        assert flow.execution("test-execution").id == "test-execution"

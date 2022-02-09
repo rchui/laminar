@@ -16,8 +16,9 @@ from laminar.utils import fs
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
+    from laminar.components import Execution
 else:
-    Flow, Layer = "Flow", "Layer"
+    Execution, Flow, Layer = "Execution", "Flow", "Layer"
 
 DEFAULT_SERDE = serde.PickleProtocol()
 
@@ -416,11 +417,11 @@ class DataStore:
 
         return sorted(set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives")), group="execution")))
 
-    def list_layers(self, *, flow: Flow) -> List[str]:
+    def list_layers(self, *, execution: Execution) -> List[str]:
         """List all layers in an execution.
 
         Args:
-            flow: Flow to list layers for.
+            execution: Execution to list layers for.
 
         Returns:
             All layers.
@@ -429,7 +430,7 @@ class DataStore:
         return sorted(
             set(
                 self._list(
-                    prefix=self.uri(path=fs.join(flow.name, "archives", unwrap(flow.execution.id))), group="layer"
+                    prefix=self.uri(path=fs.join(execution.flow.name, "archives", unwrap(execution.id))), group="layer"
                 )
             )
         )
