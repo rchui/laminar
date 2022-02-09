@@ -80,12 +80,5 @@ class Four(Layer):
 
 
 if __name__ == "__main__":
-    if flow.execution.state.running:
-        flow()
-    else:
-        flow(foo="bar")
-
-    if flow2.execution.state.running:
-        flow2()
-    else:
-        flow2(foo="bar")
+    flow() if flow.execution.running else flow(foo="bar")
+    flow2() if flow2.execution.running else flow2(foo="bar")

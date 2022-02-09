@@ -15,7 +15,8 @@ from laminar.utils import contexts
 if TYPE_CHECKING:
     from laminar import Flow, Layer
 else:
-    Flow, Layer = "Flow", "Layer"
+    Flow = "Flow"
+    Layer = "Layer"
 
 
 logger = logging.getLogger(__name__)

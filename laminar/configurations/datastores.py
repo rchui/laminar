@@ -16,9 +16,11 @@ from laminar.utils import fs
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
-    from laminar.components import Execution
+    from laminar.configurations.flows import Execution
 else:
-    Execution, Flow, Layer = "Execution", "Flow", "Layer"
+    Execution = "Execution"
+    Flow = "Flow"
+    Layer = "Layer"
 
 DEFAULT_SERDE = serde.PickleProtocol()
 

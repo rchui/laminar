@@ -9,6 +9,7 @@ import pytest
 
 from laminar import Flow, Layer
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
+from laminar.configurations.layers import State
 from laminar.exceptions import FlowError, LayerError
 from laminar.settings import current
 from laminar.utils import contexts
@@ -16,7 +17,8 @@ from laminar.utils import contexts
 
 class TestLayer:
     def test_init(self) -> None:
-        assert vars(Layer()) == {}
+        layer = Layer()
+        assert vars(layer) == {"state": State(layer=layer)}
         assert Layer(foo="bar").foo == "bar"
 
     def test_repr(self, layer: Layer) -> None:
@@ -52,7 +54,8 @@ class TestLayer:
         assert Layer() != 0
 
     def test_pickle(self) -> None:
-        assert vars(cloudpickle.loads(cloudpickle.dumps(Layer(foo="bar")))) == {"foo": "bar"}
+        layer = Layer(foo="bar")
+        assert vars(cloudpickle.loads(cloudpickle.dumps(layer))) == {"foo": "bar", "state": State(layer=layer)}
 
     def test_name(self) -> None:
         assert Layer().name == "Layer"

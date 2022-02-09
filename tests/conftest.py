@@ -1,9 +1,9 @@
 import pytest
 
 from laminar import Flow, Layer
-from laminar.components import Execution
 from laminar.configurations.datastores import Memory
 from laminar.configurations.executors import Thread
+from laminar.configurations.flows import Execution
 
 
 @pytest.fixture()

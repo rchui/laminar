@@ -2,9 +2,7 @@
 
 import copy
 import logging
-import operator
 from dataclasses import dataclass
-from functools import reduce
 from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union
 
 from ksuid import KsuidMs
@@ -18,7 +16,7 @@ from laminar.utils import contexts
 logger = logging.getLogger(__name__)
 
 FLOW_RESERVED_KEYWORDS = {"configuration", "execution"}
-LAYER_RESERVED_KEYWORDS = {"attempt", "configuration", "flow", "index", "namespace", "splits"}
+LAYER_RESERVED_KEYWORDS = {"attempt", "configuration", "flow", "index", "namespace", "splits", "state"}
 
 
 @dataclass
@@ -37,6 +35,8 @@ class Layer:
     configuration: layers.Configuration
     #: Flow the Layer is registered to
     flow: "Flow"
+    #: Layer state
+    state: layers.State
 
     #: Current layer execution attempt
     attempt: Optional[int] = current.layer.attempt
@@ -50,6 +50,7 @@ class Layer:
     def __init__(self, **attributes: Any) -> None:
         for key, value in attributes.items():
             setattr(self, key, value)
+        self.state = layers.State(layer=self)
 
     def __init_subclass__(cls, *, namespace: Optional[str] = None) -> None:
         if namespace is not None and not namespace.isalnum():
@@ -83,7 +84,7 @@ class Layer:
     __enter__: Callable[..., bool]  # type: ignore
 
     def __enter__(self) -> bool:  # type: ignore
-        return all(layer.finished for layer in self._dependencies if not isinstance(layer, Parameters))
+        return all(layer.state.finished for layer in self._dependencies if not isinstance(layer, Parameters))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
@@ -103,7 +104,7 @@ class Layer:
                 raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.") from error
             except FileNotFoundError as error:
                 message = f"Object '{self.name}' has no attribute '{name}'."
-                if not self.finished:
+                if not self.state.finished:
                     message = message + f" Layer {self.name} was not finished."
                 raise AttributeError(message) from error
 
@@ -117,12 +118,6 @@ class Layer:
 
     def __setstate__(self, slots: Dict[str, Any]) -> None:
         self.__dict__ = slots
-
-    @property
-    def finished(self) -> bool:
-        """True if the layer was executed, else False."""
-
-        return self.flow.configuration.datastore.exists(path=datastores.Record.path(layer=self.flow.layer(self)))
 
     @property
     def name(self) -> str:
@@ -192,65 +187,6 @@ class Parameters(Layer):
     """Special Layer for handling Flow parameters."""
 
 
-class Execution:
-    class State:
-        def __init__(self, *, execution: "Execution") -> None:
-            self.execution = execution
-
-        def __repr__(self) -> str:
-            return f"State(execution={self.execution})"
-
-        @property
-        def finished(self) -> bool:
-            return reduce(
-                operator.and_,
-                [
-                    layer.finished
-                    for layer in self.execution.flow._dependencies.keys()
-                    if not isinstance(layer, Parameters)
-                ],
-            )
-
-        @property
-        def running(self) -> bool:
-            return (current.execution.id is not None and current.execution.id == self.execution.id) and (
-                current.flow.name is not None and current.flow.name == self.execution.flow.name
-            )
-
-    def __init__(self, *, id: Optional[str], flow: "Flow") -> None:
-        self.id = id
-        self.flow = flow
-        self.state = self.State(execution=self)
-
-    def __call__(self, id: str) -> "Execution":
-        execution = copy.deepcopy(self)
-        execution.id = id
-        return execution
-
-    def __repr__(self) -> str:
-        return f"Execution(id={self.id}, flow={self.flow.name})"
-
-    def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
-        """Get a registered flow layer.
-
-        Usage::
-
-            flow.execution(...).layer("A")
-            flow.execution(...).layer(A)
-            flow.execution(...).layer(A())
-            flow.execution(...).layer(A(), index=0, splits=2)
-
-        Args:
-            layer: Layer to get.
-            **attributes: Keyword attributes to add to the Layer.
-
-        Returns:
-            Layer that is registered to the flow.
-        """
-
-        return self.flow.layer(layer, **attributes)
-
-
 class Flow:
     """Collection of tasks that execute in a specific order.
 
@@ -287,7 +223,7 @@ class Flow:
             )
 
         self.name = name
-        self.execution = Execution(id=current.execution.id, flow=self)
+        self.execution = flows.Execution(id=current.execution.id, flow=self)
 
         if isinstance(datastore, datastores.Memory) and not isinstance(executor, executors.Thread):
             raise FlowError("The Memory datastore can only be used with the Thread executor.")

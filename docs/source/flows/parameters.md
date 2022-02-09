@@ -58,27 +58,19 @@ Here we are reading a large CSV into a pandas DataFrame and passing that in as a
 1. We do not want to read the CSV every time we enter `main.py`.
 1. The CSV we need to read may not be present in the image the container is started in.
 
-To avoid this we can guard the CSV read with the `current` object.
+`Flow.execution` is a property that returns an `Execution` object that can evaluate the state of a `Flow`. `Execution.running` will tell you whether or not the `Flow` is running. With this, we can guard against the CSV read:
 
 ```python
 import pandas as pd
 
-from laminar.settings import current
-
 ...
 
 if __name__ == "__main__":
-
-    execution = None
-
     # Scheduling a Flow
-    if not flow.execution.id:
-        execution = flow(foo=pd.read_csv("path/to/large.csv"))
-
-    flow(execution=execution)
+    flow() if flow.execution.running else flow(foo=pd.read_csv("path/to/large.csv"))
 ```
 
-By guarding against layer execution, we can only make our entire `Flow` more efficient.
+By only reading data before the `Flow` starts, we can only make our entire `Flow` more efficient.
 
 ## Multiple Entrypoints
 

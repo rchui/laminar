@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
 from laminar.configurations import datastores
+from laminar.settings import current
 from laminar.types import unwrap
 
 if TYPE_CHECKING:
@@ -242,3 +243,18 @@ class Configuration:
     foreach: ForEach = ForEach()
     #: Layer retry configuration
     retry: Retry = Retry()
+
+
+@dataclass
+class State:
+    layer: Layer
+
+    @property
+    def finished(self) -> bool:
+        return self.layer.flow.configuration.datastore.exists(
+            path=datastores.Record.path(layer=self.layer.flow.layer(self.layer))
+        )
+
+    @property
+    def running(self) -> bool:
+        return current.layer.name is not None and current.layer.name == self.layer.name

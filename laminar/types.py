@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, Type, TypeVar,
 if TYPE_CHECKING:
     from laminar import Flow, Layer
 else:
-    Flow, Layer = "Flow", "Layer"
+    Flow = "Flow"
+    Layer = "Layer"
 
 T = TypeVar("T")
 LayerType = TypeVar("LayerType", bound=Type[Layer])
