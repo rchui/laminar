@@ -44,13 +44,11 @@ Using the results API, it is trivial to execute the flow and make assertions on 
 from laminar.types import unwrap
 
 def test_flow() -> None:
-    execution = flow()
+    execution = flow.execution(unwrap(flow()))
 
-    results = flow.execution(unwrap(execution))
-
-    assert results.layer(A).foo == "bar"
-    assert results.layer(B).foo == "bar"
-    assert results.layer(C).foo == "bar"
+    assert execution.layer(A).foo == "bar"
+    assert execution.layer(B).foo == "bar"
+    assert execution.layer(C).foo == "bar"
 ```
 
 ## Layers

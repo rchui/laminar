@@ -51,7 +51,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Branching</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#conditions">Conditions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#executed">Executed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#finished">Finished</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -179,19 +179,19 @@
 <p>Conditions are not evaluated to determine <code class="docutils literal notranslate"><span class="pre">Layer</span></code> dependencies. Users are responsible for ensuring that they only use layers that have already been executed.</p>
 </div>
 </section>
-<section id="executed">
-<h2>Executed<a class="headerlink" href="#executed" title="Permalink to this headline"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Layer.executed</span></code> is a property that evaluates whether or not a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> has been executed. With this logic we can extend <code class="docutils literal notranslate"><span class="pre">D</span></code>.</p>
+<section id="finished">
+<h2>Finished<a class="headerlink" href="#finished" title="Permalink to this headline"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Layer.finished</span></code> is a property that evaluates whether or not a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> has been finished. With this logic we can extend <code class="docutils literal notranslate"><span class="pre">D</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">foo</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">executed</span> <span class="k">else</span> <span class="n">c</span><span class="o">.</span><span class="n">foo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">foo</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">finished</span> <span class="k">else</span> <span class="n">c</span><span class="o">.</span><span class="n">foo</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">D</span></code> now uses the value from <code class="docutils literal notranslate"><span class="pre">B.foo</span></code> if <code class="docutils literal notranslate"><span class="pre">B</span></code> was executed, else it uses the value from <code class="docutils literal notranslate"><span class="pre">C.foo</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">D</span></code> now uses the value from <code class="docutils literal notranslate"><span class="pre">B.foo</span></code> if <code class="docutils literal notranslate"><span class="pre">B</span></code> was finished, else it uses the value from <code class="docutils literal notranslate"><span class="pre">C.foo</span></code>.</p>
 </section>
 </section>
 

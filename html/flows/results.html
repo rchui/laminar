@@ -173,11 +173,11 @@
 </section>
 <section id="accessing-layers">
 <h2>Accessing Layers<a class="headerlink" href="#accessing-layers" title="Permalink to this headline"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Flow.layer()</span></code> exposes all layers registered to the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. Layers returned from <code class="docutils literal notranslate"><span class="pre">Execution.layer()</span></code> will be configured to read from the configured <code class="docutils literal notranslate"><span class="pre">Flow</span></code> datastore.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Execution.layer()</span></code> exposes all layers registered to the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. Layers returned from <code class="docutils literal notranslate"><span class="pre">Execution.layer()</span></code> will be configured to read from the configured <code class="docutils literal notranslate"><span class="pre">Flow</span></code> datastore.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">flow</span>
 
 <span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">ResultsFlow</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="n">Execution</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)),</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Because layers derive their datastore from the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> they are registered to, only layers from <code class="docutils literal notranslate"><span class="pre">Execution.layer()</span></code> will be able to access the datastore correctly.</p>
@@ -203,7 +203,7 @@
 <span class="c1"># List executions</span>
 <span class="n">datastore</span><span class="o">.</span><span class="n">list_executions</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span>
-  <span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">),</span>
+  <span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="n">Execution</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)),</span>
   <span class="o">...</span>
 <span class="p">]</span>
 
@@ -211,14 +211,14 @@
 <span class="n">execution</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
 <span class="n">datastore</span><span class="o">.</span><span class="n">list_layers</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="n">execution</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span>
-  <span class="n">A</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)),</span>
+  <span class="n">A</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="n">Execution</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">))),</span>
   <span class="o">...</span>
 <span class="p">]</span>
 
 <span class="c1"># List artifacts</span>
 <span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">A</span>
 
-<span class="n">layer</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="n">datastore</span><span class="o">.</span><span class="n">list_artifacts</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span>
   <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
