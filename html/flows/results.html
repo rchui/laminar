@@ -127,14 +127,18 @@
 <td><p>A collection of <code class="docutils literal notranslate"><span class="pre">Layer</span></code> objects that are run in sequence as a workflow.</p></td>
 </tr>
 <tr class="row-odd"><td><p>2</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">Layer</span></code></p></td>
-<td><p>A unit of work in a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> that is executed to perform actions.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Execution</span></code></p></td>
+<td><p>A single run of a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p>3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Layer</span></code></p></td>
+<td><p>A unit of work in an <code class="docutils literal notranslate"><span class="pre">Execution</span></code> that performs actions.</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Archive</span></code></p></td>
 <td><p>Metadata for an artifact.</p></td>
 </tr>
-<tr class="row-odd"><td><p>4</p></td>
+<tr class="row-even"><td><p>5</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Artifact</span></code></p></td>
 <td><p>A pickled and gzipped Python object.</p></td>
 </tr>
@@ -159,31 +163,31 @@
     <span class="n">flow</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Flow.results()</span></code> will configure the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> so that it is ready to read from the configured datastore.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Flow.execution()</span></code> will configure the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> so that it is ready to read from the configured datastore.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">flow</span>
 
-<span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
+<span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Execution</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="accessing-layers">
 <h2>Accessing Layers<a class="headerlink" href="#accessing-layers" title="Permalink to this headline"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Flow.layer()</span></code> exposes all layers registered to the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. Layers returned from <code class="docutils literal notranslate"><span class="pre">Flow.layer</span></code> will be configured to read from the configured <code class="docutils literal notranslate"><span class="pre">Flow</span></code> datastore.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Flow.layer()</span></code> exposes all layers registered to the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. Layers returned from <code class="docutils literal notranslate"><span class="pre">Execution.layer()</span></code> will be configured to read from the configured <code class="docutils literal notranslate"><span class="pre">Flow</span></code> datastore.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">flow</span>
 
-<span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">ResultsFlow</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Because layers derive their datastore from the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> they are registered to, only layers from <code class="docutils literal notranslate"><span class="pre">Flow.layer()</span></code> will be able to access the datastore correctly.</p>
+<p>Because layers derive their datastore from the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> they are registered to, only layers from <code class="docutils literal notranslate"><span class="pre">Execution.layer()</span></code> will be able to access the datastore correctly.</p>
 </section>
 <section id="accessing-artifacts">
 <h2>Accessing Artifacts<a class="headerlink" href="#accessing-artifacts" title="Permalink to this headline"></a></h2>
-<p>A <code class="docutils literal notranslate"><span class="pre">Layer</span></code> from <code class="docutils literal notranslate"><span class="pre">Flow.layer()</span></code> behaves (almost) like a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> at runtime. Artifacts from the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> can be accessed as you would normally.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Layer</span></code> from <code class="docutils literal notranslate"><span class="pre">Execution.layer()</span></code> behaves (almost) like a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> at runtime. Artifacts from the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> can be accessed as you would normally.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">flow</span>
 
-<span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span>
+<span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;bar&quot;</span>
 </pre></div>
 </div>
@@ -204,8 +208,8 @@
 <span class="p">]</span>
 
 <span class="c1"># List layers</span>
-<span class="n">flow</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
-<span class="n">datastore</span><span class="o">.</span><span class="n">list_layers</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">)</span>
+<span class="n">execution</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)</span>
+<span class="n">datastore</span><span class="o">.</span><span class="n">list_layers</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="n">execution</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span>
   <span class="n">A</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">ResultsFlow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="s2">&quot;21lYX2jVgfbdYqyuEPr8kWkf3vp&quot;</span><span class="p">)),</span>
   <span class="o">...</span>

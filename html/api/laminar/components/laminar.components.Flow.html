@@ -145,10 +145,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Flow.register" title="laminar.components.Flow.register"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register</span></code></a></p></td>
 <td><p>Add a layer to the flow.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Flow.results" title="laminar.components.Flow.results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">results</span></code></a></p></td>
-<td><p>Configure the flow to get results for an execution</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Flow.schedule" title="laminar.components.Flow.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Flow.schedule" title="laminar.components.Flow.schedule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedule</span></code></a></p></td>
 <td><p>Schedule layers to run in sequence in the flow.</p></td>
 </tr>
 </tbody>
@@ -245,7 +242,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Layer that was registered to the flow.</p>
+<dd class="field-even"><p>Layer that is registered to the flow.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -282,26 +279,6 @@
     <span class="o">...</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.components.Flow.results">
-<span class="sig-name descname"><span class="pre">results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">execution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">laminar.components.Flow</span></a></span></span><a class="headerlink" href="#laminar.components.Flow.results" title="Permalink to this definition"></a></dt>
-<dd><p>Configure the flow to get results for an execution</p>
-<p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">flow</span>
-
-<span class="n">flow</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="s2">&quot;21lWJJaHlAYcSE5EtdtH1JmF7fv&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>execution</strong> – ID of the execution to configure the flow for</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>THe flow configured with the execution ID.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">

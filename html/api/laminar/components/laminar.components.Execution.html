@@ -126,6 +126,9 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Execution.layer" title="laminar.components.Execution.layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layer</span></code></a></p></td>
+<td><p>Get a registered flow layer.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
@@ -141,6 +144,30 @@
 <dt class="sig sig-object py" id="laminar.components.Execution.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">laminar.components.Flow</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Execution.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.components.Execution.layer">
+<span class="sig-name descname"><span class="pre">layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">laminar.components.Layer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">laminar.components.Layer</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">laminar.components.Layer</span></a></span></span><a class="headerlink" href="#laminar.components.Execution.layer" title="Permalink to this definition"></a></dt>
+<dd><p>Get a registered flow layer.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">())</span>
+<span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – Layer to get.</p></li>
+<li><p><strong>**attributes</strong> – Keyword attributes to add to the Layer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Layer that is registered to the flow.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
