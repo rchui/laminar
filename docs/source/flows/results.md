@@ -61,13 +61,13 @@ flow.execution("21lYX2jVgfbdYqyuEPr8kWkf3vp")
 
 ## Accessing Layers
 
-`Flow.layer()` exposes all layers registered to the `Flow`. Layers returned from `Execution.layer()` will be configured to read from the configured `Flow` datastore.
+`Execution.layer()` exposes all layers registered to the `Flow`. Layers returned from `Execution.layer()` will be configured to read from the configured `Flow` datastore.
 
 ```python
 from main import A, flow
 
 flow.execution("21lYX2jVgfbdYqyuEPr8kWkf3vp").layer(A)
->>> A(flow=ResultsFlow("21lYX2jVgfbdYqyuEPr8kWkf3vp"), ...)
+>>> A(flow=ResultsFlow(execution=Execution(id="21lYX2jVgfbdYqyuEPr8kWkf3vp")), ...)
 ```
 
 Because layers derive their datastore from the `Flow` they are registered to, only layers from `Execution.layer()` will be able to access the datastore correctly.
@@ -96,7 +96,7 @@ datastore = flow.configuration.datastore
 # List executions
 datastore.list_executions(flow=flow)
 >>> [
-  ResultsFlow(execution="21lYX2jVgfbdYqyuEPr8kWkf3vp"),
+  ResultsFlow(execution=Execution(id="21lYX2jVgfbdYqyuEPr8kWkf3vp")),
   ...
 ]
 
@@ -104,14 +104,14 @@ datastore.list_executions(flow=flow)
 execution = flow.execution("21lYX2jVgfbdYqyuEPr8kWkf3vp")
 datastore.list_layers(execution=execution)
 >>> [
-  A(flow=ResultsFlow(execution="21lYX2jVgfbdYqyuEPr8kWkf3vp")),
+  A(flow=ResultsFlow(execution=Execution(id="21lYX2jVgfbdYqyuEPr8kWkf3vp"))),
   ...
 ]
 
 # List artifacts
 from main import A
 
-layer = flow.layer(A)
+layer = flow.execution("...").layer(A)
 datastore.list_artifacts(layer=layer)
 >>> [
   "foo",

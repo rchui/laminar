@@ -2,7 +2,9 @@
 
 import copy
 import logging
+import operator
 from dataclasses import dataclass
+from functools import reduce
 from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union
 
 from ksuid import KsuidMs
@@ -81,7 +83,7 @@ class Layer:
     __enter__: Callable[..., bool]  # type: ignore
 
     def __enter__(self) -> bool:  # type: ignore
-        return all(layer.executed for layer in self._dependencies if not isinstance(layer, Parameters))
+        return all(layer.finished for layer in self._dependencies if not isinstance(layer, Parameters))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
@@ -101,8 +103,8 @@ class Layer:
                 raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.") from error
             except FileNotFoundError as error:
                 message = f"Object '{self.name}' has no attribute '{name}'."
-                if not self.executed:
-                    message = message + f" Layer {self.name} was not executed."
+                if not self.finished:
+                    message = message + f" Layer {self.name} was not finished."
                 raise AttributeError(message) from error
 
         return self.__dict__[name]
@@ -117,7 +119,7 @@ class Layer:
         self.__dict__ = slots
 
     @property
-    def executed(self) -> bool:
+    def finished(self) -> bool:
         """True if the layer was executed, else False."""
 
         return self.flow.configuration.datastore.exists(path=datastores.Record.path(layer=self.flow.layer(self)))
@@ -191,9 +193,34 @@ class Parameters(Layer):
 
 
 class Execution:
+    class State:
+        def __init__(self, *, execution: "Execution") -> None:
+            self.execution = execution
+
+        def __repr__(self) -> str:
+            return f"State(execution={self.execution})"
+
+        @property
+        def finished(self) -> bool:
+            return reduce(
+                operator.and_,
+                [
+                    layer.finished
+                    for layer in self.execution.flow._dependencies.keys()
+                    if not isinstance(layer, Parameters)
+                ],
+            )
+
+        @property
+        def running(self) -> bool:
+            return (current.execution.id is not None and current.execution.id == self.execution.id) and (
+                current.flow.name is not None and current.flow.name == self.execution.flow.name
+            )
+
     def __init__(self, *, id: Optional[str], flow: "Flow") -> None:
         self.id = id
         self.flow = flow
+        self.state = self.State(execution=self)
 
     def __call__(self, id: str) -> "Execution":
         execution = copy.deepcopy(self)
@@ -201,7 +228,7 @@ class Execution:
         return execution
 
     def __repr__(self) -> str:
-        return f"Execution(id={self.id})"
+        return f"Execution(id={self.id}, flow={self.flow.name})"
 
     def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.
@@ -316,6 +343,7 @@ class Flow:
 
         # Execute a layer in the flow.
         if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self._registry:
+            execution = self.execution.id
             self.execute(execution=self.execution.id, layer=self.layer(current.layer.name))
 
         # Schedule execution of the flow.

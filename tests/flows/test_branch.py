@@ -36,11 +36,11 @@ class D(Layer):
 @pytest.mark.flow
 class TestBranch:
     def test_flow(self) -> None:
-        execution = flow()
+        execution_id = flow()
 
-        results = flow.execution(unwrap(execution))
+        execution = flow.execution(unwrap(execution_id))
 
-        assert results.layer(A).foo == "bar"
-        assert results.layer(B).foo == "bar"
-        assert results.layer(C).foo == "baz"
-        assert results.layer(D).foo == ["bar", "baz"]
+        assert execution.layer(A).foo == "bar"
+        assert execution.layer(B).foo == "bar"
+        assert execution.layer(C).foo == "baz"
+        assert execution.layer(D).foo == ["bar", "baz"]

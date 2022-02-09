@@ -20,7 +20,10 @@ class TestLayer:
         assert Layer(foo="bar").foo == "bar"
 
     def test_repr(self, layer: Layer) -> None:
-        assert layer.__repr__() == "Layer(flow=TestFlow(execution=Execution(id=test-execution)), index=0, splits=2)"
+        assert (
+            layer.__repr__()
+            == "Layer(flow=TestFlow(execution=Execution(id=test-execution, flow=TestFlow)), index=0, splits=2)"
+        )
 
     def test_subclass_init(self) -> None:
         assert Layer().namespace is None

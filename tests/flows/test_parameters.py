@@ -5,6 +5,7 @@ import pytest
 from laminar import Flow, Layer
 from laminar.components import Parameters
 from laminar.configurations import datastores, executors
+from laminar.types import unwrap
 
 flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
 
@@ -18,10 +19,9 @@ class A(Layer):
 @pytest.mark.flow
 class TestParameter:
     def test_flow(self) -> None:
-        execution = flow.parameters(foo="bar")
-        flow(execution=execution)
+        execution_id = flow(foo="bar")
 
-        results = flow.execution(execution)
+        execution = flow.execution(unwrap(execution_id))
 
-        assert results.layer(Parameters).foo == "bar"
-        assert results.layer(A).foo == "bar"
+        assert execution.layer(Parameters).foo == "bar"
+        assert execution.layer(A).foo == "bar"

@@ -36,14 +36,14 @@ class C(Layer):
 @pytest.mark.flow
 class TestGrid:
     def test_flow(self) -> None:
-        execution = flow()
+        execution_id = flow()
 
-        results = flow.execution(unwrap(execution))
+        execution = flow.execution(unwrap(execution_id))
 
-        assert list(results.layer(A).foo) == [1, 2, 3]
-        assert list(results.layer(A).bar) == ["a", "b"]
-        assert list(results.layer(B).result) == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
-        assert results.layer(C).result == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
+        assert list(execution.layer(A).foo) == [1, 2, 3]
+        assert list(execution.layer(A).bar) == ["a", "b"]
+        assert list(execution.layer(B).result) == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
+        assert execution.layer(C).result == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
 
 
 flow2 = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
@@ -80,11 +80,11 @@ class C2(Layer):
 @pytest.mark.flow
 class TestTwoGrid:
     def test_flow(eslf) -> None:
-        execution = flow2()
+        execution_id = flow2()
 
-        results = flow2.execution(unwrap(execution))
+        execution = flow2.execution(unwrap(execution_id))
 
-        assert list(results.layer(A12).foo) == [1, 2, 3]
-        assert list(results.layer(A22).bar) == ["a", "b"]
-        assert list(results.layer(B2).result) == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
-        assert results.layer(C2).result == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
+        assert list(execution.layer(A12).foo) == [1, 2, 3]
+        assert list(execution.layer(A22).bar) == ["a", "b"]
+        assert list(execution.layer(B2).result) == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
+        assert execution.layer(C2).result == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]

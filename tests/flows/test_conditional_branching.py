@@ -43,7 +43,7 @@ class D(Layer):
 @flow.register()
 class E(Layer):
     def __call__(self, c: C, d: D) -> None:
-        if d.executed:
+        if d.finished:
             self.foo = [c.foo, d.foo]
         else:
             self.foo = [c.foo]
@@ -55,15 +55,15 @@ class E(Layer):
 @pytest.mark.flow
 class TestConditionalBranching:
     def test_flow(self) -> None:
-        execution = flow()
+        execution_id = flow()
 
-        results = flow.execution(unwrap(execution))
+        execution = flow.execution(unwrap(execution_id))
 
-        assert results.layer(A).executed is True
-        assert results.layer(A).foo == "bar"
-        assert results.layer(B).executed is False
-        assert results.layer(C).executed is True
-        assert results.layer(C).foo == "baz"
-        assert results.layer(D).executed is False
-        assert results.layer(E).executed is True
-        assert results.layer(E).foo == ["baz"]
+        assert execution.layer(A).finished is True
+        assert execution.layer(A).foo == "bar"
+        assert execution.layer(B).finished is False
+        assert execution.layer(C).finished is True
+        assert execution.layer(C).foo == "baz"
+        assert execution.layer(D).finished is False
+        assert execution.layer(E).finished is True
+        assert execution.layer(E).foo == ["baz"]

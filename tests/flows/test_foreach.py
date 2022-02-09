@@ -35,10 +35,10 @@ class C(Layer):
 @pytest.mark.flow
 class TestForEach:
     def test_flow(self) -> None:
-        execution = flow()
+        execution_id = flow()
 
-        results = flow.execution(unwrap(execution))
+        execution = flow.execution(unwrap(execution_id))
 
-        assert list(results.layer(A).foo) == [1, 2, 3]
-        assert list(results.layer(B).foo) == [1, 3, 7]
-        assert results.layer(C).foo == [1, 4, 9]
+        assert list(execution.layer(A).foo) == [1, 2, 3]
+        assert list(execution.layer(B).foo) == [1, 3, 7]
+        assert execution.layer(C).foo == [1, 4, 9]

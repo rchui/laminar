@@ -30,10 +30,10 @@ class C(Layer):
 @pytest.mark.flow
 class TestLinear:
     def test_flow(self) -> None:
-        execution = flow()
+        execution_id = flow()
 
-        results = flow.execution(unwrap(execution))
+        execution = flow.execution(unwrap(execution_id))
 
-        assert results.layer(A).foo == "bar"
-        assert results.layer(B).foo == "bar"
-        assert results.layer(C).foo == "bar"
+        assert execution.layer(A).foo == "bar"
+        assert execution.layer(B).foo == "bar"
+        assert execution.layer(C).foo == "bar"
