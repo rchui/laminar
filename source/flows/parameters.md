@@ -72,7 +72,7 @@ if __name__ == "__main__":
     execution = None
 
     # Scheduling a Flow
-    if not current.execution.id:
+    if not flow.execution.id:
         execution = flow(foo=pd.read_csv("path/to/large.csv"))
 
     flow(execution=execution)
