@@ -1,4 +1,4 @@
-# Laminar
+# laminar
 
 > "slow is smooth, and smooth is fast"
 
