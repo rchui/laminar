@@ -1,1 +1,1 @@
-VERSION = ".".join(map(str, (2022, 2, 1)))
+VERSION = "2022.1a0"
