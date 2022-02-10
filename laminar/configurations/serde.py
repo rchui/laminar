@@ -4,7 +4,7 @@ from typing import Any, BinaryIO, TypeVar
 
 import cloudpickle
 
-from laminar.utils import fs
+from laminar.utils import fs, stringify
 
 
 def dtype(cls: type) -> str:
@@ -23,7 +23,7 @@ class Protocol(metaclass=MetaProtocol):
     """Generic base class for defining ser(de) protocols."""
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({', '.join([f'{key}={value}' for key, value in vars(self).items()])})"
+        return stringify(self, type(self).__name__)
 
     def read(self, uri: str) -> Any:
         """Read a value from a URI with a custom protocol.

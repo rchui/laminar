@@ -11,7 +11,7 @@ from laminar.configurations import datastores, executors, flows, hooks, layers, 
 from laminar.exceptions import ExecutionError, FlowError, LayerError
 from laminar.settings import current
 from laminar.types import LayerType, annotations
-from laminar.utils import contexts
+from laminar.utils import contexts, stringify
 
 logger = logging.getLogger(__name__)
 
@@ -67,11 +67,7 @@ class Layer:
         ...
 
     def __repr__(self) -> str:
-        attributes = ", ".join(
-            f"{key}={repr(value)}"
-            for key, value in {attr: getattr(self, attr, None) for attr in ("flow", "index", "splits")}.items()
-        )
-        return f"{self.name}({attributes})"
+        return stringify(self, self.name, "flow", "index", "splits")
 
     def __deepcopy__(self, memo: Dict[int, Any]) -> "Layer":
         cls = self.__class__
@@ -291,11 +287,7 @@ class Flow:
         return execution
 
     def __repr__(self) -> str:
-        attributes = ", ".join(
-            f"{key}={repr(value)}"
-            for key, value in {attr: getattr(self, attr, None) for attr in ("execution",)}.items()
-        )
-        return f"{self.name}({attributes})"
+        return stringify(self, self.name, "execution")
 
     def execute(self, *, execution: str, layer: Layer) -> None:
         """Execute a single layer of the flow.

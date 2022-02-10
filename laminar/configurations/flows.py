@@ -8,6 +8,8 @@ from laminar.configurations.datastores import DataStore, Local
 from laminar.configurations.executors import Docker, Executor
 from laminar.configurations.schedulers import Scheduler
 from laminar.settings import current
+from laminar.types import unwrap
+from laminar.utils import stringify
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
@@ -41,8 +43,12 @@ class Configuration:
 
 @dataclass
 class Execution:
+    #: ID of the flow execution
     id: Optional[str]
+    #: Flow being executed
     flow: Flow
+    #: True if the flow execution is being retried, else False.
+    retry: bool = False
 
     def __call__(self, id: str) -> "Execution":
         execution = copy.deepcopy(self)
@@ -50,7 +56,7 @@ class Execution:
         return execution
 
     def __repr__(self) -> str:
-        return f"Execution(id={self.id}, flow={self.flow.name})"
+        return stringify(self, type(self).__name__, "id", "retry")
 
     @property
     def finished(self) -> bool:
@@ -84,3 +90,18 @@ class Execution:
         """
 
         return self.flow.layer(layer, **attributes)
+
+    def resume(self) -> None:
+        """Resume a flow execution from where it failed.
+
+        Notes:
+
+            Resuming a flow execution will skip all layers that finished on the previous attempt.
+
+        Usage::
+
+            flow.execution(...).resume()
+        """
+
+        self.retry = True
+        self.flow.schedule(execution=unwrap(self.id), dependencies=self.flow.dependencies)

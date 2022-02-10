@@ -26,6 +26,8 @@ class Current(BaseModel):
 
         #: ID of the current execution
         id: Optional[str] = None
+        #: True if execution is being retried, else False
+        retry: bool = False
 
     class Flow(BaseSettings):
         class Config:

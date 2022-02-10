@@ -115,8 +115,13 @@ class Scheduler:
 
         for layer in runnable:
             instance = flow.layer(layer)
-            parameters = annotations(instance.flow, instance.__enter__)
 
+            # Check retries
+            if instance.flow.execution.retry and instance.state.finished:
+                skippable.add(layer)
+
+            # Check condition
+            parameters = annotations(instance.flow, instance.__enter__)
             if not instance.__enter__(*parameters):
                 skippable.add(layer)
 

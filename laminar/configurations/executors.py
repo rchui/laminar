@@ -9,7 +9,12 @@ from typing import TYPE_CHECKING, Optional
 
 import boto3
 from mypy_boto3_batch.client import BatchClient
-from mypy_boto3_batch.type_defs import ContainerOverridesTypeDef, ContainerPropertiesTypeDef, JobTimeoutTypeDef
+from mypy_boto3_batch.type_defs import (
+    ContainerOverridesTypeDef,
+    ContainerPropertiesTypeDef,
+    JobTimeoutTypeDef,
+    KeyValuePairTypeDef,
+)
 
 from laminar.exceptions import ExecutionError
 from laminar.types import unwrap
@@ -98,6 +103,7 @@ class Docker(Executor):
                     "--interactive",
                     f"--cpus {layer.configuration.container.cpu}",
                     f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution.id)}",
+                    f"--env LAMINAR_EXECUTION_RETRY={layer.flow.execution.retry}",
                     f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
                     f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
                     f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
@@ -211,7 +217,18 @@ class AWS:
                     jobDefinition=job_definition_arn,
                     jobQueue=self.job_queue_arn,
                     containerOverrides=ContainerOverridesTypeDef(
-                        vcpus=container.cpu, memory=container.memory, command=container.command
+                        vcpus=container.cpu,
+                        memory=container.memory,
+                        command=container.command,
+                        environment=[
+                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_ID", value=unwrap(layer.flow.execution.id)),
+                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_RETRY", value=str(layer.flow.execution.retry)),
+                            KeyValuePairTypeDef(name="LAMINAR_FLOW_NAME", value=layer.flow.name),
+                            KeyValuePairTypeDef(name="LAMINAR_LAYER_ATTEMPT", value=str(unwrap(layer.attempt))),
+                            KeyValuePairTypeDef(name="LAMINAR_LAYER_INDEX", value=str(unwrap(layer.index))),
+                            KeyValuePairTypeDef(name="LAMINAR_LAYER_NAME", value=layer.name),
+                            KeyValuePairTypeDef(name="LAMINAR_LAYER_SPLITS", value=str(unwrap(layer.splits))),
+                        ],
                     ),
                     timeout=JobTimeoutTypeDef(attemptDurationSeconds=self.timeout),
                 )

@@ -49,9 +49,10 @@ class TestDocker:
 
         mock_split.assert_called_once_with(
             "docker run --rm --interactive --cpus 1 --env LAMINAR_EXECUTION_ID=test-execution --env"
-            " LAMINAR_FLOW_NAME=TestFlow --env LAMINAR_LAYER_ATTEMPT=1 --env LAMINAR_LAYER_INDEX=0 --env"
-            " LAMINAR_LAYER_NAME=Layer --env LAMINAR_LAYER_SPLITS=2 --memory 1500m --volume"
-            f" memory:///:/laminar/.laminar --workdir /laminar {layer.configuration.container.image} python main.py"
+            " LAMINAR_EXECUTION_RETRY=False --env LAMINAR_FLOW_NAME=TestFlow --env LAMINAR_LAYER_ATTEMPT=1 --env"
+            " LAMINAR_LAYER_INDEX=0 --env LAMINAR_LAYER_NAME=Layer --env LAMINAR_LAYER_SPLITS=2 --memory 1500m"
+            f" --volume memory:///:/laminar/.laminar --workdir /laminar {layer.configuration.container.image} python"
+            " main.py"
         )
 
     async def test_submit_error_code(self, layer: Layer) -> None:
