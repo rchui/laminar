@@ -65,26 +65,3 @@ python main.py
 >>> "First.A"
 >>> "Second.A"
 ```
-
-## Retry
-
-Maybe requests to other services can be flaky or maybe you want your `Flow` to be tolerant of AWS EC2 Spot failures. Whatever the reason, there are situations where it is useful for layers to be retried on failure.
-
-`Retry` allows the user to configure the retry policy per layer.
-
-```python
-from laminar import Flow, Layer
-from laminar.configurations import layers
-
-flow = Flow("RetryFlow")
-
-@flow.register(retry=layers.Retry(attempts=3))
-class A(Layer):
-    ...
-```
-
-`Retry` performs a jittered exponential backoff as the number of attempts increase. Each input to the retry backoff calculation can also be modified.
-
-```python
-Retry(attempts=3, delay=0.1, backoff=2, jitter=0.1)
-```

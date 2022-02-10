@@ -9,6 +9,16 @@ utils
 
     
     
+    .. rubric:: Functions
+
+    .. autosummary::
+        :nosignatures:
+    
+        stringify
+
+    
+    .. autofunction:: stringify
+    
     
 
     

@@ -61,6 +61,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/recovery.html">Recovery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../advanced/hooks.html">Hooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../advanced/serde.html">Ser(De)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../advanced/testing.html">Testing</a></li>
@@ -125,7 +126,7 @@
 <h1>Execution<a class="headerlink" href="#execution" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="laminar.configurations.flows.Execution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.flows.</span></span><span class="sig-name descname"><span class="pre">Execution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoneType</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'Flow'</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.flows.Execution" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.flows.</span></span><span class="sig-name descname"><span class="pre">Execution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoneType</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'Flow'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.flows.Execution" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
@@ -136,6 +137,9 @@
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.flows.Execution.layer" title="laminar.configurations.flows.Execution.layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layer</span></code></a></p></td>
 <td><p>Get a registered flow layer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.flows.Execution.resume" title="laminar.configurations.flows.Execution.resume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resume</span></code></a></p></td>
+<td><p>Resume a flow execution from where it failed.</p></td>
 </tr>
 </tbody>
 </table>
@@ -149,21 +153,36 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">finished</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">running</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.flows.Execution.retry" title="laminar.configurations.flows.Execution.retry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">retry</span></code></a></p></td>
+<td><p>True if the flow execution is being retried, else False.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">running</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.flows.Execution.id" title="laminar.configurations.flows.Execution.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></p></td>
+<td><p>ID of the flow execution</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.flows.Execution.flow" title="laminar.configurations.flows.Execution.flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
+<td><p>Flow being executed</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.flows.Execution.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">Flow</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.flows.Execution.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.flows.Execution.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.flows.Execution.flow">
+<span class="sig-name descname"><span class="pre">flow</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">Flow</span></a></em><a class="headerlink" href="#laminar.configurations.flows.Execution.flow" title="Permalink to this definition"></a></dt>
+<dd><p>Flow being executed</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.flows.Execution.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.configurations.flows.Execution.id" title="Permalink to this definition"></a></dt>
+<dd><p>ID of the flow execution</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="laminar.configurations.flows.Execution.layer">
@@ -187,6 +206,24 @@
 <dd class="field-even"><p>Layer that is registered to the flow.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.configurations.flows.Execution.resume">
+<span class="sig-name descname"><span class="pre">resume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.flows.Execution.resume" title="Permalink to this definition"></a></dt>
+<dd><p>Resume a flow execution from where it failed.</p>
+<p class="rubric">Notes</p>
+<p>Resuming a flow execution will skip all layers that finished on the previous attempt.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">flow</span><span class="o">.</span><span class="n">execution</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="laminar.configurations.flows.Execution.retry">
+<span class="sig-name descname"><span class="pre">retry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#laminar.configurations.flows.Execution.retry" title="Permalink to this definition"></a></dt>
+<dd><p>True if the flow execution is being retried, else False.</p>
 </dd></dl>
 
 </dd></dl>

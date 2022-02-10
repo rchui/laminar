@@ -37,6 +37,9 @@ Execution
         
         ~laminar.configurations.flows.Execution.layer
         
+        
+        ~laminar.configurations.flows.Execution.resume
+        
     
     
 
@@ -57,6 +60,9 @@ Execution
         
         
         ~laminar.configurations.flows.Execution.finished
+        
+        
+        ~laminar.configurations.flows.Execution.retry
         
         
         ~laminar.configurations.flows.Execution.running

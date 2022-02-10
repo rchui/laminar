@@ -60,6 +60,7 @@ Results <flows/results>
 :caption: Advanced
 :hidden:
 
+Recovery <advanced/recovery>
 Hooks <advanced/hooks>
 Ser(De) <advanced/serde>
 Testing <advanced/testing>
