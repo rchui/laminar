@@ -115,7 +115,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="deployment">
+  <section id="deployment">
 <h1>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline"></a></h1>
 <p>To <strong>deploy</strong> an application means to make it available to users. Deploying a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> allows users to run it, perform the defined work, and inspect any generated results.</p>
 <section id="containers">
@@ -259,7 +259,7 @@
 <p>The executor evaluates a single <code class="docutils literal notranslate"><span class="pre">Layer</span></code> and writes its results to a Datastore. Executors processes are always run inside a Docker container and run ephemerally for the lifetime of a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> evaluation. Because of this, executor processses can be run on infrastructure with low availability guarantees.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>With the <a class="reference external" href="../layers/configuration.html#Retry">Retry</a> layer configuration, executors can be restarted upon failure.</p>
+<p>With the <span class="xref myst">Retry</span> layer configuration, executors can be restarted upon failure.</p>
 </div>
 <p>Like the scheduler, executor processes must also reach any invocation of <code class="docutils literal notranslate"><span class="pre">flow()</span></code>. From here, the logic will intelligently diverge; executor processes will instead evaluate a single layer based on parameters passed to it by the scheduler.</p>
 <p>Internally to start executor containers, the scheduler will (with additional parameters) invoke roughly:</p>
@@ -268,7 +268,7 @@
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>In order to change this behavior, each layer’s container can be configured individually via the <a class="reference external" href="../layers/scaling_up.html#Container">Container</a> layer configuration.</p>
+<p>In order to change this behavior, each layer’s container can be configured individually via the <span class="xref myst">Container</span> layer configuration.</p>
 </div>
 </section>
 </section>
