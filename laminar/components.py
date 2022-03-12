@@ -3,7 +3,7 @@
 import copy
 import logging
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, TypeVar, Union, overload
 
 from ksuid import KsuidMs
 
@@ -181,6 +181,9 @@ class Layer:
 
 class Parameters(Layer):
     """Special Layer for handling Flow parameters."""
+
+
+T = TypeVar("T", bound=Layer)
 
 
 class Flow:
@@ -362,6 +365,18 @@ class Flow:
             return Layer
 
         return wrapper
+
+    @overload
+    def layer(self, layer: str, **atributes: Any) -> Layer:
+        ...
+
+    @overload
+    def layer(self, layer: Type[T], **attributes: Any) -> T:
+        ...
+
+    @overload
+    def layer(self, layer: T, **attributes: Any) -> T:
+        ...
 
     def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.

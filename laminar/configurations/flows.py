@@ -2,7 +2,7 @@ import copy
 import operator
 from dataclasses import dataclass
 from functools import reduce
-from typing import TYPE_CHECKING, Any, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union, overload
 
 from laminar.configurations.datastores import DataStore, Local
 from laminar.configurations.executors import Docker, Executor
@@ -18,6 +18,8 @@ else:
     Flow = "Flow"
     Layer = "Layer"
     Parameters = "Parameters"
+
+T = TypeVar("T", bound=Layer)
 
 
 @dataclass(frozen=True)
@@ -70,6 +72,18 @@ class Execution:
         return (current.execution.id is not None and current.execution.id == self.id) and (
             current.flow.name is not None and current.flow.name == self.flow.name
         )
+
+    @overload
+    def layer(self, layer: str, **atributes: Any) -> Layer:
+        ...
+
+    @overload
+    def layer(self, layer: Type[T], **attributes: Any) -> T:
+        ...
+
+    @overload
+    def layer(self, layer: T, **attributes: Any) -> T:
+        ...
 
     def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.

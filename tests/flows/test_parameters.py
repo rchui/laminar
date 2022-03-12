@@ -12,6 +12,8 @@ flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Threa
 
 @flow.register()
 class A(Layer):
+    foo: str
+
     def __call__(self, parameters: Parameters) -> None:
         self.foo = parameters.foo
 

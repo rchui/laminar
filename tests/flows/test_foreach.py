@@ -1,6 +1,6 @@
 """Test foreach flows."""
 
-from typing import List
+from typing import List, cast
 
 import pytest
 
@@ -14,6 +14,8 @@ flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Threa
 
 @flow.register()
 class A(Layer):
+    foo: List[int]
+
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
@@ -23,7 +25,7 @@ class B(Layer):
     foo: List[int]
 
     def __call__(self, a: A) -> None:
-        self.foo = a.foo + unwrap(self.index) ** 2
+        self.foo = cast(List[int], cast(int, a.foo) + unwrap(self.index) ** 2)
 
 
 @flow.register()

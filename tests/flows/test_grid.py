@@ -14,6 +14,9 @@ flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Threa
 
 @flow.register()
 class A(Layer):
+    foo: List[int]
+    bar: List[str]
+
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
         self.shard(bar=["a", "b"])
@@ -51,12 +54,16 @@ flow2 = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thre
 
 @flow2.register()
 class A12(Layer):
+    foo: List[int]
+
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
 
 @flow2.register()
 class A22(Layer):
+    bar: List[str]
+
     def __call__(self) -> None:
         self.shard(bar=["a", "b"])
 
