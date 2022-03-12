@@ -10,7 +10,7 @@ from ksuid import KsuidMs
 from laminar.configurations import datastores, executors, flows, hooks, layers, schedulers
 from laminar.exceptions import ExecutionError, FlowError, LayerError
 from laminar.settings import current
-from laminar.types import LayerType, annotations
+from laminar.types import LayerType, annotations, unwrap
 from laminar.utils import contexts, stringify
 
 logger = logging.getLogger(__name__)
@@ -80,7 +80,7 @@ class Layer:
     __enter__: Callable[..., bool]  # type: ignore
 
     def __enter__(self) -> bool:  # type: ignore
-        return all(layer.state.finished for layer in self._dependencies if not isinstance(layer, Parameters))
+        return all(layer.state.finished for layer in self._dependencies)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
@@ -444,5 +444,15 @@ class Flow:
 
             # Fake an execution to write the artifacts to the datastore.
             self.execute(execution=execution, layer=layer)
+
+            # Record parameter layer execution
+            layer.flow.configuration.datastore.write_record(
+                layer=layer,
+                record=datastores.Record(
+                    flow=datastores.Record.FlowRecord(name=layer.flow.name),
+                    layer=datastores.Record.LayerRecord(name=layer.name),
+                    execution=datastores.Record.ExecutionRecord(splits=unwrap(layer.splits)),
+                ),
+            )
 
         return execution

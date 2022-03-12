@@ -13,11 +13,9 @@ from laminar.utils import stringify
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
-    from laminar.components import Parameters
 else:
     Flow = "Flow"
     Layer = "Layer"
-    Parameters = "Parameters"
 
 T = TypeVar("T", bound=Layer)
 
@@ -62,10 +60,7 @@ class Execution:
 
     @property
     def finished(self) -> bool:
-        return reduce(
-            operator.and_,
-            [layer.state.finished for layer in self.flow._dependencies.keys() if not isinstance(layer, Parameters)],
-        )
+        return reduce(operator.and_, [layer.state.finished for layer in self.flow._dependencies.keys()])
 
     @property
     def running(self) -> bool:
