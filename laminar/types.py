@@ -12,31 +12,21 @@ T = TypeVar("T")
 LayerType = TypeVar("LayerType", bound=Type[Layer])
 
 
-def hints(function: Callable[..., Any]) -> Tuple[Any, ...]:
+def hints(flow: Flow, function: Callable[..., Any]) -> Tuple[Layer, ...]:
     """Get the type hints for a given function.
 
     Args:
-        function (Callable[..., Any]): Function to get annotations for.
-
-    Returns:
-        Tuple[Any, ...]: Ordered type annotations.
-    """
-
-    return tuple(annotation for parameter, annotation in get_type_hints(function).items() if parameter != "return")
-
-
-def annotations(flow: Flow, func: Callable[..., Any]) -> Tuple[Layer, ...]:
-    """Get the layer annotations for a given function.
-
-    Args:
         flow: Flow to get layers for.
-        func: Function to get layer annotations for.
+        function (Callable[..., Any]): Function to get type hints for.
 
     Returns:
-        Type[Layer, ...]: Ordered layer type annotations.
+        Ordered type hints.
     """
 
-    return tuple(flow.layer(annotation) for annotation in hints(func))
+    return tuple(
+        flow.layer(hint)
+        for hint in (annotation for parameter, annotation in get_type_hints(function).items() if parameter != "return")
+    )
 
 
 def unwrap(option: Optional[T], default: Optional[T] = None) -> T:

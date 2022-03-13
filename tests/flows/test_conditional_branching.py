@@ -3,7 +3,7 @@
 import pytest
 
 from laminar import Flow, Layer
-from laminar.configurations import datastores, executors
+from laminar.configurations import datastores, executors, hooks
 from laminar.types import unwrap
 
 flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
@@ -21,7 +21,8 @@ class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
-    def __enter__(self) -> bool:
+    @hooks.entry
+    def failure(self) -> bool:
         return False
 
 
@@ -48,7 +49,8 @@ class E(Layer):
         else:
             self.foo = [c.foo]
 
-    def __enter__(self) -> bool:
+    @hooks.entry
+    def success(self) -> bool:
         return True
 
 

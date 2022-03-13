@@ -1,35 +1,14 @@
-"""Configurations for laminar hooks."""
-
 import inspect
 from contextlib import ExitStack, contextmanager
-from enum import Enum
-from typing import TYPE_CHECKING, Any, Callable, Generator, Optional, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
-from laminar.types import annotations
+from laminar.configurations.hooks import annotation
+from laminar.types import hints
 
 if TYPE_CHECKING:
-    from laminar import Layer
-else:
-    Layer = "Layer"
+    from laminar.components import Layer
 
-T = TypeVar("T", bound=Any)
-
-ATTRIBUTE = "annotation"
-
-
-class Annotation(str, Enum):
-    execution = "hook::execution"
-    retry = "hook::retry"
-    submission = "hook::submission"
-
-    @staticmethod
-    def annotate(hook: T, annotation: "Annotation") -> T:
-        setattr(hook, ATTRIBUTE, annotation)
-        return hook
-
-    @staticmethod
-    def get(hook: Callable[..., Generator[Any, None, None]]) -> Optional[str]:
-        return getattr(hook, ATTRIBUTE, None)
+T = TypeVar("T")
 
 
 def execution(hook: T) -> T:
@@ -44,7 +23,7 @@ def execution(hook: T) -> T:
             ...
     """
 
-    return Annotation.annotate(hook, Annotation.execution)
+    return annotation.annotate(hook, annotation.execution)
 
 
 def retry(hook: T) -> T:
@@ -59,7 +38,7 @@ def retry(hook: T) -> T:
             ...
     """
 
-    return Annotation.annotate(hook, Annotation.retry)
+    return annotation.annotate(hook, annotation.retry)
 
 
 def submission(hook: T) -> T:
@@ -74,10 +53,10 @@ def submission(hook: T) -> T:
             ...
     """
 
-    return Annotation.annotate(hook, Annotation.submission)
+    return annotation.annotate(hook, annotation.submission)
 
 
-def context(*, layer: Layer, annotation: Annotation) -> ExitStack:
+def context(*, layer: "Layer", annotation: str) -> ExitStack:
     """Get a context manager and results for all hooks of the annotated type.
 
     Args:
@@ -91,7 +70,7 @@ def context(*, layer: Layer, annotation: Annotation) -> ExitStack:
     stack = ExitStack()
     for hook in layer.hooks.get(annotation, []):
         # Gather any layer dependencies the hook may have
-        parameters = annotations(layer.flow, hook)
+        parameters = hints(layer.flow, hook)
 
         # Create a context manager for the generator and register it with the exit stack
         if inspect.isgeneratorfunction(hook):

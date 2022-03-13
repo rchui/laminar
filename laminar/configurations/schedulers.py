@@ -1,7 +1,9 @@
 """Configurations for laminar executors."""
 
 import asyncio
+import functools
 import logging
+import operator
 from asyncio import Task
 from copy import deepcopy
 from dataclasses import dataclass
@@ -9,7 +11,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Set, Tuple
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import SchedulerError
-from laminar.types import annotations, unwrap
+from laminar.types import unwrap
 from laminar.utils import contexts
 
 if TYPE_CHECKING:
@@ -46,7 +48,7 @@ class Scheduler:
             for index in range(splits):
                 instance = layer.flow.layer(layer, index=index, splits=splits, attempt=attempt)
 
-                with hooks.context(layer=instance, annotation=hooks.Annotation.submission):
+                with hooks.event.context(layer=instance, annotation=hooks.annotation.submission):
                     tasks.append(asyncio.create_task(instance.flow.configuration.executor.submit(layer=instance)))
 
             # Combine all tasks into a Future so they can be waited on together
@@ -63,7 +65,7 @@ class Scheduler:
 
             # Attempt to reschedule the layer
             if attempt < layer.configuration.retry.attempts:
-                with hooks.context(layer=layer, annotation=hooks.Annotation.retry):
+                with hooks.event.context(layer=layer, annotation=hooks.annotation.retry):
                     await layer.configuration.retry.sleep(layer=layer, attempt=attempt)
                 return await self.schedule(layer=layer, attempt=attempt + 1)
             raise
@@ -116,14 +118,21 @@ class Scheduler:
         for layer in runnable:
             instance = flow.layer(layer)
 
-            # Check retries
+            # Check for retries
             if instance.flow.execution.retry and instance.state.finished:
                 skippable.add(layer)
+                continue
 
-            # Check condition
-            parameters = annotations(instance.flow, instance.__enter__)
-            if not instance.__enter__(*parameters):
+            # Check entry hooks
+            conditions = hooks.condition.gather(layer=instance, annotation=hooks.annotation.entry)
+            if not functools.reduce(operator.and_, conditions, True):
                 skippable.add(layer)
+                continue
+
+            # Check dependencies if not conditions exist
+            if not conditions and not all(dependency.state.finished for dependency in instance._dependencies):
+                skippable.add(layer)
+                continue
 
         if skippable:
             logger.info("Skipping layers: %s", sorted(skippable))

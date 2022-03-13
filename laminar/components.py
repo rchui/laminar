@@ -10,7 +10,7 @@ from ksuid import KsuidMs
 from laminar.configurations import datastores, executors, flows, hooks, layers, schedulers
 from laminar.exceptions import ExecutionError, FlowError, LayerError
 from laminar.settings import current
-from laminar.types import LayerType, annotations, unwrap
+from laminar.types import LayerType, hints, unwrap
 from laminar.utils import contexts, stringify
 
 logger = logging.getLogger(__name__)
@@ -77,11 +77,6 @@ class Layer:
             setattr(result, k, copy.deepcopy(v, memo))
         return result
 
-    __enter__: Callable[..., bool]  # type: ignore
-
-    def __enter__(self) -> bool:  # type: ignore
-        return all(layer.state.finished for layer in self._dependencies)
-
     def __eq__(self, other: object) -> bool:
         if isinstance(other, str):
             return self.name == other
@@ -125,7 +120,7 @@ class Layer:
 
     @property
     def _dependencies(self) -> Tuple["Layer", ...]:
-        return annotations(self.flow, self.__call__)
+        return hints(self.flow, self.__call__)
 
     @property
     def dependencies(self) -> Tuple[str, ...]:
@@ -139,7 +134,7 @@ class Layer:
 
         _hooks: Dict[str, List[Callable[..., Any]]] = {}
         for entry in list(vars(type(self.flow)).values()) + list(vars(type(self)).values()):
-            annotation = hooks.Annotation.get(entry)
+            annotation = hooks.annotation.get(entry)
             if annotation is not None:
                 _hooks.setdefault(annotation, []).append(entry)
         return _hooks
@@ -317,7 +312,7 @@ class Flow:
             # Setup the Layer parameter values
             parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
-            with hooks.context(layer=layer, annotation=hooks.Annotation.execution):
+            with hooks.event.context(layer=layer, annotation=hooks.annotation.execution):
                 layer._execute(*parameters)
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")

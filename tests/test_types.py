@@ -2,31 +2,32 @@
 
 import pytest
 
-from laminar import types
-from laminar.configurations.datastores import Accessor, Archive
+from laminar import Flow, Layer, types
+
+flow = Flow(name="HintFlow")
 
 
-class TestAnnotations:
-    def test_builtins(self) -> None:
-        def test(a: str, b: bool, c: int) -> None:
+@flow.register()
+class Ref(Layer):
+    ...
+
+
+class TestHints:
+    def test_reference(self) -> None:
+        def test(a: "Ref") -> None:
             ...
 
-        assert types.hints(test) == (str, bool, int)
-
-    def test_custom(self) -> None:
-        def test(a: Accessor, b: Archive) -> None:
-            ...
-
-        assert types.hints(test) == (Accessor, Archive)
+        assert types.hints(flow, test) == (Ref(flow=flow),)
 
     def test_forward_reference(self) -> None:
-        def test(a: "Test") -> None:
+        def test(a: "ForwardRef") -> None:
             ...
 
-        assert types.hints(test) == (Test,)
+        assert types.hints(flow, test) == (ForwardRef(flow=flow),)
 
 
-class Test:
+@flow.register()
+class ForwardRef(Layer):
     ...
 
 

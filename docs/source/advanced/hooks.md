@@ -1,6 +1,6 @@
 # Hooks
 
-`laminar` supports a hook system for users to extend the existing functionality and dynamically adjust the flow in response to changes that occur at execution time. Hooks are Python generators or functions that can perform actions before and after events occur within the flow.
+`laminar` supports a hook system for users to extend the existing functionality and dynamically adjust the flow in response to changes that occur at execution time.
 
 Hooks are defined by adding decorators.
 
@@ -26,8 +26,6 @@ class A(Layer):
         print("after call")
 
 ```
-
-A hook defined as a generator will yield until the `Layer` has completed executing before finishing. A hook defined as a function will immediately return before the `Layer` has been executed.
 
 ## Dependencies
 
@@ -68,16 +66,20 @@ class A(Layer):
         print("before call")
 
     @hooks.execution
-    def configure_entry_1(self) -> Generator[None, None, None]:
+    def configure_entry_2(self) -> Generator[None, None, None]:
         yield
         print("after call")
 ```
 
-Hooks of the same type are executed roughly in the order that they are defined in the `Layer` (but not necessarily guaranteed). Using multiple hooks allows for deep and dynamic customization of the entire `Layer` lifecycle.
+Hooks of the same type are executed in the order that they are defined in the `Layer`. Using multiple hooks allows for deep and dynamic customization of the entire `Layer` lifecycle.
 
 ## Types
 
-### Execution Hooks
+### Event Hooks
+
+Event hooks are Python generators or functions that can perform actions before and after events occur within the flow. A hook defined as a generator will yield until the `Layer` has completed executing before finishing. A hook defined as a function will immediately return before the `Layer` has been executed.
+
+#### Execution Hooks
 
 Execution hooks run just prior to the invocation of `Layer.__call__`. This is useful for situations when something needs to occur prior to a layer starting.
 
@@ -96,7 +98,7 @@ flow = Flow("Flow")
 @flow.register()
 class A(Layer):
     def __call__(self) -> None:
-        self.cursor.execute("SELECT * FROM table")
+        self.cursor.execute("SELECT * FROM <table>")
 
     @hooks.execution
     def hello_world(self) -> Generator[None, None, None]:
@@ -113,7 +115,7 @@ if __name__ == "__main__":
 Execution hooks are invoked on the `Layer` executor.
 ```
 
-### Retry Hooks
+#### Retry Hooks
 
 Retry hooks run just prior to waiting for a `Layer`'s retry backoff. This is useful for situations where the `Layer` needs to be adjusted in response to a failure.
 
@@ -139,7 +141,7 @@ if __name__ == "__main__":
 Retry hooks are invoked on the `Flow` scheduler.
 ```
 
-### Submission Hooks
+#### Submission Hooks
 
 Submission hooks run just prior to a `Layer` being submitted for execution. This is useful for situations where the `Layer` needs to be configured in a certain way.
 
@@ -210,7 +212,15 @@ python main.py
 Submission hooks are invoked on the `Flow` scheduler.
 ```
 
-### Flow Hooks
+### Condition Hooks
+
+Condition hooks are Python functions that return values that are used to evaluate the state of the `Flow` at runtime. The returned values are used to make informed decisions what the `Flow` should do next.
+
+##### Entry Hooks
+
+Refer to the documentation on [conditional branching](../layers/branching.html#conditions) for an explanation of how entry hooks work.
+
+## Flow Hooks
 
 Hooks can also be added to a `Flow` instead of a `Layer`. These hooks behave the same way, except they are are invoked on every `Layer` within a `Flow`. This is useful for situations where the same setup/teardown needs to occur on every `Layer`.
 
