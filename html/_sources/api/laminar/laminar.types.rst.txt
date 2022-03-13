@@ -14,12 +14,10 @@ types
     .. autosummary::
         :nosignatures:
     
-        annotations
         hints
         unwrap
 
     
-    .. autofunction:: annotations
     .. autofunction:: hints
     .. autofunction:: unwrap
     

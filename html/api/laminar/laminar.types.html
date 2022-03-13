@@ -117,50 +117,27 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.types.annotations" title="laminar.types.annotations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotations</span></code></a></p></td>
-<td><p>Get the layer annotations for a given function.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.types.hints" title="laminar.types.hints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hints</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.types.hints" title="laminar.types.hints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hints</span></code></a></p></td>
 <td><p>Get the type hints for a given function.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.types.unwrap" title="laminar.types.unwrap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unwrap</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.types.unwrap" title="laminar.types.unwrap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unwrap</span></code></a></p></td>
 <td><p>Unwrap an optional value.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
-<dt class="sig sig-object py" id="laminar.types.annotations">
-<span class="sig-prename descclassname"><span class="pre">laminar.types.</span></span><span class="sig-name descname"><span class="pre">annotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.types.annotations" title="Permalink to this definition"></a></dt>
-<dd><p>Get the layer annotations for a given function.</p>
+<dt class="sig sig-object py" id="laminar.types.hints">
+<span class="sig-prename descclassname"><span class="pre">laminar.types.</span></span><span class="sig-name descname"><span class="pre">hints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.types.hints" title="Permalink to this definition"></a></dt>
+<dd><p>Get the type hints for a given function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>flow</strong> – Flow to get layers for.</p></li>
-<li><p><strong>func</strong> – Function to get layer annotations for.</p></li>
+<li><p><strong>function</strong> (<em>Callable</em><em>[</em><em>...</em><em>, </em><em>Any</em><em>]</em>) – Function to get type hints for.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Ordered layer type annotations.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Type[<a class="reference internal" href="components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer">Layer</a>, …]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="laminar.types.hints">
-<span class="sig-prename descclassname"><span class="pre">laminar.types.</span></span><span class="sig-name descname"><span class="pre">hints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.types.hints" title="Permalink to this definition"></a></dt>
-<dd><p>Get the type hints for a given function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>function</strong> (<em>Callable</em><em>[</em><em>...</em><em>, </em><em>Any</em><em>]</em>) – Function to get annotations for.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Ordered type annotations.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[Any, …]</p>
+<dd class="field-even"><p>Ordered type hints.</p>
 </dd>
 </dl>
 </dd></dl>

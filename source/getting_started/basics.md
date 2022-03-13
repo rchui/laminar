@@ -103,7 +103,7 @@ Each `Layer` in a `Flow` is executed in a Docker container by default.
 
 ## Dependencies
 
-Often tasks in a workflow need to be executed in a predefined order. Defining a `Layer` dependency is done by adding dependency layers with type annotations to `__call__`. The type annotation is used to infer which layers depend on which other layers. In this two `Layer` example, `B` is dependent on `A`:
+Often tasks in a workflow need to be executed in a predefined order. Defining a `Layer` dependency is done by adding dependency layers with type hints to `__call__`. The type annotation is used to infer which layers depend on which other layers. In this two `Layer` example, `B` is dependent on `A`:
 
 ```python
 # main.py

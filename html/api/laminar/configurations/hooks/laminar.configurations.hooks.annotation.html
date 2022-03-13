@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Annotation &mdash; laminar  documentation</title>
+  <title>annotation &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="layers" href="../laminar.configurations.layers.html" />
+    <link rel="next" title="condition" href="laminar.configurations.hooks.condition.html" />
     <link rel="prev" title="hooks" href="../laminar.configurations.hooks.html" /> 
 </head>
 
@@ -77,7 +77,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.executors.html">executors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.flows.html">flows</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Annotation</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.hooks.condition.html">condition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.hooks.event.html">event</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a></li>
@@ -111,9 +113,9 @@
           <li><a href="../../../laminar.html">laminar</a> &raquo;</li>
           <li><a href="../../laminar.configurations.html">configurations</a> &raquo;</li>
           <li><a href="../laminar.configurations.hooks.html">hooks</a> &raquo;</li>
-      <li>Annotation</li>
+      <li>annotation</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/api/laminar/configurations/hooks/laminar.configurations.hooks.Annotation.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/api/laminar/configurations/hooks/laminar.configurations.hooks.annotation.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -121,47 +123,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="annotation">
-<h1>Annotation<a class="headerlink" href="#annotation" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="laminar.configurations.hooks.Annotation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.</span></span><span class="sig-name descname"><span class="pre">Annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.hooks.Annotation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An enumeration.</p>
-<p class="rubric">Methods</p>
+  <section id="module-laminar.configurations.hooks.annotation">
+<span id="annotation"></span><h1>annotation<a class="headerlink" href="#module-laminar.configurations.hooks.annotation" title="Permalink to this headline"></a></h1>
+<p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotate</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.hooks.annotation.annotate" title="laminar.configurations.hooks.annotation.annotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotate</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">execution</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">retry</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">submission</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.hooks.annotation.get" title="laminar.configurations.hooks.annotation.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="laminar.configurations.hooks.annotation.annotate">
+<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.annotation.</span></span><span class="sig-name descname"><span class="pre">annotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.hooks.annotation.T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.hooks.annotation.T</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.annotation.annotate" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="laminar.configurations.hooks.annotation.get">
+<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.annotation.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.hooks.annotation.get" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 
@@ -170,7 +157,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../laminar.configurations.hooks.html" class="btn btn-neutral float-left" title="hooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../laminar.configurations.layers.html" class="btn btn-neutral float-right" title="layers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="laminar.configurations.hooks.condition.html" class="btn btn-neutral float-right" title="condition" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -9,35 +9,9 @@ hooks
 
     
     
-    .. rubric:: Functions
-
-    .. autosummary::
-        :nosignatures:
-    
-        context
-        execution
-        retry
-        submission
-
-    
-    .. autofunction:: context
-    .. autofunction:: execution
-    .. autofunction:: retry
-    .. autofunction:: submission
-    
     
 
     
-    
-    .. rubric:: Classes
-
-    .. autosummary::
-        :toctree: hooks
-        :template: class.rst
-        :recursive:
-        :nosignatures:
-    
-        Annotation
     
     
 
@@ -46,4 +20,16 @@ hooks
     
 
 
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree: hooks
+   :template: module.rst
+   :recursive:
+   :nosignatures:
+
+   laminar.configurations.hooks.annotation
+   laminar.configurations.hooks.condition
+   laminar.configurations.hooks.event
 
