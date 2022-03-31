@@ -4,7 +4,6 @@ import pytest
 
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
-from laminar.types import unwrap
 
 flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
 
@@ -41,7 +40,7 @@ class TestResume:
         except RuntimeError:
             ...
 
-        execution = flow.execution(unwrap(execution_id))
+        execution = flow.execution(execution_id)
 
         assert execution.layer(A).state.finished is True
         assert execution.layer(B).state.finished is False
