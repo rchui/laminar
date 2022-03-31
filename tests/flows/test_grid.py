@@ -7,7 +7,6 @@ import pytest
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 from laminar.configurations.layers import ForEach, Parameter
-from laminar.types import unwrap
 
 flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
 
@@ -39,9 +38,7 @@ class C(Layer):
 @pytest.mark.flow
 class TestGrid:
     def test_flow(self) -> None:
-        execution_id = flow()
-
-        execution = flow.execution(unwrap(execution_id))
+        execution = flow()
 
         assert list(execution.layer(A).foo) == [1, 2, 3]
         assert list(execution.layer(A).bar) == ["a", "b"]
@@ -87,9 +84,7 @@ class C2(Layer):
 @pytest.mark.flow
 class TestTwoGrid:
     def test_flow(eslf) -> None:
-        execution_id = flow2()
-
-        execution = flow2.execution(unwrap(execution_id))
+        execution = flow2()
 
         assert list(execution.layer(A12).foo) == [1, 2, 3]
         assert list(execution.layer(A22).bar) == ["a", "b"]

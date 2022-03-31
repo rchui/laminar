@@ -4,7 +4,6 @@ import pytest
 
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors, hooks
-from laminar.types import unwrap
 
 flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
 
@@ -57,9 +56,7 @@ class E(Layer):
 @pytest.mark.flow
 class TestConditionalBranching:
     def test_flow(self) -> None:
-        execution_id = flow()
-
-        execution = flow.execution(unwrap(execution_id))
+        execution = flow()
 
         assert execution.layer(A).state.finished is True
         assert execution.layer(A).foo == "bar"
