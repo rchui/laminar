@@ -1,5 +1,6 @@
 import asyncio
 import contextlib
+import os
 from typing import Any, Dict, TypeVar, cast
 
 
@@ -34,6 +35,24 @@ class Attributes(contextlib.ContextDecorator):
                 setattr(self.cls, key, self._attributes[key])
             else:
                 delattr(self.cls, key)
+
+
+class Environment(contextlib.ContextDecorator):
+    def __init__(self, **variables: Any) -> None:
+        self.variables = {key: str(value) for key, value in variables.items()}
+
+    def __enter__(self) -> "Environment":
+        """Modify environment"""
+
+        self.old = dict(os.environ)
+        os.environ.update(self.variables)
+        return self
+
+    def __exit__(self, *_: Any) -> None:
+        """Revert environment changes"""
+
+        os.environ.clear()
+        os.environ.update(self.old)
 
 
 T = TypeVar("T", bound=Any)

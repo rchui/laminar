@@ -18,6 +18,7 @@ from mypy_boto3_batch.type_defs import (
 
 from laminar.exceptions import ExecutionError
 from laminar.types import unwrap
+from laminar.utils import contexts
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +78,16 @@ class Thread(Executor):
 
     async def submit(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
-            layer.flow.execute(execution=unwrap(layer.flow.execution.id), layer=layer)
+            with contexts.Environment(
+                LAMINAR_EXECUTION_ID=layer.flow.execution.id,
+                LAMINAR_EXECUTION_RETRY=layer.flow.execution.retry,
+                LAMINAR_FLOW_NAME=layer.flow.name,
+                LAMINAR_LAYER_ATTEMPT=layer.attempt,
+                LAMINAR_LAYER_INDEX=layer.index,
+                LAMINAR_LAYER_NAME=layer.name,
+                LAMINAR_LAYER_SPLITS=layer.splits,
+            ):
+                layer.flow.execute(execution=unwrap(layer.flow.execution.id), layer=layer)
 
             return layer
 

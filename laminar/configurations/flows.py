@@ -13,11 +13,8 @@ from laminar.utils import stringify
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
-else:
-    Flow = "Flow"
-    Layer = "Layer"
 
-T = TypeVar("T", bound=Layer)
+T = TypeVar("T", bound="Layer")
 
 
 @dataclass(frozen=True)
@@ -46,7 +43,7 @@ class Execution:
     #: ID of the flow execution
     id: Optional[str]
     #: Flow being executed
-    flow: Flow
+    flow: "Flow"
     #: True if the flow execution is being retried, else False.
     retry: bool = False
 
@@ -69,7 +66,7 @@ class Execution:
         )
 
     @overload
-    def layer(self, layer: str, **atributes: Any) -> Layer:
+    def layer(self, layer: str, **atributes: Any) -> "Layer":
         ...
 
     @overload
@@ -80,7 +77,7 @@ class Execution:
     def layer(self, layer: T, **attributes: Any) -> T:
         ...
 
-    def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
+    def layer(self, layer: Union[str, Type["Layer"], "Layer"], **attributes: Any) -> "Layer":
         """Get a registered flow layer.
 
         Usage::

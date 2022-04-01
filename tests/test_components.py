@@ -11,7 +11,6 @@ from laminar import Flow, Layer
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
 from laminar.configurations.layers import State
 from laminar.exceptions import FlowError, LayerError
-from laminar.settings import current
 from laminar.utils import contexts
 
 
@@ -185,7 +184,7 @@ class TestFLow:
         class Test(Layer):
             ...
 
-        with contexts.Attributes(current.layer, name="Test"), contexts.Attributes(current.flow, name="TestFlow"):
+        with contexts.Environment(LAMINAR_LAYER_NAME="Test", LAMINAR_FLOW_NAME="TestFlow"):
             flow()
         assert mock_execute.call_args[-1]["layer"] == Test()
 

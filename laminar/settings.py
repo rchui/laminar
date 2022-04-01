@@ -2,10 +2,10 @@
 
 from typing import Optional
 
-from pydantic import BaseModel, BaseSettings
+from pydantic import BaseSettings
 
 
-class Current(BaseModel):
+class Current:
     """Get information about the current execution environment.
 
     Usage::
@@ -49,9 +49,17 @@ class Current(BaseModel):
         #: Number of splits in the layer
         splits: Optional[int] = None
 
-    execution = Execution()
-    flow = Flow()
-    layer = Layer()
+    @property
+    def execution(self) -> Execution:
+        return self.Execution()
+
+    @property
+    def flow(self) -> Flow:
+        return self.Flow()
+
+    @property
+    def layer(self) -> Layer:
+        return self.Layer()
 
 
 current = Current()
