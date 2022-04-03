@@ -54,15 +54,14 @@ class E(Layer):
 
 
 @pytest.mark.flow
-class TestConditionalBranching:
-    def test_flow(self) -> None:
-        execution = flow()
+def test_flow() -> None:
+    execution = flow()
 
-        assert execution.layer(A).state.finished is True
-        assert execution.layer(A).foo == "bar"
-        assert execution.layer(B).state.finished is False
-        assert execution.layer(C).state.finished is True
-        assert execution.layer(C).foo == "baz"
-        assert execution.layer(D).state.finished is False
-        assert execution.layer(E).state.finished is True
-        assert execution.layer(E).foo == ["baz"]
+    assert execution.layer(A).state.finished is True
+    assert execution.layer(A).foo == "bar"
+    assert execution.layer(B).state.finished is False
+    assert execution.layer(C).state.finished is True
+    assert execution.layer(C).foo == "baz"
+    assert execution.layer(D).state.finished is False
+    assert execution.layer(E).state.finished is True
+    assert execution.layer(E).foo == ["baz"]

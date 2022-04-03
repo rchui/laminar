@@ -2,7 +2,7 @@ import copy
 import operator
 from dataclasses import dataclass
 from functools import reduce
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, Callable, Optional, Type, TypeVar, Union, overload
 
 from laminar.configurations.datastores import DataStore, Local
 from laminar.configurations.executors import Docker, Executor
@@ -13,6 +13,7 @@ from laminar.utils import stringify
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
+    from laminar.components import Parameters
 
 T = TypeVar("T", bound="Layer")
 
@@ -64,6 +65,32 @@ class Execution:
         return (current.execution.id is not None and current.execution.id == self.id) and (
             current.flow.name is not None and current.flow.name == self.flow.name
         )
+
+    def compose(self, *, flow: "Flow", linker: Callable[["Execution"], "Parameters"]) -> "Execution":
+        """Compose multiple flows together.
+
+        Usage::
+
+            flow1 = Flow(...)
+            flow2 = Flow(...)
+
+            @flow1.register()
+            class A(Layer):
+                foo: str
+
+            flow1().compose(flow2, lambda execution: Parameters(foo=execution.layer(A).foo))
+
+        Args:
+            flow: Flow to execute next.
+            linker: Function for passing parameters to the next flow.
+        """
+
+        artifacts = (
+            linker(self).artifacts
+            if all(variable is None for variable in (current.execution.id, current.flow.name, current.layer.name))
+            else {}
+        )
+        return flow(execution=self.id, **artifacts)
 
     @overload
     def layer(self, layer: str, **atributes: Any) -> "Layer":

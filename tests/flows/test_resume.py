@@ -30,26 +30,25 @@ class C(Layer):
 
 
 @pytest.mark.flow
-class TestResume:
-    def test_flow(self) -> None:
-        execution_id = "test-execution"
+def test_flow() -> None:
+    execution_id = "test-execution"
 
-        # Catch failure
-        try:
-            flow(execution=execution_id)
-        except RuntimeError:
-            ...
+    # Catch failure
+    try:
+        flow(execution=execution_id)
+    except RuntimeError:
+        ...
 
-        execution = flow.execution(execution_id)
+    execution = flow.execution(execution_id)
 
-        assert execution.layer(A).state.finished is True
-        assert execution.layer(B).state.finished is False
-        assert execution.layer(C).state.finished is False
+    assert execution.layer(A).state.finished is True
+    assert execution.layer(B).state.finished is False
+    assert execution.layer(C).state.finished is False
 
-        # Retry failed execution
-        B.fail = False
-        execution.resume()
+    # Retry failed execution
+    B.fail = False
+    execution.resume()
 
-        assert execution.layer(A).state.finished is True
-        assert execution.layer(B).state.finished is True
-        assert execution.layer(C).state.finished is True
+    assert execution.layer(A).state.finished is True
+    assert execution.layer(B).state.finished is True
+    assert execution.layer(C).state.finished is True

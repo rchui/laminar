@@ -61,6 +61,7 @@ Results <flows/results>
 :hidden:
 
 Recovery <advanced/recovery>
+Composition <advanced/composition>
 Hooks <advanced/hooks>
 Ser(De) <advanced/serde>
 Testing <advanced/testing>

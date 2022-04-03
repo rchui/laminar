@@ -111,6 +111,12 @@ class Layer:
         self.__dict__ = slots
 
     @property
+    def artifacts(self) -> Dict[str, Any]:
+        """Artifacts assigned to the layer."""
+
+        return {artifact: value for artifact, value in vars(self).items() if artifact not in LAYER_RESERVED_KEYWORDS}
+
+    @property
     def name(self) -> str:
         """Name of the layer"""
 
@@ -150,9 +156,8 @@ class Layer:
         try:
             self(*parameters)
         finally:
-            for artifact, value in vars(self).items():
-                if artifact not in LAYER_RESERVED_KEYWORDS:
-                    self.flow.configuration.datastore.write(layer=self, name=artifact, values=[value])
+            for artifact, value in self.artifacts.items():
+                self.flow.configuration.datastore.write(layer=self, name=artifact, values=[value])
 
     def shard(self, **artifacts: Iterable[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.

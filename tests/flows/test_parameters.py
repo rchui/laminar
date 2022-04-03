@@ -18,9 +18,8 @@ class A(Layer):
 
 
 @pytest.mark.flow
-class TestParameter:
-    def test_flow(self) -> None:
-        execution = flow(foo="bar")
+def test_flow() -> None:
+    execution = flow(foo="bar")
 
-        assert execution.layer(Parameters).foo == "bar"
-        assert execution.layer(A).foo == "bar"
+    assert execution.layer(Parameters).foo == "bar"
+    assert execution.layer(A).foo == "bar"
