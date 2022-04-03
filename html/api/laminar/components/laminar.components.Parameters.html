@@ -62,6 +62,7 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../advanced/recovery.html">Recovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced/composition.html">Composition</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../advanced/hooks.html">Hooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../advanced/serde.html">Ser(De)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../advanced/testing.html">Testing</a></li>
@@ -139,25 +140,28 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempt</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.artifacts" title="laminar.components.Parameters.artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artifacts</span></code></a></p></td>
+<td><p>Artifacts assigned to the layer.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempt</span></code></p></td>
 <td><p>Current layer execution attempt</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Parameters.dependencies" title="laminar.components.Parameters.dependencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependencies</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.dependencies" title="laminar.components.Parameters.dependencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependencies</span></code></a></p></td>
 <td><p>Layers this layer depends on.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.hooks" title="laminar.components.Parameters.hooks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Parameters.hooks" title="laminar.components.Parameters.hooks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
 <td><p>Hooks attached to this layer.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></p></td>
 <td><p>Layer index in its splits</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.name" title="laminar.components.Parameters.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Parameters.name" title="laminar.components.Parameters.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td><p>Name of the layer</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">namespace</span></code></p></td>
 <td><p>Namespace the Layer is a part of</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></p></td>
 <td><p>Number of splits in the layer execution</p></td>
 </tr>
 </tbody>
@@ -166,6 +170,12 @@
 <dt class="sig sig-object py" id="laminar.components.Parameters.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Parameters.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="laminar.components.Parameters.artifacts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">artifacts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Parameters.artifacts" title="Permalink to this definition"></a></dt>
+<dd><p>Artifacts assigned to the layer.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="laminar.components.Parameters.dependencies">
