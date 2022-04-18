@@ -16,9 +16,6 @@ from laminar.utils import contexts
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
-else:
-    Flow = "Flow"
-    Layer = "Layer"
 
 
 logger = logging.getLogger(__name__)
@@ -28,7 +25,7 @@ logger = logging.getLogger(__name__)
 class Scheduler:
     """Base scheduler"""
 
-    async def schedule(self, *, layer: Layer, attempt: int = 1) -> List[Layer]:
+    async def schedule(self, *, layer: "Layer", attempt: int = 1) -> List["Layer"]:
         """Schedule layers for execution.
 
         Args:
@@ -42,7 +39,7 @@ class Scheduler:
 
         try:
             splits = layer.configuration.foreach.splits(layer=layer)
-            tasks: List[Task[Layer]] = []
+            tasks: List[Task["Layer"]] = []
 
             # Create a task per layer split
             for index in range(splits):
@@ -100,7 +97,7 @@ class Scheduler:
         runnable = {layer for layer in pending if set(dependencies[layer]).issubset(finished)}
         return pending - runnable, runnable
 
-    def skippable(self, *, flow: Flow, runnable: Set[str], finished: Set[str]) -> Tuple[Set[str], Set[str]]:
+    def skippable(self, *, flow: "Flow", runnable: Set[str], finished: Set[str]) -> Tuple[Set[str], Set[str]]:
         """Find all skippable layers.
 
         Args:
@@ -138,7 +135,9 @@ class Scheduler:
             logger.info("Skipping layers: %s", sorted(skippable))
         return runnable - skippable, finished | skippable
 
-    def running(self, *, flow: Flow, runnable: Set[str], running: Set["Task[List[Layer]]"]) -> Set["Task[List[Layer]]"]:
+    def running(
+        self, *, flow: "Flow", runnable: Set[str], running: Set["Task[List[Layer]]"]
+    ) -> Set["Task[List[Layer]]"]:
         """Schedule runnable layers.
 
         Args:
@@ -178,7 +177,7 @@ class Scheduler:
         return running, finished
 
     @contexts.EventLoop
-    async def loop(self, *, flow: Flow, dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> None:
+    async def loop(self, *, flow: "Flow", dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> None:
         """Run the scheduling loop.
 
         Args:
@@ -199,7 +198,7 @@ class Scheduler:
 
         pending = set(dependencies) - finished
         runnable: Set[str] = set()
-        running: Set[Task[List[Layer]]] = set()
+        running: Set[Task[List["Layer"]]] = set()
 
         # Start the scheduling loop
         while pending:
@@ -227,7 +226,7 @@ class Scheduler:
                 running, finished = await self.wait(running=running, finished=finished, condition=condition)
             logger.info("Finished layers: %s", sorted(finished))
 
-    def compile(self, *, flow: Flow) -> Dict[str, Any]:
+    def compile(self, *, flow: "Flow") -> Dict[str, Any]:
         """Compile an intermediate representation of the Flow."""
 
         raise NotImplementedError

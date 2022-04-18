@@ -257,7 +257,7 @@ class DataStore:
 
         return fs.exists(uri=self.uri(path=path))
 
-    def protocol(self, dtype: type) -> Callable[[Type[serde.ProtocolType]], Type[serde.ProtocolType]]:
+    def protocol(self, *dtypes: type) -> Callable[[Type[serde.ProtocolType]], Type[serde.ProtocolType]]:
         """Register a custom serde protocol for a type.
 
         Usage::
@@ -268,7 +268,8 @@ class DataStore:
         """
 
         def decorator(protocol: Type[serde.ProtocolType]) -> Type[serde.ProtocolType]:
-            self.protocols[f"{dtype.__module__}.{dtype.__name__}"] = protocol()
+            for dtype in dtypes:
+                self.protocols[f"{dtype.__module__}.{dtype.__name__}"] = protocol()
             return protocol
 
         return decorator

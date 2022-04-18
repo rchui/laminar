@@ -36,6 +36,13 @@ format:
 	black -C .
 	isort .
 
+.PHONY: lint
+lint:
+	$(VENV) black --version && black --check .
+	$(VENV) isort --version && isort --check-only .
+	$(VENV) flake8 --version && flake8 .
+	$(VENV) mypy --version && mypy .
+
 .PHONY: open
 open: docs
 	open docs/html/index.html
@@ -52,9 +59,8 @@ tag:
 	python tests/tag.py
 
 .PHONY: test
-test:
-	$(VENV) black .
-	$(VENV) pytest -m "not flow" --cov laminar --cov-report term-missing --flake8 --mypy --isort
+test: lint
+	$(VENV) pytest -m "not flow" --cov laminar --cov-report term-missing
 	$(VENV) pytest -m "flow"
 
 .PHONY: upgrade
