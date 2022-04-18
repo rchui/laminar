@@ -16,7 +16,7 @@ Users can define custom serialization and deserializations by subclassing `serde
 The minimal number of methods that must be overriden are:
 
 - `Protocol.dumps`
-- One of: `Protocol.load`, `Protocol.loads`
+- `Protocol.loads`
 
 Consider the following contrived example:
 
@@ -67,8 +67,7 @@ from laminar.configurations import datastores, serde
 
 datastore = datastores.Local()
 
-@datastore.protocol(dict)
-@datastore.protocol(list)
+@datastore.protocol(dict, list)
 class JsonProtocol(serde.Protocol):
     def load(self, file: BinaryIO) -> Union[Dict[str, Any], List[Any]]:
         return json.load(file)
