@@ -112,11 +112,14 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span><span class="p">,</span> <span class="n">layers</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;DockerFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Docker</span><span class="p">())</span>
+<span class="k">class</span> <span class="nc">DockerFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">container</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="mi">1500</span><span class="p">))</span>
+<span class="nd">@DockerFlow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">container</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="mi">1500</span><span class="p">))</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="o">...</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">DockerFlow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Docker</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
@@ -126,7 +129,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ThreadFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
@@ -140,7 +143,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;BatchFlow&quot;</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">Batch</span><span class="p">(</span><span class="n">job_queue_arn</span><span class="o">=...</span><span class="p">,</span> <span class="n">job_role_arn</span><span class="o">=...</span><span class="p">))</span>
+<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">Batch</span><span class="p">(</span><span class="n">job_queue_arn</span><span class="o">=...</span><span class="p">,</span> <span class="n">job_role_arn</span><span class="o">=...</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>

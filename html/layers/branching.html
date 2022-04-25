@@ -111,19 +111,20 @@
 <p>Basic branching can achieved by adding layers as parameters to <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;HelloFlow&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">BranchFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span>
@@ -143,12 +144,12 @@
 <span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
 <span class="kn">from</span> <span class="nn">laminar.configuration</span> <span class="kn">import</span> <span class="n">hooks</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span>
@@ -157,12 +158,12 @@
     <span class="k">def</span> <span class="nf">random_foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span> <span class="o">&lt;=</span> <span class="mf">.5</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span>
 
-<span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span>
@@ -171,7 +172,7 @@
 <p>In this <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, 50% of the time <code class="docutils literal notranslate"><span class="pre">B</span></code> will be executed and the other 50% it will be skipped. Notice that like <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>, entry hooks can also use layers as parameters in order to evaluate complex conditions.</p>
 <p>Consequently, 50% of the time <code class="docutils literal notranslate"><span class="pre">D</span></code> will also be skipped. This is because by default layers will be executed <strong>only if all layers it depends on are executed</strong>. Entire subtrees will potentially be skipped if even if a single <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is set to be skipped.</p>
 <p>We can prevent this from occuring by ending the conditional branch:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span>
@@ -191,7 +192,7 @@
 <section id="state">
 <h2>State<a class="headerlink" href="#state" title="Permalink to this headline"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Layer.state</span></code> is a property that returns a <code class="docutils literal notranslate"><span class="pre">State</span></code> object that can evaluate the state that a layer is currently in. <code class="docutils literal notranslate"><span class="pre">State.finished</span></code> will tell you whether or not a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> has been finished. With this logic we can extend <code class="docutils literal notranslate"><span class="pre">D</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@flow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">foo</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">finished</span> <span class="k">else</span> <span class="n">c</span><span class="o">.</span><span class="n">foo</span>

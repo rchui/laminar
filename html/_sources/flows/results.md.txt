@@ -39,14 +39,16 @@ Flows can be accessed by importing them from their definition file:
 
 from laminar import Flow, Layer
 
-flow = Flow("ResultFlow")
+class ResultFlow(Flow):
+  ...
 
-@flow.register()
+@ResultFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 if __name__ == "__main__":
+    flow = ResultFlow()
     flow()
 ```
 

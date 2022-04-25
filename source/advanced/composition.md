@@ -9,19 +9,18 @@ from laminar import Flow, Layer
 from laminar.components import Parameters
 from laminar.configurations import datastores, executors
 
-flow1 = Flow(name="Flow1")
+class Flow1(Flow):
+    ...
 
-
-@flow1.register()
+@Flow1.register()
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
+class Flow2(Flow):
+    ...
 
-flow2 = Flow(name="Flow2")
-
-
-@flow2.register()
+@Flow2.register()
 class B(Layer):
     def __call__(self, parameters: Parameters) -> None:
         self.foo = parameters.foo
@@ -32,7 +31,8 @@ A common scenario might be to execute `Flow1` and feed the results into `Flow2` 
 
 ```python
 if __name__ == "__main__":
-    flow1().compose(flow=flow2, linker=lambda e: Parameters(foo=e.layer(A).foo))
+    flow1 = Flow1()
+    flow1().compose(flow=Flow2(), linker=lambda e: Parameters(foo=e.layer(A).foo))
 ```
 
 Here we define which `Flow` should be executed after `Flow1` and provider a linker to define how the artifacts of `Flow1` are passed as parameters to `Flow2`.

@@ -10,14 +10,16 @@ Configurations are a part of the class definition of a `Layer` and are available
 from laminar import Flow, Layer
 from laminar.configurations.layers import Container
 
-flow = Flow("ConfiguredFlow")
+class ConfiguredFlow(Flow):
+    ...
 
-@flow.register(container=Container(cpu=4, memory=2000, workdir="/app"))
+@ConfiguredFlow.register(container=Container(cpu=4, memory=2000, workdir="/app"))
 class Task(Layer):
     def __call__(self) -> None:
         print(self.configuration.container.cpu, self.configuration.container.memory)
 
 if __name__ == '__main__':
+    flow = ConfiguredFlow()
     flow()
 ```
 
@@ -29,39 +31,4 @@ python main.py
 
 ```{warning}
 If a [hook](../advanced/hooks) changes a value in `Layer.configuration`, that change will not be reflected in `Layer.__call__`.
-```
-
-## Namespace
-
-A `Layer` is simply an execution of work with dependencies and often times layers can perform similar actions as each other. Attempting to register two layers with the same name will raise a `FlowError` even though the two layers are defined separately.
-
-To avoid this a `Layer` may be assigned a namespace that it is a part of, allowing multiple layers with the same name to be registered to the same `Flow`.
-
-```python
-# main.py
-
-from laminar import Flow, Layer
-from laminar.configurations.layers import Container
-
-flow = Flow("NamespaceFlow")
-
-@flow.register()
-class A(Layer, namespace="First"):
-    def __call__(self) -> None:
-        print(self.name)
-
-@flow.register()
-class A(Layer, namespace="Second"):
-    def __call__(self, a: A) -> None:
-        print(self.name)
-
-if __name__ == '__main__':
-    flow()
-```
-
-```python
-python main.py
-
->>> "First.A"
->>> "Second.A"
 ```

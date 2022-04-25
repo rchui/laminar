@@ -12,9 +12,10 @@ from typing import Generator
 from laminar import Flow, Layer
 from laminar.configurations import hooks
 
-flow = Flow("Flow")
+class HookFlow(Flow):
+    ...
 
-@flow.register()
+@HookFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         print("in call")
@@ -54,9 +55,12 @@ from typing import Generator
 from laminar import Flow, Layer
 from laminar.configurations import hooks
 
-flow = Flow("Flow")
 
-@flow.register()
+class HookFlow(Flow):
+    ...
+
+
+@HookFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         print("in call")
@@ -93,9 +97,11 @@ import psycopg2
 from laminar import Flow, Layer
 from laminar.configurations import hooks
 
-flow = Flow("Flow")
+class HookFlow(Flow):
+    ...
 
-@flow.register()
+
+@HookFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         self.cursor.execute("SELECT * FROM <table>")
@@ -125,9 +131,11 @@ For example, here we double the requested memory every time the `Layer` needs to
 from laminar import Flow, Layer
 from laminar.configurations import hooks
 
-flow = Flow("Flow")
+class HookFlow(Flow):
+    ...
 
-@flow.register()
+
+@HookFlow.register()
 class A(Layer):
     @hooks.retry
     def configure_container(self) -> None:
@@ -153,9 +161,10 @@ from typing import Generator
 from laminar import Flow, Layer
 from laminar.configurations import hooks
 
-flow = Flow("Flow")
+class HookFlow(Flow):
+    ...
 
-@flow.register()
+@HookFlow.register()
 class A(Layer):
     @hooks.submission
     def configure_container(self) -> None:
@@ -173,16 +182,17 @@ from laminar import Flow, Layer
 from laminar.configurations import hooks
 from laminar.types import unwrap
 
-flow = Flow("Flow")
+class HookFlow(Flow):
+    ...
 
-@flow.register()
+@HookFlow.register()
 class A(Layer):
     baz: List[str]
 
     def __call__(self) -> None:
         self.shard(baz=["a", "b", "c"])
 
-@flow.register(
+@HookFlow.register(
     foreach=layers.ForEach(parameters=[layers.Parameter(layer=A, attribute="baz")])
 )
 class B(Layer):
@@ -197,6 +207,7 @@ class B(Layer):
         self.configuration.container.memory = memory[a.baz[unwrap(self.index)]]
 
 if __name__ == "__main__":
+    flow = HookFlow()
     flow()
 ```
 
@@ -241,19 +252,18 @@ class HelloFlow(Flow):
         yield
         print(f"after {self.name}")
 
-flow = HelloFlow(name='HelloFlow')
-
-@flow.register()
+@HelloFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         print("in A")
 
-@flow.register()
+@HelloFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         print("in B")
 
 if __name__ == "__main__":
+    flow = HelloFlow(name='HelloFlow')
     flow()
 ```
 

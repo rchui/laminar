@@ -80,9 +80,6 @@ Layer
         ~laminar.components.Layer.name
         
         
-        ~laminar.components.Layer.namespace
-        
-        
         ~laminar.components.Layer.splits
         
         

@@ -12,9 +12,10 @@ Maybe requests to other services can be flaky or maybe you want your `Flow` to b
 from laminar import Flow, Layer
 from laminar.configurations import layers
 
-flow = Flow("RetryFlow")
+class RetryFlow(Flow):
+    ...
 
-@flow.register(retry=layers.Retry(attempts=3))
+@RetryFlow.register(retry=layers.Retry(attempts=3))
 class A(Layer):
     ...
 ```

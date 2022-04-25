@@ -80,9 +80,6 @@ Parameters
         ~laminar.components.Parameters.name
         
         
-        ~laminar.components.Parameters.namespace
-        
-        
         ~laminar.components.Parameters.splits
         
         

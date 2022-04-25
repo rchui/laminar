@@ -9,19 +9,20 @@ Basic branching can achieved by adding layers as parameters to `Layer.__call__`.
 ```python
 from laminar import Flow, Layer
 
-flow = Flow("HelloFlow")
+class BranchFlow(Flow):
+    ...
 
-@flow.register()
+@BranchFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         ...
 
-@flow.register()
+@BranchFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         ...
 
-@flow.register()
+@BranchFlow.register()
 class C(Layer):
     def __call__(self, a: A) -> None:
         ...
@@ -44,12 +45,12 @@ import random
 from laminar import Flow, Layer
 from laminar.configuration import hooks
 
-@flow.register()
+@BranchFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         self.foo = random.random()
 
-@flow.register()
+@BranchFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
@@ -58,12 +59,12 @@ class B(Layer):
     def random_foo(self, a: A) -> bool:
         return a.foo <= .5
 
-@flow.register()
+@BranchFlow.register()
 class C(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
-@flow.register()
+@BranchFlow.register()
 class D(Layer):
     def __call__(self, b: B, c: C) -> None:
         ...
@@ -76,7 +77,7 @@ Consequently, 50% of the time `D` will also be skipped. This is because by defau
 We can prevent this from occuring by ending the conditional branch:
 
 ```python
-@flow.register()
+@BranchFlow.register()
 class D(Layer):
     def __call__(self, b: B, c: C) -> None:
         ...
@@ -99,7 +100,7 @@ Conditions are not evaluated to determine `Layer` dependencies. Users are respon
 `Layer.state` is a property that returns a `State` object that can evaluate the state that a layer is currently in. `State.finished` will tell you whether or not a `Layer` has been finished. With this logic we can extend `D`.
 
 ```python
-@flow.register()
+@BranchFlow.register()
 class D(Layer):
     def __call__(self, b: B, c: C) -> None:
         self.foo = b.foo if b.state.finished else c.foo

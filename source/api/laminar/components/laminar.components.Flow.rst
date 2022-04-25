@@ -74,7 +74,7 @@ Flow
         ~laminar.components.Flow.dependents
         
         
-        ~laminar.components.Flow.configuration
+        ~laminar.components.Flow.registry
         
     
     

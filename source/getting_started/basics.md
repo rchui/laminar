@@ -9,9 +9,10 @@ A `Layer` must be registered with a `Flow` before it can be used in the `Flow`:
 ```python
 from laminar import Flow, Layer
 
-flow = Flow("RegisterFLow")
+class RegisterFlow(Flow):
+    ...
 
-@flow.register()
+@RegisterFlow.register()
 class A(Layer):
     ...
 ```
@@ -21,16 +22,19 @@ A `Layer` can be registered to multiple flows:
 ```python
 from laminar import Flow, Layer
 
-flow1 = Flow("Flow1")
-flow2 = Flow("Flow2")
+class Flow1(Flow):
+    ...
 
-@flow1.register()
-@flow2.register()
+class Flow2(Flow):
+    ...
+
+@Flow1.register()
+@Flow2.register()
 class A(Layer):
     ...
 
-@flow1.register()
-@flow2.register()
+@Flow1.register()
+@Flow2.register()
 class B(Layer):
     ...
 ```
@@ -42,13 +46,15 @@ Once a `Flow` has all of its layers registered to it, it can be called in order 
 ```python
 from laminar import Flow, Layer
 
-flow = Flow("TriggerFlow")
+class TriggerFlow(Flow):
+    ...
 
-@flow.register()
+@TriggerFlow.register()
 class A(Layer):
     ...
 
 if __name__ == "__main__":
+    flow = TriggerFlow()
     flow()
 ```
 
@@ -57,19 +63,25 @@ Multiple flows can also be executed in a row.
 ```python
 from laminar import Flow, Layer
 
-flow1 = Flow("Flow1")
-flow2 = Flow("Flow2")
+class Flow1(Flow):
+    ...
 
-@flow1.register()
+class Flow2(Flow):
+    ...
+
+@Flow1.register()
 class A(Layer):
     ...
 
-@flow2.register()
+@Flow2.register()
 class B(Layer):
     ...
 
 if __name__ == "__main__":
+    flow1 = Flow1()
     flow1()
+
+    flow2 = Flow2()
     flow2()
 ```
 
@@ -82,14 +94,16 @@ A `Layer` is a unit of work, and can be customized to perform any action that ca
 
 from laminar import Flow, Layer
 
-flow = Flow("TaskFlow")
+class TaskFlow(Flow):
+    ...
 
-@flow.register()
+@TaskFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         print("hello world")
 
 if __name__ == "__main__":
+    flow = TaskFlow()
     flow()
 ```
 
@@ -110,19 +124,21 @@ Often tasks in a workflow need to be executed in a predefined order. Defining a 
 
 from laminar import Flow, Layer
 
-flow = Flow("HelloFlow")
+class HelloFlow(Flow):
+    ...
 
-@flow.register()
+@HelloFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         print(self.name)
 
-@flow.register()
+@HelloFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         print(self.name)
 
 if __name__ == "__main__":
+    flow = HelloFlow()
     flow()
 ```
 
@@ -140,29 +156,31 @@ Dependencies can be arbitrarily complex but must represent a directed acyclic gr
 
 from laminar import Flow, Layer
 
-flow = Flow("HelloFlow")
+class HelloFlow(Flow):
+    ...
 
-@flow.register()
+@HelloFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         print(self.name)
 
-@flow.register()
+@HelloFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         print(self.name)
 
-@flow.register()
+@HelloFlow.register()
 class C(Layer):
     def __call__(self, b: B) -> None:
         print(self.name)
 
-@flow.register()
+@HelloFlow.register()
 class D(Layer):
     def __call__(self, a: A, c: C) -> None:
         print(self.name)
 
 if __name__ == "__main__":
+    flow = HelloFlow()
     flow()
 ```
 
@@ -186,26 +204,28 @@ Any value that is assigned to `self` is automatically saved and passed to the ne
 
 from laminar import Flow, Layer
 
-flow = Flow("HelloFlow")
+class HelloFlow(Flow):
+    ...
 
-@flow.register()
+@HelloFlow.register()
 class Start(Layer):
     def __call__(self) -> None:
         self.message = "Hello World"
         print(f"Sending the message: {self.message}")
 
-@flow.register()
+@HelloFlow.register()
 class Middle(Layer):
     def __call__(self, start: Start) -> None:
         print(start.message)
         self.message = start.message
 
-@flow.register()
+@HelloFlow.register()
 class End(Layer):
     def __call__(self, middle: Middle) -> None:
         print(f"Sent message: {middle.message}")
 
 if __name__ == "__main__":
+    flow = HelloFlow()
     flow()
 ```
 

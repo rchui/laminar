@@ -10,11 +10,14 @@ By default, flows are configured to use the `Docker` executor which launches eac
 from laminar import Flow
 from laminar.configurations import executors, layers
 
-flow = Flow("DockerFlow", executor=executors.Docker())
+class DockerFlow(Flow):
+    ...
 
-@flow.register(container=layers.Container(cpu=1, memory=1500))
+@DockerFlow.register(container=layers.Container(cpu=1, memory=1500))
 class A(Layer):
     ...
+
+flow = DockerFlow(executor=executors.Docker())
 ```
 
 ## Thread
@@ -25,7 +28,7 @@ The `Thread` executor executes layers directly in the main Python process. This 
 from laminar import Flow
 from laminar.configurations import executors
 
-flow = Flow("ThreadFlow", executor=executors.Thread())
+flow = Flow(executor=executors.Thread())
 ```
 
 ## AWS.Batch
@@ -40,5 +43,5 @@ The `AWS.Batch`` executor executes layers on the [AWS Batch](https://aws.amazon.
 from laminar import Flow
 from laminar.configurations import executors
 
-flow = Flow("BatchFlow", executor=executors.AWS.Batch(job_queue_arn=..., job_role_arn=...))
+flow = Flow(executor=executors.AWS.Batch(job_queue_arn=..., job_role_arn=...))
 ```

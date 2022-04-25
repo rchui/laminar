@@ -19,14 +19,16 @@ There are two parts involved in parameterizing a `Flow`.
 from laminar import Flow, Layer
 from laminar.components import Parameters
 
-flow = Flow("ParameterFlow")
+class ParameterFlow(Flow):
+    ...
 
-@flow.register()
+@ParameterFlow.register()
 class A(Layer):
     def __call__(self, parameters: Parameters) -> None:
         print(parameters.foo)
 
 if __name__ == "__main__":
+    flow = ParameterFlow()
     flow(foo="bar")
 ```
 
@@ -82,9 +84,10 @@ An alternative approach involves setting up multiple entrypoints. Define a flow 
 from laminar import Flow
 from laminar.configurations import layers
 
-flow = Flow("ParameterFlow")
+class ParameterFlow(Flow):
+    ...
 
-@flow.register(container=layers.Contaienr(command="python execution.py"))
+@ParameterFlow.register(container=layers.Contaienr(command="python execution.py"))
 class A(Layer):
     def __call__(self, parameters: Parameters) -> None:
         print(parameters.foo)
