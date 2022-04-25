@@ -102,19 +102,21 @@ Consider the following simple flow:
 
 from laminar import Flow, Layer
 
-flow = Flow("HelloFlow")
+class HelloFlow(Flow):
+    ...
 
-@flow.register()
+@HelloFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         print(self.name)
 
-@flow.register()
+@HelloFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         print(self.name)
 
 if __name__ == "__main__":
+    flow = HelloFlow()
     flow()
 ```
 

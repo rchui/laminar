@@ -7,28 +7,32 @@ from laminar.components import Parameters
 from laminar.configurations import datastores, executors
 from laminar.types import unwrap
 
-flow1 = Flow(name="Flow1", datastore=datastores.Memory(), executor=executors.Thread())
+
+class Flow1(Flow):
+    ...
 
 
-@flow1.register()
+@Flow1.register()
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 
-flow2 = Flow(name="Flow2", datastore=datastores.Memory(), executor=executors.Thread())
+class Flow2(Flow):
+    ...
 
 
-@flow2.register()
+@Flow2.register()
 class B(Layer):
     def __call__(self, parameters: Parameters) -> None:
         self.foo = parameters.foo
 
 
-flow3 = Flow(name="Flow3", datastore=datastores.Memory(), executor=executors.Thread())
+class Flow3(Flow):
+    ...
 
 
-@flow3.register()
+@Flow3.register()
 class C(Layer):
     def __call__(self, parameters: Parameters) -> None:
         self.foo = parameters.foo
@@ -36,6 +40,10 @@ class C(Layer):
 
 @pytest.mark.flow
 def test_flow() -> None:
+    flow1 = Flow1(datastore=datastores.Memory(), executor=executors.Thread())
+    flow2 = Flow2(datastore=datastores.Memory(), executor=executors.Thread())
+    flow3 = Flow3(datastore=datastores.Memory(), executor=executors.Thread())
+
     execution = (
         flow1()
         .compose(flow=flow2, linker=lambda execution: Parameters(foo=execution.layer(A).foo))

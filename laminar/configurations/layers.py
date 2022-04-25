@@ -31,7 +31,7 @@ class Container:
 
     Usage::
 
-        @flow.register(container=Container(...))
+        @Flow.register(container=Container(...))
     """
 
     #: Command to execute in the container
@@ -74,7 +74,7 @@ class ForEach:
 
     Usage::
 
-        @flow.register(foreach=ForEach(...))
+        @Flow.register(foreach=ForEach(...))
     """
 
     parameters: Iterable[Parameter] = field(default_factory=list)  #: Parameters to configure the foreach with.
@@ -195,7 +195,7 @@ class Retry:
 
     Usage::
 
-        @flow.register(retry=Retry(...))
+        @Flow.register(retry=Retry(...))
     """
 
     #: Number of retires to attempt before failing

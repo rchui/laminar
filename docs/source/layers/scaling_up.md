@@ -8,9 +8,10 @@ Not all layers in a `Flow` need to use the same resources. Some layers might be 
 from laminar import Flow, Layer
 from laminar.configurations.layers import Container
 
-flow = Flow("ConfiguredFlow")
+class ContainerFlow(Flow):
+    ...
 
-@flow.register(container=Container(cpu=4, memory=2000, workdir="/app"))
+@ContainerFlow.register(container=Container(cpu=4, memory=2000, workdir="/app"))
 class Task(Layer):
     ...
 ```
@@ -21,15 +22,16 @@ A `Container` configuration can be shared across multiple layers.
 from laminar import Flow, Layer
 from laminar.configurations.layers import Container
 
-flow = Flow("ConfiguredFlow")
+class ContainerFlow(Flow):
+    ...
 
 container = Container(cpu=4, memory=2000, workdir="/app")
 
-@flow.register(container=container)
+@ContainerFlow.register(container=container)
 class First(Layer):
     ...
 
-@flow.register(container=container)
+@ContainerFlow.register(container=container)
 class Second(Layer):
     ...
 ```

@@ -9,10 +9,12 @@ from laminar.configurations import datastores, executors
 from laminar.configurations.layers import ForEach, Parameter
 from laminar.types import unwrap
 
-flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
+
+class ForeachFlow(Flow):
+    ...
 
 
-@flow.register()
+@ForeachFlow.register()
 class A(Layer):
     foo: List[int]
 
@@ -20,7 +22,7 @@ class A(Layer):
         self.shard(foo=[1, 2, 3])
 
 
-@flow.register(foreach=ForEach(parameters=[Parameter(layer=A, attribute="foo")]))
+@ForeachFlow.register(foreach=ForEach(parameters=[Parameter(layer=A, attribute="foo")]))
 class B(Layer):
     foo: List[int]
 
@@ -28,7 +30,7 @@ class B(Layer):
         self.foo = cast(List[int], cast(int, a.foo) + unwrap(self.index) ** 2)
 
 
-@flow.register()
+@ForeachFlow.register()
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.foo = [value + i for i, value in enumerate(b.foo)]
@@ -36,6 +38,7 @@ class C(Layer):
 
 @pytest.mark.flow
 def test_flow() -> None:
+    flow = ForeachFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution = flow()
 
     assert list(execution.layer(A).foo) == [1, 2, 3]

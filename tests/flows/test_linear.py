@@ -5,22 +5,24 @@ import pytest
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 
-flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
+
+class LinearFlow(Flow):
+    ...
 
 
-@flow.register()
+@LinearFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 
-@flow.register()
+@LinearFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
 
-@flow.register()
+@LinearFlow.register()
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.foo = b.foo
@@ -28,6 +30,7 @@ class C(Layer):
 
 @pytest.mark.flow
 def test_flow() -> None:
+    flow = LinearFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution = flow()
 
     assert execution.layer(A).foo == "bar"

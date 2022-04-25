@@ -5,16 +5,18 @@ import pytest
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 
-flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
+
+class ResumeFlow(Flow):
+    ...
 
 
-@flow.register()
+@ResumeFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         ...
 
 
-@flow.register()
+@ResumeFlow.register()
 class B(Layer):
     fail: bool = True
 
@@ -23,7 +25,7 @@ class B(Layer):
             raise RuntimeError
 
 
-@flow.register()
+@ResumeFlow.register()
 class C(Layer):
     def __call__(self, b: B) -> None:
         ...
@@ -31,6 +33,7 @@ class C(Layer):
 
 @pytest.mark.flow
 def test_flow() -> None:
+    flow = ResumeFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution_id = "test-execution"
 
     # Catch failure

@@ -8,10 +8,12 @@ from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 from laminar.configurations.layers import ForEach, Parameter
 
-flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
+
+class SingleGridFlow(Flow):
+    ...
 
 
-@flow.register()
+@SingleGridFlow.register()
 class A(Layer):
     foo: List[int]
     bar: List[str]
@@ -21,7 +23,9 @@ class A(Layer):
         self.shard(bar=["a", "b"])
 
 
-@flow.register(foreach=ForEach(parameters=[Parameter(layer=A, attribute="foo"), Parameter(layer=A, attribute="bar")]))
+@SingleGridFlow.register(
+    foreach=ForEach(parameters=[Parameter(layer=A, attribute="foo"), Parameter(layer=A, attribute="bar")])
+)
 class B(Layer):
     result: List[Tuple[str, int]]
 
@@ -29,7 +33,7 @@ class B(Layer):
         self.result = (a.bar, a.foo)  # type: ignore
 
 
-@flow.register()
+@SingleGridFlow.register()
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.result = list(b.result)
@@ -37,6 +41,7 @@ class C(Layer):
 
 @pytest.mark.flow
 def test_grid() -> None:
+    flow = SingleGridFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution = flow()
 
     assert list(execution.layer(A).foo) == [1, 2, 3]
@@ -45,10 +50,11 @@ def test_grid() -> None:
     assert execution.layer(C).result == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
 
 
-flow2 = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
+class MultiGridFlow(Flow):
+    ...
 
 
-@flow2.register()
+@MultiGridFlow.register()
 class A12(Layer):
     foo: List[int]
 
@@ -56,7 +62,7 @@ class A12(Layer):
         self.shard(foo=[1, 2, 3])
 
 
-@flow2.register()
+@MultiGridFlow.register()
 class A22(Layer):
     bar: List[str]
 
@@ -64,7 +70,7 @@ class A22(Layer):
         self.shard(bar=["a", "b"])
 
 
-@flow2.register(
+@MultiGridFlow.register(
     foreach=ForEach(parameters=[Parameter(layer=A12, attribute="foo"), Parameter(layer=A22, attribute="bar")])
 )
 class B2(Layer):
@@ -74,7 +80,7 @@ class B2(Layer):
         self.result = (a22.bar, a12.foo)  # type: ignore
 
 
-@flow2.register()
+@MultiGridFlow.register()
 class C2(Layer):
     def __call__(self, b: B2) -> None:
         self.result = list(b.result)
@@ -82,6 +88,7 @@ class C2(Layer):
 
 @pytest.mark.flow
 def test_double_grid() -> None:
+    flow2 = MultiGridFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution = flow2()
 
     assert list(execution.layer(A12).foo) == [1, 2, 3]

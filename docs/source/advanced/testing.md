@@ -8,31 +8,24 @@ Consider the following linear `Flow`:
 
 ```python
 from laminar import Flow, Layer
-from laminar.configurations import datastores, executors, serde
+from laminar.configurations import datastores, executors
 
-datastore = datastores.Memory()
+class TestFlow(Flow):
+    ...
 
-@datastore.protocol(int)
-class Int(serde.Protocol):
-    def dumps(value: int) -> bytes:
-        return str(value).encode()
-
-flow = Flow(name="Test", datastore=datastore, executor=executors.Thread())
-
-
-@flow.register()
+@TestFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 
-@flow.register()
+@TestFlow.register()
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
 
-@flow.register()
+@TestFlow.register()
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.foo = b.foo
@@ -44,6 +37,7 @@ Using the results API, it is trivial to execute the flow and make assertions on 
 from laminar.types import unwrap
 
 def test_flow() -> None:
+    flow = TestFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution = flow()
 
     assert execution.layer(A).foo == "bar"
@@ -63,9 +57,10 @@ from typing import Generator
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors, hooks
 
-flow = Flow('Testflow', datastore=datastores.Memory(), executor=executors.Thread())
+class TestFlow(Flow):
+    ...
 
-@flow.register()
+@TestFlow.register()
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
@@ -80,6 +75,7 @@ class B(Layer):
         self.foo = a.foo
 
 if __name__ == "__main__":
+    flow = TestFlow(datastore=datastores.Memory(), executor=executors.Thread())
     flow()
 ```
 

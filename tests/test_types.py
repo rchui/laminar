@@ -4,12 +4,17 @@ import pytest
 
 from laminar import Flow, Layer, types
 
-flow = Flow(name="HintFlow")
+
+class HintFlow(Flow):
+    ...
 
 
-@flow.register()
+@HintFlow.register()
 class Ref(Layer):
     ...
+
+
+flow = HintFlow()
 
 
 class TestHints:
@@ -26,7 +31,7 @@ class TestHints:
         assert types.hints(flow, test) == (ForwardRef(flow=flow),)
 
 
-@flow.register()
+@HintFlow.register()
 class ForwardRef(Layer):
     ...
 

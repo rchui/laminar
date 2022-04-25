@@ -3,21 +3,20 @@ from typing import Generator, List
 
 from laminar import Flow, Layer
 from laminar.components import Parameters
-from laminar.configurations import datastores, executors, hooks, layers
+from laminar.configurations import executors, hooks, layers
 from laminar.types import unwrap
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 container = layers.Container(image="rchui/laminar:test-local")
-datastore = datastores.Local()
-
-flow = Flow(name="DockerFlow", datastore=datastore, executor=executors.Docker(concurrency=2))
-flow2 = Flow(name="ThreadFlow", datastore=datastore, executor=executors.Thread())
 
 
-@flow.register(container=container)
-@flow2.register()
+class TestFlow(Flow):
+    ...
+
+
+@TestFlow.register(container=container)
 class One(Layer):
     baz: List[str]
     foo: str
@@ -33,19 +32,16 @@ class One(Layer):
         logger.info("hello after")
 
 
-@flow.register(container=container)
-@flow2.register()
+@TestFlow.register(container=container)
 class Two(Layer):
     def __call__(self, one: One, three: "Three") -> None:
         self.bar = one.foo
         print(self.bar)
 
 
-three_foreach = layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")])
-
-
-@flow.register(container=container, foreach=three_foreach)
-@flow2.register(foreach=three_foreach)
+@TestFlow.register(
+    container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")])
+)
 class Three(Layer):
     baz: List[str]
 
@@ -58,11 +54,9 @@ class Three(Layer):
         self.configuration.container.memory = {"a": 1000, "b": 15000, "c": 2000}[one.baz[unwrap(self.index)]]
 
 
-five_foreach = layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
-
-
-@flow.register(container=container, foreach=five_foreach)
-@flow2.register(foreach=five_foreach)
+@TestFlow.register(
+    container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
+)
 class Five(Layer):
     baz: List[str]
 
@@ -71,14 +65,24 @@ class Five(Layer):
         print(self.baz)
 
 
-@flow.register(container=container)
-@flow2.register()
+@TestFlow.register(container=container)
 class Four(Layer):
     def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]
         print(self.end)
 
 
+class DockerFlow(TestFlow):
+    ...
+
+
+class ThreadFlow(TestFlow):
+    ...
+
+
 if __name__ == "__main__":
+    flow: Flow = DockerFlow()
     flow() if flow.execution.running else flow(foo="bar")
-    flow2() if flow2.execution.running else flow2(foo="bar")
+
+    flow = ThreadFlow(executor=executors.Thread())
+    flow() if flow.execution.running else flow(foo="bar")

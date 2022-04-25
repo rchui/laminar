@@ -10,7 +10,7 @@ import pytest
 from laminar import Flow, Layer
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
 from laminar.configurations.layers import State
-from laminar.exceptions import FlowError, LayerError
+from laminar.exceptions import FlowError
 from laminar.utils import contexts
 
 
@@ -25,19 +25,6 @@ class TestLayer:
             repr(layer)
             == "Layer(flow=TestFlow(execution=Execution(id='test-execution', retry=False)), index=0, splits=2)"
         )
-
-    def test_subclass_init(self) -> None:
-        assert Layer().namespace is None
-
-        class Test(Layer, namespace="foo"):
-            ...
-
-        assert Test().namespace == "foo"
-
-        with pytest.raises(LayerError):
-
-            class _(Layer, namespace="test-namespace"):
-                ...
 
     def test_deepcopy(self) -> None:
         copy.deepcopy(Layer(foo="bar"))
@@ -63,11 +50,6 @@ class TestLayer:
             ...
 
         assert Subclass().name == "Subclass"
-
-        class Namespace(Layer, namespace="Test"):
-            ...
-
-        assert Namespace().name == "Test.Namespace"
 
     def test_dependencies(self, flow: Flow) -> None:
         @flow.register()
@@ -150,10 +132,11 @@ class TestLayer:
 class TestFLow:
     def test_init(self) -> None:
         with pytest.raises(FlowError):
-            Flow(name="test-name")
 
-        with pytest.raises(FlowError):
-            Flow(name="TestFlow", datastore=Memory())
+            class InitFlow(Flow):
+                ...
+
+            InitFlow(datastore=Memory())
 
     def test_dependencies(self, flow: Flow) -> None:
         @flow.register()

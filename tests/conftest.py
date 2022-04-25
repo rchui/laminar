@@ -8,7 +8,10 @@ from laminar.configurations.flows import Execution
 
 @pytest.fixture()
 def flow() -> Flow:
-    flow = Flow(name="TestFlow", datastore=Memory(), executor=Thread())
+    class TestFlow(Flow):
+        ...
+
+    flow = TestFlow(datastore=Memory(), executor=Thread())
     flow.execution = Execution(id="test-execution", flow=flow)
     return flow
 

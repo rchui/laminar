@@ -9,14 +9,15 @@ Workflows often involve processing large objects which needs to be handled in pa
 
 from laminar import Flow, Layer
 
-flow = Flow("ShardedFlow")
+class ShardedFlow(Flow):
+    ...
 
-@flow.register()
+@ShardedFlow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@flow.register()
+@ShardedFlow.register()
 class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(list(shard.foo))
@@ -24,6 +25,7 @@ class Process(Layer):
         print(shard.foo[1:])
 
 if __name__ == '__main__':
+    flow = ShardedFlow()
     flow()
 ```
 
@@ -47,14 +49,15 @@ Often it is better to break up a problem across many tasks instead of processing
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-flow = Flow("ShardedFlow")
+class ForeachFlow(Flow):
+    ...
 
-@flow.register()
+@ForeachFlow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
 
-@flow.register(
+@ForeachFlow.register(
     foreach=ForEach(
         parameters=[Parameter(layer=Shard, attribute="foo")]
     )
@@ -64,6 +67,7 @@ class Process(Layer):
         print(self.index, shard.foo)
 
 if __name__ == '__main__':
+    flow = ForeachFlow()
     flow()
 ```
 
@@ -83,15 +87,16 @@ sharded.
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-flow = Flow("ShardedFlow")
+class ForeachFlow(Flow):
+    ...
 
-@flow.register()
+@ForeachFlow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.bar = "a"
         self.shard(foo=[1, 2])
 
-@flow.register(
+@ForeachFlow.register(
     foreach=ForEach(
         parameters=[
             Parameter(layer=Shard, attribute="foo"),
@@ -104,6 +109,7 @@ class Process(Layer):
         print(self.index, shard.foo, shard.bar)
 
 if __name__ == '__main__':
+    flow = ForeachFlow()
     flow()
 ```
 
@@ -126,14 +132,15 @@ python main.py
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-flow = Flow("ShardedFlow")
+class GridFlow(Flow):
+    ...
 
-@flow.register()
+@GridFlow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3], bar=["a", "b"])
 
-@flow.register(
+@GridFlow.register(
     foreach=ForEach(
         parameters=[
             Parameter(layer=Shard, attribute="foo"),
@@ -146,6 +153,7 @@ class Process(Layer):
         print(self.index, shard.foo, shard.bar)
 
 if __name__ == '__main__':
+    flow = GridFlow()
     flow()
 ```
 
@@ -170,14 +178,15 @@ A `ForEach` layer does not need a special join step in order to merge branch val
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-flow = Flow("ShardedFlow")
+class JoinFlow(Flow):
+    ...
 
-@flow.register()
+@JoinFlow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
 
-@flow.register(
+@JoinFlow.register(
     foreach=ForEach(
         parameters=[Parameter(layer=Shard, attribute="foo")]
     )
@@ -186,13 +195,14 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         self.foo = shard.foo
 
-@flow.layer
+@JoinFlow.layer
 class Join(Layer):
     def __call__(self, process: Process) -> None:
         print(list(process.foo))
         print(process.foo[1])
 
 if __name__ == '__main__':
+    flow = JoinFlow()
     flow()
 ```
 
@@ -213,20 +223,21 @@ It is common to performed multiple foreach loops in a row, where each value prod
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-flow = Flow("ShardedFlow")
+class ChainedFlow(Flow):
+    ...
 
-@flow.register()
+@ChainedFlow.register()
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@flow.register(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
+@ChainedFlow.register(foreach=ForEach(parameters=[Parameter(layer=Shard, attribute="foo")]))
 class First(Layer):
     def __call__(self, shard: Shard) -> None:
         print(self.index, 'First', shard.foo)
         self.foo = shard.foo
 
-@flow.register(
+@ChainedFlow.register(
     foreach=ForEach(parameters=[Parameter(layer=First, attribute="foo", index=None)])
 )
 class Second(Layer):
@@ -234,6 +245,7 @@ class Second(Layer):
         print(self.index, 'Second', first.foo)
 
 if __name__ == '__main__':
+    flow = ChainedFlow()
     flow()
 ```
 

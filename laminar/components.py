@@ -8,7 +8,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Ty
 from ksuid import KsuidMs
 
 from laminar.configurations import datastores, executors, flows, hooks, layers, schedulers
-from laminar.exceptions import ExecutionError, FlowError, LayerError
+from laminar.exceptions import ExecutionError, FlowError
 from laminar.settings import current
 from laminar.types import LayerType, hints, unwrap
 from laminar.utils import contexts, stringify
@@ -42,8 +42,6 @@ class Layer:
     attempt: Optional[int] = current.layer.attempt
     #: Layer index in its splits
     index: Optional[int] = current.layer.index
-    #: Namespace the Layer is a part of
-    namespace: Optional[str] = None
     #: Number of splits in the layer execution
     splits: Optional[int] = current.layer.splits
 
@@ -51,15 +49,6 @@ class Layer:
         for key, value in attributes.items():
             setattr(self, key, value)
         self.state = layers.State(layer=self)
-
-    def __init_subclass__(cls, *, namespace: Optional[str] = None) -> None:
-        if namespace is not None and not namespace.isalnum():
-            raise LayerError(
-                "A layer's namespace can only contain alphanumeric characters to ensure filesystem compatability."
-                + f" Given namespace '{namespace}'."
-            )
-
-        cls.namespace = namespace
 
     __call__: Callable[..., None]  # type: ignore
 
@@ -117,14 +106,6 @@ class Layer:
         return {artifact: value for artifact, value in vars(self).items() if artifact not in LAYER_RESERVED_KEYWORDS}
 
     @property
-    def name(self) -> str:
-        """Name of the layer"""
-
-        if self.namespace is None:
-            return type(self).__name__
-        return f"{self.namespace}.{type(self).__name__}"
-
-    @property
     def _dependencies(self) -> Tuple["Layer", ...]:
         return hints(self.flow, self.__call__)
 
@@ -144,6 +125,12 @@ class Layer:
             if annotation is not None:
                 _hooks.setdefault(annotation, []).append(entry)
         return _hooks
+
+    @property
+    def name(self) -> str:
+        """Name of the Layer"""
+
+        return type(self).__name__
 
     def _execute(self, *parameters: "Layer") -> None:
         """Execute a layer.
@@ -193,16 +180,16 @@ class Flow:
 
         from laminar import Flow, Layer
 
-        flow = Flow(name="HelloFlow")
+        class HelloFlow(Flow):
+            ...
     """
 
-    #: Configurations for the flow
-    configuration: flows.Configuration
+    registry: Dict[str, Layer]
+    """Layers registered with the flow"""
 
     def __init__(
         self,
         *,
-        name: str,
         datastore: datastores.DataStore = datastores.Local(),
         executor: executors.Executor = executors.Docker(),
         scheduler: schedulers.Scheduler = schedulers.Scheduler(),
@@ -215,13 +202,7 @@ class Flow:
             FlowError: If the flow's name is not alphanumeric
         """
 
-        if not name.isalnum():
-            raise FlowError(
-                "A flow's name can only contain alphanumeric characters to maintain filesystem compatability."
-                + f" Given name '{name}'."
-            )
-
-        self.name = name
+        self.name = type(self).__name__
         self.execution = flows.Execution(id=current.execution.id, flow=self)
 
         if isinstance(datastore, datastores.Memory) and not isinstance(executor, executors.Thread):
@@ -229,7 +210,11 @@ class Flow:
 
         self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
-        self._registry: Dict[str, Layer] = {"Parameters": Parameters(configuration=layers.Configuration())}
+    def __init_subclass__(cls) -> None:
+        cls.registry = {
+            "Parameters": Parameters(configuration=layers.Configuration()),
+            **getattr(cls, "registry", {}),
+        }
 
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
@@ -242,7 +227,7 @@ class Flow:
     def dependencies(self) -> Dict[str, Tuple[str, ...]]:
         """A mapping of each layer and the layers it depends on."""
 
-        return {layer: self.layer(layer).dependencies for layer in self._registry}
+        return {layer: self.layer(layer).dependencies for layer in self.registry}
 
     @property
     def _dependents(self) -> Dict[Layer, Set[Layer]]:
@@ -270,14 +255,16 @@ class Flow:
 
         Usage::
 
-            flow = Flow(name="HelloFlow")
+            class HelloFlow(Flow):
+                ...
+            flow = HelloFlow()
 
             flow()
             flow("execution-id")
         """
 
         # Execute a layer in the flow.
-        if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self._registry:
+        if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self.registry:
             execution = self.execution.id
             self.execute(execution=self.execution.id, layer=self.layer(current.layer.name))
 
@@ -297,12 +284,14 @@ class Flow:
 
         Usage::
 
-            flow = Flow(name="ExecuteFlow")
+            class ExecutionFlow(Flow):
+                ...
 
-            @flow.register()
+            @ExecutionFlow.register()
             class A(Layer):
                 ...
 
+            flow = ExecutionFlow()
             flow.execute(execution="test-execution", layer=flow.layer(A, index=0, splits=2))
 
         Args:
@@ -333,8 +322,9 @@ class Flow:
         with contexts.Attributes(self.execution, id=execution):
             self.configuration.scheduler.loop(flow=self, dependencies=dependencies, finished={"Parameters"})
 
+    @classmethod
     def register(
-        self,
+        cls,
         container: layers.Container = layers.Container(),
         foreach: layers.ForEach = layers.ForEach(),
         retry: layers.Retry = layers.Retry(),
@@ -343,7 +333,7 @@ class Flow:
 
         Usage::
 
-            @flow.register()
+            @Flow.register()
             class Task(Layer):
                 ...
         """
@@ -352,15 +342,15 @@ class Flow:
 
             layer = Layer(configuration=layers.Configuration(container=container, foreach=foreach, retry=retry))
 
-            if layer.name in self._registry:
+            if layer.name in cls.registry:
                 raise FlowError(
-                    f"Duplicate layer added to flow '{self.name}'.\n"
+                    f"Duplicate layer added to flow '{cls.__name__}'.\n"
                     f"  Given layer '{layer.name}'.\n"
-                    f"  Added layers {sorted(self.dependencies)}"
+                    f"  Added layers {sorted(cls.registry)}"
                 )
 
             # First register the layer without the flow attribute
-            self._registry[layer.name] = copy.deepcopy(layer)
+            cls.registry[layer.name] = copy.deepcopy(layer)
 
             return Layer
 
@@ -402,7 +392,7 @@ class Flow:
             layer = layer().name
 
         # Deepcopy so that layer artifacts don't mess with other layer split executions
-        layer = copy.deepcopy(self._registry[layer])
+        layer = copy.deepcopy(self.registry[layer])
 
         # Inject the flow attribute to link the layer to the flow
         layer.flow = self

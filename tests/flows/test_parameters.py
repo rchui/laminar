@@ -6,10 +6,12 @@ from laminar import Flow, Layer
 from laminar.components import Parameters
 from laminar.configurations import datastores, executors
 
-flow = Flow(name="Test", datastore=datastores.Memory(), executor=executors.Thread())
+
+class ParameterFlow(Flow):
+    ...
 
 
-@flow.register()
+@ParameterFlow.register()
 class A(Layer):
     foo: str
 
@@ -19,6 +21,7 @@ class A(Layer):
 
 @pytest.mark.flow
 def test_flow() -> None:
+    flow = ParameterFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution = flow(foo="bar")
 
     assert execution.layer(Parameters).foo == "bar"

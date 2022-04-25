@@ -71,14 +71,17 @@ class Execution:
 
         Usage::
 
-            flow1 = Flow(...)
-            flow2 = Flow(...)
+            class Flow1(Flow):
+                ...
 
-            @flow1.register()
+            class Flow2(Flow):
+                ...
+
+            @Flow1.register()
             class A(Layer):
                 foo: str
 
-            flow1().compose(flow2, lambda execution: Parameters(foo=execution.layer(A).foo))
+            Flow1()().compose(Flow2(), lambda execution: Parameters(foo=execution.layer(A).foo))
 
         Args:
             flow: Flow to execute next.
