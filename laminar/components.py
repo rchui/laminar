@@ -196,10 +196,12 @@ class Flow:
     ) -> None:
         """
         Args:
-            name (str): Name of the flow. Must be alphanumeric.
+            datastore: Datastore to execute the flow with. Optional; Defaults to datastores.Local().
+            executor: Executor to run layers with. Optional; Defaults to executors.Docker().
+            scheduler: Scheduler to manage the flow with. Optional; Defaults to schedulers.Scheduler().
 
         Raises:
-            FlowError: If the flow's name is not alphanumeric
+            FlowError: If the flow is used to configure the Memory datastore without a Thread executor.
         """
 
         self.name = type(self).__name__
@@ -211,10 +213,7 @@ class Flow:
         self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
     def __init_subclass__(cls) -> None:
-        cls.registry = {
-            "Parameters": Parameters(configuration=layers.Configuration()),
-            **getattr(cls, "registry", {}),
-        }
+        cls.registry = {"Parameters": Parameters(configuration=layers.Configuration()), **getattr(cls, "registry", {})}
 
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
@@ -406,7 +405,7 @@ class Flow:
 
         Usage::
 
-            execution = flow.parameters(foo="bar:)
+            execution = flow.parameters(foo="bar")
             flow(execution=execution)
 
         Args:
