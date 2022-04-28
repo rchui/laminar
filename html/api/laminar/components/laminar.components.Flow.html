@@ -80,6 +80,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../laminar.configurations.html">configurations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../laminar.exceptions.html">exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../laminar.mypy.html">mypy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../laminar.settings.html">settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../laminar.types.html">types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../laminar.utils.html">utils</a></li>
@@ -175,10 +176,14 @@
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datastore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../configurations/datastores/laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore" title="laminar.configurations.datastores.DataStore"><span class="pre">laminar.configurations.datastores.DataStore</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Local(root='/home/runner/work/laminar/laminar/.laminar',</span> <span class="pre">cache={},</span> <span class="pre">protocols={'laminar.configurations.datastores.ArchiveProtocol':</span> <span class="pre">ArchiveProtocol(),</span> <span class="pre">'laminar.configurations.datastores.RecordProtocol':</span> <span class="pre">RecordProtocol()})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../configurations/executors/laminar.configurations.executors.Executor.html#laminar.configurations.executors.Executor" title="laminar.configurations.executors.Executor"><span class="pre">laminar.configurations.executors.Executor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Docker(concurrency=1,</span> <span class="pre">timeout=86400)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../configurations/schedulers/laminar.configurations.schedulers.Scheduler.html#laminar.configurations.schedulers.Scheduler" title="laminar.configurations.schedulers.Scheduler"><span class="pre">laminar.configurations.schedulers.Scheduler</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Scheduler()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Flow.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the flow. Must be alphanumeric.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datastore</strong> – Datastore to execute the flow with. Optional; Defaults to datastores.Local().</p></li>
+<li><p><strong>executor</strong> – Executor to run layers with. Optional; Defaults to executors.Docker().</p></li>
+<li><p><strong>scheduler</strong> – Scheduler to manage the flow with. Optional; Defaults to schedulers.Scheduler().</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>FlowError</strong> – If the flow’s name is not alphanumeric</p>
+<dd class="field-even"><p><strong>FlowError</strong> – If the flow is used to configure the Memory datastore without a Thread executor.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -254,7 +259,7 @@
 <span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">execution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#laminar.components.Flow.parameters" title="Permalink to this definition"></a></dt>
 <dd><p>Configure parameters for a flow execution</p>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">execution</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar:)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">execution</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
 <span class="n">flow</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="n">execution</span><span class="p">)</span>
 </pre></div>
 </div>

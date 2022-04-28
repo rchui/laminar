@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>types &mdash; laminar  documentation</title>
+  <title>mypy &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="utils" href="laminar.utils.html" />
-    <link rel="prev" title="Current" href="settings/laminar.settings.Current.html" /> 
+    <link rel="next" title="LaminarPlugin" href="mypy/laminar.mypy.LaminarPlugin.html" />
+    <link rel="prev" title="exceptions" href="laminar.exceptions.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -75,9 +75,12 @@
 <li class="toctree-l2"><a class="reference internal" href="laminar.components.html">components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laminar.configurations.html">configurations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laminar.exceptions.html">exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="laminar.mypy.html">mypy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">mypy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mypy/laminar.mypy.LaminarPlugin.html">LaminarPlugin</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="laminar.settings.html">settings</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="laminar.types.html">types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laminar.utils.html">utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="laminar.version.html">version</a></li>
 </ul>
@@ -99,9 +102,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../laminar.html">laminar</a> &raquo;</li>
-      <li>types</li>
+      <li>mypy</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/api/laminar/laminar.types.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api/laminar/laminar.mypy.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -109,9 +112,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-laminar.types">
-<span id="types"></span><h1>types<a class="headerlink" href="#module-laminar.types" title="Permalink to this headline"></a></h1>
-<p>Shared laminar types.</p>
+  <section id="module-laminar.mypy">
+<span id="mypy"></span><h1>mypy<a class="headerlink" href="#module-laminar.mypy" title="Permalink to this headline"></a></h1>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
@@ -119,68 +121,36 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.types.hints" title="laminar.types.hints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hints</span></code></a></p></td>
-<td><p>Get the type hints for a given function.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.types.unwrap" title="laminar.types.unwrap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unwrap</span></code></a></p></td>
-<td><p>Unwrap an optional value.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.mypy.plugin" title="laminar.mypy.plugin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plugin</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
-<dt class="sig sig-object py" id="laminar.types.hints">
-<span class="sig-prename descclassname"><span class="pre">laminar.types.</span></span><span class="sig-name descname"><span class="pre">hints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.types.hints" title="Permalink to this definition"></a></dt>
-<dd><p>Get the type hints for a given function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>flow</strong> – Flow to get layers for.</p></li>
-<li><p><strong>function</strong> (<em>Callable</em><em>[</em><em>...</em><em>, </em><em>Any</em><em>]</em>) – Function to get type hints for.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Ordered type hints.</p>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="laminar.mypy.plugin">
+<span class="sig-prename descclassname"><span class="pre">laminar.mypy.</span></span><span class="sig-name descname"><span class="pre">plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mypy/laminar.mypy.LaminarPlugin.html#laminar.mypy.LaminarPlugin" title="laminar.mypy.LaminarPlugin"><span class="pre">laminar.mypy.LaminarPlugin</span></a></span></span><a class="headerlink" href="#laminar.mypy.plugin" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="laminar.types.unwrap">
-<span class="sig-prename descclassname"><span class="pre">laminar.types.</span></span><span class="sig-name descname"><span class="pre">unwrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.types.T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.types.T</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.types.T</span></span></span><a class="headerlink" href="#laminar.types.unwrap" title="Permalink to this definition"></a></dt>
-<dd><p>Unwrap an optional value.</p>
-<p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">unwrap</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;a&quot;</span>
-<span class="n">unwrap</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;a&quot;</span>
-<span class="n">unwrap</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="ne">ValueError</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>option</strong> – Optional value to unwrap.</p></li>
-<li><p><strong>default</strong> – Default value if the optional value is None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If the option is None and no default is set.</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Unwrapped optional value.</p>
-</dd>
-</dl>
-</dd></dl>
-
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="mypy/laminar.mypy.LaminarPlugin.html#laminar.mypy.LaminarPlugin" title="laminar.mypy.LaminarPlugin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LaminarPlugin</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="settings/laminar.settings.Current.html" class="btn btn-neutral float-left" title="Current" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="laminar.utils.html" class="btn btn-neutral float-right" title="utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="laminar.exceptions.html" class="btn btn-neutral float-left" title="exceptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mypy/laminar.mypy.LaminarPlugin.html" class="btn btn-neutral float-right" title="LaminarPlugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -32,6 +32,7 @@
    laminar.components
    laminar.configurations
    laminar.exceptions
+   laminar.mypy
    laminar.settings
    laminar.types
    laminar.utils
