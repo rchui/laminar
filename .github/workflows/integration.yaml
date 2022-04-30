@@ -92,8 +92,8 @@ jobs:
       - name: tag
         run: make tag
 
-  #     - name: promote
-  #       run: twine upload dist/*
-  #       env:
-  #         TWINE_USERNAME: __token__
-  #         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      - name: promote
+        run: twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}

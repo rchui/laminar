@@ -319,7 +319,9 @@ class Flow:
         """
 
         with contexts.Attributes(self.execution, id=execution):
-            self.configuration.scheduler.loop(flow=self, dependencies=dependencies, finished={"Parameters"})
+            self.configuration.scheduler.loop(  # type: ignore
+                flow=self, dependencies=dependencies, finished={"Parameters"}
+            )
 
     @classmethod
     def register(
