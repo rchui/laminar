@@ -66,8 +66,8 @@ class Execution:
             current.flow.name is not None and current.flow.name == self.flow.name
         )
 
-    def compose(self, *, flow: "Flow", linker: Callable[["Execution"], "Parameters"]) -> "Execution":
-        """Compose multiple flows together.
+    def chain(self, *, flow: "Flow", linker: Callable[["Execution"], "Parameters"]) -> "Execution":
+        """Chain multiple flow executions together.
 
         Usage::
 
@@ -81,7 +81,7 @@ class Execution:
             class A(Layer):
                 foo: str
 
-            Flow1()().compose(Flow2(), lambda execution: Parameters(foo=execution.layer(A).foo))
+            Flow1()().chain(Flow2(), lambda execution: Parameters(foo=execution.layer(A).foo))
 
         Args:
             flow: Flow to execute next.

@@ -46,9 +46,27 @@ def test_flow() -> None:
 
     execution = (
         flow1()
-        .compose(flow=flow2, linker=lambda execution: Parameters(foo=execution.layer(A).foo))
-        .compose(flow=flow3, linker=lambda execution: Parameters(foo=execution.layer(B).foo))
+        .chain(flow=flow2, linker=lambda execution: Parameters(foo=execution.layer(A).foo))
+        .chain(flow=flow3, linker=lambda execution: Parameters(foo=execution.layer(B).foo))
     )
 
     assert flow2.execution(unwrap(execution.id)).layer(B).foo == "bar"
     assert flow3.execution(unwrap(execution.id)).layer(C).foo == "bar"
+
+
+class CombinedFlow(Flow1, Flow2, Flow3):
+    ...
+
+
+@pytest.mark.flow
+def test_combination() -> None:
+    assert sorted(CombinedFlow.registry) == ["A", "B", "C", "Parameters"]
+    assert CombinedFlow.registry["A"] == A()
+    assert CombinedFlow.registry["B"] == B()
+    assert CombinedFlow.registry["C"] == C()
+
+    flow = CombinedFlow(datastore=datastores.Memory(), executor=executors.Thread())
+    execution = flow(foo="bar")
+
+    assert flow.execution(unwrap(execution.id)).layer(B).foo == "bar"
+    assert flow.execution(unwrap(execution.id)).layer(C).foo == "bar"

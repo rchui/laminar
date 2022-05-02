@@ -28,7 +28,10 @@ The `Thread` executor executes layers directly in the main Python process. This 
 from laminar import Flow
 from laminar.configurations import executors
 
-flow = Flow(executor=executors.Thread())
+class ThreadFlow(Flow):
+    ...
+
+flow = ThreadFlow(executor=executors.Thread())
 ```
 
 ## AWS.Batch
@@ -43,5 +46,8 @@ The `AWS.Batch`` executor executes layers on the [AWS Batch](https://aws.amazon.
 from laminar import Flow
 from laminar.configurations import executors
 
-flow = Flow(executor=executors.AWS.Batch(job_queue_arn=..., job_role_arn=...))
+class BatchFlow(Flow):
+    ...
+
+flow = BatchFlow(executor=executors.AWS.Batch(job_queue_arn=..., job_role_arn=...))
 ```

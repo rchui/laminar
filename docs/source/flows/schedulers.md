@@ -14,7 +14,10 @@ it *actively* manages the tasks in the workflow until their completion and then 
 from laminar import Flow
 from laminar.configurations import schedulers
 
-flow = Flow("ScheduledFlow", scheduler=schedulers.Scheduler())
+class ScheduledFlow(Flow):
+    ...
+
+flow = ScheduledFlow(scheduler=schedulers.Scheduler())
 ```
 
 ## Delegated

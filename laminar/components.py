@@ -213,7 +213,20 @@ class Flow:
         self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
     def __init_subclass__(cls) -> None:
-        cls.registry = {"Parameters": Parameters(configuration=layers.Configuration()), **getattr(cls, "registry", {})}
+        flow: Type[Flow]
+        layer: Layer
+
+        # Register all subflow layers with this layer
+        cls.registry = {Parameters().name: Parameters(configuration=layers.Configuration())}
+        for flow in cls.__bases__:
+            for name, layer in getattr(flow, "registry", {}).items():
+                if name != Parameters().name:
+                    callback = cls.register(
+                        container=layer.configuration.container,
+                        foreach=layer.configuration.foreach,
+                        retry=layer.configuration.retry,
+                    )
+                    callback(layer.__class__)
 
     @property
     def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
@@ -320,7 +333,7 @@ class Flow:
 
         with contexts.Attributes(self.execution, id=execution):
             self.configuration.scheduler.loop(  # type: ignore
-                flow=self, dependencies=dependencies, finished={"Parameters"}
+                flow=self, dependencies=dependencies, finished={Parameters().name}
             )
 
     @classmethod

@@ -28,6 +28,9 @@ from laminar.configurations import datastores, serde
 
 datastore = datastores.Local()
 
+class SerdeFlow(Flow):
+    ...
+
 @datastore.protocol(list)
 class ListProtcol(serde.Protocol):
     def load(self, file: BinaryIO) -> List[Any]:
@@ -42,7 +45,7 @@ class ListProtcol(serde.Protocol):
     def dumps(self, value: List[Any]) -> bytes:
         return value.__repr__().encode()
 
-flow = Flow("SerdeFlow", datastore=datastore)
+flow = SerdeFlow(datastore=datastore)
 ```
 
 Here we define a `Protocol` to convert lists into byte strings and those are written to and read from the datastore. A `Protocol` can be registered to any vaild Python type and will intercept **exact type matches**.
@@ -67,6 +70,9 @@ from laminar.configurations import datastores, serde
 
 datastore = datastores.Local()
 
+class SerdeFlow(Flow):
+    ...
+
 @datastore.protocol(dict, list)
 class JsonProtocol(serde.Protocol):
     def load(self, file: BinaryIO) -> Union[Dict[str, Any], List[Any]]:
@@ -75,7 +81,7 @@ class JsonProtocol(serde.Protocol):
     def dumps(self, value: Union[Dict[str, Any], List[Any]]) -> bytes:
         return json.dumps(value).encode()
 
-flow = Flow("SerdeFlow", datastore=datastore)
+flow = SerdeFlow(datastore=datastore)
 ```
 
 The `Datastore` registers both `list` and `dict` to the `JsonProtocol` which handles serializing and deserializing them to and from the `Datastore` as JSON.
@@ -93,6 +99,8 @@ from laminar.configurations import datastores, serde
 cache: Dict[str, List[Any]] = {}
 datastore = datastores.Local()
 
+class SerdeFlow(Flow):
+    ...
 
 @datastore.protocol(list)
 class ListProtcol(serde.Protocol):
@@ -102,5 +110,5 @@ class ListProtcol(serde.Protocol):
     def write(value: List[Any], uri: str) -> None:
         cache[uri] = value
 
-flow = Flow("SerdeFlow", datastore=datastore)
+flow = SerdeFlow(datastore=datastore)
 ```
