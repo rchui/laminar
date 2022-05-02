@@ -129,7 +129,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
+<span class="k">class</span> <span class="nc">ThreadFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">ThreadFlow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
@@ -143,7 +146,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">executors</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">Batch</span><span class="p">(</span><span class="n">job_queue_arn</span><span class="o">=...</span><span class="p">,</span> <span class="n">job_role_arn</span><span class="o">=...</span><span class="p">))</span>
+<span class="k">class</span> <span class="nc">BatchFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">BatchFlow</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">Batch</span><span class="p">(</span><span class="n">job_queue_arn</span><span class="o">=...</span><span class="p">,</span> <span class="n">job_role_arn</span><span class="o">=...</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>

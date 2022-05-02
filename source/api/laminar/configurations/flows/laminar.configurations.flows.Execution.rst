@@ -35,7 +35,7 @@ Execution
         
         
         
-        ~laminar.configurations.flows.Execution.compose
+        ~laminar.configurations.flows.Execution.chain
         
         
         ~laminar.configurations.flows.Execution.layer

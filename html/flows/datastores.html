@@ -112,7 +112,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;LocalFlow&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Local</span><span class="p">())</span>
+<span class="k">class</span> <span class="nc">LocalFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">LocalFlow</span><span class="p">(</span><span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Local</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
@@ -122,7 +125,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;MemoryFlow&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">())</span>
+<span class="k">class</span> <span class="nc">MemoryFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">MemoryFlow</span><span class="p">(</span><span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">())</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -140,7 +146,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span>
 
-<span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;S3Flow&quot;</span><span class="p">,</span> <span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">S3</span><span class="p">())</span>
+<span class="k">class</span> <span class="nc">S3Flow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">S3Flow</span><span class="p">(</span><span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">AWS</span><span class="o">.</span><span class="n">S3</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>

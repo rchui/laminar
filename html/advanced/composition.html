@@ -62,7 +62,11 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="recovery.html">Recovery</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Composition</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Composition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#chaining">Chaining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inheritance">Inheritance</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="hooks.html">Hooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="serde.html">Ser(De)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
@@ -104,7 +108,6 @@
 <p>Consider an example with two flows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
 <span class="kn">from</span> <span class="nn">laminar.components</span> <span class="kn">import</span> <span class="n">Parameters</span>
-<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">datastores</span><span class="p">,</span> <span class="n">executors</span>
 
 <span class="k">class</span> <span class="nc">Flow1</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
     <span class="o">...</span>
@@ -124,10 +127,13 @@
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>A common scenario might be to execute <code class="docutils literal notranslate"><span class="pre">Flow1</span></code> and feed the results into <code class="docutils literal notranslate"><span class="pre">Flow2</span></code> as parameters. This can be achieved with flow composition.</p>
+<p>A common scenario might be to execute <code class="docutils literal notranslate"><span class="pre">Flow1</span></code> and feed the results into <code class="docutils literal notranslate"><span class="pre">Flow2</span></code> as parameters.</p>
+<section id="chaining">
+<h2>Chaining<a class="headerlink" href="#chaining" title="Permalink to this headline"></a></h2>
+<p>This can be achieved with flow chaining.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow1</span> <span class="o">=</span> <span class="n">Flow1</span><span class="p">()</span>
-    <span class="n">flow1</span><span class="p">()</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">Flow2</span><span class="p">(),</span> <span class="n">linker</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span><span class="p">))</span>
+    <span class="n">flow1</span><span class="p">()</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">Flow2</span><span class="p">(),</span> <span class="n">linker</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Here we define which <code class="docutils literal notranslate"><span class="pre">Flow</span></code> should be executed after <code class="docutils literal notranslate"><span class="pre">Flow1</span></code> and provider a linker to define how the artifacts of <code class="docutils literal notranslate"><span class="pre">Flow1</span></code> are passed as parameters to <code class="docutils literal notranslate"><span class="pre">Flow2</span></code>.</p>
@@ -138,6 +144,40 @@
 </pre></div>
 </div>
 <p>With composition, complex sets of <code class="docutils literal notranslate"><span class="pre">Flow</span></code>s can be linked together to create arbitrarily nested workloads.</p>
+</section>
+<section id="inheritance">
+<h2>Inheritance<a class="headerlink" href="#inheritance" title="Permalink to this headline"></a></h2>
+<p>This can also be achieved with flow inheritance with a small rewrite. Consider the following contrived example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+
+<span class="k">class</span> <span class="nc">Flow1</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@Flow1</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>
+
+<span class="k">class</span> <span class="nc">Flow2</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@Flow2</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">CombinedFlow</span><span class="p">(</span><span class="n">Flow1</span><span class="p">,</span> <span class="n">Flow2</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span> <span class="o">=</span> <span class="n">CombinedFlow</span><span class="p">()</span>
+    <span class="n">flow</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here we define two flows and use class inheritance to merge the two flows together into one single flow. Not only can this be used to chain flows together but also allows you to combine disparate flows into a single execution that will be executed in parallel.</p>
+<p>Using chaining and inheritance together enables an extremely expressive way of composing flows together.</p>
+</section>
 </section>
 
 

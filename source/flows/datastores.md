@@ -10,7 +10,10 @@ By default, flows are configured to use the `Local` datastore which writes `Flow
 from laminar import Flow
 from laminar.configurations import datastores
 
-flow = Flow("LocalFlow", datastore=datastores.Local())
+class LocalFlow(Flow):
+    ...
+
+flow = LocalFlow(datastore=datastores.Local())
 ```
 
 ## Memory
@@ -21,7 +24,10 @@ The `Memory` datastore writes artifacts to an in memory key/value store. This ve
 from laminar import Flow
 from laminar.configurations import datastores
 
-flow = Flow("MemoryFlow", datastore=datastores.Memory())
+class MemoryFlow(Flow):
+    ...
+
+flow = MemoryFlow(datastore=datastores.Memory())
 ```
 
 ```{warning}
@@ -40,5 +46,8 @@ The `AWS.S3` datastore writes artifacts to the AWS S3 object storage service.
 from laminar import Flow
 from laminar.configurations import datastores
 
-flow = Flow("S3Flow", datastore=datastores.AWS.S3())
+class S3Flow(Flow):
+    ...
+
+flow = S3Flow(datastore=datastores.AWS.S3())
 ```
