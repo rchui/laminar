@@ -5,8 +5,39 @@ from typing import Any, Dict
 import pytest
 
 from laminar import Flow, Layer
+from laminar.configurations import layers
 from laminar.configurations.datastores import Archive, Artifact, Record
-from laminar.configurations.layers import ForEach, Parameter
+from laminar.configurations.layers import Catch, ForEach, Parameter
+
+
+class TestCatch:
+    def test_success(self) -> None:
+        class A(Layer):
+            def __call__(self) -> None:
+                raise RuntimeError
+
+        class B(Layer):
+            def __call__(self) -> None:
+                raise AssertionError
+
+        catch = Catch(RuntimeError, AssertionError)
+        A(configuration=layers.Configuration(catch=catch)).execute()
+        B(configuration=layers.Configuration(catch=catch)).execute()
+
+    def test_failure(self) -> None:
+        class A(Layer):
+            def __call__(self) -> None:
+                raise RuntimeError
+
+        with pytest.raises(RuntimeError):
+            A(configuration=layers.Configuration()).execute()
+
+    def test_suberror(self) -> None:
+        class A(Layer):
+            def __call__(self) -> None:
+                raise RuntimeError
+
+        A(configuration=layers.Configuration(catch=Catch(Exception))).execute()
 
 
 class TestForEach:

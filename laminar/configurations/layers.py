@@ -6,6 +6,7 @@ import logging
 import random
 import sys
 from dataclasses import dataclass, field
+from inspect import Traceback
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
 from laminar.configurations import datastores
@@ -18,6 +19,32 @@ else:
     Layer = "Layer"
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class Catch:
+    """Configures a layer to catch certain exceptions.
+
+    Notes:
+
+        Catches specified errors and their subclasses.
+
+    Usage::
+
+        @Flow.register(catch=Catch(...))
+    """
+
+    def __init__(self, *exceptions: Type[Exception]) -> None:
+        self.exceptions = exceptions
+
+    def __enter__(self) -> "Catch":
+        return self
+
+    def __exit__(self, etype: Type[Exception], error: Exception, traceback: Traceback) -> Optional[Type[Exception]]:
+        if isinstance(error, self.exceptions):
+            self.exception = etype
+            return etype
+        return None
 
 
 @dataclass
@@ -237,6 +264,7 @@ class Configuration:
                 self.configuration.retry
     """
 
+    catch: Catch = Catch()
     #: Layer container configuration
     container: Container = Container()
     #: Layer foreach configuration

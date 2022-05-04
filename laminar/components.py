@@ -132,7 +132,7 @@ class Layer:
 
         return type(self).__name__
 
-    def _execute(self, *parameters: "Layer") -> None:
+    def execute(self, *parameters: "Layer") -> None:
         """Execute a layer.
 
         Args:
@@ -141,7 +141,8 @@ class Layer:
 
         # Attempt to write any existing layer artifacts before failing
         try:
-            self(*parameters)
+            with self.configuration.catch:
+                self(*parameters)
         finally:
             for artifact, value in self.artifacts.items():
                 self.flow.configuration.datastore.write(layer=self, name=artifact, values=[value])
@@ -319,7 +320,7 @@ class Flow:
             parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
 
             with hooks.event.context(layer=layer, annotation=hooks.annotation.execution):
-                layer._execute(*parameters)
+                layer.execute(*parameters)
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
@@ -339,6 +340,7 @@ class Flow:
     @classmethod
     def register(
         cls,
+        catch: layers.Catch = layers.Catch(),
         container: layers.Container = layers.Container(),
         foreach: layers.ForEach = layers.ForEach(),
         retry: layers.Retry = layers.Retry(),
@@ -354,7 +356,9 @@ class Flow:
 
         def wrapper(Layer: LayerType) -> LayerType:
 
-            layer = Layer(configuration=layers.Configuration(container=container, foreach=foreach, retry=retry))
+            layer = Layer(
+                configuration=layers.Configuration(catch=catch, container=container, foreach=foreach, retry=retry)
+            )
 
             if layer.name in cls.registry:
                 raise FlowError(
