@@ -1,7 +1,7 @@
-Configuration
-=============
+Catch
+=====
 
-.. autoclass:: laminar.configurations.layers.Configuration
+.. autoclass:: laminar.configurations.layers.Catch
     :members:
     :inherited-members: BaseModel
     :show-inheritance:
@@ -13,6 +13,8 @@ Configuration
     .. autosummary::
         :nosignatures:
     
+        
+        
         
         
         
@@ -49,19 +51,6 @@ Configuration
         
         
         
-        
-        
-        
-        ~laminar.configurations.layers.Configuration.catch
-        
-        
-        ~laminar.configurations.layers.Configuration.container
-        
-        
-        ~laminar.configurations.layers.Configuration.foreach
-        
-        
-        ~laminar.configurations.layers.Configuration.retry
         
     
     

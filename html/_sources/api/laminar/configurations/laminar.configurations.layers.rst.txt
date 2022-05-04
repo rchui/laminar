@@ -21,6 +21,7 @@ layers
         :recursive:
         :nosignatures:
     
+        Catch
         Configuration
         Container
         ForEach

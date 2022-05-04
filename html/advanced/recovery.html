@@ -62,6 +62,7 @@
 <p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#catch">Catch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#retry">Retry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#resume">Resume</a></li>
 </ul>
@@ -104,7 +105,23 @@
              
   <section id="recovery">
 <h1>Recovery<a class="headerlink" href="#recovery" title="Permalink to this headline"></a></h1>
-<p>Dealing with failures is a natural part of developing workflows. For a variety of reasons, workflows may fail and need to be retried or restarted.</p>
+<p>Dealing with failures is a natural part of developing workflows. For a variety of reasons, workflows may fail and need to be recovered from.</p>
+<section id="catch">
+<h2>Catch<a class="headerlink" href="#catch" title="Permalink to this headline"></a></h2>
+<p>It’s possible that sometimes you expect an error to be raised and want to recover from it. <code class="docutils literal notranslate"><span class="pre">Catch</span></code> allows the user to configure layers to catch specific errors and subclasses of those errors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Layer</span>
+<span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">layers</span>
+
+<span class="k">class</span> <span class="nc">CatchFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@CatchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">catch</span><span class="o">=</span><span class="n">Catch</span><span class="p">(</span><span class="ne">Exception</span><span class="p">))</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span>
+</pre></div>
+</div>
+</section>
 <section id="retry">
 <h2>Retry<a class="headerlink" href="#retry" title="Permalink to this headline"></a></h2>
 <p>Maybe requests to other services can be flaky or maybe you want your <code class="docutils literal notranslate"><span class="pre">Flow</span></code> to be tolerant of AWS EC2 Spot failures. Whatever the reason, there are situations where it is useful for layers to be retried on failure.</p>

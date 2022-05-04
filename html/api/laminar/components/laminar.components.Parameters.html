@@ -128,7 +128,10 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.shard" title="laminar.components.Parameters.shard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Parameters.execute" title="laminar.components.Parameters.execute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></a></p></td>
+<td><p>Execute a layer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Parameters.shard" title="laminar.components.Parameters.shard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard</span></code></a></p></td>
 <td><p>Store each item of a sequence separately so that they may be loaded individually downstream.</p></td>
 </tr>
 </tbody>
@@ -178,6 +181,17 @@
 <dt class="sig sig-object py" id="laminar.components.Parameters.dependencies">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dependencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Parameters.dependencies" title="Permalink to this definition"></a></dt>
 <dd><p>Layers this layer depends on.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="laminar.components.Parameters.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">laminar.components.Layer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Parameters.execute" title="Permalink to this definition"></a></dt>
+<dd><p>Execute a layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*parameters</strong> – Input layers to the layer.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">

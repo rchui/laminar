@@ -1,6 +1,23 @@
 # Recovery
 
-Dealing with failures is a natural part of developing workflows. For a variety of reasons, workflows may fail and need to be retried or restarted.
+Dealing with failures is a natural part of developing workflows. For a variety of reasons, workflows may fail and need to be recovered from.
+
+## Catch
+
+It's possible that sometimes you expect an error to be raised and want to recover from it. `Catch` allows the user to configure layers to catch specific errors and subclasses of those errors.
+
+```python
+from laminar import Flow, Layer
+from laminar.configurations import layers
+
+class CatchFlow(Flow):
+    ...
+
+@CatchFlow.register(catch=Catch(Exception))
+class A(Layer):
+    def __call__(self) -> None:
+        raise RuntimeError
+```
 
 ## Retry
 

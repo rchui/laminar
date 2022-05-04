@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parameter &mdash; laminar  documentation</title>
+  <title>Catch &mdash; laminar  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Retry" href="laminar.configurations.layers.Retry.html" />
-    <link rel="prev" title="ForEach" href="laminar.configurations.layers.ForEach.html" /> 
+    <link rel="next" title="Configuration" href="laminar.configurations.layers.Configuration.html" />
+    <link rel="prev" title="layers" href="../laminar.configurations.layers.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -79,11 +79,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.flows.html">flows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.layers.Catch.html">Catch</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Catch</a></li>
 <li class="toctree-l4"><a class="reference internal" href="laminar.configurations.layers.Configuration.html">Configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="laminar.configurations.layers.Container.html">Container</a></li>
 <li class="toctree-l4"><a class="reference internal" href="laminar.configurations.layers.ForEach.html">ForEach</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Parameter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.layers.Parameter.html">Parameter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="laminar.configurations.layers.Retry.html">Retry</a></li>
 <li class="toctree-l4"><a class="reference internal" href="laminar.configurations.layers.State.html">State</a></li>
 </ul>
@@ -118,9 +118,9 @@
           <li><a href="../../../laminar.html">laminar</a> &raquo;</li>
           <li><a href="../../laminar.configurations.html">configurations</a> &raquo;</li>
           <li><a href="../laminar.configurations.layers.html">layers</a> &raquo;</li>
-      <li>Parameter</li>
+      <li>Catch</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/api/laminar/configurations/layers/laminar.configurations.layers.Parameter.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/api/laminar/configurations/layers/laminar.configurations.layers.Catch.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -128,13 +128,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="parameter">
-<h1>Parameter<a class="headerlink" href="#parameter" title="Permalink to this headline"></a></h1>
+  <section id="catch">
+<h1>Catch<a class="headerlink" href="#catch" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="laminar.configurations.layers.Parameter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.layers.</span></span><span class="sig-name descname"><span class="pre">Parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.layers.Parameter" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="laminar.configurations.layers.Catch">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.layers.</span></span><span class="sig-name descname"><span class="pre">Catch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Exception</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.layers.Catch" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Input for configuring a ForEach.</p>
+<p>Configures a layer to catch certain exceptions.</p>
+<p class="rubric">Notes</p>
+<p>Catches specified errors and their subclasses.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Flow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">catch</span><span class="o">=</span><span class="n">Catch</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
@@ -151,39 +157,12 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.layers.Parameter.index" title="laminar.configurations.layers.Parameter.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
-<td><p>Layer index to reference attributes from.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.layers.Parameter.layer" title="laminar.configurations.layers.Parameter.layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layer</span></code></a></p></td>
-<td><p>Layer the attribute is associated with.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.layers.Parameter.attribute" title="laminar.configurations.layers.Parameter.attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attribute</span></code></a></p></td>
-<td><p>Attribute to iterate over.</p></td>
-</tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.layers.Parameter.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.layers.Parameter.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="laminar.configurations.layers.Catch.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Exception</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.layers.Catch.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.configurations.layers.Parameter.attribute">
-<span class="sig-name descname"><span class="pre">attribute</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#laminar.configurations.layers.Parameter.attribute" title="Permalink to this definition"></a></dt>
-<dd><p>Attribute to iterate over.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.configurations.layers.Parameter.index">
-<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#laminar.configurations.layers.Parameter.index" title="Permalink to this definition"></a></dt>
-<dd><p>Layer index to reference attributes from.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.configurations.layers.Parameter.layer">
-<span class="sig-name descname"><span class="pre">layer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.configurations.layers.Parameter.layer" title="Permalink to this definition"></a></dt>
-<dd><p>Layer the attribute is associated with.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -193,8 +172,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="laminar.configurations.layers.ForEach.html" class="btn btn-neutral float-left" title="ForEach" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="laminar.configurations.layers.Retry.html" class="btn btn-neutral float-right" title="Retry" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../laminar.configurations.layers.html" class="btn btn-neutral float-left" title="layers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="laminar.configurations.layers.Configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

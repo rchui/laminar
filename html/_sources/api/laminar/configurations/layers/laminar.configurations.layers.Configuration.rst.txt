@@ -52,6 +52,9 @@ Configuration
         
         
         
+        ~laminar.configurations.layers.Configuration.catch
+        
+        
         ~laminar.configurations.layers.Configuration.container
         
         
