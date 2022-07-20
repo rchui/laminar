@@ -11,5 +11,5 @@ pytest-cov
 rstcheck
 snooty-lextudio
 sphinx
-sphinx_rtd_theme
+sphinx-immaterial
 twine
