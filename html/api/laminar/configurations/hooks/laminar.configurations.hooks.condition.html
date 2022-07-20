@@ -1,208 +1,1292 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>condition &mdash; laminar  documentation</title>
-      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="">
+    
+    
+      
+        <title>condition - laminar  documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../_static/stylesheets/main.2014a6d7.min.css">
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    <script>__md_scope=new URL("../../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
   
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="event" href="laminar.configurations.hooks.event.html" />
-    <link rel="prev" title="annotation" href="laminar.configurations.hooks.annotation.html" /> 
-</head>
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#laminar.configurations.hooks.condition.entry" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../../index.html" class="icon icon-home"> laminar
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/deployment.html">Deployment</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Layers</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/scaling_up.html">Scaling Up</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/scaling_out.html">Scaling Out</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/branching.html">Branching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/configuration.html">Configuration</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Flows</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/parameters.html">Parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/datastores.html">Datastores</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/executors.html">Executors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/schedulers.html">Schedulers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/results.html">Results</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/recovery.html">Recovery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/composition.html">Composition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/hooks.html">Hooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/serde.html">Ser(De)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/testing.html">Testing</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../../technical/datastores.html">Datastores</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../technical/executions.html">Executions</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../../laminar.html">laminar</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.components.html">components</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../laminar.configurations.html">configurations</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.datastores.html">datastores</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.executors.html">executors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.flows.html">flows</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.hooks.annotation.html">annotation</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">condition</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.hooks.event.html">event</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.schedulers.html">schedulers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.serde.html">serde</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.exceptions.html">exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.settings.html">settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.types.html">types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.utils.html">utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.version.html">version</a></li>
-</ul>
-</li>
-</ul>
-
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../index.html" title="laminar  documentation" class="md-header__button md-logo" aria-label="laminar  documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            laminar  documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              condition
+            
+          </span>
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">laminar</a>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
       </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../laminar.html">laminar</a> &raquo;</li>
-          <li><a href="../../laminar.configurations.html">configurations</a> &raquo;</li>
-          <li><a href="../laminar.configurations.hooks.html">hooks</a> &raquo;</li>
-      <li>condition</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/api/laminar/configurations/hooks/laminar.configurations.hooks.condition.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="module-laminar.configurations.hooks.condition">
-<span id="condition"></span><h1>condition<a class="headerlink" href="#module-laminar.configurations.hooks.condition" title="Permalink to this headline"></a></h1>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../index.html" title="laminar  documentation" class="md-nav__button md-logo" aria-label="laminar  documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    laminar  documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          <span class="md-ellipsis">Getting Started</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Getting Started</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../index.html" class="md-nav__link">
+        <span title="index (document)" class="md-ellipsis">Introduction</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting_started/installation.html" class="md-nav__link">
+        <span title="getting_started/installation (document)" class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting_started/basics.html" class="md-nav__link">
+        <span title="getting_started/basics (document)" class="md-ellipsis">Basics</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting_started/deployment.html" class="md-nav__link">
+        <span title="getting_started/deployment (document)" class="md-ellipsis">Deployment</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          <span class="md-ellipsis">Layers</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Layers" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Layers</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/scaling_up.html" class="md-nav__link">
+        <span title="layers/scaling_up (document)" class="md-ellipsis">Scaling Up</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/scaling_out.html" class="md-nav__link">
+        <span title="layers/scaling_out (document)" class="md-ellipsis">Scaling Out</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/branching.html" class="md-nav__link">
+        <span title="layers/branching (document)" class="md-ellipsis">Branching</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/configuration.html" class="md-nav__link">
+        <span title="layers/configuration (document)" class="md-ellipsis">Configuration</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          <span class="md-ellipsis">Flows</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Flows" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Flows</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/parameters.html" class="md-nav__link">
+        <span title="flows/parameters (document)" class="md-ellipsis">Parameters</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/datastores.html" class="md-nav__link">
+        <span title="flows/datastores (document)" class="md-ellipsis">Datastores</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/executors.html" class="md-nav__link">
+        <span title="flows/executors (document)" class="md-ellipsis">Executors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/schedulers.html" class="md-nav__link">
+        <span title="flows/schedulers (document)" class="md-ellipsis">Schedulers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/results.html" class="md-nav__link">
+        <span title="flows/results (document)" class="md-ellipsis">Results</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          <span class="md-ellipsis">Advanced</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Advanced</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/recovery.html" class="md-nav__link">
+        <span title="advanced/recovery (document)" class="md-ellipsis">Recovery</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/composition.html" class="md-nav__link">
+        <span title="advanced/composition (document)" class="md-ellipsis">Composition</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/hooks.html" class="md-nav__link">
+        <span title="advanced/hooks (document)" class="md-ellipsis">Hooks</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/serde.html" class="md-nav__link">
+        <span title="advanced/serde (document)" class="md-ellipsis">Ser<wbr>(De)</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/testing.html" class="md-nav__link">
+        <span title="advanced/testing (document)" class="md-ellipsis">Testing</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          <span class="md-ellipsis">Technical Details</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Technical Details" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Technical Details</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../technical/datastores.html" class="md-nav__link">
+        <span title="technical/datastores (document)" class="md-ellipsis">Datastores</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../technical/executions.html" class="md-nav__link">
+        <span title="technical/executions (document)" class="md-ellipsis">Executions</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3" type="checkbox" id="__nav_5_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../laminar.html"><span title="api/laminar (document)" class="md-ellipsis">laminar</span></a>
+          
+            <label for="__nav_5_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="laminar" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar (document)" class="md-ellipsis">laminar</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.components.html" class="md-nav__link">
+        <span title="api/laminar/laminar.components (document)" class="md-ellipsis">components</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3_2" type="checkbox" id="__nav_5_3_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../laminar.configurations.html"><span title="api/laminar/laminar.configurations (document)" class="md-ellipsis">configurations</span></a>
+          
+            <label for="__nav_5_3_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="configurations" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar/laminar.configurations (document)" class="md-ellipsis">configurations</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.datastores.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.datastores (document)" class="md-ellipsis">datastores</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.executors.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.executors (document)" class="md-ellipsis">executors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.flows.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.flows (document)" class="md-ellipsis">flows</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3_2_4" type="checkbox" id="__nav_5_3_2_4" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../laminar.configurations.hooks.html"><span title="api/laminar/configurations/laminar.configurations.hooks (document)" class="md-ellipsis">hooks</span></a>
+          
+            <label for="__nav_5_3_2_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="hooks" data-md-level="4">
+        <label class="md-nav__title" for="__nav_5_3_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar/configurations/laminar.configurations.hooks (document)" class="md-ellipsis">hooks</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.hooks.annotation.html" class="md-nav__link">
+        <span title="api/laminar/configurations/hooks/laminar.configurations.hooks.annotation (document)" class="md-ellipsis">annotation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span title="api/laminar/configurations/hooks/laminar.configurations.hooks.condition (document)" class="md-ellipsis">condition</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span title="api/laminar/configurations/hooks/laminar.configurations.hooks.condition (document)" class="md-ellipsis">condition</span>
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.entry" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="laminar.configurations.hooks.condition.entry (Python function) — Configure an entry hook" class="md-ellipsis">laminar.<wbr>configurations.<wbr>hooks.<wbr>condition.<wbr>entry</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="laminar.configurations.hooks.condition.gather (Python function) — Get values returned by all hooks of the annotated type." class="md-ellipsis">laminar.<wbr>configurations.<wbr>hooks.<wbr>condition.<wbr>gather</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="laminar.configurations.hooks.condition.gather">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.hooks.condition.gather.layer (Python parameter) — Layer the hooks are for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather.annotation" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.hooks.condition.gather.annotation (Python parameter) — Annotation to get the hooks for." class="md-ellipsis">annotation</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.hooks.event.html" class="md-nav__link">
+        <span title="api/laminar/configurations/hooks/laminar.configurations.hooks.event (document)" class="md-ellipsis">event</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.layers.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.layers (document)" class="md-ellipsis">layers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.schedulers.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.schedulers (document)" class="md-ellipsis">schedulers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.serde.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.serde (document)" class="md-ellipsis">serde</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.exceptions.html" class="md-nav__link">
+        <span title="api/laminar/laminar.exceptions (document)" class="md-ellipsis">exceptions</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.settings.html" class="md-nav__link">
+        <span title="api/laminar/laminar.settings (document)" class="md-ellipsis">settings</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.types.html" class="md-nav__link">
+        <span title="api/laminar/laminar.types (document)" class="md-ellipsis">types</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.utils.html" class="md-nav__link">
+        <span title="api/laminar/laminar.utils (document)" class="md-ellipsis">utils</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.version.html" class="md-nav__link">
+        <span title="api/laminar/laminar.version (document)" class="md-ellipsis">version</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.entry" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="laminar.configurations.hooks.condition.entry (Python function) — Configure an entry hook" class="md-ellipsis">laminar.<wbr>configurations.<wbr>hooks.<wbr>condition.<wbr>entry</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="laminar.configurations.hooks.condition.gather (Python function) — Get values returned by all hooks of the annotated type." class="md-ellipsis">laminar.<wbr>configurations.<wbr>hooks.<wbr>condition.<wbr>gather</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="laminar.configurations.hooks.condition.gather">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.hooks.condition.gather.layer (Python parameter) — Layer the hooks are for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather.annotation" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.hooks.condition.gather.annotation (Python parameter) — Annotation to get the hooks for." class="md-ellipsis">annotation</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.hooks.condition.gather-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset" role="main">
+                
+
+
+  <h1 id="module-laminar.configurations.hooks.condition"><span id="condition"></span>condition<a class="headerlink" href="#module-laminar.configurations.hooks.condition" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Functions</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable docutils data align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.hooks.condition.entry" title="laminar.configurations.hooks.condition.entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">entry</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.configurations.hooks.condition.entry" title="laminar.configurations.hooks.condition.entry (Python function) — Configure an entry hook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">entry</span></code></a></p></td>
 <td><p>Configure an entry hook</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.hooks.condition.gather" title="laminar.configurations.hooks.condition.gather"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gather</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.configurations.hooks.condition.gather" title="laminar.configurations.hooks.condition.gather (Python function) — Get values returned by all hooks of the annotated type."><code class="xref py py-obj docutils literal notranslate"><span class="pre">gather</span></code></a></p></td>
 <td><p>Get values returned by all hooks of the annotated type.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py function">
-<dt class="sig sig-object py" id="laminar.configurations.hooks.condition.entry">
-<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.condition.</span></span><span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">laminar.configurations.hooks.condition.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">laminar.configurations.hooks.condition.T</span></span></span><a class="headerlink" href="#laminar.configurations.hooks.condition.entry" title="Permalink to this definition"></a></dt>
+<dl class="py function objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.hooks.condition.entry">
+<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.condition.</span></span><span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">T</span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">T</span></span></span></span><a class="headerlink" href="#laminar.configurations.hooks.condition.entry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configure an entry hook</p>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">entry</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">laminar.configurations</span> <span class="kn">import</span> <span class="n">entry</span>
 
 <span class="nd">@hooks</span><span class="o">.</span><span class="n">entry</span>
 <span class="k">def</span> <span class="nf">enter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 </div>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="laminar.configurations.hooks.condition.gather">
-<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.condition.</span></span><span class="sig-name descname"><span class="pre">gather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.hooks.condition.gather" title="Permalink to this definition"></a></dt>
+<dl class="py function objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.hooks.condition.gather">
+<span class="sig-prename descclassname"><span class="pre">laminar.configurations.hooks.condition.</span></span><span class="sig-name descname"><span class="pre">gather</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.hooks.condition.gather.layer" title="laminar.configurations.hooks.condition.gather.layer (Python parameter) — Layer the hooks are for."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.hooks.condition.gather.annotation" title="laminar.configurations.hooks.condition.gather.annotation (Python parameter) — Annotation to get the hooks for."><span class="n"><span class="pre">annotation</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">str</span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span></span><a class="headerlink" href="#laminar.configurations.hooks.condition.gather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get values returned by all hooks of the annotated type.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – Layer the hooks are for.</p></li>
-<li><p><strong>annotation</strong> – Annotation to get the hooks for.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.hooks.condition.gather-parameters">Parameters<a class="headerlink" href="#laminar.configurations.hooks.condition.gather-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.hooks.condition.gather.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.hooks.condition.gather.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer the hooks are for.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt id="laminar.configurations.hooks.condition.gather.annotation"><span class="n sig-name">annotation</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">str</span></span><a class="headerlink" href="#laminar.configurations.hooks.condition.gather.annotation" title="Permalink to this definition">¶</a></dt><dd><p>Annotation to get the hooks for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.hooks.condition.gather-returns">Returns<a class="headerlink" href="#laminar.configurations.hooks.condition.gather-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>Return values for each hook.</p>
 </dd>
 </dl>
 </dd></dl>
 
-</section>
 
 
-           </div>
+
+              
+            </article>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="laminar.configurations.hooks.annotation.html" class="btn btn-neutral float-left" title="annotation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="laminar.configurations.hooks.event.html" class="btn btn-neutral float-right" title="event" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2021, Ryan Chui.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
         </div>
-      </div>
-    </section>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="laminar.configurations.hooks.annotation.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: annotation" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              annotation
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="laminar.configurations.hooks.event.html" class="md-footer__link md-footer__link--next" aria-label="Next: event" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              event
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2021, Ryan Chui.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    5.0.2.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+    
+  </body>
 </html>

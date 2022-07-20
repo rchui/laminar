@@ -1,144 +1,2539 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AWS &mdash; laminar  documentation</title>
-      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="">
+    
+    
+      
+        <title>AWS - laminar  documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../_static/stylesheets/main.2014a6d7.min.css">
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    <script>__md_scope=new URL("../../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
   
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Accessor" href="laminar.configurations.datastores.Accessor.html" />
-    <link rel="prev" title="datastores" href="../laminar.configurations.datastores.html" /> 
-</head>
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#laminar.configurations.datastores.AWS" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../../index.html" class="icon icon-home"> laminar
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/deployment.html">Deployment</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Layers</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/scaling_up.html">Scaling Up</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/scaling_out.html">Scaling Out</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/branching.html">Branching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../layers/configuration.html">Configuration</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Flows</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/parameters.html">Parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/datastores.html">Datastores</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/executors.html">Executors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/schedulers.html">Schedulers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../flows/results.html">Results</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/recovery.html">Recovery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/composition.html">Composition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/hooks.html">Hooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/serde.html">Ser(De)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced/testing.html">Testing</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../../technical/datastores.html">Datastores</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../technical/executions.html">Executions</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../../laminar.html">laminar</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.components.html">components</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../laminar.configurations.html">configurations</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../laminar.configurations.datastores.html">datastores</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">AWS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.Accessor.html">Accessor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.Archive.html">Archive</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.ArchiveProtocol.html">ArchiveProtocol</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.Artifact.html">Artifact</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.DataStore.html">DataStore</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.Local.html">Local</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.Memory.html">Memory</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.Record.html">Record</a></li>
-<li class="toctree-l4"><a class="reference internal" href="laminar.configurations.datastores.RecordProtocol.html">RecordProtocol</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.executors.html">executors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.flows.html">flows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.hooks.html">hooks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.layers.html">layers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.schedulers.html">schedulers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../laminar.configurations.serde.html">serde</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.exceptions.html">exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.settings.html">settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.types.html">types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.utils.html">utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../laminar.version.html">version</a></li>
-</ul>
-</li>
-</ul>
-
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../index.html" title="laminar  documentation" class="md-header__button md-logo" aria-label="laminar  documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            laminar  documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AWS
+            
+          </span>
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">laminar</a>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
       </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../laminar.html">laminar</a> &raquo;</li>
-          <li><a href="../../laminar.configurations.html">configurations</a> &raquo;</li>
-          <li><a href="../laminar.configurations.datastores.html">datastores</a> &raquo;</li>
-      <li>AWS</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/api/laminar/configurations/datastores/laminar.configurations.datastores.AWS.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="aws">
-<h1>AWS<a class="headerlink" href="#aws" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.datastores.</span></span><span class="sig-name descname"><span class="pre">AWS</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS" title="Permalink to this definition"></a></dt>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../index.html" title="laminar  documentation" class="md-nav__button md-logo" aria-label="laminar  documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    laminar  documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          <span class="md-ellipsis">Getting Started</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Getting Started</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../index.html" class="md-nav__link">
+        <span title="index (document)" class="md-ellipsis">Introduction</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting_started/installation.html" class="md-nav__link">
+        <span title="getting_started/installation (document)" class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting_started/basics.html" class="md-nav__link">
+        <span title="getting_started/basics (document)" class="md-ellipsis">Basics</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting_started/deployment.html" class="md-nav__link">
+        <span title="getting_started/deployment (document)" class="md-ellipsis">Deployment</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          <span class="md-ellipsis">Layers</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Layers" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Layers</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/scaling_up.html" class="md-nav__link">
+        <span title="layers/scaling_up (document)" class="md-ellipsis">Scaling Up</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/scaling_out.html" class="md-nav__link">
+        <span title="layers/scaling_out (document)" class="md-ellipsis">Scaling Out</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/branching.html" class="md-nav__link">
+        <span title="layers/branching (document)" class="md-ellipsis">Branching</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../layers/configuration.html" class="md-nav__link">
+        <span title="layers/configuration (document)" class="md-ellipsis">Configuration</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          <span class="md-ellipsis">Flows</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Flows" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Flows</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/parameters.html" class="md-nav__link">
+        <span title="flows/parameters (document)" class="md-ellipsis">Parameters</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/datastores.html" class="md-nav__link">
+        <span title="flows/datastores (document)" class="md-ellipsis">Datastores</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/executors.html" class="md-nav__link">
+        <span title="flows/executors (document)" class="md-ellipsis">Executors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/schedulers.html" class="md-nav__link">
+        <span title="flows/schedulers (document)" class="md-ellipsis">Schedulers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../flows/results.html" class="md-nav__link">
+        <span title="flows/results (document)" class="md-ellipsis">Results</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          <span class="md-ellipsis">Advanced</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Advanced</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/recovery.html" class="md-nav__link">
+        <span title="advanced/recovery (document)" class="md-ellipsis">Recovery</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/composition.html" class="md-nav__link">
+        <span title="advanced/composition (document)" class="md-ellipsis">Composition</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/hooks.html" class="md-nav__link">
+        <span title="advanced/hooks (document)" class="md-ellipsis">Hooks</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/serde.html" class="md-nav__link">
+        <span title="advanced/serde (document)" class="md-ellipsis">Ser<wbr>(De)</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../advanced/testing.html" class="md-nav__link">
+        <span title="advanced/testing (document)" class="md-ellipsis">Testing</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          <span class="md-ellipsis">Technical Details</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Technical Details" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Technical Details</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../technical/datastores.html" class="md-nav__link">
+        <span title="technical/datastores (document)" class="md-ellipsis">Datastores</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../technical/executions.html" class="md-nav__link">
+        <span title="technical/executions (document)" class="md-ellipsis">Executions</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3" type="checkbox" id="__nav_5_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../laminar.html"><span title="api/laminar (document)" class="md-ellipsis">laminar</span></a>
+          
+            <label for="__nav_5_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="laminar" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar (document)" class="md-ellipsis">laminar</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.components.html" class="md-nav__link">
+        <span title="api/laminar/laminar.components (document)" class="md-ellipsis">components</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3_2" type="checkbox" id="__nav_5_3_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../laminar.configurations.html"><span title="api/laminar/laminar.configurations (document)" class="md-ellipsis">configurations</span></a>
+          
+            <label for="__nav_5_3_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="configurations" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar/laminar.configurations (document)" class="md-ellipsis">configurations</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3_2_1" type="checkbox" id="__nav_5_3_2_1" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../laminar.configurations.datastores.html"><span title="api/laminar/configurations/laminar.configurations.datastores (document)" class="md-ellipsis">datastores</span></a>
+          
+            <label for="__nav_5_3_2_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="datastores" data-md-level="4">
+        <label class="md-nav__title" for="__nav_5_3_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar/configurations/laminar.configurations.datastores (document)" class="md-ellipsis">datastores</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS (document)" class="md-ellipsis">AWS</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.AWS (document)" class="md-ellipsis">AWS</span>
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS" class="md-nav__link">
+    <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="laminar.configurations.datastores.AWS (Python class) — Bases: object" class="md-ellipsis">laminar.<wbr>configurations.<wbr>datastores.<wbr>AWS</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="laminar.configurations.datastores.AWS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3" class="md-nav__link">
+    <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="laminar.configurations.datastores.AWS.S3 (Python class) — Bases: DataStore" class="md-ellipsis">S3</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="S3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.__init__" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.__init__ (Python method)" class="md-ellipsis">__<wbr>init__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.cache" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.configurations.datastores.AWS.S3.cache (Python attribute) — Internal datastore cache" class="md-ellipsis">cache</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.exists (Python method) — Check if a file exists in the datastore." class="md-ellipsis">exists</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="exists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists.path" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.exists.path (Python parameter) — Path from the datastore root to the file." class="md-ellipsis">path</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.list_artifacts (Python method) — List all artifacts in a layer execution." class="md-ellipsis">list_<wbr>artifacts</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="list_artifacts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.list_artifacts.layer (Python parameter) — Layer to list artifacts for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.list_executions (Python method) — List all executions." class="md-ellipsis">list_<wbr>executions</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="list_executions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions.flow" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.list_executions.flow (Python parameter) — Flow to list executions for." class="md-ellipsis">flow</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.list_layers (Python method) — List all layers in an execution." class="md-ellipsis">list_<wbr>layers</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="list_layers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers.execution" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.list_layers.execution (Python parameter) — Execution to list layers for." class="md-ellipsis">execution</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.protocol" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.protocol (Python method) — Register a custom serde protocol for a type." class="md-ellipsis">protocol</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.protocols" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.configurations.datastores.AWS.S3.protocols (Python attribute) — Custom serde protocols for reading/writing artifacts" class="md-ellipsis">protocols</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read (Python method) — Read from the laminar datastore." class="md-ellipsis">read</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read.layer (Python parameter) — Layer being read from." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read.index" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read.index (Python parameter) — Layer index being read from." class="md-ellipsis">index</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read.name (Python parameter) — Name of the artifact being read." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read_archive (Python method) — Read an archive from the laminar datastore." class="md-ellipsis">read_<wbr>archive</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read_archive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.layer (Python parameter) — Layer being read from." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.index" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.index (Python parameter) — Layer index being read from." class="md-ellipsis">index</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.name (Python parameter) — Name of the artifact the archive is for." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.cache" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.cache (Python parameter) — Read the archive from the cache." class="md-ellipsis">cache</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read_artifact (Python method) — Read an artifact form the laminar datastore." class="md-ellipsis">read_<wbr>artifact</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read_artifact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_artifact.layer (Python parameter) — Layer being read from." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact.archive" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_artifact.archive (Python parameter) — Archive to reference the artifact from." class="md-ellipsis">archive</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read_record (Python method) — Read a layer record from the laminar datastore." class="md-ellipsis">read_<wbr>record</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read_record">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_record.layer (Python parameter) — Layer to get the record for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.root" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.configurations.datastores.AWS.S3.root (Python attribute) — URI root of the datastore" class="md-ellipsis">root</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.uri (Python method) — Given a path, generate a URI in the datastore." class="md-ellipsis">uri</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="uri">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri.path" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.uri.path (Python parameter) — Path relative to the datastore root." class="md-ellipsis">path</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write (Python method) — Write to the laminar datastore." class="md-ellipsis">write</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write.layer (Python parameter) — Layer being written to." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write.name (Python parameter) — Name of the artifact being written." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write.values" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write.values (Python parameter) — Artifact values to store." class="md-ellipsis">values</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write_archive (Python method) — Write an archive to the laminar datastore." class="md-ellipsis">write_<wbr>archive</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write_archive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.layer (Python parameter) — Layer being written." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.name (Python parameter) — Name of the archive being written." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.artifacts" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.artifacts (Python parameter) — Artfacts associated with the archive." class="md-ellipsis">artifacts</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.cache" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.cache (Python parameter) — Write the archive to the cache." class="md-ellipsis">cache</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write_artifact (Python method) — Write an arifact to the laminar datastore." class="md-ellipsis">write_<wbr>artifact</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write_artifact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_artifact.layer (Python parameter) — Layer being written." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact.value" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_artifact.value (Python parameter) — Value of the artifact to write." class="md-ellipsis">value</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write_record (Python method) — Write a layer record to the laminar datastore." class="md-ellipsis">write_<wbr>record</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write_record">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_record.layer (Python parameter) — Layer the record is for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record.record" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_record.record (Python parameter) — Record to write." class="md-ellipsis">record</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.__init__" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.__init__ (Python method)" class="md-ellipsis">__<wbr>init__<wbr></span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.Accessor.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.Accessor (document)" class="md-ellipsis">Accessor</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.Archive.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.Archive (document)" class="md-ellipsis">Archive</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.ArchiveProtocol.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.ArchiveProtocol (document)" class="md-ellipsis">Archive<wbr>Protocol</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.Artifact.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.Artifact (document)" class="md-ellipsis">Artifact</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.DataStore.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.DataStore (document)" class="md-ellipsis">Data<wbr>Store</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.Local.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.Local (document)" class="md-ellipsis">Local</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.Memory.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.Memory (document)" class="md-ellipsis">Memory</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.Record.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.Record (document)" class="md-ellipsis">Record</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.configurations.datastores.RecordProtocol.html" class="md-nav__link">
+        <span title="api/laminar/configurations/datastores/laminar.configurations.datastores.RecordProtocol (document)" class="md-ellipsis">Record<wbr>Protocol</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.executors.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.executors (document)" class="md-ellipsis">executors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.flows.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.flows (document)" class="md-ellipsis">flows</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.hooks.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.hooks (document)" class="md-ellipsis">hooks</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.layers.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.layers (document)" class="md-ellipsis">layers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.schedulers.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.schedulers (document)" class="md-ellipsis">schedulers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.serde.html" class="md-nav__link">
+        <span title="api/laminar/configurations/laminar.configurations.serde (document)" class="md-ellipsis">serde</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.exceptions.html" class="md-nav__link">
+        <span title="api/laminar/laminar.exceptions (document)" class="md-ellipsis">exceptions</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.settings.html" class="md-nav__link">
+        <span title="api/laminar/laminar.settings (document)" class="md-ellipsis">settings</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.types.html" class="md-nav__link">
+        <span title="api/laminar/laminar.types (document)" class="md-ellipsis">types</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.utils.html" class="md-nav__link">
+        <span title="api/laminar/laminar.utils (document)" class="md-ellipsis">utils</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../laminar.version.html" class="md-nav__link">
+        <span title="api/laminar/laminar.version (document)" class="md-ellipsis">version</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS" class="md-nav__link">
+    <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="laminar.configurations.datastores.AWS (Python class) — Bases: object" class="md-ellipsis">laminar.<wbr>configurations.<wbr>datastores.<wbr>AWS</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="laminar.configurations.datastores.AWS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3" class="md-nav__link">
+    <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="laminar.configurations.datastores.AWS.S3 (Python class) — Bases: DataStore" class="md-ellipsis">S3</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="S3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.__init__" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.__init__ (Python method)" class="md-ellipsis">__<wbr>init__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.cache" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.configurations.datastores.AWS.S3.cache (Python attribute) — Internal datastore cache" class="md-ellipsis">cache</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.exists (Python method) — Check if a file exists in the datastore." class="md-ellipsis">exists</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="exists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists.path" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.exists.path (Python parameter) — Path from the datastore root to the file." class="md-ellipsis">path</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.exists-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.list_artifacts (Python method) — List all artifacts in a layer execution." class="md-ellipsis">list_<wbr>artifacts</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="list_artifacts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.list_artifacts.layer (Python parameter) — Layer to list artifacts for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_artifacts-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.list_executions (Python method) — List all executions." class="md-ellipsis">list_<wbr>executions</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="list_executions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions.flow" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.list_executions.flow (Python parameter) — Flow to list executions for." class="md-ellipsis">flow</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_executions-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.list_layers (Python method) — List all layers in an execution." class="md-ellipsis">list_<wbr>layers</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="list_layers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers.execution" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.list_layers.execution (Python parameter) — Execution to list layers for." class="md-ellipsis">execution</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.list_layers-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.protocol" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.protocol (Python method) — Register a custom serde protocol for a type." class="md-ellipsis">protocol</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.protocols" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.configurations.datastores.AWS.S3.protocols (Python attribute) — Custom serde protocols for reading/writing artifacts" class="md-ellipsis">protocols</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read (Python method) — Read from the laminar datastore." class="md-ellipsis">read</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read.layer (Python parameter) — Layer being read from." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read.index" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read.index (Python parameter) — Layer index being read from." class="md-ellipsis">index</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read.name (Python parameter) — Name of the artifact being read." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read_archive (Python method) — Read an archive from the laminar datastore." class="md-ellipsis">read_<wbr>archive</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read_archive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.layer (Python parameter) — Layer being read from." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.index" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.index (Python parameter) — Layer index being read from." class="md-ellipsis">index</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.name (Python parameter) — Name of the artifact the archive is for." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive.cache" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_archive.cache (Python parameter) — Read the archive from the cache." class="md-ellipsis">cache</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_archive-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read_artifact (Python method) — Read an artifact form the laminar datastore." class="md-ellipsis">read_<wbr>artifact</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read_artifact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_artifact.layer (Python parameter) — Layer being read from." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact.archive" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_artifact.archive (Python parameter) — Archive to reference the artifact from." class="md-ellipsis">archive</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_artifact-return-type" class="md-nav__link">
+    <span class="md-ellipsis">Return type</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.read_record (Python method) — Read a layer record from the laminar datastore." class="md-ellipsis">read_<wbr>record</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="read_record">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.read_record.layer (Python parameter) — Layer to get the record for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.read_record-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.root" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.configurations.datastores.AWS.S3.root (Python attribute) — URI root of the datastore" class="md-ellipsis">root</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.uri (Python method) — Given a path, generate a URI in the datastore." class="md-ellipsis">uri</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="uri">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri.path" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.uri.path (Python parameter) — Path relative to the datastore root." class="md-ellipsis">path</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.uri-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write (Python method) — Write to the laminar datastore." class="md-ellipsis">write</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write.layer (Python parameter) — Layer being written to." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write.name (Python parameter) — Name of the artifact being written." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write.values" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write.values (Python parameter) — Artifact values to store." class="md-ellipsis">values</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write_archive (Python method) — Write an archive to the laminar datastore." class="md-ellipsis">write_<wbr>archive</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write_archive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.layer (Python parameter) — Layer being written." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.name" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.name (Python parameter) — Name of the archive being written." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.artifacts" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.artifacts (Python parameter) — Artfacts associated with the archive." class="md-ellipsis">artifacts</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive.cache" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_archive.cache (Python parameter) — Write the archive to the cache." class="md-ellipsis">cache</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_archive-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write_artifact (Python method) — Write an arifact to the laminar datastore." class="md-ellipsis">write_<wbr>artifact</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write_artifact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_artifact.layer (Python parameter) — Layer being written." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact.value" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_artifact.value (Python parameter) — Value of the artifact to write." class="md-ellipsis">value</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_artifact-returns" class="md-nav__link">
+    <span class="md-ellipsis">Returns</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.S3.write_record (Python method) — Write a layer record to the laminar datastore." class="md-ellipsis">write_<wbr>record</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="write_record">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record.layer" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_record.layer (Python parameter) — Layer the record is for." class="md-ellipsis">layer</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.S3.write_record.record" class="md-nav__link">
+    <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span><span title="laminar.configurations.datastores.AWS.S3.write_record.record (Python parameter) — Record to write." class="md-ellipsis">record</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.configurations.datastores.AWS.__init__" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.configurations.datastores.AWS.__init__ (Python method)" class="md-ellipsis">__<wbr>init__<wbr></span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset" role="main">
+                
+
+
+  <h1 id="aws">AWS<a class="headerlink" href="#aws" title="Permalink to this heading">¶</a></h1>
+<dl class="py class objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.datastores.</span></span><span class="sig-name descname"><span class="pre">AWS</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable docutils data align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -147,7 +2542,7 @@
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable docutils data align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -155,284 +2550,389 @@
 <tbody>
 </tbody>
 </table>
-<dl class="py class">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">S3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocols:</span> <span class="pre">typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminar.configurations.serde.Protocol]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore" title="laminar.configurations.datastores.DataStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">laminar.configurations.datastores.DataStore</span></code></a></p>
+<dl class="py class objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.datastores.AWS.S3">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">S3</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">~typing.Dict[str</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">protocols:</span> <span class="pre">~typing.Dict[str</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">~laminar.configurations.serde.Protocol]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="laminar.configurations.datastores.DataStore.html#laminar.configurations.datastores.DataStore" title="laminar.configurations.datastores.DataStore (Python class) — Bases: object"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataStore</span></code></a></p>
 <p>Store the laminar workspace in AWS S3.</p>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Flow</span><span class="p">(</span><span class="n">datastore</span><span class="o">=</span><span class="n">AWS</span><span class="o">.</span><span class="n">S3</span><span class="p">())</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">Flow</span><span class="p">(</span><span class="n">datastore</span><span class="o">=</span><span class="n">AWS</span><span class="o">.</span><span class="n">S3</span><span class="p">())</span>
+</code></pre></div>
 </div>
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocols:</span> <span class="pre">typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminar.configurations.serde.Protocol]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.__init__" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.datastores.AWS.S3.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">root:</span> <span class="pre">str</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">cache:</span> <span class="pre">~typing.Dict[str</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">protocols:</span> <span class="pre">~typing.Dict[str</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">~laminar.configurations.serde.Protocol]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.exists">
-<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.exists" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal datastore cache</p>
+</dd></dl>
+
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.exists">
+<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.exists.path" title="laminar.configurations.datastores.AWS.S3.exists.path (Python parameter) — Path from the datastore root to the file."><span class="n"><span class="pre">path</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">str</span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">bool</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a file exists in the datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – Path from the datastore root to the file.</p>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.exists-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.exists-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.exists.path"><span class="n sig-name">path</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">str</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.exists.path" title="Permalink to this definition">¶</a></dt><dd><p>Path from the datastore root to the file.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.exists-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.exists-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>True if the file exists else False</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.list_artifacts">
-<span class="sig-name descname"><span class="pre">list_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_artifacts" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.list_artifacts">
+<span class="sig-name descname"><span class="pre">list_artifacts</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.list_artifacts.layer" title="laminar.configurations.datastores.AWS.S3.list_artifacts.layer (Python parameter) — Layer to list artifacts for."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_artifacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>List all artifacts in a layer execution.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>layer</strong> – Layer to list artifacts for.</p>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.list_artifacts-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_artifacts-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.list_artifacts.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_artifacts.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer to list artifacts for.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.list_artifacts-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_artifacts-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>All artifacts.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.list_executions">
-<span class="sig-name descname"><span class="pre">list_executions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">Flow</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_executions" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.list_executions">
+<span class="sig-name descname"><span class="pre">list_executions</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.list_executions.flow" title="laminar.configurations.datastores.AWS.S3.list_executions.flow (Python parameter) — Flow to list executions for."><span class="n"><span class="pre">flow</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow (Python class) — Bases: object"><span class="pre">Flow</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_executions" title="Permalink to this definition">¶</a></dt>
 <dd><p>List all executions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>flow</strong> – Flow to list executions for.</p>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.list_executions-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_executions-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.list_executions.flow"><span class="n sig-name">flow</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow (Python class) — Bases: object">Flow</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_executions.flow" title="Permalink to this definition">¶</a></dt><dd><p>Flow to list executions for.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.list_executions-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_executions-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>All executions.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.list_layers">
-<span class="sig-name descname"><span class="pre">list_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">execution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../flows/laminar.configurations.flows.Execution.html#laminar.configurations.flows.Execution" title="laminar.configurations.flows.Execution"><span class="pre">Execution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_layers" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.list_layers">
+<span class="sig-name descname"><span class="pre">list_layers</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.list_layers.execution" title="laminar.configurations.datastores.AWS.S3.list_layers.execution (Python parameter) — Execution to list layers for."><span class="n"><span class="pre">execution</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../flows/laminar.configurations.flows.Execution.html#laminar.configurations.flows.Execution" title="laminar.configurations.flows.Execution (Python class) — Bases: object"><span class="pre">Execution</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>List all layers in an execution.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>execution</strong> – Execution to list layers for.</p>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.list_layers-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_layers-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.list_layers.execution"><span class="n sig-name">execution</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../flows/laminar.configurations.flows.Execution.html#laminar.configurations.flows.Execution" title="laminar.configurations.flows.Execution (Python class) — Bases: object">Execution</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_layers.execution" title="Permalink to this definition">¶</a></dt><dd><p>Execution to list layers for.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.list_layers-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.list_layers-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>All layers.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.protocol">
-<span class="sig-name descname"><span class="pre">protocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">dtypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.configurations.serde.ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">laminar.configurations.serde.ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.protocol" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.datastores.AWS.S3.protocol">
+<span class="sig-name descname"><span class="pre">protocol</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">dtypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">type</span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><span class="pre">ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><span class="pre">ProtocolType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.protocol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a custom serde protocol for a type.</p>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="nd">@datastore</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">DataFrameProtocol</span><span class="p">(</span><span class="n">serde</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.protocols">
+<span class="sig-name descname"><span class="pre">protocols</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../serde/laminar.configurations.serde.Protocol.html#laminar.configurations.serde.Protocol" title="laminar.configurations.serde.Protocol (Python class) — Bases: object"><span class="pre">Protocol</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.protocols" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom serde protocols for reading/writing artifacts</p>
+</dd></dl>
+
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read.layer" title="laminar.configurations.datastores.AWS.S3.read.layer (Python parameter) — Layer being read from."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read.index" title="laminar.configurations.datastores.AWS.S3.read.index (Python parameter) — Layer index being read from."><span class="n"><span class="pre">index</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">int</span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read.name" title="laminar.configurations.datastores.AWS.S3.read.name (Python parameter) — Name of the artifact being read."><span class="n"><span class="pre">name</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">str</span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">Any</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read from the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – Layer being read from.</p></li>
-<li><p><strong>index</strong> – Layer index being read from.</p></li>
-<li><p><strong>name</strong> – Name of the artifact being read.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.read-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.read.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer being read from.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt id="laminar.configurations.datastores.AWS.S3.read.index"><span class="n sig-name">index</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">int</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read.index" title="Permalink to this definition">¶</a></dt><dd><p>Layer index being read from.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.read.name"><span class="n sig-name">name</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">str</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read.name" title="Permalink to this definition">¶</a></dt><dd><p>Name of the artifact being read.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.read-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>Value of the artifact.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.read-return-type">Return type<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.read_archive">
-<span class="sig-name descname"><span class="pre">read_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><span class="pre">laminar.configurations.datastores.Archive</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.datastores.AWS.S3.read_archive">
+<span class="sig-name descname"><span class="pre">read_archive</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read_archive.layer" title="laminar.configurations.datastores.AWS.S3.read_archive.layer (Python parameter) — Layer being read from."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read_archive.index" title="laminar.configurations.datastores.AWS.S3.read_archive.index (Python parameter) — Layer index being read from."><span class="n"><span class="pre">index</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">int</span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read_archive.name" title="laminar.configurations.datastores.AWS.S3.read_archive.name (Python parameter) — Name of the artifact the archive is for."><span class="n"><span class="pre">name</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">str</span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read_archive.cache" title="laminar.configurations.datastores.AWS.S3.read_archive.cache (Python parameter) — Read the archive from the cache."><span class="n"><span class="pre">cache</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">bool</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive (Python class) — Bases: object"><span class="pre">Archive</span></a></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read an archive from the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – Layer being read from.</p></li>
-<li><p><strong>index</strong> – Layer index being read from.</p></li>
-<li><p><strong>name</strong> – Name of the artifact the archive is for.</p></li>
-<li><p><strong>cache</strong> – Read the archive from the cache.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.read_archive-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.read_archive.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer being read from.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt id="laminar.configurations.datastores.AWS.S3.read_archive.index"><span class="n sig-name">index</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">int</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive.index" title="Permalink to this definition">¶</a></dt><dd><p>Layer index being read from.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.read_archive.name"><span class="n sig-name">name</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">str</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive.name" title="Permalink to this definition">¶</a></dt><dd><p>Name of the artifact the archive is for.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.read_archive.cache"><span class="n sig-name">cache</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">bool</span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive.cache" title="Permalink to this definition">¶</a></dt><dd><p>Read the archive from the cache.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.read_archive-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>Archive of the requested artifact.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive">Archive</a></p>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.read_archive-return-type">Return type<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_archive-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><p><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive (Python class) — Bases: object">Archive</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.read_artifact">
-<span class="sig-name descname"><span class="pre">read_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><span class="pre">laminar.configurations.datastores.Archive</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_artifact" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.read_artifact">
+<span class="sig-name descname"><span class="pre">read_artifact</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read_artifact.layer" title="laminar.configurations.datastores.AWS.S3.read_artifact.layer (Python parameter) — Layer being read from."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read_artifact.archive" title="laminar.configurations.datastores.AWS.S3.read_artifact.archive (Python parameter) — Archive to reference the artifact from."><span class="n"><span class="pre">archive</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive (Python class) — Bases: object"><span class="pre">Archive</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">Any</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_artifact" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read an artifact form the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> (<a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><em>Layer</em></a>) – Layer being read from.</p></li>
-<li><p><strong>archive</strong> (<a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><em>Archive</em></a>) – Archive to reference the artifact from.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.read_artifact-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_artifact-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.read_artifact.layer"><span class="sig-name descname">layer</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_artifact.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer being read from.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt id="laminar.configurations.datastores.AWS.S3.read_artifact.archive"><span class="sig-name descname">archive</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive (Python class) — Bases: object">Archive</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_artifact.archive" title="Permalink to this definition">¶</a></dt><dd><p>Archive to reference the artifact from.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.read_artifact-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_artifact-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>Artifact value.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.read_artifact-return-type">Return type<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_artifact-return-type" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.read_record">
-<span class="sig-name descname"><span class="pre">read_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record" title="laminar.configurations.datastores.Record"><span class="pre">laminar.configurations.datastores.Record</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_record" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.read_record">
+<span class="sig-name descname"><span class="pre">read_record</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.read_record.layer" title="laminar.configurations.datastores.AWS.S3.read_record.layer (Python parameter) — Layer to get the record for."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record" title="laminar.configurations.datastores.Record (Python class) — Bases: object"><span class="pre">Record</span></a></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_record" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a layer record from the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>layer</strong> – Layer to get the record for.</p>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.read_record-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_record-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.read_record.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_record.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer to get the record for.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.read_record-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.read_record-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>Layer record</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.uri">
-<span class="sig-name descname"><span class="pre">uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.uri" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.root">
+<span class="sig-name descname"><span class="pre">root</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">str</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>URI root of the datastore</p>
+</dd></dl>
+
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.uri">
+<span class="sig-name descname"><span class="pre">uri</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.uri.path" title="laminar.configurations.datastores.AWS.S3.uri.path (Python parameter) — Path relative to the datastore root."><span class="n"><span class="pre">path</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">str</span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">str</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.uri" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a path, generate a URI in the datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – Path relative to the datastore root.</p>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.uri-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.uri-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.uri.path"><span class="n sig-name">path</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">str</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.uri.path" title="Permalink to this definition">¶</a></dt><dd><p>Path relative to the datastore root.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.uri-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.uri-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>URI to a location in the datastore.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write.layer" title="laminar.configurations.datastores.AWS.S3.write.layer (Python parameter) — Layer being written to."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write.name" title="laminar.configurations.datastores.AWS.S3.write.name (Python parameter) — Name of the artifact being written."><span class="n"><span class="pre">name</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">str</span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write.values" title="laminar.configurations.datastores.AWS.S3.write.values (Python parameter) — Artifact values to store."><span class="n"><span class="pre">values</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">None</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write to the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – Layer being written to.</p></li>
-<li><p><strong>name</strong> – Name of the artifact being written.</p></li>
-<li><p><strong>values</strong> – Artifact values to store.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.write-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.write.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer being written to.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.write.name"><span class="n sig-name">name</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">str</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write.name" title="Permalink to this definition">¶</a></dt><dd><p>Name of the artifact being written.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.write.values"><span class="n sig-name">values</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">Iterable<span class="p">[</span>Any<span class="p">]</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write.values" title="Permalink to this definition">¶</a></dt><dd><p>Artifact values to store.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.write_archive">
-<span class="sig-name descname"><span class="pre">write_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact" title="laminar.configurations.datastores.Artifact"><span class="pre">laminar.configurations.datastores.Artifact</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive"><span class="pre">laminar.configurations.datastores.Archive</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.datastores.AWS.S3.write_archive">
+<span class="sig-name descname"><span class="pre">write_archive</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_archive.layer" title="laminar.configurations.datastores.AWS.S3.write_archive.layer (Python parameter) — Layer being written."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_archive.name" title="laminar.configurations.datastores.AWS.S3.write_archive.name (Python parameter) — Name of the archive being written."><span class="n"><span class="pre">name</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">str</span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_archive.artifacts" title="laminar.configurations.datastores.AWS.S3.write_archive.artifacts (Python parameter) — Artfacts associated with the archive."><span class="n"><span class="pre">artifacts</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact" title="laminar.configurations.datastores.Artifact (Python class) — Bases: object"><span class="pre">Artifact</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_archive.cache" title="laminar.configurations.datastores.AWS.S3.write_archive.cache (Python parameter) — Write the archive to the cache."><span class="n"><span class="pre">cache</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">bool</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Archive.html#laminar.configurations.datastores.Archive" title="laminar.configurations.datastores.Archive (Python class) — Bases: object"><span class="pre">Archive</span></a></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write an archive to the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – Layer being written.</p></li>
-<li><p><strong>name</strong> – Name of the archive being written.</p></li>
-<li><p><strong>artifacts</strong> – Artfacts associated with the archive.</p></li>
-<li><p><strong>cache</strong> – Write the archive to the cache.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.write_archive-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.write_archive.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer being written.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt id="laminar.configurations.datastores.AWS.S3.write_archive.name"><span class="n sig-name">name</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">str</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive.name" title="Permalink to this definition">¶</a></dt><dd><p>Name of the archive being written.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.write_archive.artifacts"><span class="n sig-name">artifacts</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">list<span class="p">[</span><a class="reference internal" href="laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact" title="laminar.configurations.datastores.Artifact (Python class) — Bases: object">Artifact</a><span class="p">]</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive.artifacts" title="Permalink to this definition">¶</a></dt><dd><p>Artfacts associated with the archive.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.write_archive.cache"><span class="n sig-name">cache</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">bool</span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive.cache" title="Permalink to this definition">¶</a></dt><dd><p>Write the archive to the cache.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.write_archive-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_archive-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>Archive metadata written to the laminar datastore.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.write_artifact">
-<span class="sig-name descname"><span class="pre">write_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact" title="laminar.configurations.datastores.Artifact"><span class="pre">laminar.configurations.datastores.Artifact</span></a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_artifact" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.write_artifact">
+<span class="sig-name descname"><span class="pre">write_artifact</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_artifact.layer" title="laminar.configurations.datastores.AWS.S3.write_artifact.layer (Python parameter) — Layer being written."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_artifact.value" title="laminar.configurations.datastores.AWS.S3.write_artifact.value (Python parameter) — Value of the artifact to write."><span class="n"><span class="pre">value</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">Any</span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Artifact.html#laminar.configurations.datastores.Artifact" title="laminar.configurations.datastores.Artifact (Python class) — Bases: object"><span class="pre">Artifact</span></a></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_artifact" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write an arifact to the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – Layer being written.</p></li>
-<li><p><strong>value</strong> – Value of the artifact to write.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.write_artifact-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_artifact-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.write_artifact.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_artifact.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer being written.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt id="laminar.configurations.datastores.AWS.S3.write_artifact.value"><span class="n sig-name">value</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype">Any</span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_artifact.value" title="Permalink to this definition">¶</a></dt><dd><p>Value of the artifact to write.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="laminar.configurations.datastores.AWS.S3.write_artifact-returns">Returns<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_artifact-returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>Artifact metadata written to the laminar datastore.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.S3.write_record">
-<span class="sig-name descname"><span class="pre">write_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">Layer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record" title="laminar.configurations.datastores.Record"><span class="pre">laminar.configurations.datastores.Record</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_record" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.S3.write_record">
+<span class="sig-name descname"><span class="pre">write_record</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_record.layer" title="laminar.configurations.datastores.AWS.S3.write_record.layer (Python parameter) — Layer the record is for."><span class="n"><span class="pre">layer</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#laminar.configurations.datastores.AWS.S3.write_record.record" title="laminar.configurations.datastores.AWS.S3.write_record.record (Python parameter) — Record to write."><span class="n"><span class="pre">record</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record" title="laminar.configurations.datastores.Record (Python class) — Bases: object"><span class="pre">Record</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">None</span></span></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_record" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a layer record to the laminar datastore.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – Layer the record is for.</p></li>
-<li><p><strong>record</strong> – Record to write.</p></li>
-</ul>
+<dt class="field-odd" id="laminar.configurations.datastores.AWS.S3.write_record-parameters">Parameters<a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_record-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt id="laminar.configurations.datastores.AWS.S3.write_record.layer"><span class="n sig-name">layer</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="../../components/laminar.components.Layer.html#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object">Layer</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_record.layer" title="Permalink to this definition">¶</a></dt><dd><p>Layer the record is for.</p>
+</dd>
+<dt id="laminar.configurations.datastores.AWS.S3.write_record.record"><span class="n sig-name">record</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.datastores.Record.html#laminar.configurations.datastores.Record" title="laminar.configurations.datastores.Record (Python class) — Bases: object">Record</a></span></span><a class="headerlink" href="#laminar.configurations.datastores.AWS.S3.write_record.record" title="Permalink to this definition">¶</a></dt><dd><p>Record to write.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.configurations.datastores.AWS.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.AWS.__init__" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.configurations.datastores.AWS.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.datastores.AWS.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</section>
 
 
-           </div>
+
+              
+            </article>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../laminar.configurations.datastores.html" class="btn btn-neutral float-left" title="datastores" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="laminar.configurations.datastores.Accessor.html" class="btn btn-neutral float-right" title="Accessor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2021, Ryan Chui.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
         </div>
-      </div>
-    </section>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../laminar.configurations.datastores.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: datastores" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              datastores
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="laminar.configurations.datastores.Accessor.html" class="md-footer__link md-footer__link--next" aria-label="Next: Accessor" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Accessor
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2021, Ryan Chui.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    5.0.2.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+    
+  </body>
 </html>

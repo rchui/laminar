@@ -1,315 +1,1435 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Layer &mdash; laminar  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="">
+    
+    
+      
+        <title>Layer - laminar  documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../_static/stylesheets/main.2014a6d7.min.css">
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Parameters" href="laminar.components.Parameters.html" />
-    <link rel="prev" title="Flow" href="laminar.components.Flow.html" /> 
-</head>
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#laminar.components.Layer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> laminar
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/basics.html">Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../getting_started/deployment.html">Deployment</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Layers</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../layers/scaling_up.html">Scaling Up</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../layers/scaling_out.html">Scaling Out</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../layers/branching.html">Branching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../layers/configuration.html">Configuration</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Flows</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../flows/parameters.html">Parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../flows/datastores.html">Datastores</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../flows/executors.html">Executors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../flows/schedulers.html">Schedulers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../flows/results.html">Results</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../advanced/recovery.html">Recovery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../advanced/composition.html">Composition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../advanced/hooks.html">Hooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../advanced/serde.html">Ser(De)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../advanced/testing.html">Testing</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Technical Details</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../technical/datastores.html">Datastores</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../technical/executions.html">Executions</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../laminar.html">laminar</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../laminar.components.html">components</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="laminar.components.Flow.html">Flow</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Layer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="laminar.components.Parameters.html">Parameters</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../laminar.configurations.html">configurations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../laminar.exceptions.html">exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../laminar.settings.html">settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../laminar.types.html">types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../laminar.utils.html">utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../laminar.version.html">version</a></li>
-</ul>
-</li>
-</ul>
-
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../index.html" title="laminar  documentation" class="md-header__button md-logo" aria-label="laminar  documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            laminar  documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Layer
+            
+          </span>
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">laminar</a>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
       </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../laminar.html">laminar</a> &raquo;</li>
-          <li><a href="../laminar.components.html">components</a> &raquo;</li>
-      <li>Layer</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/api/laminar/components/laminar.components.Layer.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="layer">
-<h1>Layer<a class="headerlink" href="#layer" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="laminar.components.Layer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.components.</span></span><span class="sig-name descname"><span class="pre">Layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#laminar.components.Layer" title="Permalink to this definition"></a></dt>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../index.html" title="laminar  documentation" class="md-nav__button md-logo" aria-label="laminar  documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+    </a>
+    laminar  documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          <span class="md-ellipsis">Getting Started</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Getting Started</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../index.html" class="md-nav__link">
+        <span title="index (document)" class="md-ellipsis">Introduction</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/installation.html" class="md-nav__link">
+        <span title="getting_started/installation (document)" class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/basics.html" class="md-nav__link">
+        <span title="getting_started/basics (document)" class="md-ellipsis">Basics</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/deployment.html" class="md-nav__link">
+        <span title="getting_started/deployment (document)" class="md-ellipsis">Deployment</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          <span class="md-ellipsis">Layers</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Layers" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Layers</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../layers/scaling_up.html" class="md-nav__link">
+        <span title="layers/scaling_up (document)" class="md-ellipsis">Scaling Up</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../layers/scaling_out.html" class="md-nav__link">
+        <span title="layers/scaling_out (document)" class="md-ellipsis">Scaling Out</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../layers/branching.html" class="md-nav__link">
+        <span title="layers/branching (document)" class="md-ellipsis">Branching</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../layers/configuration.html" class="md-nav__link">
+        <span title="layers/configuration (document)" class="md-ellipsis">Configuration</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          <span class="md-ellipsis">Flows</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Flows" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Flows</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../flows/parameters.html" class="md-nav__link">
+        <span title="flows/parameters (document)" class="md-ellipsis">Parameters</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../flows/datastores.html" class="md-nav__link">
+        <span title="flows/datastores (document)" class="md-ellipsis">Datastores</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../flows/executors.html" class="md-nav__link">
+        <span title="flows/executors (document)" class="md-ellipsis">Executors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../flows/schedulers.html" class="md-nav__link">
+        <span title="flows/schedulers (document)" class="md-ellipsis">Schedulers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../flows/results.html" class="md-nav__link">
+        <span title="flows/results (document)" class="md-ellipsis">Results</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          <span class="md-ellipsis">Advanced</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Advanced</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/recovery.html" class="md-nav__link">
+        <span title="advanced/recovery (document)" class="md-ellipsis">Recovery</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/composition.html" class="md-nav__link">
+        <span title="advanced/composition (document)" class="md-ellipsis">Composition</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/hooks.html" class="md-nav__link">
+        <span title="advanced/hooks (document)" class="md-ellipsis">Hooks</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/serde.html" class="md-nav__link">
+        <span title="advanced/serde (document)" class="md-ellipsis">Ser<wbr>(De)</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/testing.html" class="md-nav__link">
+        <span title="advanced/testing (document)" class="md-ellipsis">Testing</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          <span class="md-ellipsis">Technical Details</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Technical Details" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Technical Details</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../technical/datastores.html" class="md-nav__link">
+        <span title="technical/datastores (document)" class="md-ellipsis">Datastores</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../technical/executions.html" class="md-nav__link">
+        <span title="technical/executions (document)" class="md-ellipsis">Executions</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3" type="checkbox" id="__nav_5_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../laminar.html"><span title="api/laminar (document)" class="md-ellipsis">laminar</span></a>
+          
+            <label for="__nav_5_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="laminar" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar (document)" class="md-ellipsis">laminar</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_3_1" type="checkbox" id="__nav_5_3_1" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../laminar.components.html"><span title="api/laminar/laminar.components (document)" class="md-ellipsis">components</span></a>
+          
+            <label for="__nav_5_3_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="components" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span title="api/laminar/laminar.components (document)" class="md-ellipsis">components</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.components.Flow.html" class="md-nav__link">
+        <span title="api/laminar/components/laminar.components.Flow (document)" class="md-ellipsis">Flow</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span title="api/laminar/components/laminar.components.Layer (document)" class="md-ellipsis">Layer</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span title="api/laminar/components/laminar.components.Layer (document)" class="md-ellipsis">Layer</span>
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.components.Layer" class="md-nav__link">
+    <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="laminar.components.Layer (Python class) — Bases: object" class="md-ellipsis">laminar.<wbr>components.<wbr>Layer</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="laminar.components.Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.__init__" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.components.Layer.__init__ (Python method)" class="md-ellipsis">__<wbr>init__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.artifacts" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.artifacts (Python property) — Artifacts assigned to the layer." class="md-ellipsis">artifacts</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.attempt" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.attempt (Python attribute) — Current layer execution attempt" class="md-ellipsis">attempt</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.configuration" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.configuration (Python attribute) — Configurations for the Layer" class="md-ellipsis">configuration</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.dependencies" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.dependencies (Python property) — Layers this layer depends on." class="md-ellipsis">dependencies</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.execute" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.components.Layer.execute (Python method) — Execute a layer." class="md-ellipsis">execute</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="execute">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.execute-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.flow" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.flow (Python attribute) — Flow the Layer is registered to" class="md-ellipsis">flow</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.hooks" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.hooks (Python property) — Hooks attached to this layer." class="md-ellipsis">hooks</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.index" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.index (Python attribute) — Layer index in its splits" class="md-ellipsis">index</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.name" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.name (Python property) — Name of the Layer" class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.shard" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.components.Layer.shard (Python method) — Store each item of a sequence separately so that they may be loaded individually downstream." class="md-ellipsis">shard</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="shard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.shard-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.splits" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.splits (Python attribute) — Number of splits in the layer execution" class="md-ellipsis">splits</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.state" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.state (Python attribute) — Layer state" class="md-ellipsis">state</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="laminar.components.Parameters.html" class="md-nav__link">
+        <span title="api/laminar/components/laminar.components.Parameters (document)" class="md-ellipsis">Parameters</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.configurations.html" class="md-nav__link">
+        <span title="api/laminar/laminar.configurations (document)" class="md-ellipsis">configurations</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.exceptions.html" class="md-nav__link">
+        <span title="api/laminar/laminar.exceptions (document)" class="md-ellipsis">exceptions</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.settings.html" class="md-nav__link">
+        <span title="api/laminar/laminar.settings (document)" class="md-ellipsis">settings</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.types.html" class="md-nav__link">
+        <span title="api/laminar/laminar.types (document)" class="md-ellipsis">types</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.utils.html" class="md-nav__link">
+        <span title="api/laminar/laminar.utils (document)" class="md-ellipsis">utils</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laminar.version.html" class="md-nav__link">
+        <span title="api/laminar/laminar.version (document)" class="md-ellipsis">version</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#laminar.components.Layer" class="md-nav__link">
+    <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="laminar.components.Layer (Python class) — Bases: object" class="md-ellipsis">laminar.<wbr>components.<wbr>Layer</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="laminar.components.Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.__init__" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.components.Layer.__init__ (Python method)" class="md-ellipsis">__<wbr>init__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.artifacts" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.artifacts (Python property) — Artifacts assigned to the layer." class="md-ellipsis">artifacts</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.attempt" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.attempt (Python attribute) — Current layer execution attempt" class="md-ellipsis">attempt</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.configuration" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.configuration (Python attribute) — Configurations for the Layer" class="md-ellipsis">configuration</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.dependencies" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.dependencies (Python property) — Layers this layer depends on." class="md-ellipsis">dependencies</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.execute" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.components.Layer.execute (Python method) — Execute a layer." class="md-ellipsis">execute</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="execute">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.execute-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.flow" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.flow (Python attribute) — Flow the Layer is registered to" class="md-ellipsis">flow</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.hooks" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.hooks (Python property) — Hooks attached to this layer." class="md-ellipsis">hooks</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.index" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.index (Python attribute) — Layer index in its splits" class="md-ellipsis">index</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.name" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.name (Python property) — Name of the Layer" class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.shard" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="laminar.components.Layer.shard (Python method) — Store each item of a sequence separately so that they may be loaded individually downstream." class="md-ellipsis">shard</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="shard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.shard-parameters" class="md-nav__link">
+    <span class="md-ellipsis">Parameters</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.splits" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.splits (Python attribute) — Number of splits in the layer execution" class="md-ellipsis">splits</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#laminar.components.Layer.state" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.state (Python attribute) — Layer state" class="md-ellipsis">state</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset" role="main">
+                
+
+
+  <h1 id="layer">Layer<a class="headerlink" href="#layer" title="Permalink to this heading">¶</a></h1>
+<dl class="py class objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.components.</span></span><span class="sig-name descname"><span class="pre">Layer</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">Any</span></span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.components.Layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Task to execute as part of a flow.</p>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Layer</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Layer</span>
 
 <span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable docutils data align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.execute" title="laminar.components.Layer.execute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.execute" title="laminar.components.Layer.execute (Python method) — Execute a layer."><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></a></p></td>
 <td><p>Execute a layer.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.shard" title="laminar.components.Layer.shard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.shard" title="laminar.components.Layer.shard (Python method) — Store each item of a sequence separately so that they may be loaded individually downstream."><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard</span></code></a></p></td>
 <td><p>Store each item of a sequence separately so that they may be loaded individually downstream.</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable docutils data align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.artifacts" title="laminar.components.Layer.artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artifacts</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.artifacts" title="laminar.components.Layer.artifacts (Python property) — Artifacts assigned to the layer."><code class="xref py py-obj docutils literal notranslate"><span class="pre">artifacts</span></code></a></p></td>
 <td><p>Artifacts assigned to the layer.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.attempt" title="laminar.components.Layer.attempt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempt</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.attempt" title="laminar.components.Layer.attempt (Python attribute) — Current layer execution attempt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attempt</span></code></a></p></td>
 <td><p>Current layer execution attempt</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.dependencies" title="laminar.components.Layer.dependencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependencies</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.dependencies" title="laminar.components.Layer.dependencies (Python property) — Layers this layer depends on."><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependencies</span></code></a></p></td>
 <td><p>Layers this layer depends on.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.hooks" title="laminar.components.Layer.hooks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.hooks" title="laminar.components.Layer.hooks (Python property) — Hooks attached to this layer."><code class="xref py py-obj docutils literal notranslate"><span class="pre">hooks</span></code></a></p></td>
 <td><p>Hooks attached to this layer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.index" title="laminar.components.Layer.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.index" title="laminar.components.Layer.index (Python attribute) — Layer index in its splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
 <td><p>Layer index in its splits</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.name" title="laminar.components.Layer.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.name" title="laminar.components.Layer.name (Python property) — Name of the Layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td><p>Name of the Layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits (Python attribute) — Number of splits in the layer execution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
 <td><p>Number of splits in the layer execution</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration (Python attribute) — Configurations for the Layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
 <td><p>Configurations for the Layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow (Python attribute) — Flow the Layer is registered to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
 <td><p>Flow the Layer is registered to</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.state" title="laminar.components.Layer.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.state" title="laminar.components.Layer.state (Python attribute) — Layer state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
 <td><p>Layer state</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.components.Layer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Layer.__init__" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">Any</span></span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.components.Layer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="laminar.components.Layer.artifacts">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">artifacts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Layer.artifacts" title="Permalink to this definition"></a></dt>
+<dl class="py property objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.artifacts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">artifacts</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#laminar.components.Layer.artifacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Artifacts assigned to the layer.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.components.Layer.attempt">
-<span class="sig-name descname"><span class="pre">attempt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.attempt" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.attempt">
+<span class="sig-name descname"><span class="pre">attempt</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="p"> <span class="pre">=</span> </span><code class="code python docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#laminar.components.Layer.attempt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current layer execution attempt</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.components.Layer.configuration">
-<span class="sig-name descname"><span class="pre">configuration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.Configuration.html#laminar.configurations.layers.Configuration" title="laminar.configurations.layers.Configuration"><span class="pre">laminar.configurations.layers.Configuration</span></a></em><a class="headerlink" href="#laminar.components.Layer.configuration" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.configuration">
+<span class="sig-name descname"><span class="pre">configuration</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.Configuration.html#laminar.configurations.layers.Configuration" title="laminar.configurations.layers.Configuration (Python class) — Bases: object"><span class="pre">Configuration</span></a></span><a class="headerlink" href="#laminar.components.Layer.configuration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configurations for the Layer</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="laminar.components.Layer.dependencies">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dependencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Layer.dependencies" title="Permalink to this definition"></a></dt>
+<dl class="py property objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.dependencies">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dependencies</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#laminar.components.Layer.dependencies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Layers this layer depends on.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.components.Layer.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#laminar.components.Layer" title="laminar.components.Layer"><span class="pre">laminar.components.Layer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Layer.execute" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="#laminar.components.Layer" title="laminar.components.Layer (Python class) — Bases: object"><span class="pre">Layer</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">None</span></span></span></span><a class="headerlink" href="#laminar.components.Layer.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a layer.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>*parameters</strong> – Input layers to the layer.</p>
+<dt class="field-odd" id="laminar.components.Layer.execute-parameters">Parameters<a class="headerlink" href="#laminar.components.Layer.execute-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt><span class="sig-name descname">*parameters</span></dt><dd><p>Input layers to the layer.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.components.Layer.flow">
-<span class="sig-name descname"><span class="pre">flow</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow"><span class="pre">laminar.components.Flow</span></a></em><a class="headerlink" href="#laminar.components.Layer.flow" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.flow">
+<span class="sig-name descname"><span class="pre">flow</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow (Python class) — Bases: object"><span class="pre">Flow</span></a></span><a class="headerlink" href="#laminar.components.Layer.flow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flow the Layer is registered to</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="laminar.components.Layer.hooks">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hooks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#laminar.components.Layer.hooks" title="Permalink to this definition"></a></dt>
+<dl class="py property objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.hooks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hooks</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#laminar.components.Layer.hooks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hooks attached to this layer.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.components.Layer.index">
-<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.index" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="p"> <span class="pre">=</span> </span><code class="code python docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#laminar.components.Layer.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Layer index in its splits</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="laminar.components.Layer.name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#laminar.components.Layer.name" title="Permalink to this definition"></a></dt>
+<dl class="py property objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">str</span></span><a class="headerlink" href="#laminar.components.Layer.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the Layer</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="laminar.components.Layer.shard">
-<span class="sig-name descname"><span class="pre">shard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#laminar.components.Layer.shard" title="Permalink to this definition"></a></dt>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.shard">
+<span class="sig-name descname"><span class="pre">shard</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><span class="pre">None</span></span></span></span><a class="headerlink" href="#laminar.components.Layer.shard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store each item of a sequence separately so that they may be loaded individually downstream.</p>
 <p class="rubric">Notes</p>
 <p>The artifact that is loaded is of type laminar.configurations.datastores.Accessor.</p>
 <p>Usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shard</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
-</pre></div>
+</code></pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>**artifacts</strong> – Sequence to break up and store.</p>
+<dt class="field-odd" id="laminar.components.Layer.shard-parameters">Parameters<a class="headerlink" href="#laminar.components.Layer.shard-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="api-field highlight simple">
+<dt><span class="sig-name descname">**artifacts</span></dt><dd><p>Sequence to break up and store.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.components.Layer.splits">
-<span class="sig-name descname"><span class="pre">splits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#laminar.components.Layer.splits" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.splits">
+<span class="sig-name descname"><span class="pre">splits</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="p"> <span class="pre">=</span> </span><code class="code python docutils literal highlight highlight-python"><span class="kc">None</span></code><a class="headerlink" href="#laminar.components.Layer.splits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of splits in the layer execution</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="laminar.components.Layer.state">
-<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.State.html#laminar.configurations.layers.State" title="laminar.configurations.layers.State"><span class="pre">laminar.configurations.layers.State</span></a></em><a class="headerlink" href="#laminar.components.Layer.state" title="Permalink to this definition"></a></dt>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.State.html#laminar.configurations.layers.State" title="laminar.configurations.layers.State (Python class) — Bases: object"><span class="pre">State</span></a></span><a class="headerlink" href="#laminar.components.Layer.state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Layer state</p>
 </dd></dl>
 
 </dd></dl>
 
-</section>
 
 
-           </div>
+
+              
+            </article>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="laminar.components.Flow.html" class="btn btn-neutral float-left" title="Flow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="laminar.components.Parameters.html" class="btn btn-neutral float-right" title="Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2021, Ryan Chui.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
         </div>
-      </div>
-    </section>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="laminar.components.Flow.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Flow" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Flow
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="laminar.components.Parameters.html" class="md-footer__link md-footer__link--next" aria-label="Next: Parameters" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Parameters
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2021, Ryan Chui.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    5.0.2.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+    
+  </body>
 </html>
