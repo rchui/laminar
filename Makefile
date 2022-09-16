@@ -33,8 +33,8 @@ env: venv upgrade
 
 .PHONY: format
 format:
-	black -C .
-	isort .
+	$(VENV) black -C .
+	$(VENV) isort .
 
 .PHONY: lint
 lint:
@@ -65,7 +65,7 @@ test: lint
 
 .PHONY: upgrade
 upgrade:
-	$(VENV) $(INSTALL) pip
+	$(VENV) $(INSTALL) pip wheel
 	$(VENV) $(INSTALL) --requirement requirements.txt
 	$(VENV) $(INSTALL) --requirement requirements.dev.txt
 

@@ -80,7 +80,7 @@ class Scheduler:
         return list(layers)
 
     def runnable(
-        self, *, dependencies: Dict[str, Tuple[str, ...]], pending: Set[str], finished: Set[str]
+        self, *, dependencies: Dict[str, Set[str]], pending: Set[str], finished: Set[str]
     ) -> Tuple[Set[str], Set[str]]:
         """Find all runnable layers.
 
@@ -94,7 +94,7 @@ class Scheduler:
             * Runnable layers
         """
 
-        runnable = {layer for layer in pending if set(dependencies[layer]).issubset(finished)}
+        runnable = {layer for layer in pending if dependencies[layer].issubset(finished)}
         return pending - runnable, runnable
 
     def skippable(self, *, flow: "Flow", runnable: Set[str], finished: Set[str]) -> Tuple[Set[str], Set[str]]:
@@ -177,7 +177,7 @@ class Scheduler:
         return running, finished
 
     @contexts.EventLoop
-    async def loop(self, *, flow: "Flow", dependencies: Dict[str, Tuple[str, ...]], finished: Set[str]) -> None:
+    async def loop(self, *, flow: "Flow", dependencies: Dict[str, Set[str]], finished: Set[str]) -> None:
         """Run the scheduling loop.
 
         Args:
