@@ -2,8 +2,10 @@
 
 import copy
 import logging
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Type, TypeVar, Union, overload
+from itertools import chain
+from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple, Type, TypeVar, Union, overload
 
 from ksuid import KsuidMs
 
@@ -96,6 +98,14 @@ class Layer:
     def __hash__(self) -> int:
         return hash(self.name)
 
+    def __lt__(self, other: object) -> bool:
+        if isinstance(other, str):
+            return self.name < other
+        elif isinstance(other, Layer):
+            return self.name < other.name
+        else:
+            raise TypeError(f"Type '{type(self).__name__}' and type '{type(other).__name__}' are incomparable.")
+
     def __setstate__(self, slots: Dict[str, Any]) -> None:
         self.__dict__ = slots
 
@@ -106,24 +116,37 @@ class Layer:
         return {artifact: value for artifact, value in vars(self).items() if artifact not in LAYER_RESERVED_KEYWORDS}
 
     @property
-    def _dependencies(self) -> Tuple["Layer", ...]:
-        return hints(self.flow, self.__call__)
+    def _hooks(self) -> Set[Callable[..., Any]]:
+        return {
+            hook
+            for hook in chain(vars(type(self.flow)).values(), vars(type(self)).values())
+            if hooks.annotation.get(hook) is not None
+        }
 
     @property
-    def dependencies(self) -> Tuple[str, ...]:
+    def _parameters(self) -> Dict[str, Tuple["Layer", ...]]:
+        return {
+            self.__call__.__name__: hints(self.flow, self.__call__),
+            **{hook.__name__: hints(self.flow, hook) for hook in self._hooks},
+        }
+
+    @property
+    def _dependencies(self) -> Set["Layer"]:
+        return set(chain.from_iterable(self._parameters.values()))
+
+    @property
+    def dependencies(self) -> Set[str]:
         """Layers this layer depends on."""
 
-        return tuple(layer.name for layer in self._dependencies)
+        return {layer.name for layer in self._dependencies}
 
     @property
-    def hooks(self) -> Dict[str, List[Callable[..., Any]]]:
-        """Hooks attached to this layer."""
+    def hooks(self) -> Dict[str, Set[Callable[..., Any]]]:
+        """Hooks attached to this layer collated by annotation."""
 
-        _hooks: Dict[str, List[Callable[..., Any]]] = {}
-        for entry in list(vars(type(self.flow)).values()) + list(vars(type(self)).values()):
-            annotation = hooks.annotation.get(entry)
-            if annotation is not None:
-                _hooks.setdefault(annotation, []).append(entry)
+        _hooks: Dict[str, Set[Callable[..., Any]]] = defaultdict(set)
+        for hook in self._hooks:
+            _hooks[unwrap(hooks.annotation.get(hook))].add(hook)
         return _hooks
 
     @property
@@ -230,14 +253,14 @@ class Flow:
                     callback(layer.__class__)
 
     @property
-    def _dependencies(self) -> Dict[Layer, Tuple[Layer, ...]]:
+    def _dependencies(self) -> Dict[Layer, Set[Layer]]:
         return {
-            self.layer(child): tuple(self.layer(parent) for parent in parents)
+            self.layer(child): {self.layer(parent) for parent in parents}
             for child, parents in self.dependencies.items()
         }
 
     @property
-    def dependencies(self) -> Dict[str, Tuple[str, ...]]:
+    def dependencies(self) -> Dict[str, Set[str]]:
         """A mapping of each layer and the layers it depends on."""
 
         return {layer: self.layer(layer).dependencies for layer in self.registry}
@@ -253,10 +276,10 @@ class Flow:
     def dependents(self) -> Dict[str, Set[str]]:
         """A mapping of each layer and the layers that depend on it."""
 
-        dependents: Dict[str, Set[str]] = {}
+        dependents: Dict[str, Set[str]] = defaultdict(set)
         for child, parents in self.dependencies.items():
             for parent in parents:
-                dependents.setdefault(parent, set()).add(child)
+                dependents[parent].add(child)
         return dependents
 
     def __call__(self, *, execution: Optional[str] = None, **attributes: Any) -> flows.Execution:
@@ -313,18 +336,17 @@ class Flow:
         """
 
         with contexts.Attributes(layer.flow.execution, id=execution):
-
             logger.info("Starting layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
             # Setup the Layer parameter values
-            parameters = layer.configuration.foreach.set(layer=layer, parameters=self._dependencies[layer])
+            parameters = layer.configuration.foreach.set(layer=layer, parameters=layer._parameters["__call__"])
 
             with hooks.event.context(layer=layer, annotation=hooks.annotation.execution):
                 layer.execute(*parameters)
 
             logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
-    def schedule(self, *, execution: str, dependencies: Dict[str, Tuple[str, ...]]) -> None:
+    def schedule(self, *, execution: str, dependencies: Dict[str, Set[str]]) -> None:
         """Schedule layers to run in sequence in the flow.
 
         Args:
@@ -355,7 +377,6 @@ class Flow:
         """
 
         def wrapper(Layer: LayerType) -> LayerType:
-
             layer = Layer(
                 configuration=layers.Configuration(catch=catch, container=container, foreach=foreach, retry=retry)
             )
@@ -437,7 +458,6 @@ class Flow:
 
         execution = execution or str(KsuidMs())
         with contexts.Attributes(self.execution, id=execution):
-
             # Property setup the layer for writing to the datastore
             layer = self.layer(Parameters, index=0, splits=1, attempt=0)
 

@@ -30,7 +30,7 @@ class A(Layer):
 
 ## Dependencies
 
-Hooks, like other `Layer` functions, can use other layers as dependencies.
+Hooks, like other `Layer` functions, can use other layers as dependencies. Layers that hooks depend on are added to the dependency graph and used to determine evaluation order.
 
 ```python
 @hooks.submission
@@ -40,10 +40,6 @@ def configure_container(self, a: A) -> None:
 ```
 
 The values from those `Layer` dependencies can be used to inform the business logic within each hook.
-
-```{warning}
-Hook dependencies are not evaluated to determine `Layer` dependencies. Users are responsible for ensuring that they only use layers that have already been executed.
-```
 
 ## Multiple Hooks
 

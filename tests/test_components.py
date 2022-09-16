@@ -65,7 +65,7 @@ class TestLayer:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
-        assert flow.layer(Test).dependencies == ("Dep1", "Dep2")
+        assert flow.layer(Test).dependencies == {"Dep1", "Dep2"}
 
     def test__dependencies(self, flow: Flow) -> None:
         @flow.register()
@@ -81,7 +81,7 @@ class TestLayer:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
-        assert flow.layer(Test)._dependencies == (Dep1(), Dep2())
+        assert flow.layer(Test)._dependencies == {Dep1(), Dep2()}
 
     def test_getattr(self, flow: Flow) -> None:
         workspace: Dict[str, Any] = flow.configuration.datastore.cache
@@ -152,7 +152,7 @@ class TestFLow:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
-        assert flow.dependencies == {"Dep1": (), "Dep2": (), "Parameters": (), "Test": ("Dep1", "Dep2")}
+        assert flow.dependencies == {"Dep1": set(), "Dep2": set(), "Parameters": set(), "Test": {"Dep1", "Dep2"}}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
     @patch("laminar.components.Flow.schedule")
@@ -161,7 +161,7 @@ class TestFLow:
         with contexts.Attributes(flow.execution, id=None):
             flow()
 
-        mock_schedule.assert_called_once_with(execution=ANY, dependencies={"Parameters": ()})
+        mock_schedule.assert_called_once_with(execution=ANY, dependencies={"Parameters": set()})
 
         @flow.register()
         class Test(Layer):
@@ -192,7 +192,7 @@ class TestFLow:
                 ...
 
         assert {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test()}
-        assert flow.dependencies == {"Dep1": (), "Dep2": (), "Parameters": (), "Test": ("Dep1", "Dep2")}
+        assert flow.dependencies == {"Dep1": set(), "Dep2": set(), "Parameters": set(), "Test": {"Dep1", "Dep2"}}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
     def test_layer_duplicate(self, flow: Flow) -> None:

@@ -190,7 +190,6 @@ class TestDatastore:
 
     @patch("laminar.utils.fs.open", new_callable=mock_open)
     def test_write_artifact(self, mock_open: Mock, layer: Layer) -> None:
-
         assert self.datastore.write_artifact(layer=layer, value="test-value") == Artifact(
             dtype="builtins.str", hexdigest="7d3d5dd741934c11ce55c08d83052780db2f29438238f602afbd51b177a98b7f"
         )
