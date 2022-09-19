@@ -69,7 +69,11 @@ class Executor:
 
 @dataclass(frozen=True)
 class Thread(Executor):
-    """Execute layers in threads.
+    """Execute layers in local threads.
+
+    Note:
+
+        Layers are always processed serially.
 
     Usage::
 
@@ -94,7 +98,7 @@ class Thread(Executor):
 
 @dataclass(frozen=True)
 class Docker(Executor):
-    """Execute layers in Docker containers.
+    """Execute layers in local Docker containers.
 
     Usage::
 
@@ -199,7 +203,7 @@ class AWS:
                 container = layer.configuration.container
 
                 job_definition_hexdigest = hashlib.sha256((container.image + self.job_role_arn).encode()).hexdigest()
-                job_definition_name = f"laminar_{job_definition_hexdigest}"
+                job_definition_name = f"laminar-{job_definition_hexdigest}"
 
                 batch = batch or boto3.client("batch")
                 describe_response = batch.describe_job_definitions(jobDefinitionName=job_definition_name)

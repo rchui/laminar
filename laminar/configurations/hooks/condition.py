@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Any, List, TypeVar
 
 from laminar.configurations.hooks import annotation
-from laminar.types import hints
 
 if TYPE_CHECKING:
     from laminar.components import Layer
@@ -35,4 +34,4 @@ def gather(*, layer: "Layer", annotation: str) -> List[Any]:
         Return values for each hook.
     """
 
-    return [hook(layer, *hints(layer.flow, hook)) for hook in layer.hooks.get(annotation, [])]
+    return [hook(layer, *layer._parameters[hook.__name__]) for hook in layer.hooks.get(annotation, [])]

@@ -51,14 +51,17 @@ class Current:
 
     @property
     def execution(self) -> Execution:
+        """Get information about the current flow execution."""
         return self.Execution()
 
     @property
     def flow(self) -> Flow:
+        """Get information about the current flow."""
         return self.Flow()
 
     @property
     def layer(self) -> Layer:
+        """Get information about the current layer execution."""
         return self.Layer()
 
 

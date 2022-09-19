@@ -46,8 +46,8 @@ def test_flow() -> None:
 
     execution = (
         flow1()
-        .chain(flow=flow2, linker=lambda execution: Parameters(foo=execution.layer(A).foo))
-        .chain(flow=flow3, linker=lambda execution: Parameters(foo=execution.layer(B).foo))
+        .next(flow=flow2, linker=lambda execution: Parameters(foo=execution.layer(A).foo))
+        .next(flow=flow3, linker=lambda execution: Parameters(foo=execution.layer(B).foo))
     )
 
     assert flow2.execution(unwrap(execution.id)).layer(B).foo == "bar"

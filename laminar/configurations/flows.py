@@ -66,7 +66,7 @@ class Execution:
             current.flow.name is not None and current.flow.name == self.flow.name
         )
 
-    def chain(self, *, flow: "Flow", linker: Callable[["Execution"], "Parameters"]) -> "Execution":
+    def next(self, *, flow: "Flow", linker: Callable[["Execution"], "Parameters"]) -> "Execution":
         """Chain multiple flow executions together.
 
         Usage::
@@ -81,7 +81,12 @@ class Execution:
             class A(Layer):
                 foo: str
 
-            Flow1()().chain(Flow2(), lambda execution: Parameters(foo=execution.layer(A).foo))
+            flow1 = Flow1()
+
+            flow_1().next(
+                flow=Flow2(),
+                linker=lambda execution: Parameters(foo=execution.layer(A).foo)
+            )
 
         Args:
             flow: Flow to execute next.
