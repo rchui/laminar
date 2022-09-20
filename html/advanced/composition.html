@@ -776,7 +776,10 @@
 <p>This can be achieved with flow chaining.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow1</span> <span class="o">=</span> <span class="n">Flow1</span><span class="p">()</span>
-    <span class="n">flow1</span><span class="p">()</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">Flow2</span><span class="p">(),</span> <span class="n">linker</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span><span class="p">))</span>
+    <span class="n">flow1</span><span class="p">()</span><span class="o">.</span><span class="n">next</span><span class="p">(</span>
+        <span class="n">flow</span><span class="o">=</span><span class="n">Flow2</span><span class="p">(),</span>
+        <span class="n">linker</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
+    <span class="p">)</span>
 </code></pre></div>
 </div>
 <p>Here we define which <code class="docutils literal notranslate"><span class="pre">Flow</span></code> should be executed after <code class="docutils literal notranslate"><span class="pre">Flow1</span></code> and provider a linker to define how the artifacts of <code class="docutils literal notranslate"><span class="pre">Flow1</span></code> are passed as parameters to <code class="docutils literal notranslate"><span class="pre">Flow2</span></code>.</p>

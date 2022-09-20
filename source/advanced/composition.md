@@ -35,7 +35,10 @@ This can be achieved with flow chaining.
 ```python
 if __name__ == "__main__":
     flow1 = Flow1()
-    flow1().chain(flow=Flow2(), linker=lambda e: Parameters(foo=e.layer(A).foo))
+    flow1().next(
+        flow=Flow2(),
+        linker=lambda e: Parameters(foo=e.layer(A).foo)
+    )
 ```
 
 Here we define which `Flow` should be executed after `Flow1` and provider a linker to define how the artifacts of `Flow1` are passed as parameters to `Flow2`.

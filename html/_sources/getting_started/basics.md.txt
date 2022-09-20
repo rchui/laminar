@@ -44,6 +44,7 @@ class B(Layer):
 Once a `Flow` has all of its layers registered to it, it can be called in order to execute the workflow.
 
 ```python
+# main.py
 from laminar import Flow, Layer
 
 class TriggerFlow(Flow):
@@ -56,6 +57,12 @@ class A(Layer):
 if __name__ == "__main__":
     flow = TriggerFlow()
     flow()
+```
+
+Flows are started by executing the `.py` file the flow is called in.
+
+```
+python main.py
 ```
 
 Multiple flows can also be executed in a row.

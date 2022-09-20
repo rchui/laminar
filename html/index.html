@@ -50,7 +50,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#easy-to-write" class="md-skip">
+        <a href="#key-features" class="md-skip">
           Skip to content
         </a>
       
@@ -684,29 +684,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#easy-to-write" class="md-nav__link">
-    <span title="easy to write (reference label)" class="md-ellipsis">Easy to Write</span>
+  <a href="#key-features" class="md-nav__link">
+    <span title="key features (reference label)" class="md-ellipsis">Key Features</span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#container-first" class="md-nav__link">
-    <span title="container first (reference label)" class="md-ellipsis">Container First</span>
+  <a href="#why-laminar" class="md-nav__link">
+    <span title="why laminar? (reference label)" class="md-ellipsis">Why laminar?</span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#total-control" class="md-nav__link">
-    <span title="total control (reference label)" class="md-ellipsis">Total Control</span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#any-scale" class="md-nav__link">
-    <span title="any scale (reference label)" class="md-ellipsis">Any Scale</span>
+  <a href="#why-not-laminar" class="md-nav__link">
+    <span title="why not laminar? (reference label)" class="md-ellipsis">Why Not laminar?</span>
   </a>
   
 </li>
@@ -729,14 +722,47 @@
 <div><p>“slow is smooth, and smooth is fast”</p>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> is a modern container first framework for creating production ready workflows. It aims to enable you to design and execute any kind of workflow as easily as possible, but without getting in your way.</p>
-<h2 id="easy-to-write">Easy to Write<a class="headerlink" href="#easy-to-write" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> brings together many of the best ideas from the various workflow frameworks that came before it. The specifications are declarative, and concepts are consistent throughout the framework.</p>
-<h2 id="container-first">Container First<a class="headerlink" href="#container-first" title="Permalink to this heading">¶</a></h2>
-<p>Containers are first class citizens in <code class="docutils literal notranslate"><span class="pre">laminar</span></code> flows. Containers are both used as a “write once, deploy anywhere” method of packaging software applications for portability, and for comparmentalization and isolation of <code class="docutils literal notranslate"><span class="pre">laminar</span></code> flow layers from each other.</p>
-<h2 id="total-control">Total Control<a class="headerlink" href="#total-control" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> flows are highly configurable, both statically at definition time, and dynamically at run time.</p>
-<h2 id="any-scale">Any Scale<a class="headerlink" href="#any-scale" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> can scale to any size of compute. From small locally run prototypes to tens of thousands of concurrent executions running in the cloud, <code class="docutils literal notranslate"><span class="pre">laminar</span></code> can handle it all.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Easy to Write</strong>: <code class="docutils literal notranslate"><span class="pre">laminar</span></code> brings together many of the best ideas from the various workflow frameworks that came before it. The dependencies are declarative and the logic is imperative. Concepts are consistent throughout the framework making it easy to understand and implement.</p></li>
+<li><p><strong>Container First</strong>: Containers are first class citizens in <code class="docutils literal notranslate"><span class="pre">laminar</span></code> flows. Containers are both used as a “write once, deploy anywhere” method of packaging software applications for portability, and for comparmentalization and isolation of <code class="docutils literal notranslate"><span class="pre">laminar</span></code> flow layers from each other.</p></li>
+<li><p><strong>Total Control</strong>: <code class="docutils literal notranslate"><span class="pre">laminar</span></code> flows are highly configurable, both statically at definition time, and dynamically at run time. Every component comes with sane defaults out of the box with the ability to customize them to suite your needs.</p></li>
+<li><p><strong>Any Scale</strong>: <code class="docutils literal notranslate"><span class="pre">laminar</span></code> can scale to the size of the compute you can throw at it. From small locally run prototypes to tens of thousands of concurrent executions running in the cloud, <code class="docutils literal notranslate"><span class="pre">laminar</span></code> gives you the capabilities to handle it all.</p></li>
+</ul>
+<h2 id="why-laminar">Why laminar?<a class="headerlink" href="#why-laminar" title="Permalink to this heading">¶</a></h2>
+<p class="rubric">Custom DSLs</p>
+<p>Many workflow frameworks come with custom DSls that you must learn and adhere to. Many of them implement imperative directives within declarative specifications, attempting to put a round peg into a square hole. <code class="docutils literal notranslate"><span class="pre">laminar</span></code> is written and allows the user to write their workflows in pure python. It is designed to give you the guard rails of a DSL with the power of a full programming language.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.nextflow.io/">nextflow</a></p></li>
+<li><p><a class="reference external" href="https://snakemake.readthedocs.io/en/stable/">snakemake</a></p></li>
+<li><p><a class="reference external" href="https://cromwell.readthedocs.io/en/stable/">cromwell</a></p></li>
+</ul>
+<p class="rubric">Uncomposable Workflows</p>
+<p>Many workflow frameworks were not designed to chain workflows together (passing the outputs of one workflow to the inputs of another workflow). This hampers reusability of workflow logic and causes tedious logic duplication and indirection. <code class="docutils literal notranslate"><span class="pre">laminar</span></code> treats workflow chaining as a first-class citizen and was designed with this use case in mind.</p>
+<p class="rubric">Poor Test Strategies</p>
+<p>Many workflow frameworks don’t consider how a user would test the workflow after it has been authored. In many times it leaves it to the user to figure out how to test the business logic appropriately, but this is often difficult and typically involves black box end to end testing. <code class="docutils literal notranslate"><span class="pre">laminar</span></code> has a pluggable component system that enables local/remote execution for easy testing.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://airflow.apache.org/">airflow</a></p></li>
+<li><p><a class="reference external" href="https://luigi.readthedocs.io/en/stable/#">luigi</a></p></li>
+</ul>
+<p class="rubric">Static Resource Allocation</p>
+<p>Many workflow frameworks require you to declare your resource requirements up front. This may be useful for well characterized use cases, but when your workflow needs to adjust based off of a set of inputs it is unable to. This requires the user to re-deploy the workflow with different resource requirements or repetitively retry within the workflow by incrementing the resources. This is slow and wasteful. <code class="docutils literal notranslate"><span class="pre">laminar</span></code> provides the capabilities to dynamically react to resource needs and adjust on the fly as needs change.</p>
+<p class="rubric">Lack of Conditional Branching</p>
+<p>Many workflow frameworks lack conditional branching (a logical fork where none, one, or many of the child tasks need to be executed depending on a condition). There are many cases in which a branch may not need to be executed but whether or not is indeterminate until runtime. Many workflows provide hacky workarounds to get around this limitation. <code class="docutils literal notranslate"><span class="pre">laminar</span></code> has conditional branching out of the box.</p>
+<p class="rubric">Behind the Scenes Magic</p>
+<p>Many workflow frameworks implement behind the scenes magic in an attempt to improve the user experience. This ranges from injecting custom code at runtime to parsing the AST to determine flow information. In many cases it hijacks the environment in a way that breaks the expectations of the user and creates a set of “gotchas” and sharp edges for the user to easily cut themselves on. <code class="docutils literal notranslate"><span class="pre">laminar</span></code> does not use any magic. It may be more verbose in some areas, but that is because it adheres strictly to the Python syntax to give you the predictability you desire.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://metaflow.org/">metaflow</a></p></li>
+</ul>
+<h2 id="why-not-laminar">Why Not laminar?<a class="headerlink" href="#why-not-laminar" title="Permalink to this heading">¶</a></h2>
+<p>I like to think that <code class="docutils literal notranslate"><span class="pre">laminar</span></code> can grow into something great. It has a great foundation to succeed but there are many headwinds facing it that you should consider:</p>
+<ul class="simple">
+<li><p><strong>Immature</strong>: There are many other battle-hardened workflow frameworks that are out there that have faced the test of time and have consistently delivered.</p></li>
+<li><p><strong>Small</strong>: Other workflow frameworks have large communities to feed off of and get help with your work.</p></li>
+<li><p><strong>Scheduling</strong>: <code class="docutils literal notranslate"><span class="pre">laminar</span></code> does not provide scheduling out of the box. It relies on users to determine when flows should be scheduled.</p></li>
+<li><p><strong>Deployment</strong>: <code class="docutils literal notranslate"><span class="pre">laminar</span></code> does not provide help deploying flows. It relies on users to determine how flows are deployed and all the infrastructure around managing containers.</p></li>
+<li><p><strong>UI</strong>: <code class="docutils literal notranslate"><span class="pre">laminar</span></code> does not provide a user interface to visualize the flows as they are running.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
