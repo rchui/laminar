@@ -91,10 +91,6 @@ Now regardless of whether `B` is executed, `D` will always execute. This implies
 
 But if `D` always executes, how do we know when `B` does?
 
-```{warning}
-Conditions are not evaluated to determine `Layer` dependencies. Users are responsible for ensuring that they only use layers that have already been executed.
-```
-
 ## State
 
 `Layer.state` is a property that returns a `State` object that can evaluate the state that a layer is currently in. `State.finished` will tell you whether or not a `Layer` has been finished. With this logic we can extend `D`.
