@@ -791,7 +791,13 @@
     <span class="n">flow</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state ParameterFlow {
+        direction LR
+        Parameters --&gt; A
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;bar&quot;</span>
 </code></pre></div>
@@ -945,6 +951,8 @@
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     
   </body>
 </html>

@@ -13,11 +13,13 @@ from laminar.configurations import layers
 class CatchFlow(Flow):
     ...
 
-@CatchFlow.register(catch=Catch(Exception))
+@CatchFlow.register(catch=Catch(TypeError, IOError))
 class A(Layer):
     def __call__(self) -> None:
-        raise RuntimeError
+        raise ...
 ```
+
+Layers that catch errors exit immediately with their state written to the datastore. As a result, the layer state may be incomplete and users are responsible for handling any resulting inconsistencies.
 
 ## Retry
 

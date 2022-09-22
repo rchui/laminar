@@ -771,12 +771,13 @@
 <span class="k">class</span> <span class="nc">CatchFlow</span><span class="p">(</span><span class="n">Flow</span><span class="p">):</span>
     <span class="o">...</span>
 
-<span class="nd">@CatchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">catch</span><span class="o">=</span><span class="n">Catch</span><span class="p">(</span><span class="ne">Exception</span><span class="p">))</span>
+<span class="nd">@CatchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">catch</span><span class="o">=</span><span class="n">Catch</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">))</span>
 <span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span>
+        <span class="k">raise</span> <span class="o">...</span>
 </code></pre></div>
 </div>
+<p>Layers that catch errors exit immediately with their state written to the datastore. As a result, the layer state may be incomplete and users are responsible for handling any resulting inconsistencies.</p>
 <h2 id="retry">Retry<a class="headerlink" href="#retry" title="Permalink to this heading">¶</a></h2>
 <p>Maybe requests to other services can be flaky or maybe you want your <code class="docutils literal notranslate"><span class="pre">Flow</span></code> to be tolerant of AWS EC2 Spot failures. Whatever the reason, there are situations where it is useful for layers to be retried on failure.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Retry</span></code> allows the user to configure the retry policy per layer.</p>
@@ -883,6 +884,8 @@
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     
   </body>
 </html>

@@ -149,6 +149,14 @@ if __name__ == "__main__":
     flow()
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state HelloFlow {
+        direction LR
+        A --> B
+    }
+```
+
 ```python
 python main.py
 
@@ -183,12 +191,23 @@ class C(Layer):
 
 @HelloFlow.register()
 class D(Layer):
-    def __call__(self, a: A, c: C) -> None:
+    def __call__(self, a: A, b: B, c: C) -> None:
         print(self.name)
 
 if __name__ == "__main__":
     flow = HelloFlow()
     flow()
+```
+
+```{mermaid}
+stateDiagram-v2
+    state HelloFlow {
+        direction LR
+        A --> B
+        A --> D
+        B --> C
+        C --> D
+    }
 ```
 
 ```python
@@ -234,6 +253,15 @@ class End(Layer):
 if __name__ == "__main__":
     flow = HelloFlow()
     flow()
+```
+
+```{mermaid}
+stateDiagram-v2
+    state HelloFlow {
+        direction LR
+        Start --> Middle
+        Middle --> End
+    }
 ```
 
 ```python

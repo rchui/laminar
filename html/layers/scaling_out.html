@@ -816,7 +816,13 @@
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state ShardedFlow {
+        direction LR
+        Shard --&gt; Process
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span>
@@ -854,7 +860,20 @@
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state ForeachFlow {
+        direction LR
+
+        state fork &lt;&lt;fork&gt;&gt;
+            Shard --&gt; fork
+
+        fork --&gt; Process[0]
+        fork --&gt; Process[1]
+        fork --&gt; Process[...]
+        fork --&gt; Process[N]
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span> <span class="mi">1</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span> <span class="mi">2</span>
@@ -893,7 +912,20 @@ sharded.</p>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state ForeachFlow {
+        direction LR
+
+        state fork &lt;&lt;fork&gt;&gt;
+            Shard --&gt; fork
+
+        fork --&gt; Process[0]
+        fork --&gt; Process[1]
+        fork --&gt; Process[...]
+        fork --&gt; Process[N]
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span> <span class="mi">1</span> <span class="s2">&quot;a&quot;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span> <span class="mi">2</span> <span class="s2">&quot;a&quot;</span>
@@ -932,7 +964,20 @@ sharded.</p>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state GridFlow {
+        direction LR
+
+        state fork &lt;&lt;fork&gt;&gt;
+            Shard --&gt; fork
+
+        fork --&gt; Process[0]
+        fork --&gt; Process[1]
+        fork --&gt; Process[...]
+        fork --&gt; Process[N]
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span> <span class="mi">1</span> <span class="s2">&quot;a&quot;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span> <span class="mi">2</span> <span class="s2">&quot;a&quot;</span>
@@ -977,7 +1022,28 @@ sharded.</p>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state JoinFlow {
+        direction LR
+
+        state fork &lt;&lt;fork&gt;&gt;
+            Shard --&gt; fork
+
+        fork --&gt; Process[0]
+        fork --&gt; Process[1]
+        fork --&gt; Process[...]
+        fork --&gt; Process[N]
+
+        state join &lt;&lt;join&gt;&gt;
+            Process[0] --&gt; join
+            Process[1] --&gt; join
+            Process[...] --&gt; join
+            Process[N] --&gt; join
+
+        join --&gt; Join
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span>
@@ -1016,7 +1082,25 @@ sharded.</p>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state ChainedFlow {
+        direction LR
+
+        state fork &lt;&lt;fork&gt;&gt;
+            Shard --&gt; fork
+
+        fork --&gt; First[0]
+        fork --&gt; First[1]
+        fork --&gt; First[...]
+        fork --&gt; First[N]
+
+        First[0] --&gt; Second[0]
+        First[1] --&gt; Second[1]
+        First[...] --&gt; Second[...]
+        First[N] --&gt; Second[N]
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span> <span class="s1">&#39;First&#39;</span> <span class="mi">1</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span> <span class="s1">&#39;First&#39;</span> <span class="mi">2</span>
@@ -1106,6 +1190,8 @@ sharded.</p>
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     
   </body>
 </html>

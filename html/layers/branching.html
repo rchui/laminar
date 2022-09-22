@@ -786,7 +786,14 @@
         <span class="o">...</span>
 </code></pre></div>
 </div>
-<p>When defined in this way, layer <code class="docutils literal notranslate"><span class="pre">A</span></code> will run first and layers <code class="docutils literal notranslate"><span class="pre">B</span></code> and <code class="docutils literal notranslate"><span class="pre">C</span></code> after in parallel because there is no defined dependencies between them.</p>
+<div class="mermaid">
+            stateDiagram-v2
+    state BranchFlow {
+        direction LR
+        A --&gt; B
+        B --&gt; C
+    }
+        </div><p>When defined in this way, layer <code class="docutils literal notranslate"><span class="pre">A</span></code> will run first and layers <code class="docutils literal notranslate"><span class="pre">B</span></code> and <code class="docutils literal notranslate"><span class="pre">C</span></code> after in parallel because there is no defined dependencies between them.</p>
 <h2 id="conditions">Conditions<a class="headerlink" href="#conditions" title="Permalink to this heading">¶</a></h2>
 <p>Conditional branching is a common flow control operation, such as <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">...</span> <span class="pre">else</span> <span class="pre">...</span></code>, that directs a <code class="docutils literal notranslate"><span class="pre">Flow</span></code> along a subset of paths. As the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> is traversed, conditions are evaluated and paths are chosen.</p>
 <p>Conditions are defined on layers as an entry hook that return a value to indicate whether the <code class="docutils literal notranslate"><span class="pre">Layer</span></code> should be executed or not. Because entry hooks are class methods, users can define multiple hooks and include complex logic to determine conditions.</p>
@@ -823,7 +830,16 @@
         <span class="o">...</span>
 </code></pre></div>
 </div>
-<p>In this <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, 50% of the time <code class="docutils literal notranslate"><span class="pre">B</span></code> will be executed and the other 50% it will be skipped. Notice that like <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>, entry hooks can also use layers as parameters in order to evaluate complex conditions.</p>
+<div class="mermaid">
+            stateDiagram-v2
+    state BranchFlow {
+        direction LR
+        A --&gt; B
+        A --&gt; C
+        B --&gt; D
+        C --&gt; D
+    }
+        </div><p>In this <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, 50% of the time <code class="docutils literal notranslate"><span class="pre">B</span></code> will be executed and the other 50% it will be skipped. Notice that like <code class="docutils literal notranslate"><span class="pre">Layer.__call__</span></code>, entry hooks can also use layers as parameters in order to evaluate complex conditions.</p>
 <p>Consequently, 50% of the time <code class="docutils literal notranslate"><span class="pre">D</span></code> will also be skipped. This is because by default layers will be executed <strong>only if all layers it depends on are executed</strong>. Entire subtrees will potentially be skipped if even if a single <code class="docutils literal notranslate"><span class="pre">Layer</span></code> is set to be skipped.</p>
 <p>We can prevent this from occuring by ending the conditional branch:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
@@ -838,10 +854,6 @@
 </div>
 <p>Now regardless of whether <code class="docutils literal notranslate"><span class="pre">B</span></code> is executed, <code class="docutils literal notranslate"><span class="pre">D</span></code> will always execute. This implies that not only can every layer can have individual execution conditions, but also every <code class="docutils literal notranslate"><span class="pre">Flow</span></code> branch. This enables flows to be extremely flexible in their execution.</p>
 <p>But if <code class="docutils literal notranslate"><span class="pre">D</span></code> always executes, how do we know when <code class="docutils literal notranslate"><span class="pre">B</span></code> does?</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Conditions are not evaluated to determine <code class="docutils literal notranslate"><span class="pre">Layer</span></code> dependencies. Users are responsible for ensuring that they only use layers that have already been executed.</p>
-</div>
 <h2 id="state">State<a class="headerlink" href="#state" title="Permalink to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Layer.state</span></code> is a property that returns a <code class="docutils literal notranslate"><span class="pre">State</span></code> object that can evaluate the state that a layer is currently in. <code class="docutils literal notranslate"><span class="pre">State.finished</span></code> will tell you whether or not a <code class="docutils literal notranslate"><span class="pre">Layer</span></code> has been finished. With this logic we can extend <code class="docutils literal notranslate"><span class="pre">D</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="nd">@BranchFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
@@ -935,6 +947,8 @@
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     
   </body>
 </html>

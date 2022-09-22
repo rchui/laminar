@@ -32,6 +32,14 @@ if __name__ == "__main__":
     flow(foo="bar")
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state ParameterFlow {
+        direction LR
+        Parameters --> A
+    }
+```
+
 ```python
 python main.py
 

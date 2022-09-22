@@ -28,6 +28,15 @@ class C(Layer):
         ...
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state BranchFlow {
+        direction LR
+        A --> B
+        B --> C
+    }
+```
+
 When defined in this way, layer `A` will run first and layers `B` and `C` after in parallel because there is no defined dependencies between them.
 
 ## Conditions
@@ -70,6 +79,17 @@ class D(Layer):
         ...
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state BranchFlow {
+        direction LR
+        A --> B
+        A --> C
+        B --> D
+        C --> D
+    }
+```
+
 In this `Flow`, 50% of the time `B` will be executed and the other 50% it will be skipped. Notice that like `Layer.__call__`, entry hooks can also use layers as parameters in order to evaluate complex conditions.
 
 Consequently, 50% of the time `D` will also be skipped. This is because by default layers will be executed **only if all layers it depends on are executed**. Entire subtrees will potentially be skipped if even if a single `Layer` is set to be skipped.
@@ -90,10 +110,6 @@ class D(Layer):
 Now regardless of whether `B` is executed, `D` will always execute. This implies that not only can every layer can have individual execution conditions, but also every `Flow` branch. This enables flows to be extremely flexible in their execution.
 
 But if `D` always executes, how do we know when `B` does?
-
-```{warning}
-Conditions are not evaluated to determine `Layer` dependencies. Users are responsible for ensuring that they only use layers that have already been executed.
-```
 
 ## State
 

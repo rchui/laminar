@@ -918,7 +918,13 @@
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state HelloFlow {
+        direction LR
+        A --&gt; B
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;A&quot;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;B&quot;</span>
@@ -949,7 +955,7 @@
 
 <span class="nd">@HelloFlow</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">D</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -957,7 +963,16 @@
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state HelloFlow {
+        direction LR
+        A --&gt; B
+        A --&gt; D
+        B --&gt; C
+        C --&gt; D
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;A&quot;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;B&quot;</span>
@@ -997,7 +1012,14 @@
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="mermaid">
+            stateDiagram-v2
+    state HelloFlow {
+        direction LR
+        Start --&gt; Middle
+        Middle --&gt; End
+    }
+        </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;Sending the message: Hello World&quot;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="s2">&quot;Hello World&quot;</span>
@@ -1084,6 +1106,8 @@
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
     
   </body>
 </html>
