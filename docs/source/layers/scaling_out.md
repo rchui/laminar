@@ -144,10 +144,10 @@ stateDiagram-v2
         state fork <<fork>>
             Shard --> fork
 
-        fork --> Process[0]
-        fork --> Process[1]
-        fork --> Process[...]
-        fork --> Process[N]
+        fork --> Process[0,0]
+        fork --> Process[0,1]
+        fork --> Process[0,...]
+        fork --> Process[0,N]
     }
 ```
 
@@ -203,10 +203,10 @@ stateDiagram-v2
         state fork <<fork>>
             Shard --> fork
 
-        fork --> Process[0]
-        fork --> Process[1]
-        fork --> Process[...]
-        fork --> Process[N]
+        fork --> Process[0,0]
+        fork --> Process[0,1]
+        fork --> Process[...,...]
+        fork --> Process[M,N]
     }
 ```
 
