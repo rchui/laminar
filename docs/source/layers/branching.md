@@ -28,6 +28,15 @@ class C(Layer):
         ...
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state BranchFlow {
+        direction LR
+        A --> B
+        B --> C
+    }
+```
+
 When defined in this way, layer `A` will run first and layers `B` and `C` after in parallel because there is no defined dependencies between them.
 
 ## Conditions
@@ -68,6 +77,17 @@ class C(Layer):
 class D(Layer):
     def __call__(self, b: B, c: C) -> None:
         ...
+```
+
+```{mermaid}
+stateDiagram-v2
+    state BranchFlow {
+        direction LR
+        A --> B
+        A --> C
+        B --> D
+        C --> D
+    }
 ```
 
 In this `Flow`, 50% of the time `B` will be executed and the other 50% it will be skipped. Notice that like `Layer.__call__`, entry hooks can also use layers as parameters in order to evaluate complex conditions.

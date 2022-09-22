@@ -38,6 +38,7 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
     "sphinx_immaterial",
+    "sphinxcontrib.mermaid",
 ]
 autosummary_generate = True  # Make and include autosummary files
 

@@ -26,6 +26,17 @@ class B(Layer):
         print(self.foo)
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state Flow1 {
+        A
+    }
+
+    state Flow2 {
+        B
+    }
+```
+
 A common scenario might be to execute `Flow1` and feed the results into `Flow2` as parameters.
 
 ## Chaining
@@ -39,6 +50,23 @@ if __name__ == "__main__":
         flow=Flow2(),
         linker=lambda e: Parameters(foo=e.layer(A).foo)
     )
+```
+
+```{mermaid}
+stateDiagram-v2
+    direction LR
+
+    state Flow1 {
+        direction LR
+        A
+    }
+
+    state Flow2 {
+        direction LR
+        Parameters --> B
+    }
+
+    A --> Parameters
 ```
 
 Here we define which `Flow` should be executed after `Flow1` and provider a linker to define how the artifacts of `Flow1` are passed as parameters to `Flow2`.
@@ -85,6 +113,21 @@ class CombinedFlow(Flow1, Flow2):
 if __name__ == "__main__":
     flow = CombinedFlow()
     flow()
+```
+
+```{mermaid}
+stateDiagram-v2
+    direction LR
+
+    state CombinedFlow {
+        state Flow1 {
+            A
+        }
+
+        state Flow2 {
+            B
+        }
+    }
 ```
 
 Here we define two flows and use class inheritance to merge the two flows together into one single flow. Not only can this be used to chain flows together but also allows you to combine disparate flows into a single execution that will be executed in parallel.

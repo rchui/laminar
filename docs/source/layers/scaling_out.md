@@ -29,6 +29,14 @@ if __name__ == '__main__':
     flow()
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state ShardedFlow {
+        direction LR
+        Shard --> Process
+    }
+```
+
 ```python
 python main.py
 
@@ -69,6 +77,21 @@ class Process(Layer):
 if __name__ == '__main__':
     flow = ForeachFlow()
     flow()
+```
+
+```{mermaid}
+stateDiagram-v2
+    state ForeachFlow {
+        direction LR
+
+        state fork <<fork>>
+            Shard --> fork
+
+        fork --> Process[0]
+        fork --> Process[1]
+        fork --> Process[...]
+        fork --> Process[N]
+    }
 ```
 
 ```python
@@ -113,6 +136,21 @@ if __name__ == '__main__':
     flow()
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state ForeachFlow {
+        direction LR
+
+        state fork <<fork>>
+            Shard --> fork
+
+        fork --> Process[0]
+        fork --> Process[1]
+        fork --> Process[...]
+        fork --> Process[N]
+    }
+```
+
 ```python
 python main.py
 
@@ -155,6 +193,21 @@ class Process(Layer):
 if __name__ == '__main__':
     flow = GridFlow()
     flow()
+```
+
+```{mermaid}
+stateDiagram-v2
+    state GridFlow {
+        direction LR
+
+        state fork <<fork>>
+            Shard --> fork
+
+        fork --> Process[0]
+        fork --> Process[1]
+        fork --> Process[...]
+        fork --> Process[N]
+    }
 ```
 
 ```python
@@ -206,6 +259,29 @@ if __name__ == '__main__':
     flow()
 ```
 
+```{mermaid}
+stateDiagram-v2
+    state JoinFlow {
+        direction LR
+
+        state fork <<fork>>
+            Shard --> fork
+
+        fork --> Process[0]
+        fork --> Process[1]
+        fork --> Process[...]
+        fork --> Process[N]
+
+        state join <<join>>
+            Process[0] --> join
+            Process[1] --> join
+            Process[...] --> join
+            Process[N] --> join
+
+        join --> Join
+    }
+```
+
 ```python
 python main.py
 
@@ -247,6 +323,26 @@ class Second(Layer):
 if __name__ == '__main__':
     flow = ChainedFlow()
     flow()
+```
+
+```{mermaid}
+stateDiagram-v2
+    state ChainedFlow {
+        direction LR
+
+        state fork <<fork>>
+            Shard --> fork
+
+        fork --> First[0]
+        fork --> First[1]
+        fork --> First[...]
+        fork --> First[N]
+
+        First[0] --> Second[0]
+        First[1] --> Second[1]
+        First[...] --> Second[...]
+        First[N] --> Second[N]
+    }
 ```
 
 ```python
