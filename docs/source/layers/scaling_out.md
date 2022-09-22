@@ -221,6 +221,8 @@ python main.py
 >>> 5 3 "b"
 ```
 
+`laminar` infers that the `ForEach` is iterating over two sharded attributes. It generates the cartesian product of each attribute and launches a `ForEach` task to handle each resulting fork.
+
 ## ForEach Joins
 
 A `ForEach` layer does not need a special join step in order to merge branch values back together. A `ForEach` layer used as an input for a downstream layer will have attributes that follow the same rules as if it was created using `Layer.shard()` by returning an `Accessor` mapped to each `ForEach` task.
@@ -289,6 +291,8 @@ python main.py
 >>> 2
 ```
 
+Like sharded artifacts, the attribute accessor for `ForEach` artifacts will lazily read sharded values, can be iterated over, indexed, and sliced as necessary.
+
 ## Chained ForEach
 
 It is common to performed multiple foreach loops in a row, where each value produced by a foreach task is passed to another foreach task. You can define `Parameter(index=None)` in subsequent `ForEach` to create a `1:1` mapping of one foreach to another.
@@ -355,3 +359,5 @@ python main.py
 >>> 1 'Second' 2
 >>> 2 'Second' 3
 ```
+
+This allows us to perform a series of fan-out operations in a row without needing to join until it is necessary.
