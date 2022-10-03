@@ -3,7 +3,7 @@
 import io
 import json
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, cast
 from unittest.mock import Mock, call, mock_open, patch
 
 import cloudpickle
@@ -76,10 +76,7 @@ class TestAccessor:
         assert list(self.accessor) == ["foo", "bar"]
 
     def test_for(self) -> None:
-        items: List[str] = []
-        for item in self.accessor:
-            items.append(item)
-        assert items == ["foo", "bar"]
+        assert [item for item in self.accessor] == ["foo", "bar"]
 
     def test_slice(self) -> None:
         assert self.accessor[:1] == ["foo"]
