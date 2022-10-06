@@ -24,8 +24,7 @@ class Process(Layer):
         print(shard.foo[1])
         print(shard.foo[1:])
 
-if __name__ == '__main__':
-    flow = ShardedFlow()
+if flow := ShardedFlow():
     flow()
 ```
 
@@ -74,8 +73,7 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(self.index, shard.foo)
 
-if __name__ == '__main__':
-    flow = ForeachFlow()
+if flow := ForeachFlow():
     flow()
 ```
 
@@ -131,8 +129,7 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(self.index, shard.foo, shard.bar)
 
-if __name__ == '__main__':
-    flow = ForeachFlow()
+if flow := ForeachFlow():
     flow()
 ```
 
@@ -144,10 +141,10 @@ stateDiagram-v2
         state fork <<fork>>
             Shard --> fork
 
-        fork --> Process[0]
-        fork --> Process[1]
-        fork --> Process[...]
-        fork --> Process[N]
+        fork --> Process[0,0]
+        fork --> Process[0,1]
+        fork --> Process[0,...]
+        fork --> Process[0,N]
     }
 ```
 
@@ -190,8 +187,7 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(self.index, shard.foo, shard.bar)
 
-if __name__ == '__main__':
-    flow = GridFlow()
+if flow := GridFlow():
     flow()
 ```
 
@@ -203,10 +199,10 @@ stateDiagram-v2
         state fork <<fork>>
             Shard --> fork
 
-        fork --> Process[0]
-        fork --> Process[1]
-        fork --> Process[...]
-        fork --> Process[N]
+        fork --> Process[0,0]
+        fork --> Process[0,1]
+        fork --> Process[...,...]
+        fork --> Process[M,N]
     }
 ```
 
@@ -220,6 +216,8 @@ python main.py
 >>> 4 2 "b"
 >>> 5 3 "b"
 ```
+
+`laminar` infers that the `ForEach` is iterating over two sharded attributes. It generates the cartesian product of each attribute and launches a `ForEach` task to handle each resulting fork.
 
 ## ForEach Joins
 
@@ -254,8 +252,7 @@ class Join(Layer):
         print(list(process.foo))
         print(process.foo[1])
 
-if __name__ == '__main__':
-    flow = JoinFlow()
+if flow := JoinFlow():
     flow()
 ```
 
@@ -289,6 +286,8 @@ python main.py
 >>> 2
 ```
 
+Like sharded artifacts, the attribute accessor for `ForEach` artifacts will lazily read sharded values, can be iterated over, indexed, and sliced as necessary.
+
 ## Chained ForEach
 
 It is common to performed multiple foreach loops in a row, where each value produced by a foreach task is passed to another foreach task. You can define `Parameter(index=None)` in subsequent `ForEach` to create a `1:1` mapping of one foreach to another.
@@ -320,8 +319,7 @@ class Second(Layer):
     def __call__(self, first: First) -> None:
         print(self.index, 'Second', first.foo)
 
-if __name__ == '__main__':
-    flow = ChainedFlow()
+if flow := ChainedFlow():
     flow()
 ```
 
@@ -355,3 +353,5 @@ python main.py
 >>> 1 'Second' 2
 >>> 2 'Second' 3
 ```
+
+This allows us to perform a series of fan-out operations in a row without needing to join until it is necessary.

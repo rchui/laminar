@@ -47,8 +47,7 @@ class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
-if __name__ == "__main__":
-    flow = ResultFlow()
+if flow := ResultFlow():
     flow()
 ```
 

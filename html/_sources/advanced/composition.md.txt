@@ -44,8 +44,7 @@ A common scenario might be to execute `Flow1` and feed the results into `Flow2` 
 This can be achieved with flow chaining.
 
 ```python
-if __name__ == "__main__":
-    flow1 = Flow1()
+if flow1 := Flow1():
     flow1().next(
         flow=Flow2(),
         linker=lambda e: Parameters(foo=e.layer(A).foo)
@@ -110,8 +109,7 @@ class B(Layer):
 class CombinedFlow(Flow1, Flow2):
     ...
 
-if __name__ == "__main__":
-    flow = CombinedFlow()
+if flow := CombinedFlow():
     flow()
 ```
 

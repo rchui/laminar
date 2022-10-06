@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../_static/stylesheets/main.b0359c04.min.css">
+      <link rel="stylesheet" href="../_static/stylesheets/main.30c392bc.min.css">
       
     
     
@@ -987,7 +987,7 @@
                 <span class="k">yield</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">HookFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -1011,7 +1011,7 @@
     <span class="k">def</span> <span class="nf">configure_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">*</span> <span class="mi">2</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">HookFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -1037,7 +1037,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">cpu</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="mi">2000</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">HookFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -1070,8 +1070,7 @@
         <span class="n">memory</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">baz</span><span class="p">[</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)]]</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">HookFlow</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">HookFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -1117,8 +1116,7 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;in B&quot;</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">HelloFlow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;HelloFlow&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">HelloFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -1193,7 +1191,7 @@
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.1.1.
+    5.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -1212,6 +1210,7 @@
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     

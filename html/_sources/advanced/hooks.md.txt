@@ -109,7 +109,7 @@ class A(Layer):
                 yield
 
 
-if __name__ == "__main__":
+if flow := HookFlow():
     flow()
 ```
 
@@ -137,7 +137,7 @@ class A(Layer):
     def configure_container(self) -> None:
         self.configuration.container.memory = self.configuration.container.memory * 2
 
-if __name__ == "__main__":
+if flow := HookFlow():
     flow()
 ```
 
@@ -167,7 +167,7 @@ class A(Layer):
         self.configuration.container.cpu = 4
         self.configuration.container.memory = 2000
 
-if __name__ == "__main__":
+if flow := HookFlow():
     flow()
 ```
 
@@ -202,8 +202,7 @@ class B(Layer):
         memory = {"a": 1000, "b": 1500, "c": 2000}
         self.configuration.container.memory = memory[a.baz[unwrap(self.index)]]
 
-if __name__ == "__main__":
-    flow = HookFlow()
+if flow := HookFlow():
     flow()
 ```
 
@@ -258,8 +257,7 @@ class B(Layer):
     def __call__(self, a: A) -> None:
         print("in B")
 
-if __name__ == "__main__":
-    flow = HelloFlow(name='HelloFlow')
+if flow := HelloFlow():
     flow()
 ```
 

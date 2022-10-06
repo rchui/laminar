@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../_static/stylesheets/main.b0359c04.min.css">
+      <link rel="stylesheet" href="../_static/stylesheets/main.30c392bc.min.css">
       
     
     
@@ -811,8 +811,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">shard</span><span class="o">.</span><span class="n">foo</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">shard</span><span class="o">.</span><span class="n">foo</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">ShardedFlow</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">ShardedFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -855,8 +854,7 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shard</span><span class="p">:</span> <span class="n">Shard</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">ForeachFlow</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">ForeachFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -907,8 +905,7 @@ sharded.</p>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shard</span><span class="p">:</span> <span class="n">Shard</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">ForeachFlow</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">ForeachFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -920,10 +917,10 @@ sharded.</p>
         state fork &lt;&lt;fork&gt;&gt;
             Shard --&gt; fork
 
-        fork --&gt; Process[0]
-        fork --&gt; Process[1]
-        fork --&gt; Process[...]
-        fork --&gt; Process[N]
+        fork --&gt; Process[0,0]
+        fork --&gt; Process[0,1]
+        fork --&gt; Process[0,...]
+        fork --&gt; Process[0,N]
     }
         </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
@@ -959,8 +956,7 @@ sharded.</p>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shard</span><span class="p">:</span> <span class="n">Shard</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span> <span class="n">shard</span><span class="o">.</span><span class="n">bar</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">GridFlow</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">GridFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -972,10 +968,10 @@ sharded.</p>
         state fork &lt;&lt;fork&gt;&gt;
             Shard --&gt; fork
 
-        fork --&gt; Process[0]
-        fork --&gt; Process[1]
-        fork --&gt; Process[...]
-        fork --&gt; Process[N]
+        fork --&gt; Process[0,0]
+        fork --&gt; Process[0,1]
+        fork --&gt; Process[...,...]
+        fork --&gt; Process[M,N]
     }
         </div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
 
@@ -987,6 +983,7 @@ sharded.</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">5</span> <span class="mi">3</span> <span class="s2">&quot;b&quot;</span>
 </code></pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">laminar</span></code> infers that the <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> is iterating over two sharded attributes. It generates the cartesian product of each attribute and launches a <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> task to handle each resulting fork.</p>
 <h2 id="foreach-joins">ForEach Joins<a class="headerlink" href="#foreach-joins" title="Permalink to this heading">¶</a></h2>
 <p>A <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> layer does not need a special join step in order to merge branch values back together. A <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> layer used as an input for a downstream layer will have attributes that follow the same rules as if it was created using <code class="docutils literal notranslate"><span class="pre">Layer.shard()</span></code> by returning an <code class="docutils literal notranslate"><span class="pre">Accessor</span></code> mapped to each <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> task.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># main.py</span>
@@ -1017,8 +1014,7 @@ sharded.</p>
         <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">foo</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">foo</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">JoinFlow</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">JoinFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -1049,6 +1045,7 @@ sharded.</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span>
 </code></pre></div>
 </div>
+<p>Like sharded artifacts, the attribute accessor for <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> artifacts will lazily read sharded values, can be iterated over, indexed, and sliced as necessary.</p>
 <h2 id="chained-foreach">Chained ForEach<a class="headerlink" href="#chained-foreach" title="Permalink to this heading">¶</a></h2>
 <p>It is common to performed multiple foreach loops in a row, where each value produced by a foreach task is passed to another foreach task. You can define <code class="docutils literal notranslate"><span class="pre">Parameter(index=None)</span></code> in subsequent <code class="docutils literal notranslate"><span class="pre">ForEach</span></code> to create a <code class="docutils literal notranslate"><span class="pre">1:1</span></code> mapping of one foreach to another.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># main.py</span>
@@ -1077,8 +1074,7 @@ sharded.</p>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">:</span> <span class="n">First</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;Second&#39;</span><span class="p">,</span> <span class="n">first</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">ChainedFlow</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">ChainedFlow</span><span class="p">():</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -1110,6 +1106,7 @@ sharded.</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span> <span class="s1">&#39;Second&#39;</span> <span class="mi">3</span>
 </code></pre></div>
 </div>
+<p>This allows us to perform a series of fan-out operations in a row without needing to join until it is necessary.</p>
 
 
 
@@ -1171,7 +1168,7 @@ sharded.</p>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.1.1.
+    5.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -1190,6 +1187,7 @@ sharded.</p>
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     

@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../_static/stylesheets/main.b0359c04.min.css">
+      <link rel="stylesheet" href="../_static/stylesheets/main.30c392bc.min.css">
       
     
     
@@ -841,8 +841,7 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">foo</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">flow</span> <span class="o">=</span> <span class="n">TestFlow</span><span class="p">(</span><span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">(),</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">())</span>
+<span class="k">if</span> <span class="n">flow</span> <span class="o">:=</span> <span class="n">TestFlow</span><span class="p">(</span><span class="n">datastore</span><span class="o">=</span><span class="n">datastores</span><span class="o">.</span><span class="n">Memory</span><span class="p">(),</span> <span class="n">executor</span><span class="o">=</span><span class="n">executors</span><span class="o">.</span><span class="n">Thread</span><span class="p">()):</span>
     <span class="n">flow</span><span class="p">()</span>
 </code></pre></div>
 </div>
@@ -949,7 +948,7 @@
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.1.1.
+    5.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -968,6 +967,7 @@
     
     
       <script src="../_static/javascripts/bundle.dc1bded0.min.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     
