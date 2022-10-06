@@ -9,14 +9,12 @@ from laminar.types import unwrap
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-container = layers.Container(image="rchui/laminar:test-local")
-
 
 class TestFlow(Flow):
     ...
 
 
-@TestFlow.register(container=container)
+@TestFlow.register()
 class One(Layer):
     baz: List[str]
     foo: str
@@ -32,16 +30,14 @@ class One(Layer):
         logger.info("hello after")
 
 
-@TestFlow.register(container=container)
+@TestFlow.register()
 class Two(Layer):
     def __call__(self, one: One, three: "Three") -> None:
         self.bar = one.foo
         print(self.bar)
 
 
-@TestFlow.register(
-    container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")])
-)
+@TestFlow.register(foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
 class Three(Layer):
     baz: List[str]
 
@@ -54,9 +50,7 @@ class Three(Layer):
         self.configuration.container.memory = {"a": 1000, "b": 15000, "c": 2000}[one.baz[unwrap(self.index)]]
 
 
-@TestFlow.register(
-    container=container, foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)])
-)
+@TestFlow.register(foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)]))
 class Five(Layer):
     baz: List[str]
 
@@ -65,7 +59,7 @@ class Five(Layer):
         print(self.baz)
 
 
-@TestFlow.register(container=container)
+@TestFlow.register()
 class Four(Layer):
     def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]

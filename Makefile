@@ -1,3 +1,6 @@
+.PHONY:
+all: test run
+
 include Make.build
 include Make.rules
 include Make.tf
@@ -22,11 +25,12 @@ clear:
 		build \
 		dist \
 		docs/html \
-		docs/source/api
+		docs/source/api \
+		laminar.egg-info
 
 .PHONY: docs
 docs:
-	sphinx-build -a docs/source docs/html
+	$(VENV) sphinx-build -a docs/source docs/html
 
 .PHONY: env
 env: venv upgrade
@@ -49,8 +53,7 @@ open: docs
 
 .PHONY: run
 run:
-	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 .
-	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:test-local -f Dockerfile.test .
+	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target test .
 	docker system prune --force
 	python main.py
 
@@ -65,9 +68,8 @@ test: lint
 
 .PHONY: upgrade
 upgrade:
-	$(VENV) $(INSTALL) pip wheel
-	$(VENV) $(INSTALL) --requirement requirements.txt
-	$(VENV) $(INSTALL) --requirement requirements.dev.txt
+	$(VENV) $(INSTALL) --upgrade pip
+	$(VENV) $(INSTALL) --upgrade --editable .[dev]
 
 .PHONY: venv
 venv:

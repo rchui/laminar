@@ -1,3 +1,51 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Project information
+name = "laminar"
+description = "The workflow framework that works for you."
+authors = [
+  { name = "Ryan Chui", email = "ryan.w.chui@gmail.com" }
+]
+
+# Package information
+requires-python = ">=3.8"
+dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
+
+# Project metadata
+license = { file = "LICENSE" }
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Unix",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Internet",
+  "Typing :: Typed",
+]
+urls = { Homepage = "https://github.com/rchui/laminar", Documentation = "https://rchui.github.io/laminar/html/index.html" }
+
+[tool.setuptools]
+include-package-data = true
+packages = { find = { include = ["laminar*"], exclude = ["*tests*", "test_*", "*_test"] } }
+
+[tool.setuptools.dynamic]
+version = { attr = "laminar.version.VERSION" }
+readme = { file = ["README.md"] }
+dependencies = { file = ["requirements.txt"] }
+optional-dependencies = { dev = { file = ["requirements.dev.txt"] } }
+
 [tool.black]
 exclude = '''
 (

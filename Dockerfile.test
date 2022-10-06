@@ -1,4 +1,0 @@
-# syntax = docker/dockerfile:latest
-FROM rchui/laminar:3.8
-
-COPY . ./
