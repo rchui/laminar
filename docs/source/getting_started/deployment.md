@@ -115,8 +115,7 @@ class B(Layer):
     def __call__(self, a: A) -> None:
         print(self.name)
 
-if __name__ == "__main__":
-    flow = HelloFlow()
+if flow := HelloFlow():
     flow()
 ```
 

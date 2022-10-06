@@ -54,8 +54,7 @@ class TriggerFlow(Flow):
 class A(Layer):
     ...
 
-if __name__ == "__main__":
-    flow = TriggerFlow()
+if flow := TriggerFlow():
     flow()
 ```
 
@@ -84,11 +83,10 @@ class A(Layer):
 class B(Layer):
     ...
 
-if __name__ == "__main__":
-    flow1 = Flow1()
+if flow1 := Flow1():
     flow1()
 
-    flow2 = Flow2()
+if flow2 := Flow2():
     flow2()
 ```
 
@@ -109,8 +107,7 @@ class A(Layer):
     def __call__(self) -> None:
         print("hello world")
 
-if __name__ == "__main__":
-    flow = TaskFlow()
+if flow := TaskFlow():
     flow()
 ```
 
@@ -144,8 +141,7 @@ class B(Layer):
     def __call__(self, a: A) -> None:
         print(self.name)
 
-if __name__ == "__main__":
-    flow = HelloFlow()
+if flow := HelloFlow():
     flow()
 ```
 
@@ -194,8 +190,7 @@ class D(Layer):
     def __call__(self, a: A, b: B, c: C) -> None:
         print(self.name)
 
-if __name__ == "__main__":
-    flow = HelloFlow()
+if flow := HelloFlow():
     flow()
 ```
 
@@ -250,8 +245,7 @@ class End(Layer):
     def __call__(self, middle: Middle) -> None:
         print(f"Sent message: {middle.message}")
 
-if __name__ == "__main__":
-    flow = HelloFlow()
+if flow := HelloFlow():
     flow()
 ```
 

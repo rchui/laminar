@@ -58,12 +58,17 @@ class Execution:
 
     @property
     def finished(self) -> bool:
+        """Flow execution is finished."""
+
         return reduce(operator.and_, [layer.state.finished for layer in self.flow._dependencies.keys()])
 
     @property
     def running(self) -> bool:
-        return (current.execution.id is not None and current.execution.id == self.id) and (
-            current.flow.name is not None and current.flow.name == self.flow.name
+        """Flow execution is currently running."""
+
+        execution_id, flow_name = current.execution.id, current.flow.name
+        return (execution_id is not None and execution_id == self.id) and (
+            flow_name is not None and flow_name == self.flow.name
         )
 
     def next(self, *, flow: "Flow", linker: Callable[["Execution"], "Parameters"]) -> "Execution":

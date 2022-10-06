@@ -80,9 +80,10 @@ class ThreadFlow(TestFlow):
     ...
 
 
-if __name__ == "__main__":
-    flow: Flow = DockerFlow()
-    flow() if flow.execution.running else flow(foo="bar")
+flow: Flow
 
-    flow = ThreadFlow(executor=executors.Thread())
-    flow() if flow.execution.running else flow(foo="bar")
+if flow := DockerFlow():
+    flow(foo="bar")
+
+if flow := ThreadFlow(executor=executors.Thread()):
+    flow(foo="bar")

@@ -2,7 +2,7 @@
 
 > "slow is smooth, and smooth is fast"
 
-`laminar` is a modern container first framework for creating production ready workflows. It aims to enable you to design and execute any kind of workflow as easily as possible, but without getting in your way.
+`laminar` is the workflow framework that aims to just makes sense. It aims to be a modern container first framework for creating production ready workflows that enables you to design and execute any kind of workflow as easily as possible, without getting in your way.
 
 ## Key Features
 

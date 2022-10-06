@@ -18,8 +18,7 @@ class Task(Layer):
     def __call__(self) -> None:
         print(self.configuration.container.cpu, self.configuration.container.memory)
 
-if __name__ == '__main__':
-    flow = ConfiguredFlow()
+if flow := ConfiguredFlow():
     flow()
 ```
 

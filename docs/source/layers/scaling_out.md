@@ -24,8 +24,7 @@ class Process(Layer):
         print(shard.foo[1])
         print(shard.foo[1:])
 
-if __name__ == '__main__':
-    flow = ShardedFlow()
+if flow := ShardedFlow():
     flow()
 ```
 
@@ -74,8 +73,7 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(self.index, shard.foo)
 
-if __name__ == '__main__':
-    flow = ForeachFlow()
+if flow := ForeachFlow():
     flow()
 ```
 
@@ -131,8 +129,7 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(self.index, shard.foo, shard.bar)
 
-if __name__ == '__main__':
-    flow = ForeachFlow()
+if flow := ForeachFlow():
     flow()
 ```
 
@@ -190,8 +187,7 @@ class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(self.index, shard.foo, shard.bar)
 
-if __name__ == '__main__':
-    flow = GridFlow()
+if flow := GridFlow():
     flow()
 ```
 
@@ -256,8 +252,7 @@ class Join(Layer):
         print(list(process.foo))
         print(process.foo[1])
 
-if __name__ == '__main__':
-    flow = JoinFlow()
+if flow := JoinFlow():
     flow()
 ```
 
@@ -324,8 +319,7 @@ class Second(Layer):
     def __call__(self, first: First) -> None:
         print(self.index, 'Second', first.foo)
 
-if __name__ == '__main__':
-    flow = ChainedFlow()
+if flow := ChainedFlow():
     flow()
 ```
 

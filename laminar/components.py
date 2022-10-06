@@ -282,6 +282,15 @@ class Flow:
                 dependents[parent].add(child)
         return dependents
 
+    def __bool__(self) -> bool:
+        if self.execution.id is None:
+            return True
+
+        if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self.registry:
+            self.execute(execution=self.execution.id, layer=self.layer(current.layer.name))
+
+        return False
+
     def __call__(self, *, execution: Optional[str] = None, **attributes: Any) -> flows.Execution:
         """Execute the flow or execute a layer in the flow.
 
@@ -299,13 +308,7 @@ class Flow:
             flow("execution-id")
         """
 
-        # Execute a layer in the flow.
-        if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self.registry:
-            execution = self.execution.id
-            self.execute(execution=self.execution.id, layer=self.layer(current.layer.name))
-
-        # Schedule execution of the flow.
-        elif self.execution.id is None:
+        if self:
             self.execution = flows.Execution(id=execution or str(KsuidMs()), flow=self)
             self.parameters(execution=self.execution.id, **attributes)
             self.schedule(execution=unwrap(self.execution.id), dependencies=self.dependencies)

@@ -74,8 +74,7 @@ class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
-if __name__ == "__main__":
-    flow = TestFlow(datastore=datastores.Memory(), executor=executors.Thread())
+if flow := TestFlow(datastore=datastores.Memory(), executor=executors.Thread()):
     flow()
 ```
 
