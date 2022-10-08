@@ -68,7 +68,7 @@ test: lint
 
 .PHONY: upgrade
 upgrade:
-	$(VENV) $(INSTALL) --upgrade pip
+	$(VENV) $(INSTALL) --upgrade pip wheel
 	$(VENV) $(INSTALL) --upgrade --editable .[dev]
 
 .PHONY: venv

@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update \
     && apt-get install -y --no-install-recommends \
     && apt-get clean \
-    && python -m pip install --upgrade pip
+    && python -m pip install --upgrade pip wheel
 
 FROM requirements as release
 
