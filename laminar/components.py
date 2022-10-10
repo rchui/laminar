@@ -37,8 +37,6 @@ class Layer:
     configuration: layers.Configuration
     #: Flow the Layer is registered to
     flow: "Flow"
-    #: Layer state
-    state: layers.State
 
     #: Current layer execution attempt
     attempt: Optional[int] = current.layer.attempt
@@ -50,7 +48,6 @@ class Layer:
     def __init__(self, **attributes: Any) -> None:
         for key, value in attributes.items():
             setattr(self, key, value)
-        self.state = layers.State(layer=self)
 
     __call__: Callable[..., None]  # type: ignore
 
@@ -155,6 +152,12 @@ class Layer:
 
         return type(self).__name__
 
+    @property
+    def state(self) -> layers.State:
+        """State of the Layer"""
+
+        return layers.State(layer=self)
+
     def execute(self, *parameters: "Layer") -> None:
         """Execute a layer.
 
@@ -208,8 +211,8 @@ class Flow:
             ...
     """
 
-    registry: Dict[str, Layer]
-    """Layers registered with the flow"""
+    #: Layers registered with the flow
+    registry: Dict[str, Layer] = {}
 
     def __init__(
         self,
@@ -230,10 +233,6 @@ class Flow:
 
         self.name = type(self).__name__
         self.execution = flows.Execution(id=current.execution.id, flow=self)
-
-        if isinstance(datastore, datastores.Memory) and not isinstance(executor, executors.Thread):
-            raise FlowError("The Memory datastore can only be used with the Thread executor.")
-
         self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
     def __init_subclass__(cls) -> None:

@@ -1,12 +1,15 @@
+"""Configurations for laminar flows."""
+
 import copy
 import operator
 from dataclasses import dataclass
 from functools import reduce
 from typing import TYPE_CHECKING, Any, Callable, Optional, Type, TypeVar, Union, overload
 
-from laminar.configurations.datastores import DataStore, Local
-from laminar.configurations.executors import Docker, Executor
+from laminar.configurations.datastores import DataStore, Local, Memory
+from laminar.configurations.executors import Docker, Executor, Thread
 from laminar.configurations.schedulers import Scheduler
+from laminar.exceptions import FlowError
 from laminar.settings import current
 from laminar.types import unwrap
 from laminar.utils import stringify
@@ -37,6 +40,10 @@ class Configuration:
     executor: Executor = Docker()
     #: Flow scheduler configuration
     scheduler: Scheduler = Scheduler()
+
+    def __post_init__(self) -> None:
+        if isinstance(self.datastore, Memory) and not isinstance(self.executor, Thread):
+            raise FlowError("The Memory datastore can only be used with the Thread executor.")
 
 
 @dataclass
