@@ -2,7 +2,7 @@
 
 import copy
 from typing import Any, Dict
-from unittest.mock import ANY, Mock, patch
+from unittest.mock import MagicMock
 
 import cloudpickle
 import pytest
@@ -161,27 +161,34 @@ class TestFLow:
         assert flow.dependencies == {"Dep1": set(), "Dep2": set(), "Parameters": set(), "Test": {"Dep1", "Dep2"}}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
-    @patch("laminar.components.Flow.schedule")
-    @patch("laminar.components.Flow.execute")
-    def test_call(self, mock_execute: Mock, mock_schedule: Mock, flow: Flow) -> None:
-        with contexts.Attributes(flow.execution, id=None):
-            flow()
+    def test_call_schedule(self, flow: Flow) -> None:
+        mock_execution = MagicMock()
+        mock_execution.id = None
 
-        mock_schedule.assert_called_once_with(execution=ANY, dependencies={"Parameters": set()})
+        flow.execution = mock_execution
+
+        flow()
+
+        mock_execution.return_value.parameters.return_value.schedule.assert_called_once_with(
+            dependencies={"Parameters": set()}
+        )
+
+    def test_call_execute(self, flow: Flow) -> None:
+        mock_execution = MagicMock()
+        mock_execution.id = "test-execution"
+
+        flow.execution = mock_execution
 
         @flow.register()
         class Test(Layer):
             ...
 
+        flow()
+
         with contexts.Environment(LAMINAR_LAYER_NAME="Test", LAMINAR_FLOW_NAME="TestFlow"):
             flow()
-        assert mock_execute.call_args[-1]["layer"] == Test()
 
-    def test_execute(self) -> None:
-        ...
-
-    def test_schedule(self) -> None:
-        ...
+        mock_execution.execute.assert_called_once_with(layer=Test())
 
     def test_register(self, flow: Flow) -> None:
         @flow.register()

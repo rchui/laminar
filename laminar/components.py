@@ -2,18 +2,20 @@
 
 import copy
 import logging
+import operator
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from functools import reduce
 from itertools import chain
 from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple, Type, TypeVar, Union, overload
 
 from ksuid import KsuidMs
 
 from laminar.configurations import datastores, executors, flows, hooks, layers, schedulers
-from laminar.exceptions import ExecutionError, FlowError
+from laminar.exceptions import FlowError
 from laminar.settings import current
 from laminar.types import LayerType, hints, unwrap
-from laminar.utils import contexts, stringify
+from laminar.utils import stringify
 
 logger = logging.getLogger(__name__)
 
@@ -200,6 +202,7 @@ class Parameters(Layer):
 T = TypeVar("T", bound=Layer)
 
 
+@dataclass
 class Flow:
     """Collection of tasks that execute in a specific order.
 
@@ -211,8 +214,12 @@ class Flow:
             ...
     """
 
+    #: Execution of the flow
+    execution: "Execution"
+    #: Flow configuration
+    configuration: flows.Configuration
     #: Layers registered with the flow
-    registry: Dict[str, Layer] = {}
+    registry: Dict[str, Layer] = field(default_factory=dict)
 
     def __init__(
         self,
@@ -231,8 +238,7 @@ class Flow:
             FlowError: If the flow is used to configure the Memory datastore without a Thread executor.
         """
 
-        self.name = type(self).__name__
-        self.execution = flows.Execution(id=current.execution.id, flow=self)
+        self.execution = Execution(id=current.execution.id, flow=self)
         self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
     def __init_subclass__(cls) -> None:
@@ -281,16 +287,20 @@ class Flow:
                 dependents[parent].add(child)
         return dependents
 
+    @property
+    def name(self) -> str:
+        return type(self).__name__
+
     def __bool__(self) -> bool:
         if self.execution.id is None:
             return True
 
         if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self.registry:
-            self.execute(execution=self.execution.id, layer=self.layer(current.layer.name))
+            self.execution.execute(layer=self.layer(current.layer.name))
 
         return False
 
-    def __call__(self, *, execution: Optional[str] = None, **attributes: Any) -> flows.Execution:
+    def __call__(self, *, execution: Optional[str] = None, **parameters: Any) -> "Execution":
         """Execute the flow or execute a layer in the flow.
 
         Notes:
@@ -308,58 +318,13 @@ class Flow:
         """
 
         if self:
-            self.execution = flows.Execution(id=execution or str(KsuidMs()), flow=self)
-            self.parameters(execution=self.execution.id, **attributes)
-            self.schedule(execution=unwrap(self.execution.id), dependencies=self.dependencies)
+            self.execution = self.execution(execution or str(KsuidMs()))
+            self.execution.parameters(**parameters).schedule(dependencies=self.dependencies)
 
         return self.execution
 
     def __repr__(self) -> str:
         return stringify(self, self.name, "execution")
-
-    def execute(self, *, execution: str, layer: Layer) -> None:
-        """Execute a single layer of the flow.
-
-        Usage::
-
-            class ExecutionFlow(Flow):
-                ...
-
-            @ExecutionFlow.register()
-            class A(Layer):
-                ...
-
-            flow = ExecutionFlow()
-            flow.execute(execution="test-execution", layer=flow.layer(A, index=0, splits=2))
-
-        Args:
-            execution: ID of the execution being run.
-            layer: Layer of the flow to execute.
-        """
-
-        with contexts.Attributes(layer.flow.execution, id=execution):
-            logger.info("Starting layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
-
-            # Setup the Layer parameter values
-            parameters = layer.configuration.foreach.set(layer=layer, parameters=layer._parameters["__call__"])
-
-            with hooks.event.context(layer=layer, annotation=hooks.annotation.execution):
-                layer.execute(*parameters)
-
-            logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
-
-    def schedule(self, *, execution: str, dependencies: Dict[str, Set[str]]) -> None:
-        """Schedule layers to run in sequence in the flow.
-
-        Args:
-            execution: ID of the execution being run.
-            dependencies: Mapping of layers to layers it depends on.
-        """
-
-        with contexts.Attributes(self.execution, id=execution):
-            self.configuration.scheduler.loop(  # type: ignore
-                flow=self, dependencies=dependencies, finished={Parameters().name}
-            )
 
     @classmethod
     def register(
@@ -442,47 +407,190 @@ class Flow:
 
         return layer
 
-    def parameters(self, *, execution: Optional[str] = None, **artifacts: Any) -> str:
+
+@dataclass
+class Execution:
+    #: ID of the flow execution
+    id: Optional[str]
+    #: Flow being executed
+    flow: "Flow"
+    #: True if the flow execution is being retried, else False.
+    retry: bool = False
+
+    def __call__(self, id: str) -> "Execution":
+        return Execution(id=id, flow=self.flow, retry=self.retry)
+
+    def __repr__(self) -> str:
+        return stringify(self, type(self).__name__, "id", "retry")
+
+    @property
+    def finished(self) -> bool:
+        """Flow execution is finished."""
+
+        return reduce(operator.and_, [layer.state.finished for layer in self.flow._dependencies.keys()])
+
+    @property
+    def running(self) -> bool:
+        """Flow execution is currently running."""
+
+        execution_id, flow_name = current.execution.id, current.flow.name
+        return (execution_id is not None and execution_id == self.id) and (
+            flow_name is not None and flow_name == self.flow.name
+        )
+
+    def execute(self, *, layer: Layer) -> "Execution":
+        """Execute a single layer of the flow.
+
+        Usage::
+
+            class ExecutionFlow(Flow):
+                ...
+
+            @ExecutionFlow.register()
+            class A(Layer):
+                ...
+
+            flow = ExecutionFlow()
+            flow.execution(...).execute(layer=flow.layer(A, index=0, splits=2))
+
+        Args:
+            layer: Layer of the flow to execute.
+        """
+
+        logger.info("Starting layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
+
+        # Setup the Layer parameter values
+        parameters = layer.configuration.foreach.set(layer=layer, parameters=layer._parameters["__call__"])
+
+        with hooks.event.context(layer=layer, annotation=hooks.annotation.execution):
+            layer.execute(*parameters)
+
+        logger.info("Finishing layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
+
+        return self
+
+    def next(self, *, flow: "Flow", linker: Callable[["Execution"], "Parameters"]) -> "Execution":
+        """Chain multiple flow executions together.
+
+        Usage::
+
+            class Flow1(Flow):
+                ...
+
+            class Flow2(Flow):
+                ...
+
+            @Flow1.register()
+            class A(Layer):
+                foo: str
+
+            flow1 = Flow1()
+
+            flow_1().next(
+                flow=Flow2(),
+                linker=lambda execution: Parameters(foo=execution.layer(A).foo)
+            )
+
+        Args:
+            flow: Flow to execute next.
+            linker: Function for passing parameters to the next flow.
+        """
+
+        artifacts = (
+            linker(self).artifacts
+            if all(variable is None for variable in (current.execution.id, current.flow.name, current.layer.name))
+            else {}
+        )
+        return flow(execution=self.id, **artifacts)
+
+    @overload
+    def layer(self, layer: str, **atributes: Any) -> "Layer":
+        ...
+
+    @overload
+    def layer(self, layer: Type[T], **attributes: Any) -> T:
+        ...
+
+    @overload
+    def layer(self, layer: T, **attributes: Any) -> T:
+        ...
+
+    def layer(self, layer: Union[str, Type["Layer"], "Layer"], **attributes: Any) -> "Layer":
+        """Get a registered flow layer.
+
+        Usage::
+
+            flow.execution(...).layer("A")
+            flow.execution(...).layer(A)
+            flow.execution(...).layer(A())
+            flow.execution(...).layer(A(), index=0, splits=2)
+
+        Args:
+            layer: Layer to get.
+            **attributes: Keyword attributes to add to the Layer.
+
+        Returns:
+            Layer that is registered to the flow.
+        """
+
+        return self.flow.layer(layer, **attributes)
+
+    def parameters(self, **artifacts: Any) -> "Execution":
         """Configure parameters for a flow execution
 
         Usage::
 
-            execution = flow.parameters(foo="bar")
-            flow(execution=execution)
+            flow.execution(...).parameters(foo="bar")
 
         Args:
-            execution: ID of the execution to configure the flow parameters for.
             artifacts: Key/value pairs of parameters to add to the flow.
 
         Returns:
             ID of the execution the parameters were added to.
         """
 
-        execution = execution or str(KsuidMs())
-        with contexts.Attributes(self.execution, id=execution):
-            # Property setup the layer for writing to the datastore
-            layer = self.layer(Parameters, index=0, splits=1, attempt=0)
+        # Properly setup the layer for writing to the datastore
+        layer = self.layer(Parameters, index=0, splits=1, attempt=0, **artifacts)
 
-            # Assign artifact values
-            for name, value in artifacts.items():
-                if name in LAYER_RESERVED_KEYWORDS:
-                    raise ExecutionError(
-                        "A flow parameter is in the list of layer reserved keywords:"
-                        f" {sorted(LAYER_RESERVED_KEYWORDS)}. Given {name}."
-                    )
-                setattr(layer, name, value)
+        # Fake an execution to write the artifacts to the datastore.
+        execution = self.execute(layer=layer)
 
-            # Fake an execution to write the artifacts to the datastore.
-            self.execute(execution=execution, layer=layer)
-
-            # Record parameter layer execution
-            layer.flow.configuration.datastore.write_record(
-                layer=layer,
-                record=datastores.Record(
-                    flow=datastores.Record.FlowRecord(name=layer.flow.name),
-                    layer=datastores.Record.LayerRecord(name=layer.name),
-                    execution=datastores.Record.ExecutionRecord(splits=unwrap(layer.splits)),
-                ),
-            )
+        # Record parameter layer execution
+        layer.flow.configuration.datastore.write_record(
+            layer=layer,
+            record=datastores.Record(
+                flow=datastores.Record.FlowRecord(name=layer.flow.name),
+                layer=datastores.Record.LayerRecord(name=layer.name),
+                execution=datastores.Record.ExecutionRecord(splits=unwrap(layer.splits)),
+            ),
+        )
 
         return execution
+
+    def resume(self) -> "Execution":
+        """Resume a flow execution from where it failed.
+
+        Notes:
+
+            Resuming a flow execution will skip all layers that finished on the previous attempt.
+
+        Usage::
+
+            flow.execution(...).resume()
+        """
+
+        self.retry = True
+        return self.schedule(dependencies=self.flow.dependencies)
+
+    def schedule(self, *, dependencies: Dict[str, Set[str]]) -> "Execution":
+        """Schedule layers to run in sequence in the flow execution.
+
+        Args:
+            dependencies: Mapping of layers to layers it depends on.
+        """
+
+        self.flow.configuration.scheduler.loop(  # type: ignore
+            flow=self.flow, dependencies=dependencies, finished={Parameters().name}
+        )
+
+        return self

@@ -91,7 +91,7 @@ class Thread(Executor):
                 LAMINAR_LAYER_NAME=layer.name,
                 LAMINAR_LAYER_SPLITS=layer.splits,
             ):
-                layer.flow.execute(execution=unwrap(layer.flow.execution.id), layer=layer)
+                layer.flow.execution.execute(layer=layer)
 
             return layer
 

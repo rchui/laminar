@@ -16,7 +16,8 @@ from laminar.utils import fs
 
 if TYPE_CHECKING:
     from laminar import Flow, Layer
-    from laminar.configurations.flows import Execution
+    from laminar.components import Execution
+
 else:
     Execution = "Execution"
     Flow = "Flow"

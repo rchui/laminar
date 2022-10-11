@@ -1,9 +1,8 @@
 import pytest
 
 from laminar import Flow, Layer
-from laminar.configurations.datastores import Memory
-from laminar.configurations.executors import Thread
-from laminar.configurations.flows import Execution
+from laminar.components import Execution
+from laminar.configurations import datastores, executors
 
 
 @pytest.fixture()
@@ -11,7 +10,7 @@ def flow() -> Flow:
     class TestFlow(Flow):
         ...
 
-    flow = TestFlow(datastore=Memory(), executor=Thread())
+    flow = TestFlow(datastore=datastores.Memory(), executor=executors.Thread())
     flow.execution = Execution(id="test-execution", flow=flow)
     return flow
 
