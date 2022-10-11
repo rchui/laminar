@@ -1,7 +1,6 @@
 import pytest
 
 from laminar import Flow, Layer
-from laminar.components import Execution
 from laminar.configurations import datastores, executors
 
 
@@ -11,11 +10,11 @@ def flow() -> Flow:
         ...
 
     flow = TestFlow(datastore=datastores.Memory(), executor=executors.Thread())
-    flow.execution = Execution(id="test-execution", flow=flow)
+    flow.execution("test-execution")
     return flow
 
 
 @pytest.fixture()
 def layer(flow: Flow) -> Layer:
     flow.register()(Layer)
-    return flow.layer(Layer, index=0, attempt=1, splits=2)
+    return flow.execution.layer(Layer, index=0, attempt=1, splits=2)

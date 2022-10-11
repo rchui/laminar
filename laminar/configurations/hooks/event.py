@@ -70,7 +70,7 @@ def context(*, layer: "Layer", annotation: str) -> ExitStack:
     stack = ExitStack()
     for hook in layer.hooks.get(annotation, []):
         # Gather any layer dependencies the hook may have
-        parameters = hints(layer.flow, hook)
+        parameters = hints(layer.execution, hook)
 
         # Create a context manager for the generator and register it with the exit stack
         if inspect.isgeneratorfunction(hook):

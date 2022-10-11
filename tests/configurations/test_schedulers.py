@@ -26,12 +26,14 @@ class TestScheduler:
     scheduler = Scheduler()
 
     async def test_schedule(self, layer: Layer) -> None:
+        print(layer)
+
         async with coroutine("laminar.configurations.executors.Thread.submit") as mock_execute:
             await self.scheduler.schedule(layer=layer)
 
             mock_execute.assert_called_once_with(layer=layer)
 
-        assert layer.flow.configuration.datastore.read_record(layer=layer) == Record(
+        assert layer.execution.flow.configuration.datastore.read_record(layer=layer) == Record(
             flow=Record.FlowRecord(name="TestFlow"),
             layer=Record.LayerRecord(name="Layer"),
             execution=Record.ExecutionRecord(splits=1),

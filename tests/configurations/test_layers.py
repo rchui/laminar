@@ -94,7 +94,7 @@ class TestForEach:
         self.D = D
 
     def test_join(self) -> None:
-        layer = self.flow.layer(self.C)
+        layer = self.flow.execution.layer(self.C)
         assert layer.configuration.foreach.join(layer=layer, name="foo") == Archive(
             artifacts=[
                 Artifact(dtype="str", hexdigest="a"),
@@ -105,7 +105,7 @@ class TestForEach:
         )
 
     def test_grid(self) -> None:
-        layer = self.flow.layer(self.C)
+        layer = self.flow.execution.layer(self.C)
         assert layer.configuration.foreach.grid(layer=layer) == [
             {self.A(): {"foo": 0}, self.B(): {"bar": 0}},
             {self.A(): {"foo": 0}, self.B(): {"bar": 1}},
@@ -114,7 +114,7 @@ class TestForEach:
         ]
 
     def test_grid_none(self) -> None:
-        layer = self.flow.layer(self.D)
+        layer = self.flow.execution.layer(self.D)
         assert layer.configuration.foreach.grid(layer=layer) == [
             {self.C(): {"foo": 0}},
             {self.C(): {"foo": 1}},
@@ -123,7 +123,7 @@ class TestForEach:
         ]
 
     def test_splits(self) -> None:
-        layer = self.flow.layer(self.C)
+        layer = self.flow.execution.layer(self.C)
         assert layer.configuration.foreach.splits(layer=layer) == 4
 
     def test_splits_cache_hit(self) -> None:
@@ -133,21 +133,26 @@ class TestForEach:
             execution=Record.ExecutionRecord(splits=6),
         )
 
-        layer = self.flow.layer(self.C)
+        layer = self.flow.execution.layer(self.C)
         assert layer.configuration.foreach.splits(layer=layer) == 6
 
     def test_set(self) -> None:
-        layer = self.flow.layer(self.C, index=0)
+        print(self.flow)
+        print(self.flow.execution)
+        layer = self.flow.execution.layer(self.C, index=0)
+
+        print(layer)
+
         A, B = layer.configuration.foreach.set(
-            layer=layer, parameters=(self.flow.layer(self.A), self.flow.layer(self.B))
+            layer=layer, parameters=(self.flow.execution.layer(self.A), self.flow.execution.layer(self.B))
         )
 
         assert A.foo is True
         assert B.bar == 0
 
-        layer = self.flow.layer(self.C, index=3)
+        layer = self.flow.execution.layer(self.C, index=3)
         A, B = layer.configuration.foreach.set(
-            layer=layer, parameters=(self.flow.layer(self.A), self.flow.layer(self.B))
+            layer=layer, parameters=(self.flow.execution.layer(self.A), self.flow.execution.layer(self.B))
         )
 
         assert A.foo is False

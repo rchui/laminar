@@ -1,22 +1,22 @@
 """Shared laminar types."""
 
-from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, Type, TypeVar, get_type_hints
+from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, TypeVar, get_type_hints
 
 if TYPE_CHECKING:
-    from laminar import Flow, Layer
+    from laminar import Layer
+    from laminar.components import Execution
 else:
     Flow = "Flow"
-    Layer = "Layer"
+    Execution = "Execution"
 
 T = TypeVar("T")
-LayerType = TypeVar("LayerType", bound=Type[Layer])
 
 
-def hints(flow: Flow, function: Callable[..., Any]) -> Tuple[Layer, ...]:
+def hints(execution: Execution, function: Callable[..., Any]) -> Tuple["Layer", ...]:
     """Get the type hints for a given function.
 
     Args:
-        flow: Flow to get layers for.
+        execution: Execution to get layers for.
         function (Callable[..., Any]): Function to get type hints for.
 
     Returns:
@@ -24,7 +24,7 @@ def hints(flow: Flow, function: Callable[..., Any]) -> Tuple[Layer, ...]:
     """
 
     return tuple(
-        flow.layer(hint)
+        execution.layer(hint)
         for hint in (annotation for parameter, annotation in get_type_hints(function).items() if parameter != "return")
     )
 

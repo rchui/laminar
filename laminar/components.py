@@ -14,13 +14,13 @@ from ksuid import KsuidMs
 from laminar.configurations import datastores, executors, flows, hooks, layers, schedulers
 from laminar.exceptions import FlowError
 from laminar.settings import current
-from laminar.types import LayerType, hints, unwrap
+from laminar.types import hints, unwrap
 from laminar.utils import stringify
 
 logger = logging.getLogger(__name__)
 
-FLOW_RESERVED_KEYWORDS = {"configuration", "execution"}
-LAYER_RESERVED_KEYWORDS = {"attempt", "configuration", "flow", "index", "namespace", "splits", "state"}
+FLOW_RESERVED_KEYWORDS = {"configuration", "execution", "registry"}
+LAYER_RESERVED_KEYWORDS = {"configuration", "execution", "attempt", "index", "splits"}
 
 
 @dataclass
@@ -37,8 +37,8 @@ class Layer:
 
     #: Configurations for the Layer
     configuration: layers.Configuration
-    #: Flow the Layer is registered to
-    flow: "Flow"
+    #: Execution the layer is being run in
+    execution: "Execution"
 
     #: Current layer execution attempt
     attempt: Optional[int] = current.layer.attempt
@@ -57,7 +57,7 @@ class Layer:
         ...
 
     def __repr__(self) -> str:
-        return stringify(self, self.name, "flow", "index", "splits")
+        return stringify(self, self.name, "execution", "index", "splits")
 
     def __deepcopy__(self, memo: Dict[int, Any]) -> "Layer":
         cls = self.__class__
@@ -78,7 +78,7 @@ class Layer:
     def __getattr__(self, name: str) -> Any:
         if name not in self.__dict__:
             try:
-                self.__dict__[name] = self.flow.configuration.datastore.read_artifact(
+                self.__dict__[name] = self.execution.flow.configuration.datastore.read_artifact(
                     layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
                 )
             except RecursionError as error:
@@ -118,15 +118,15 @@ class Layer:
     def _hooks(self) -> Set[Callable[..., Any]]:
         return {
             hook
-            for hook in chain(vars(type(self.flow)).values(), vars(type(self)).values())
+            for hook in chain(vars(type(self.execution.flow)).values(), vars(type(self)).values())
             if hooks.annotation.get(hook) is not None
         }
 
     @property
     def _parameters(self) -> Dict[str, Tuple["Layer", ...]]:
         return {
-            self.__call__.__name__: hints(self.flow, self.__call__),
-            **{hook.__name__: hints(self.flow, hook) for hook in self._hooks},
+            self.__call__.__name__: hints(self.execution, self.__call__),
+            **{hook.__name__: hints(self.execution, hook) for hook in self._hooks},
         }
 
     @property
@@ -173,7 +173,7 @@ class Layer:
                 self(*parameters)
         finally:
             for artifact, value in self.artifacts.items():
-                self.flow.configuration.datastore.write(layer=self, name=artifact, values=[value])
+                self.execution.flow.configuration.datastore.write(layer=self, name=artifact, values=[value])
 
     def shard(self, **artifacts: Iterable[Any]) -> None:
         """Store each item of a sequence separately so that they may be loaded individually downstream.
@@ -192,220 +192,14 @@ class Layer:
         """
 
         for artifact, sequence in artifacts.items():
-            self.flow.configuration.datastore.write(layer=self, name=artifact, values=sequence)
+            self.execution.flow.configuration.datastore.write(layer=self, name=artifact, values=sequence)
 
 
 class Parameters(Layer):
     """Special Layer for handling Flow parameters."""
 
 
-T = TypeVar("T", bound=Layer)
-
-
-@dataclass
-class Flow:
-    """Collection of tasks that execute in a specific order.
-
-    Usage::
-
-        from laminar import Flow, Layer
-
-        class HelloFlow(Flow):
-            ...
-    """
-
-    #: Execution of the flow
-    execution: "Execution"
-    #: Flow configuration
-    configuration: flows.Configuration
-    #: Layers registered with the flow
-    registry: Dict[str, Layer] = field(default_factory=dict)
-
-    def __init__(
-        self,
-        *,
-        datastore: datastores.DataStore = datastores.Local(),
-        executor: executors.Executor = executors.Docker(),
-        scheduler: schedulers.Scheduler = schedulers.Scheduler(),
-    ) -> None:
-        """
-        Args:
-            datastore: Datastore to execute the flow with. Optional; Defaults to datastores.Local().
-            executor: Executor to run layers with. Optional; Defaults to executors.Docker().
-            scheduler: Scheduler to manage the flow with. Optional; Defaults to schedulers.Scheduler().
-
-        Raises:
-            FlowError: If the flow is used to configure the Memory datastore without a Thread executor.
-        """
-
-        self.execution = Execution(id=current.execution.id, flow=self)
-        self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
-
-    def __init_subclass__(cls) -> None:
-        flow: Type[Flow]
-        layer: Layer
-
-        # Register all subflow layers with this layer
-        cls.registry = {Parameters().name: Parameters(configuration=layers.Configuration())}
-        for flow in cls.__bases__:
-            for name, layer in getattr(flow, "registry", {}).items():
-                if name != Parameters().name:
-                    callback = cls.register(
-                        container=layer.configuration.container,
-                        foreach=layer.configuration.foreach,
-                        retry=layer.configuration.retry,
-                    )
-                    callback(layer.__class__)
-
-    @property
-    def _dependencies(self) -> Dict[Layer, Set[Layer]]:
-        return {
-            self.layer(child): {self.layer(parent) for parent in parents}
-            for child, parents in self.dependencies.items()
-        }
-
-    @property
-    def dependencies(self) -> Dict[str, Set[str]]:
-        """A mapping of each layer and the layers it depends on."""
-
-        return {layer: self.layer(layer).dependencies for layer in self.registry}
-
-    @property
-    def _dependents(self) -> Dict[Layer, Set[Layer]]:
-        return {
-            self.layer(parent): {self.layer(child) for child in children}
-            for parent, children in self.dependents.items()
-        }
-
-    @property
-    def dependents(self) -> Dict[str, Set[str]]:
-        """A mapping of each layer and the layers that depend on it."""
-
-        dependents: Dict[str, Set[str]] = defaultdict(set)
-        for child, parents in self.dependencies.items():
-            for parent in parents:
-                dependents[parent].add(child)
-        return dependents
-
-    @property
-    def name(self) -> str:
-        return type(self).__name__
-
-    def __bool__(self) -> bool:
-        if self.execution.id is None:
-            return True
-
-        if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self.registry:
-            self.execution.execute(layer=self.layer(current.layer.name))
-
-        return False
-
-    def __call__(self, *, execution: Optional[str] = None, **parameters: Any) -> "Execution":
-        """Execute the flow or execute a layer in the flow.
-
-        Notes:
-            If the execution id and layer name are set, execute a layer.
-            Else execute the flow.
-
-        Usage::
-
-            class HelloFlow(Flow):
-                ...
-            flow = HelloFlow()
-
-            flow()
-            flow("execution-id")
-        """
-
-        if self:
-            self.execution = self.execution(execution or str(KsuidMs()))
-            self.execution.parameters(**parameters).schedule(dependencies=self.dependencies)
-
-        return self.execution
-
-    def __repr__(self) -> str:
-        return stringify(self, self.name, "execution")
-
-    @classmethod
-    def register(
-        cls,
-        catch: layers.Catch = layers.Catch(),
-        container: layers.Container = layers.Container(),
-        foreach: layers.ForEach = layers.ForEach(),
-        retry: layers.Retry = layers.Retry(),
-    ) -> Callable[[LayerType], LayerType]:
-        """Add a layer to the flow.
-
-        Usage::
-
-            @Flow.register()
-            class Task(Layer):
-                ...
-        """
-
-        def wrapper(Layer: LayerType) -> LayerType:
-            layer = Layer(
-                configuration=layers.Configuration(catch=catch, container=container, foreach=foreach, retry=retry)
-            )
-
-            if layer.name in cls.registry:
-                raise FlowError(
-                    f"Duplicate layer added to flow '{cls.__name__}'.\n"
-                    f"  Given layer '{layer.name}'.\n"
-                    f"  Added layers {sorted(cls.registry)}"
-                )
-
-            # First register the layer without the flow attribute
-            cls.registry[layer.name] = copy.deepcopy(layer)
-
-            return Layer
-
-        return wrapper
-
-    @overload
-    def layer(self, layer: str, **atributes: Any) -> Layer:
-        ...
-
-    @overload
-    def layer(self, layer: Type[T], **attributes: Any) -> T:
-        ...
-
-    @overload
-    def layer(self, layer: T, **attributes: Any) -> T:
-        ...
-
-    def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
-        """Get a registered flow layer.
-
-        Usage::
-
-            flow.layer("A")
-            flow.layer(A)
-            flow.layer(A())
-            flow.layer(A(), index=0, splits=2)
-
-        Args:
-            layer: Layer to get.
-            **attributes: Keyword attributes to add to the Layer.
-
-        Returns:
-            Layer that is registered to the flow.
-        """
-
-        if isinstance(layer, Layer):
-            layer = layer.name
-        elif not isinstance(layer, str):
-            layer = layer().name
-
-        # Deepcopy so that layer artifacts don't mess with other layer split executions
-        layer = copy.deepcopy(self.registry[layer])
-
-        # Inject the flow attribute to link the layer to the flow
-        layer.flow = self
-        for key, value in attributes.items():
-            setattr(layer, key, value)
-
-        return layer
+LayerT = TypeVar("LayerT", bound=Layer)
 
 
 @dataclass
@@ -418,10 +212,12 @@ class Execution:
     retry: bool = False
 
     def __call__(self, id: str) -> "Execution":
-        return Execution(id=id, flow=self.flow, retry=self.retry)
+        execution = Execution(id=id, flow=self.flow, retry=self.retry)
+        self.flow.execution = execution
+        return execution
 
     def __repr__(self) -> str:
-        return stringify(self, type(self).__name__, "id", "retry")
+        return stringify(self, type(self).__name__, "id", "retry", "flow")
 
     @property
     def finished(self) -> bool:
@@ -504,18 +300,18 @@ class Execution:
         return flow(execution=self.id, **artifacts)
 
     @overload
-    def layer(self, layer: str, **atributes: Any) -> "Layer":
+    def layer(self, layer: str, **atributes: Any) -> Layer:
         ...
 
     @overload
-    def layer(self, layer: Type[T], **attributes: Any) -> T:
+    def layer(self, layer: Type[LayerT], **attributes: Any) -> LayerT:
         ...
 
     @overload
-    def layer(self, layer: T, **attributes: Any) -> T:
+    def layer(self, layer: LayerT, **attributes: Any) -> LayerT:
         ...
 
-    def layer(self, layer: Union[str, Type["Layer"], "Layer"], **attributes: Any) -> "Layer":
+    def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.
 
         Usage::
@@ -533,7 +329,20 @@ class Execution:
             Layer that is registered to the flow.
         """
 
-        return self.flow.layer(layer, **attributes)
+        if isinstance(layer, Layer):
+            layer = layer.name
+        elif not isinstance(layer, str):
+            layer = layer().name
+
+        # Deepcopy so that layer artifacts don't mess with other layer split executions
+        layer = copy.deepcopy(self.flow.registry[layer])
+
+        # Inject the execution attribute to link the layer to an execution
+        layer.execution = self
+        for key, value in attributes.items():
+            setattr(layer, key, value)
+
+        return layer
 
     def parameters(self, **artifacts: Any) -> "Execution":
         """Configure parameters for a flow execution
@@ -556,10 +365,10 @@ class Execution:
         execution = self.execute(layer=layer)
 
         # Record parameter layer execution
-        layer.flow.configuration.datastore.write_record(
+        layer.execution.flow.configuration.datastore.write_record(
             layer=layer,
             record=datastores.Record(
-                flow=datastores.Record.FlowRecord(name=layer.flow.name),
+                flow=datastores.Record.FlowRecord(name=layer.execution.flow.name),
                 layer=datastores.Record.LayerRecord(name=layer.name),
                 execution=datastores.Record.ExecutionRecord(splits=unwrap(layer.splits)),
             ),
@@ -590,7 +399,168 @@ class Execution:
         """
 
         self.flow.configuration.scheduler.loop(  # type: ignore
-            flow=self.flow, dependencies=dependencies, finished={Parameters().name}
+            execution=self, dependencies=dependencies, finished={Parameters().name}
         )
 
         return self
+
+
+@dataclass
+class Flow:
+    """Collection of tasks that execute in a specific order.
+
+    Usage::
+
+        from laminar import Flow, Layer
+
+        class HelloFlow(Flow):
+            ...
+    """
+
+    #: Execution of the flow
+    execution: Execution
+    #: Flow configuration
+    configuration: flows.Configuration
+    #: Layers registered with the flow
+    registry: Dict[str, Layer] = field(default_factory=dict)
+
+    def __init__(
+        self,
+        *,
+        datastore: datastores.DataStore = datastores.Local(),
+        executor: executors.Executor = executors.Docker(),
+        scheduler: schedulers.Scheduler = schedulers.Scheduler(),
+    ) -> None:
+        """
+        Args:
+            datastore: Datastore to execute the flow with. Optional; Defaults to datastores.Local().
+            executor: Executor to run layers with. Optional; Defaults to executors.Docker().
+            scheduler: Scheduler to manage the flow with. Optional; Defaults to schedulers.Scheduler().
+
+        Raises:
+            FlowError: If the flow is used to configure the Memory datastore without a Thread executor.
+        """
+
+        self.execution = Execution(id=current.execution.id, flow=self)
+        self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
+
+    def __init_subclass__(cls) -> None:
+        flow: Type[Flow]
+        layer: Layer
+
+        # Register all subflow layers with this layer
+        cls.registry = {Parameters().name: Parameters(configuration=layers.Configuration())}
+        for flow in cls.__bases__:
+            for name, layer in getattr(flow, "registry", {}).items():
+                if name != Parameters().name:
+                    callback = cls.register(
+                        container=layer.configuration.container,
+                        foreach=layer.configuration.foreach,
+                        retry=layer.configuration.retry,
+                    )
+                    callback(layer.__class__)
+
+    @property
+    def _dependencies(self) -> Dict[Layer, Set[Layer]]:
+        return {
+            self.execution.layer(child): {self.execution.layer(parent) for parent in parents}
+            for child, parents in self.dependencies.items()
+        }
+
+    @property
+    def dependencies(self) -> Dict[str, Set[str]]:
+        """A mapping of each layer and the layers it depends on."""
+
+        return {layer: self.execution.layer(layer).dependencies for layer in self.registry}
+
+    @property
+    def _dependents(self) -> Dict[Layer, Set[Layer]]:
+        return {
+            self.execution.layer(parent): {self.execution.layer(child) for child in children}
+            for parent, children in self.dependents.items()
+        }
+
+    @property
+    def dependents(self) -> Dict[str, Set[str]]:
+        """A mapping of each layer and the layers that depend on it."""
+
+        dependents: Dict[str, Set[str]] = defaultdict(set)
+        for child, parents in self.dependencies.items():
+            for parent in parents:
+                dependents[parent].add(child)
+        return dependents
+
+    @property
+    def name(self) -> str:
+        return type(self).__name__
+
+    def __bool__(self) -> bool:
+        if self.execution.id is None:
+            return True
+
+        if self.execution.id is not None and self.name == current.flow.name and current.layer.name in self.registry:
+            self.execution.execute(layer=self.execution.layer(current.layer.name))
+
+        return False
+
+    def __call__(self, *, execution: Optional[str] = None, **parameters: Any) -> Execution:
+        """Execute the flow or execute a layer in the flow.
+
+        Notes:
+            If the execution id and layer name are set, execute a layer.
+            Else execute the flow.
+
+        Usage::
+
+            class HelloFlow(Flow):
+                ...
+            flow = HelloFlow()
+
+            flow()
+            flow("execution-id")
+        """
+
+        if self:
+            self.execution = self.execution(execution or str(KsuidMs()))
+            self.execution.parameters(**parameters).schedule(dependencies=self.dependencies)
+
+        return self.execution
+
+    def __repr__(self) -> str:
+        return stringify(self, self.name, empty=True)
+
+    @classmethod
+    def register(
+        cls,
+        catch: layers.Catch = layers.Catch(),
+        container: layers.Container = layers.Container(),
+        foreach: layers.ForEach = layers.ForEach(),
+        retry: layers.Retry = layers.Retry(),
+    ) -> Callable[[Type[LayerT]], Type[LayerT]]:
+        """Add a layer to the flow.
+
+        Usage::
+
+            @Flow.register()
+            class Task(Layer):
+                ...
+        """
+
+        def wrapper(Layer: Type[LayerT]) -> Type[LayerT]:
+            layer = Layer(
+                configuration=layers.Configuration(catch=catch, container=container, foreach=foreach, retry=retry)
+            )
+
+            if layer.name in cls.registry:
+                raise FlowError(
+                    f"Duplicate layer added to flow '{cls.__name__}'.\n"
+                    f"  Given layer '{layer.name}'.\n"
+                    f"  Added layers {sorted(cls.registry)}"
+                )
+
+            # First register the layer without the flow attribute
+            cls.registry[layer.name] = copy.deepcopy(layer)
+
+            return Layer
+
+        return wrapper

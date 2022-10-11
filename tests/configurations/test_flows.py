@@ -11,11 +11,3 @@ class TestConfiguration:
     def test_error(self) -> None:
         with pytest.raises(FlowError):
             flows.Configuration(datastore=Memory())
-
-
-class TestExecution:
-    def test_execute(self) -> None:
-        ...
-
-    def test_schedule(self) -> None:
-        ...

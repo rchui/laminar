@@ -117,7 +117,7 @@ class ForEach:
             datastores.Archive: Archive created from multiple layer archives.
         """
 
-        datastore = layer.flow.configuration.datastore
+        datastore = layer.execution.flow.configuration.datastore
 
         if datastore.exists(path=datastores.Archive.path(layer=layer, index=0, name=name, cache=True)):
             logger.debug("Cache hit for layer '%s', archive '%s'.", layer.name, name)
@@ -150,7 +150,7 @@ class ForEach:
         archives: List[datastores.Archive] = []
 
         for parameter in self.parameters:
-            instance = layer.flow.layer(parameter.layer)
+            instance = layer.execution.layer(parameter.layer)
             parameters.append((instance, parameter.attribute))
 
             # Get archives for all layer splits.
@@ -160,7 +160,7 @@ class ForEach:
             # Get archive for specified layer index.
             else:
                 archives.append(
-                    instance.flow.configuration.datastore.read_archive(
+                    instance.execution.flow.configuration.datastore.read_archive(
                         layer=instance, index=parameter.index, name=parameter.attribute
                     )
                 )
@@ -178,9 +178,9 @@ class ForEach:
     def splits(self, *, layer: Layer) -> int:
         """Get the splits of the ForEach grid."""
 
-        if layer.flow.configuration.datastore.exists(path=datastores.Record.path(layer=layer)):
+        if layer.execution.flow.configuration.datastore.exists(path=datastores.Record.path(layer=layer)):
             logger.debug("Cache hit for layer '%s' record.", layer.name)
-            return layer.flow.configuration.datastore.read_record(layer=layer).execution.splits
+            return layer.execution.flow.configuration.datastore.read_record(layer=layer).execution.splits
 
         else:
             logger.debug("Cache miss for layer '%s' record.", layer.name)
@@ -279,8 +279,8 @@ class State:
 
     @property
     def finished(self) -> bool:
-        return self.layer.flow.configuration.datastore.exists(
-            path=datastores.Record.path(layer=self.layer.flow.layer(self.layer))
+        return self.layer.execution.flow.configuration.datastore.exists(
+            path=datastores.Record.path(layer=self.layer.execution.layer(self.layer))
         )
 
     @property

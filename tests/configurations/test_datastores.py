@@ -20,7 +20,7 @@ class TestArtifact:
         assert self.artifact.dict() == {"dtype": "str", "hexdigest": "foo"}
 
     def test_path(self, layer: Layer) -> None:
-        assert self.artifact.path(layer=layer) == f"{layer.flow.name}/artifacts/foo.gz"
+        assert self.artifact.path(layer=layer) == f"{layer.execution.flow.name}/artifacts/foo.gz"
 
 
 class TestArchive:
@@ -37,11 +37,11 @@ class TestArchive:
     def test_path(self, layer: Layer) -> None:
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive", cache=False)
-            == f"{layer.flow.name}/archives/{layer.flow.execution.id}/{layer.name}/{layer.index}/test-archive.json"
+            == f"{layer.execution.flow.name}/archives/{layer.execution.id}/{layer.name}/{layer.index}/test-archive.json"
         )
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive", cache=True)
-            == f"{layer.flow.name}/.cache/{layer.flow.execution.id}/{layer.name}/test-archive.json"
+            == f"{layer.execution.flow.name}/.cache/{layer.execution.id}/{layer.name}/test-archive.json"
         )
 
     def test_parse(self) -> None:
@@ -52,7 +52,7 @@ class TestArchive:
 class TestAccessor:
     @pytest.fixture(autouse=True)
     def _accessor(self, layer: Layer) -> None:
-        workspace: Dict[str, Any] = layer.flow.configuration.datastore.cache
+        workspace: Dict[str, Any] = layer.execution.flow.configuration.datastore.cache
         workspace["memory:///TestFlow/artifacts/test-hexdigest-0.gz"] = "foo"
         workspace["memory:///TestFlow/artifacts/test-hexdigest-1.gz"] = "bar"
 

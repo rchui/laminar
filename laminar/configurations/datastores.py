@@ -66,7 +66,7 @@ class Record:
     def path(*, layer: Layer) -> str:
         """Get the path to the Record."""
 
-        return fs.join(layer.flow.name, ".cache", unwrap(layer.flow.execution.id), layer.name, ".record.json")
+        return fs.join(layer.execution.flow.name, ".cache", unwrap(layer.execution.id), layer.name, ".record.json")
 
     def dict(self) -> Dict[str, Any]:
         """Convert the Record to a dict."""
@@ -106,7 +106,7 @@ class Artifact:
     def path(self, *, layer: Layer) -> str:
         """Get the path to the Artifact."""
 
-        return fs.join(layer.flow.name, "artifacts", f"{self.hexdigest}.gz")
+        return fs.join(layer.execution.flow.name, "artifacts", f"{self.hexdigest}.gz")
 
     def dict(self) -> Dict[str, str]:
         """Convert the Artifact to a dict."""
@@ -134,12 +134,12 @@ class Archive:
         parts: Tuple[str, ...]
 
         if cache:
-            parts = (layer.flow.name, ".cache", unwrap(layer.flow.execution.id), layer.name, f"{name}.json")
+            parts = (layer.execution.flow.name, ".cache", unwrap(layer.execution.id), layer.name, f"{name}.json")
         else:
             parts = (
-                layer.flow.name,
+                layer.execution.flow.name,
                 "archives",
-                unwrap(layer.flow.execution.id),
+                unwrap(layer.execution.id),
                 layer.name,
                 str(index),
                 f"{name}.json",
@@ -187,7 +187,7 @@ class Accessor:
         ...
 
     def __getitem__(self, key: Union[int, slice]) -> Any:
-        datastore = self.layer.flow.configuration.datastore
+        datastore = self.layer.execution.flow.configuration.datastore
 
         # Directly access an index
         if isinstance(key, int):
@@ -208,7 +208,7 @@ class Accessor:
 
     def __iter__(self) -> Generator[Any, None, None]:
         for artifact in self.archive.artifacts:
-            yield self.layer.flow.configuration.datastore.read_artifact(
+            yield self.layer.execution.flow.configuration.datastore.read_artifact(
                 layer=self.layer, archive=Archive(artifacts=[artifact])
             )
 
@@ -453,7 +453,7 @@ class DataStore:
             set(
                 self._list(
                     prefix=self.uri(
-                        path=fs.join(layer.flow.name, "archives", unwrap(layer.flow.execution.id), layer.name, "0")
+                        path=fs.join(layer.execution.flow.name, "archives", unwrap(layer.execution.id), layer.name, "0")
                     ),
                     group="artifact",
                 )

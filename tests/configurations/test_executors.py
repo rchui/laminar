@@ -33,7 +33,7 @@ class TestThread:
 
         assert await self.executor.submit(layer=mock_layer) == mock_layer
 
-        mock_layer.flow.execution.execute.assert_called_once_with(layer=mock_layer)
+        mock_layer.execution.execute.assert_called_once_with(layer=mock_layer)
 
 
 @pytest.mark.asyncio

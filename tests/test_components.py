@@ -25,7 +25,7 @@ class TestLayer:
     def test_repr(self, layer: Layer) -> None:
         assert (
             repr(layer)
-            == "Layer(flow=TestFlow(execution=Execution(id='test-execution', retry=False)), index=0, splits=2)"
+            == "Layer(execution=Execution(flow=TestFlow(), id='test-execution', retry=False), index=0, splits=2)"
         )
 
     def test_deepcopy(self) -> None:
@@ -71,7 +71,7 @@ class TestLayer:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
-        assert flow.layer(Test).dependencies == {"Dep1", "Dep2"}
+        assert flow.execution.layer(Test).dependencies == {"Dep1", "Dep2"}
 
     def test__dependencies(self, flow: Flow) -> None:
         @flow.register()
@@ -87,7 +87,7 @@ class TestLayer:
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
-        assert flow.layer(Test)._dependencies == {Dep1(), Dep2()}
+        assert flow.execution.layer(Test)._dependencies == {Dep1(), Dep2()}
 
     def test_getattr(self, flow: Flow) -> None:
         workspace: Dict[str, Any] = flow.configuration.datastore.cache
@@ -102,15 +102,15 @@ class TestLayer:
 
         flow.register()(Layer)
 
-        assert flow.layer(Layer, index=0).foo is True
-        assert flow.layer(Layer, index=0).bar == Accessor(
+        assert flow.execution.layer(Layer, index=0).foo is True
+        assert flow.execution.layer(Layer, index=0).bar == Accessor(
             archive=Archive(artifacts=[Artifact(dtype="str", hexdigest="123"), Artifact(dtype="str", hexdigest="456")]),
             layer=Layer(),
         )
 
     def test_shard(self, flow: Flow) -> None:
         flow.register()(Layer)
-        flow.layer(Layer, index=0).shard(foo=[True, False, None])
+        flow.execution.layer(Layer, index=0).shard(foo=[True, False, None])
 
         assert flow.configuration.datastore.cache == {
             "memory:///TestFlow/artifacts/5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae.gz": True,
@@ -170,7 +170,7 @@ class TestFLow:
         flow()
 
         mock_execution.return_value.parameters.return_value.schedule.assert_called_once_with(
-            dependencies={"Parameters": set()}
+            dependencies={"Parameters": mock_execution.return_value.layer.return_value.dependencies}
         )
 
     def test_call_execute(self, flow: Flow) -> None:
@@ -188,7 +188,7 @@ class TestFLow:
         with contexts.Environment(LAMINAR_LAYER_NAME="Test", LAMINAR_FLOW_NAME="TestFlow"):
             flow()
 
-        mock_execution.execute.assert_called_once_with(layer=Test())
+        mock_execution.execute.assert_called_once_with(layer=mock_execution.layer.return_value)
 
     def test_register(self, flow: Flow) -> None:
         @flow.register()
@@ -224,10 +224,18 @@ class TestFLow:
         class Test(Layer):
             ...
 
-        assert flow.layer("Test"), Test()
-        assert flow.layer(Test), Test()
-        assert flow.layer(Test()), Test()
-        assert flow.layer(Test, foo="bar").foo == "bar"
+        assert flow.execution.layer("Test"), Test()
+        assert flow.execution.layer(Test), Test()
+        assert flow.execution.layer(Test()), Test()
+        assert flow.execution.layer(Test, foo="bar").foo == "bar"
 
     def test_results(self, flow: Flow) -> None:
         assert flow.execution("test-execution").id == "test-execution"
+
+
+class TestExecution:
+    def test_execute(self) -> None:
+        ...
+
+    def test_schedule(self) -> None:
+        ...

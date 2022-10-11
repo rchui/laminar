@@ -83,15 +83,15 @@ class Thread(Executor):
     async def submit(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
             with contexts.Environment(
-                LAMINAR_EXECUTION_ID=layer.flow.execution.id,
-                LAMINAR_EXECUTION_RETRY=layer.flow.execution.retry,
-                LAMINAR_FLOW_NAME=layer.flow.name,
+                LAMINAR_EXECUTION_ID=layer.execution.id,
+                LAMINAR_EXECUTION_RETRY=layer.execution.retry,
+                LAMINAR_FLOW_NAME=layer.execution.flow.name,
                 LAMINAR_LAYER_ATTEMPT=layer.attempt,
                 LAMINAR_LAYER_INDEX=layer.index,
                 LAMINAR_LAYER_NAME=layer.name,
                 LAMINAR_LAYER_SPLITS=layer.splits,
             ):
-                layer.flow.execution.execute(layer=layer)
+                layer.execution.execute(layer=layer)
 
             return layer
 
@@ -107,7 +107,9 @@ class Docker(Executor):
 
     async def submit(self, *, layer: Layer) -> Layer:
         async with self.semaphore:
-            workspace = f"{layer.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
+            workspace = (
+                f"{layer.execution.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
+            )
 
             command = " ".join(
                 [
@@ -116,9 +118,9 @@ class Docker(Executor):
                     "--rm",
                     "--interactive",
                     f"--cpus {layer.configuration.container.cpu}",
-                    f"--env LAMINAR_EXECUTION_ID={unwrap(layer.flow.execution.id)}",
-                    f"--env LAMINAR_EXECUTION_RETRY={layer.flow.execution.retry}",
-                    f"--env LAMINAR_FLOW_NAME={layer.flow.name}",
+                    f"--env LAMINAR_EXECUTION_ID={unwrap(layer.execution.id)}",
+                    f"--env LAMINAR_EXECUTION_RETRY={layer.execution.retry}",
+                    f"--env LAMINAR_FLOW_NAME={layer.execution.flow.name}",
                     f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
                     f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
                     f"--env LAMINAR_LAYER_NAME={layer.name}",
@@ -226,7 +228,7 @@ class AWS:
 
                 # Submit job to Batch
                 submit_response = batch.submit_job(
-                    jobName=f"{layer.flow.name}-{layer.flow.execution.id}-{layer.name}-{layer.index}",
+                    jobName=f"{layer.execution.flow.name}-{layer.execution.id}-{layer.name}-{layer.index}",
                     jobDefinition=job_definition_arn,
                     jobQueue=self.job_queue_arn,
                     containerOverrides=ContainerOverridesTypeDef(
@@ -234,9 +236,9 @@ class AWS:
                         memory=container.memory,
                         command=container.command,
                         environment=[
-                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_ID", value=unwrap(layer.flow.execution.id)),
-                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_RETRY", value=str(layer.flow.execution.retry)),
-                            KeyValuePairTypeDef(name="LAMINAR_FLOW_NAME", value=layer.flow.name),
+                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_ID", value=unwrap(layer.execution.id)),
+                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_RETRY", value=str(layer.execution.retry)),
+                            KeyValuePairTypeDef(name="LAMINAR_FLOW_NAME", value=layer.execution.flow.name),
                             KeyValuePairTypeDef(name="LAMINAR_LAYER_ATTEMPT", value=str(unwrap(layer.attempt))),
                             KeyValuePairTypeDef(name="LAMINAR_LAYER_INDEX", value=str(unwrap(layer.index))),
                             KeyValuePairTypeDef(name="LAMINAR_LAYER_NAME", value=layer.name),
