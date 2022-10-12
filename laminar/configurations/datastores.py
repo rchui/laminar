@@ -1,5 +1,6 @@
 """Configurations for laminar data sources."""
 
+import copy
 import hashlib
 import json
 import re
@@ -409,7 +410,7 @@ class DataStore:
         artifacts = [self.write_artifact(layer=layer, value=value) for value in values]
         self.write_archive(layer=layer, name=name, artifacts=artifacts)
 
-    def list_executions(self, *, flow: Flow) -> List[str]:
+    def list_executions(self, *, flow: Flow) -> List["Execution"]:
         """List all executions.
 
         Args:
@@ -419,9 +420,10 @@ class DataStore:
             All executions.
         """
 
-        return sorted(set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives")), group="execution")))
+        executions = sorted(set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives")), group="execution")))
+        return [copy.deepcopy(flow).execution(execution) for execution in executions]
 
-    def list_layers(self, *, execution: Execution) -> List[str]:
+    def list_layers(self, *, execution: Execution) -> List["Layer"]:
         """List all layers in an execution.
 
         Args:
@@ -431,13 +433,14 @@ class DataStore:
             All layers.
         """
 
-        return sorted(
+        layers = sorted(
             set(
                 self._list(
                     prefix=self.uri(path=fs.join(execution.flow.name, "archives", unwrap(execution.id))), group="layer"
                 )
             )
         )
+        return [execution.layer(layer) for layer in layers]
 
     def list_artifacts(self, *, layer: Layer) -> List[str]:
         """List all artifacts in a layer execution.
