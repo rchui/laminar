@@ -264,13 +264,13 @@ class Configuration:
                 self.configuration.retry
     """
 
-    catch: Catch = Catch()
+    catch: Catch = field(default_factory=Catch)
     #: Layer container configuration
-    container: Container = Container()
+    container: Container = field(default_factory=Container)
     #: Layer foreach configuration
-    foreach: ForEach = ForEach()
+    foreach: ForEach = field(default_factory=ForEach)
     #: Layer retry configuration
-    retry: Retry = Retry()
+    retry: Retry = field(default_factory=Retry)
 
 
 @dataclass

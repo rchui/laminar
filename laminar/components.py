@@ -77,12 +77,17 @@ class Layer:
 
     def __getattr__(self, name: str) -> Any:
         if name not in self.__dict__:
+            # The key is a reserved keyword. We expect these to all be here.
+            if name in LAYER_RESERVED_KEYWORDS:
+                raise AttributeError(
+                    f"Object '{self.name}' has no attribute '{name}'. Layer '{self.name}' was probably initialized"
+                    " incorrectly."
+                )
+
             try:
                 self.__dict__[name] = self.execution.flow.configuration.datastore.read_artifact(
                     layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
                 )
-            except RecursionError as error:
-                raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.") from error
             except FileNotFoundError as error:
                 message = f"Object '{self.name}' has no attribute '{name}'."
                 if not self.state.finished:
