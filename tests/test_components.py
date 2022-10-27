@@ -108,6 +108,13 @@ class TestLayer:
             layer=Layer(),
         )
 
+        # Test that we avoid the recursion error when accessing reserved keywords
+        with pytest.raises(AttributeError):
+            Layer().configuration
+
+        with pytest.raises(AttributeError):
+            Layer().execution
+
     def test_shard(self, flow: Flow) -> None:
         flow.register()(Layer)
         flow.execution.layer(Layer, index=0).shard(foo=[True, False, None])

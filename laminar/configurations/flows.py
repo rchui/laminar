@@ -1,7 +1,7 @@
 """Configurations for laminar flows."""
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from laminar.configurations import datastores, executors, schedulers
 from laminar.exceptions import FlowError
@@ -23,11 +23,11 @@ class Configuration:
     """
 
     #: Flow datastore configuration
-    datastore: datastores.DataStore = datastores.Local()
+    datastore: datastores.DataStore = field(default_factory=datastores.Local)
     #: Flow executor configuration
-    executor: executors.Executor = executors.Docker()
+    executor: executors.Executor = field(default_factory=executors.Docker)
     #: Flow scheduler configuration
-    scheduler: schedulers.Scheduler = schedulers.Scheduler()
+    scheduler: schedulers.Scheduler = field(default_factory=schedulers.Scheduler)
 
     def __post_init__(self) -> None:
         if isinstance(self.datastore, datastores.Memory) and not isinstance(self.executor, executors.Thread):
