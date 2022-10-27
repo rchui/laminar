@@ -1,8 +1,5 @@
 boto3
-boto3-stubs[batch, s3]
+boto3-stubs[batch]
 cloudpickle
-dacite
-pydantic
 smart_open
 svix-ksuid
-types-PyYAML

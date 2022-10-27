@@ -1,8 +1,28 @@
 """Access for execution specific environment variables."""
 
+import os
 from typing import Optional
 
-from pydantic import BaseSettings
+
+def get(prefix: str, attr: str) -> Optional[str]:
+    """Get environment variable."""
+    return os.environ.get(f"{prefix}{attr.upper()}")
+
+
+def coerce_bool(prefix: str, attr: str) -> bool:
+    """Coerce environment variable to a boolean."""
+    return (get(prefix, attr) or "False") == "True"
+
+
+def coerce_optional_str(prefix: str, attr: str) -> Optional[str]:
+    """Coerce environment variable to an optional string."""
+    return get(prefix, attr)
+
+
+def coerce_optional_int(prefix: str, attr: str) -> Optional[int]:
+    """Coerce environment variable to an optional integer."""
+    value = get(prefix, attr)
+    return None if value is None else int(value)
 
 
 class Current:
@@ -20,49 +40,56 @@ class Current:
         currnet.layer.splits
     """
 
-    class Execution(BaseSettings):
-        class Config:
-            env_prefix = "LAMINAR_EXECUTION_"
+    class Execution:
+        class Env:
+            prefix = "LAMINAR_EXECUTION_"
 
-        #: ID of the current execution
-        id: Optional[str] = None
-        #: True if execution is being retried, else False
-        retry: bool = False
+        @property
+        def id(self) -> Optional[str]:
+            """ID of the current execution"""
+            return coerce_optional_str(self.Env.prefix, "id")
 
-    class Flow(BaseSettings):
-        class Config:
-            env_prefix = "LAMINAR_FLOW_"
+        @property
+        def retry(self) -> bool:
+            """True if execution is being retried, else False"""
+            return coerce_bool(self.Env.prefix, "retry")
 
-        #: Name of the currently running flow
-        name: Optional[str] = None
+    class Flow:
+        class Env:
+            prefix = "LAMINAR_FLOW_"
 
-    class Layer(BaseSettings):
-        class Config:
-            env_prefix = "LAMINAR_LAYER_"
+        @property
+        def name(self) -> Optional[str]:
+            """Name of the currently running flow"""
+            return coerce_optional_str(self.Env.prefix, "name")
 
-        #: Current layer attempt
-        attempt: Optional[int] = None
-        #: Index of the layer the layer splits
-        index: Optional[int] = None
-        #: Name of the currently running layer
-        name: Optional[str] = None
-        #: Number of splits in the layer
-        splits: Optional[int] = None
+    class Layer:
+        class Env:
+            prefix = "LAMINAR_LAYER_"
 
-    @property
-    def execution(self) -> Execution:
-        """Get information about the current flow execution."""
-        return self.Execution()
+        @property
+        def attempt(self) -> Optional[int]:
+            """Current layer attempt"""
+            return coerce_optional_int(self.Env.prefix, "attempt")
 
-    @property
-    def flow(self) -> Flow:
-        """Get information about the current flow."""
-        return self.Flow()
+        @property
+        def index(self) -> Optional[int]:
+            """Index of the layer the layer splits"""
+            return coerce_optional_int(self.Env.prefix, "index")
 
-    @property
-    def layer(self) -> Layer:
-        """Get information about the current layer execution."""
-        return self.Layer()
+        @property
+        def name(self) -> Optional[str]:
+            """Name of the currently running layer"""
+            return coerce_optional_str(self.Env.prefix, "name")
+
+        @property
+        def splits(self) -> Optional[int]:
+            """Number of splits in the layer"""
+            return coerce_optional_int(self.Env.prefix, "splits")
+
+    execution = Execution()
+    flow = Flow()
+    layer = Layer()
 
 
 current = Current()
