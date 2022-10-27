@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Dict, Generator, Iterable, List, Tuple, Type, Union, overload
 
 import boto3
-from dacite.core import from_dict
 
 from laminar.configurations import serde
 from laminar.types import unwrap
@@ -78,7 +77,11 @@ class Record:
     def parse(source: Dict[str, Any]) -> "Record":
         """Get a Record from a dict."""
 
-        return from_dict(Record, source)
+        return Record(
+            flow=Record.FlowRecord(**source["flow"]),
+            layer=Record.LayerRecord(**source["layer"]),
+            execution=Record.ExecutionRecord(**source["execution"]),
+        )
 
 
 class RecordProtocol(serde.Protocol):
@@ -157,7 +160,7 @@ class Archive:
     def parse(source: Dict[str, List[Dict[str, str]]]) -> "Archive":
         """Get an Archive from a dict."""
 
-        return from_dict(Archive, source)
+        return Archive(artifacts=[Artifact(**artifact) for artifact in source["artifacts"]])
 
 
 class ArchiveProtocol(serde.Protocol):
