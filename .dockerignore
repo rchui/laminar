@@ -1,0 +1,15 @@
+# Ignore everything
+*
+
+# Except
+!laminar
+!**/*.py
+!LICENSE
+!MANIFEST.in
+!pyproject.toml
+!README.md
+!requirements.txt
+
+# Reignore
+.*
+**/__pycache__
