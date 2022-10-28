@@ -4,11 +4,11 @@ on: [push]
 jobs:
   test:
     name: test ${{ matrix.os }} - 3.${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macOS]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
         python-version: ['8', '9', '10', '11']
     env:
       PY_COLORS: '1'

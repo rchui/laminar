@@ -51,6 +51,11 @@ lint:
 open: docs
 	open docs/html/index.html
 
+.PHONY: release
+release:
+	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target release .
+	docker system prune --force
+
 .PHONY: run
 run:
 	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target test .

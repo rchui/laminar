@@ -1,7 +1,7 @@
 """Unit tests for laminar.configurations.schedulers"""
 
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator
+from typing import Any, AsyncGenerator, Dict, Set
 from unittest.mock import Mock, patch
 
 import pytest
@@ -21,13 +21,11 @@ async def coroutine(path: str) -> AsyncGenerator[Mock, None]:
         yield mock
 
 
-@pytest.mark.asyncio
 class TestScheduler:
     scheduler = Scheduler()
 
+    @pytest.mark.asyncio
     async def test_schedule(self, layer: Layer) -> None:
-        print(layer)
-
         async with coroutine("laminar.configurations.executors.Thread.submit") as mock_execute:
             await self.scheduler.schedule(layer=layer)
 
@@ -38,3 +36,41 @@ class TestScheduler:
             layer=Record.LayerRecord(name="Layer"),
             execution=Record.ExecutionRecord(splits=1),
         )
+
+    def test_runnable(self) -> None:
+        class A(Layer):
+            ...
+
+        class B(Layer):
+            def __call__(self, a: A) -> None:
+                ...
+
+        class C(Layer):
+            def __call__(self, a: A) -> None:
+                ...
+
+        dependencies: Dict[str, Set[str]] = {"A": set(), "B": {"A"}, "C": {"A"}}
+
+        # Just starting
+        pending, runnable = self.scheduler.runnable(dependencies=dependencies, pending={"A", "B", "C"}, finished=set())
+
+        assert runnable == {"A"}
+        assert pending == {"B", "C"}
+
+        # Partially complete
+        pending, runnable = self.scheduler.runnable(dependencies=dependencies, pending={"B", "C"}, finished={"A"})
+
+        assert runnable == {"B", "C"}
+        assert pending == set()
+
+        # Partially complete
+        pending, runnable = self.scheduler.runnable(dependencies=dependencies, pending={"C"}, finished={"A", "B"})
+
+        assert runnable == {"C"}
+        assert pending == set()
+
+        # All complete
+        pending, runnable = self.scheduler.runnable(dependencies=dependencies, pending=set(), finished={"A", "B", "C"})
+
+        assert runnable == set()
+        assert pending == set()
