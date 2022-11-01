@@ -10,13 +10,13 @@ class ResumeFlow(Flow):
     ...
 
 
-@ResumeFlow.register()
+@ResumeFlow.register
 class A(Layer):
     def __call__(self) -> None:
         ...
 
 
-@ResumeFlow.register()
+@ResumeFlow.register
 class B(Layer):
     fail: bool = True
 
@@ -25,7 +25,7 @@ class B(Layer):
             raise RuntimeError
 
 
-@ResumeFlow.register()
+@ResumeFlow.register
 class C(Layer):
     def __call__(self, b: B) -> None:
         ...

@@ -31,8 +31,7 @@ class Layer:
 
         from laminar import Layer
 
-        class Task(Layer):
-            ...
+        class Task(Layer): ...
     """
 
     #: Configurations for the Layer
@@ -79,11 +78,9 @@ class Layer:
         if name not in self.__dict__:
             # The key is a reserved keyword. We expect these to all be here.
             if name in LAYER_RESERVED_KEYWORDS:
-                raise AttributeError(
-                    f"Object '{self.name}' has no attribute '{name}'. Layer '{self.name}' was probably initialized"
-                    " incorrectly."
-                )
+                raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.")
 
+            # The key is likely an artifact.
             try:
                 self.__dict__[name] = self.execution.flow.configuration.datastore.read_artifact(
                     layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
@@ -244,12 +241,10 @@ class Execution:
 
         Usage::
 
-            class ExecutionFlow(Flow):
-                ...
+            class ExecutionFlow(Flow): ...
 
-            @ExecutionFlow.register()
-            class A(Layer):
-                ...
+            @ExecutionFlow.register
+            class A(Layer): ...
 
             flow = ExecutionFlow()
             flow.execution(...).execute(layer=flow.layer(A, index=0, splits=2))
@@ -275,13 +270,10 @@ class Execution:
 
         Usage::
 
-            class Flow1(Flow):
-                ...
+            class Flow1(Flow): ...
+            class Flow2(Flow): ...
 
-            class Flow2(Flow):
-                ...
-
-            @Flow1.register()
+            @Flow1.register
             class A(Layer):
                 foo: str
 
@@ -418,8 +410,7 @@ class Flow:
 
         from laminar import Flow, Layer
 
-        class HelloFlow(Flow):
-            ...
+        class HelloFlow(Flow): ...
     """
 
     #: Execution of the flow
@@ -517,8 +508,7 @@ class Flow:
 
         Usage::
 
-            class HelloFlow(Flow):
-                ...
+            class HelloFlow(Flow): ...
             flow = HelloFlow()
 
             flow()
@@ -534,38 +524,74 @@ class Flow:
     def __repr__(self) -> str:
         return stringify(self, self.name, empty=True)
 
+    @overload
+    @classmethod
+    def register(cls, layer: Type[LayerT]) -> Type[LayerT]:
+        ...
+
+    @overload
     @classmethod
     def register(
         cls,
+        *,
         catch: layers.Catch = layers.Catch(),
         container: layers.Container = layers.Container(),
         foreach: layers.ForEach = layers.ForEach(),
         retry: layers.Retry = layers.Retry(),
     ) -> Callable[[Type[LayerT]], Type[LayerT]]:
+        ...
+
+    @classmethod
+    def register(cls, *args: Any, **kwargs: Any) -> Any:
         """Add a layer to the flow.
 
         Usage::
 
-            @Flow.register()
-            class Task(Layer):
-                ...
+            @Flow.register
+            class Task(Layer): ...
+
+            @Flow.register(...)
+            class Task(Layer): ...
         """
 
-        def wrapper(Layer: Type[LayerT]) -> Type[LayerT]:
-            layer = Layer(
-                configuration=layers.Configuration(catch=catch, container=container, foreach=foreach, retry=retry)
-            )
+        def add_layer(flow: Type[Flow], layer: Layer) -> None:
+            """Add a Layer to the Flow registry."""
 
-            if layer.name in cls.registry:
+            if layer.name in flow.registry:
                 raise FlowError(
-                    f"Duplicate layer added to flow '{cls.__name__}'.\n"
+                    f"Duplicate layer added to flow '{flow.__name__}'.\n"
                     f"  Given layer '{layer.name}'.\n"
-                    f"  Added layers {sorted(cls.registry)}"
+                    f"  Added layers {sorted(flow.registry)}"
                 )
 
-            # First register the layer without the flow attribute
-            cls.registry[layer.name] = copy.deepcopy(layer)
+            flow.registry[layer.name] = copy.deepcopy(layer)
 
-            return Layer
+        # 1st form: Register a layer with user-defined configurations
+        # @Flow.register
+        if args:
+            LayerDef: Type[Layer] = args[0]
+            layer = LayerDef(configuration=layers.Configuration())
 
-        return wrapper
+            add_layer(cls, layer)
+
+            return LayerDef
+
+        # 2nd form: Register a layer with user-defined configurations
+        # @Flow.register
+        else:
+
+            def wrapper(Layer: Type[LayerT]) -> Type[LayerT]:
+                layer = Layer(
+                    configuration=layers.Configuration(
+                        catch=kwargs.get("catch", layers.Catch()),
+                        container=kwargs.get("container", layers.Container()),
+                        foreach=kwargs.get("foreach", layers.ForEach()),
+                        retry=kwargs.get("retry", layers.Retry()),
+                    )
+                )
+
+                add_layer(cls, layer)
+
+                return Layer
+
+            return wrapper

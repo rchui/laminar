@@ -10,19 +10,19 @@ class LinearFlow(Flow):
     ...
 
 
-@LinearFlow.register()
+@LinearFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 
-@LinearFlow.register()
+@LinearFlow.register
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
 
-@LinearFlow.register()
+@LinearFlow.register
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.foo = b.foo

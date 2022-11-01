@@ -19,10 +19,9 @@ There are two parts involved in parameterizing a `Flow`.
 from laminar import Flow, Layer
 from laminar.components import Parameters
 
-class ParameterFlow(Flow):
-    ...
+class ParameterFlow(Flow): ...
 
-@ParameterFlow.register()
+@ParameterFlow.register
 class A(Layer):
     def __call__(self, parameters: Parameters) -> None:
         print(parameters.foo)

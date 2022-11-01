@@ -14,7 +14,7 @@ class ForeachFlow(Flow):
     ...
 
 
-@ForeachFlow.register()
+@ForeachFlow.register
 class A(Layer):
     foo: List[int]
 
@@ -30,7 +30,7 @@ class B(Layer):
         self.foo = cast(List[int], cast(int, a.foo) + unwrap(self.index) ** 2)
 
 
-@ForeachFlow.register()
+@ForeachFlow.register
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.foo = [value + i for i, value in enumerate(b.foo)]

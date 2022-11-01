@@ -16,5 +16,5 @@ def flow() -> Flow:
 
 @pytest.fixture()
 def layer(flow: Flow) -> Layer:
-    flow.register()(Layer)
+    flow.register(Layer)
     return flow.execution.layer(Layer, index=0, attempt=1, splits=2)

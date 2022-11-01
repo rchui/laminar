@@ -8,6 +8,7 @@ import cloudpickle
 import pytest
 
 from laminar import Flow, Layer
+from laminar.components import Parameters
 from laminar.configurations import layers
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
 from laminar.exceptions import FlowError
@@ -58,15 +59,15 @@ class TestLayer:
         assert layer.state == layers.State(layer=layer)
 
     def test_dependencies(self, flow: Flow) -> None:
-        @flow.register()
+        @flow.register
         class Dep1(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Dep2(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Test(Layer):
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
@@ -74,15 +75,15 @@ class TestLayer:
         assert flow.execution.layer(Test).dependencies == {"Dep1", "Dep2"}
 
     def test__dependencies(self, flow: Flow) -> None:
-        @flow.register()
+        @flow.register
         class Dep1(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Dep2(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Test(Layer):
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
@@ -100,7 +101,7 @@ class TestLayer:
 
         workspace["memory:///TestFlow/artifacts/abc.gz"] = True
 
-        flow.register()(Layer)
+        flow.register(Layer)
 
         assert flow.execution.layer(Layer, index=0).foo is True
         assert flow.execution.layer(Layer, index=0).bar == Accessor(
@@ -116,7 +117,7 @@ class TestLayer:
             Layer().execution
 
     def test_shard(self, flow: Flow) -> None:
-        flow.register()(Layer)
+        flow.register(Layer)
         flow.execution.layer(Layer, index=0).shard(foo=[True, False, None])
 
         assert flow.configuration.datastore.cache == {
@@ -152,15 +153,15 @@ class TestFLow:
             InitFlow(datastore=Memory())
 
     def test_dependencies(self, flow: Flow) -> None:
-        @flow.register()
+        @flow.register
         class Dep1(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Dep2(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Test(Layer):
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
@@ -186,7 +187,7 @@ class TestFLow:
 
         flow.execution = mock_execution
 
-        @flow.register()
+        @flow.register
         class Test(Layer):
             ...
 
@@ -198,36 +199,36 @@ class TestFLow:
         mock_execution.execute.assert_called_once_with(layer=mock_execution.layer.return_value)
 
     def test_register(self, flow: Flow) -> None:
-        @flow.register()
+        @flow.register
         class Dep1(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Dep2(Layer):
             ...
 
-        @flow.register()
+        @flow.register
         class Test(Layer):
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
                 ...
 
-        assert {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test()}
+        assert flow.registry == {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test(), "Parameters": Parameters()}
         assert flow.dependencies == {"Dep1": set(), "Dep2": set(), "Parameters": set(), "Test": {"Dep1", "Dep2"}}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
     def test_layer_duplicate(self, flow: Flow) -> None:
-        @flow.register()
+        @flow.register
         class Test(Layer):
             ...
 
         with pytest.raises(FlowError):
 
-            @flow.register()
+            @flow.register
             class Test(Layer):  # type: ignore # noqa
                 ...
 
     def test_layer(self, flow: Flow) -> None:
-        @flow.register()
+        @flow.register
         class Test(Layer):
             ...
 

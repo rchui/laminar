@@ -10,22 +10,21 @@ Consider the following linear `Flow`:
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 
-class TestFlow(Flow):
-    ...
+class TestFlow(Flow): ...
 
-@TestFlow.register()
+@TestFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 
-@TestFlow.register()
+@TestFlow.register
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
 
-@TestFlow.register()
+@TestFlow.register
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.foo = b.foo
@@ -57,10 +56,9 @@ from typing import Generator
 from laminar import Flow, Layer
 from laminar.configurations import datastores, executors, hooks
 
-class TestFlow(Flow):
-    ...
+class TestFlow(Flow): ...
 
-@TestFlow.register()
+@TestFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"

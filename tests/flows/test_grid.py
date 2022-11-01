@@ -13,7 +13,7 @@ class SingleGridFlow(Flow):
     ...
 
 
-@SingleGridFlow.register()
+@SingleGridFlow.register
 class A(Layer):
     foo: List[int]
     bar: List[str]
@@ -33,7 +33,7 @@ class B(Layer):
         self.result = (a.bar, a.foo)  # type: ignore
 
 
-@SingleGridFlow.register()
+@SingleGridFlow.register
 class C(Layer):
     def __call__(self, b: B) -> None:
         self.result = list(b.result)
@@ -54,7 +54,7 @@ class MultiGridFlow(Flow):
     ...
 
 
-@MultiGridFlow.register()
+@MultiGridFlow.register
 class A12(Layer):
     foo: List[int]
 
@@ -62,7 +62,7 @@ class A12(Layer):
         self.shard(foo=[1, 2, 3])
 
 
-@MultiGridFlow.register()
+@MultiGridFlow.register
 class A22(Layer):
     bar: List[str]
 
@@ -80,7 +80,7 @@ class B2(Layer):
         self.result = (a22.bar, a12.foo)  # type: ignore
 
 
-@MultiGridFlow.register()
+@MultiGridFlow.register
 class C2(Layer):
     def __call__(self, b: B2) -> None:
         self.result = list(b.result)

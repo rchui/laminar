@@ -14,7 +14,7 @@ class TestFlow(Flow):
     ...
 
 
-@TestFlow.register()
+@TestFlow.register
 class One(Layer):
     baz: List[str]
     foo: str
@@ -30,7 +30,7 @@ class One(Layer):
         logger.info("hello after")
 
 
-@TestFlow.register()
+@TestFlow.register
 class Two(Layer):
     def __call__(self, one: One, three: "Three") -> None:
         self.bar = one.foo
@@ -59,7 +59,7 @@ class Five(Layer):
         print(self.baz)
 
 
-@TestFlow.register()
+@TestFlow.register
 class Four(Layer):
     def __call__(self, two: Two, five: Five) -> None:
         self.end = [two.bar, list(five.baz)]

@@ -10,14 +10,14 @@ class ConditionalFlow(Flow):
     ...
 
 
-@ConditionalFlow.register()
+@ConditionalFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 
 # Always skip B
-@ConditionalFlow.register()
+@ConditionalFlow.register
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
@@ -28,21 +28,21 @@ class B(Layer):
 
 
 # C executes because A executed
-@ConditionalFlow.register()
+@ConditionalFlow.register
 class C(Layer):
     def __call__(self, a: A) -> None:
         self.foo = "baz"
 
 
 # D skips because B was skipped
-@ConditionalFlow.register()
+@ConditionalFlow.register
 class D(Layer):
     def __call__(self, b: B) -> None:
         self.foo = b.foo
 
 
 # Force E to execute even though D skipped
-@ConditionalFlow.register()
+@ConditionalFlow.register
 class E(Layer):
     def __call__(self, c: C, d: D) -> None:
         if d.state.finished:

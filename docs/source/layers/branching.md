@@ -9,23 +9,19 @@ Basic branching can achieved by adding layers as parameters to `Layer.__call__`.
 ```python
 from laminar import Flow, Layer
 
-class BranchFlow(Flow):
-    ...
+class BranchFlow(Flow): ...
 
-@BranchFlow.register()
+@BranchFlow.register
 class A(Layer):
-    def __call__(self) -> None:
-        ...
+    def __call__(self) -> None: ...
 
-@BranchFlow.register()
+@BranchFlow.register
 class B(Layer):
-    def __call__(self, a: A) -> None:
-        ...
+    def __call__(self, a: A) -> None: ...
 
-@BranchFlow.register()
+@BranchFlow.register
 class C(Layer):
-    def __call__(self, a: A) -> None:
-        ...
+    def __call__(self, a: A) -> None: ...
 ```
 
 ```{mermaid}
@@ -54,12 +50,12 @@ import random
 from laminar import Flow, Layer
 from laminar.configuration import hooks
 
-@BranchFlow.register()
+@BranchFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = random.random()
 
-@BranchFlow.register()
+@BranchFlow.register
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
@@ -68,15 +64,14 @@ class B(Layer):
     def random_foo(self, a: A) -> bool:
         return a.foo <= .5
 
-@BranchFlow.register()
+@BranchFlow.register
 class C(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
-@BranchFlow.register()
+@BranchFlow.register
 class D(Layer):
-    def __call__(self, b: B, c: C) -> None:
-        ...
+    def __call__(self, b: B, c: C) -> None: ...
 ```
 
 ```{mermaid}
@@ -97,10 +92,9 @@ Consequently, 50% of the time `D` will also be skipped. This is because by defau
 We can prevent this from occuring by ending the conditional branch:
 
 ```python
-@BranchFlow.register()
+@BranchFlow.register
 class D(Layer):
-    def __call__(self, b: B, c: C) -> None:
-        ...
+    def __call__(self, b: B, c: C) -> None: ...
 
     @hooks.entry
     def always_true(self) -> bool:
@@ -116,7 +110,7 @@ But if `D` always executes, how do we know when `B` does?
 `Layer.state` is a property that returns a `State` object that can evaluate the state that a layer is currently in. `State.finished` will tell you whether or not a `Layer` has been finished. With this logic we can extend `D`.
 
 ```python
-@BranchFlow.register()
+@BranchFlow.register
 class D(Layer):
     def __call__(self, b: B, c: C) -> None:
         self.foo = b.foo if b.state.finished else c.foo

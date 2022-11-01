@@ -8,18 +8,16 @@ Consider an example with two flows:
 from laminar import Flow, Layer
 from laminar.components import Parameters
 
-class Flow1(Flow):
-    ...
+class Flow1(Flow): ...
 
-@Flow1.register()
+@Flow1.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
-class Flow2(Flow):
-    ...
+class Flow2(Flow): ...
 
-@Flow2.register()
+@Flow2.register
 class B(Layer):
     def __call__(self, parameters: Parameters) -> None:
         self.foo = parameters.foo
@@ -89,18 +87,16 @@ This can also be achieved with flow inheritance with a small rewrite. Consider t
 ```python
 from laminar import Flow, Layer
 
-class Flow1(Flow):
-    ...
+class Flow1(Flow): ...
 
-@Flow1.register()
+@Flow1.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
-class Flow2(Flow):
-    ...
+class Flow2(Flow): ...
 
-@Flow2.register()
+@Flow2.register
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo

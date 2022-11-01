@@ -9,7 +9,7 @@ class HintFlow(Flow):
     ...
 
 
-@HintFlow.register()
+@HintFlow.register
 class Ref(Layer):
     ...
 
@@ -31,7 +31,7 @@ class TestHints:
         assert types.hints(flow.execution, test) == (ForwardRef(flow=flow),)
 
 
-@HintFlow.register()
+@HintFlow.register
 class ForwardRef(Layer):
     ...
 

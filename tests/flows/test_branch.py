@@ -10,25 +10,25 @@ class BranchFlow(Flow):
     ...
 
 
-@BranchFlow.register()
+@BranchFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
 
 
-@BranchFlow.register()
+@BranchFlow.register
 class B(Layer):
     def __call__(self, a: A) -> None:
         self.foo = a.foo
 
 
-@BranchFlow.register()
+@BranchFlow.register
 class C(Layer):
     def __call__(self, a: A) -> None:
         self.foo = "baz"
 
 
-@BranchFlow.register()
+@BranchFlow.register
 class D(Layer):
     def __call__(self, b: B, c: C) -> None:
         self.foo = [b.foo, c.foo]

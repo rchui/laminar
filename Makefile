@@ -1,5 +1,5 @@
 .PHONY:
-all: test run
+all: test smoke
 
 include Make.build
 include Make.rules
@@ -56,8 +56,8 @@ release:
 	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target release .
 	docker system prune --force
 
-.PHONY: run
-run:
+.PHONY: smoke
+smoke:
 	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target test .
 	docker system prune --force
 	python main.py

@@ -12,7 +12,7 @@ class Flow1(Flow):
     ...
 
 
-@Flow1.register()
+@Flow1.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
@@ -22,7 +22,7 @@ class Flow2(Flow):
     ...
 
 
-@Flow2.register()
+@Flow2.register
 class B(Layer):
     def __call__(self, parameters: Parameters) -> None:
         self.foo = parameters.foo
@@ -32,7 +32,7 @@ class Flow3(Flow):
     ...
 
 
-@Flow3.register()
+@Flow3.register
 class C(Layer):
     def __call__(self, parameters: Parameters) -> None:
         self.foo = parameters.foo

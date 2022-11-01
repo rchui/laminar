@@ -70,11 +70,11 @@ class TestForEach:
 
         self.flow = flow
 
-        @self.flow.register()
+        @self.flow.register
         class A(Layer):
             ...
 
-        @self.flow.register()
+        @self.flow.register
         class B(Layer):
             ...
 

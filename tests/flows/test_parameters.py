@@ -11,7 +11,7 @@ class ParameterFlow(Flow):
     ...
 
 
-@ParameterFlow.register()
+@ParameterFlow.register
 class A(Layer):
     foo: str
 
