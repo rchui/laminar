@@ -73,4 +73,4 @@ def EventLoop(func: T) -> T:
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         asyncio.run(func(*args, **kwargs))
 
-    return cast(T, wrapper)
+    return cast("T", wrapper)

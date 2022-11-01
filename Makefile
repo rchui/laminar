@@ -60,7 +60,7 @@ release:
 smoke:
 	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target test .
 	docker system prune --force
-	python main.py
+	$(VENV) python main.py
 
 .PHONY: tag
 tag:

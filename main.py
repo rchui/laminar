@@ -1,8 +1,7 @@
 import logging
 from typing import Generator, List
 
-from laminar import Flow, Layer
-from laminar.components import Parameters
+from laminar import Flow, Layer, Parameters
 from laminar.configurations import executors, hooks, layers
 from laminar.types import unwrap
 

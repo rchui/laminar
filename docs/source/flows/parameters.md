@@ -16,8 +16,7 @@ There are two parts involved in parameterizing a `Flow`.
 ```python
 # main.py
 
-from laminar import Flow, Layer
-from laminar.components import Parameters
+from laminar import Flow, Layer, Parameters
 
 class ParameterFlow(Flow): ...
 

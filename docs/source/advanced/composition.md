@@ -5,8 +5,7 @@
 Consider an example with two flows:
 
 ```python
-from laminar import Flow, Layer
-from laminar.components import Parameters
+from laminar import Flow, Layer, Parameters
 
 class Flow1(Flow): ...
 

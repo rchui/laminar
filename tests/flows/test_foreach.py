@@ -27,7 +27,7 @@ class B(Layer):
     foo: List[int]
 
     def __call__(self, a: A) -> None:
-        self.foo = cast(List[int], cast(int, a.foo) + unwrap(self.index) ** 2)
+        self.foo = cast("List[int]", cast("int", a.foo) + unwrap(self.index) ** 2)
 
 
 @ForeachFlow.register

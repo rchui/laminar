@@ -6,7 +6,7 @@ from laminar.configurations.hooks import annotation
 from laminar.types import hints
 
 if TYPE_CHECKING:
-    from laminar.components import Layer
+    from laminar import Layer
 
 T = TypeVar("T")
 

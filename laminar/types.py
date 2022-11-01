@@ -3,16 +3,12 @@
 from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, TypeVar, get_type_hints
 
 if TYPE_CHECKING:
-    from laminar import Layer
-    from laminar.components import Execution
-else:
-    Flow = "Flow"
-    Execution = "Execution"
+    from laminar import Execution, Layer
 
 T = TypeVar("T")
 
 
-def hints(execution: Execution, function: Callable[..., Any]) -> Tuple["Layer", ...]:
+def hints(execution: "Execution", function: Callable[..., Any]) -> Tuple["Layer", ...]:
     """Get the type hints for a given function.
 
     Args:

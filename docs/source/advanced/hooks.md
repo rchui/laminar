@@ -185,7 +185,7 @@ class A(Layer):
         self.shard(baz=["a", "b", "c"])
 
 @HookFlow.register(
-    foreach=layers.ForEach(parameters=[layers.Parameter(layer=A, attribute="baz")])
+    foreach=layers.ForEach(parameters=[layers.ForEachParameter(layer=A, attribute="baz")])
 )
 class B(Layer):
     baz: List[str]

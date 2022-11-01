@@ -1,36 +1,38 @@
 import os
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, BinaryIO, TextIO, Union, overload
+from typing import TYPE_CHECKING, Any, BinaryIO, TextIO, Union, overload
 
 import smart_open
-from typing_extensions import Literal
+
+if TYPE_CHECKING:
+    from typing_extensions import Literal
 
 parse_uri = smart_open.parse_uri
 
 
 @overload
-def open(uri: str, mode: Literal["r"]) -> TextIO:
+def open(uri: str, mode: "Literal['r']") -> TextIO:
     ...
 
 
 @overload
-def open(uri: str, mode: Literal["rb"]) -> BinaryIO:
+def open(uri: str, mode: "Literal['rb']") -> BinaryIO:
     ...
 
 
 @overload
-def open(uri: str, mode: Literal["w"]) -> TextIO:
+def open(uri: str, mode: "Literal['w']") -> TextIO:
     ...
 
 
 @overload
-def open(uri: str, mode: Literal["wb"]) -> BinaryIO:
+def open(uri: str, mode: "Literal['wb']") -> BinaryIO:
     ...
 
 
 @contextmanager  # type: ignore
-def open(uri: str, mode: Literal["r", "rb", "w", "wb"]) -> Union[BinaryIO, TextIO]:  # type: ignore
+def open(uri: str, mode: "Literal['r', 'rb', 'w', 'wb']") -> Union[BinaryIO, TextIO]:  # type: ignore
     """Open a file handler to a local or remote file.
 
     Usage::

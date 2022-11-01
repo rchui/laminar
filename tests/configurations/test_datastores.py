@@ -2,15 +2,18 @@
 
 import io
 import json
-from pathlib import Path
-from typing import Any, Dict, cast
+from typing import TYPE_CHECKING, Any, Dict, cast
 from unittest.mock import Mock, call, mock_open, patch
 
 import cloudpickle
 import pytest
 
-from laminar import Layer
 from laminar.configurations.datastores import Accessor, Archive, Artifact, DataStore, Local, Record
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from laminar import Layer
 
 
 class TestArtifact:
@@ -19,7 +22,7 @@ class TestArtifact:
     def test_dict(self) -> None:
         assert self.artifact.dict() == {"dtype": "str", "hexdigest": "foo"}
 
-    def test_path(self, layer: Layer) -> None:
+    def test_path(self, layer: "Layer") -> None:
         assert self.artifact.path(layer=layer) == f"{layer.execution.flow.name}/artifacts/foo.gz"
 
 
@@ -34,7 +37,7 @@ class TestArchive:
     def test_len(self) -> None:
         assert len(self.archive) == 2
 
-    def test_path(self, layer: Layer) -> None:
+    def test_path(self, layer: "Layer") -> None:
         assert (
             self.archive.path(layer=layer, index=0, name="test-archive", cache=False)
             == f"{layer.execution.flow.name}/archives/{layer.execution.id}/{layer.name}/{layer.index}/test-archive.json"
@@ -51,7 +54,7 @@ class TestArchive:
 
 class TestAccessor:
     @pytest.fixture(autouse=True)
-    def _accessor(self, layer: Layer) -> None:
+    def _accessor(self, layer: "Layer") -> None:
         workspace: Dict[str, Any] = layer.execution.flow.configuration.datastore.cache
         workspace["memory:///TestFlow/artifacts/test-hexdigest-0.gz"] = "foo"
         workspace["memory:///TestFlow/artifacts/test-hexdigest-1.gz"] = "bar"
@@ -87,7 +90,7 @@ class TestAccessor:
 
     def test_index_other(self) -> None:
         with pytest.raises(TypeError):
-            self.accessor[cast(int, "a")]
+            self.accessor[cast("int", "a")]
 
 
 class TestDatastore:
@@ -127,7 +130,7 @@ class TestDatastore:
         assert self.datastore.protocols["builtins.str"] == mock_protocol.return_value
 
     @patch("laminar.utils.fs.open")
-    def test_read_archive(self, mock_open: Mock, layer: Layer) -> None:
+    def test_read_archive(self, mock_open: Mock, layer: "Layer") -> None:
         mock_open.return_value = io.StringIO(json.dumps(self.archive.dict()))
 
         assert self.datastore.read_archive(layer=layer, index=0, name="test-archive") == self.archive
@@ -137,7 +140,7 @@ class TestDatastore:
         )
 
     @patch("laminar.utils.fs.open")
-    def test_read_artifact(self, mock_open: Mock, layer: Layer) -> None:
+    def test_read_artifact(self, mock_open: Mock, layer: "Layer") -> None:
         mock_open.return_value = io.BytesIO(cloudpickle.dumps("test-value"))
 
         assert (
@@ -149,13 +152,13 @@ class TestDatastore:
 
         mock_open.assert_called_once_with("path/to/root/TestFlow/artifacts/foo.gz", "rb")
 
-    def test_read_artifact_accessor(self, layer: Layer) -> None:
+    def test_read_artifact_accessor(self, layer: "Layer") -> None:
         assert self.datastore.read_artifact(layer=layer, archive=self.archive) == Accessor(
             archive=self.archive, layer=layer
         )
 
     @patch("laminar.configurations.datastores.DataStore._read")
-    def test_read(self, mock_read: Mock, layer: Layer) -> None:
+    def test_read(self, mock_read: Mock, layer: "Layer") -> None:
         mock_read.return_value.__len__.return_value = 1
 
         self.datastore.read(layer=layer, index=0, name="test")
@@ -172,7 +175,7 @@ class TestDatastore:
         ]
 
     @patch("laminar.utils.fs.open", new_callable=mock_open)
-    def test_write_archive(self, mock_open: Mock, layer: Layer) -> None:
+    def test_write_archive(self, mock_open: Mock, layer: "Layer") -> None:
         assert (
             self.datastore.write_archive(layer=layer, name="test-archive", artifacts=self.archive.artifacts)
             == self.archive
@@ -186,7 +189,7 @@ class TestDatastore:
         )
 
     @patch("laminar.utils.fs.open", new_callable=mock_open)
-    def test_write_artifact(self, mock_open: Mock, layer: Layer) -> None:
+    def test_write_artifact(self, mock_open: Mock, layer: "Layer") -> None:
         assert self.datastore.write_artifact(layer=layer, value="test-value") == Artifact(
             dtype="builtins.str", hexdigest="7d3d5dd741934c11ce55c08d83052780db2f29438238f602afbd51b177a98b7f"
         )
@@ -199,7 +202,7 @@ class TestDatastore:
         )
 
     @patch("laminar.configurations.datastores.DataStore._write")
-    def test_write(self, mock_write: Mock, layer: Layer) -> None:
+    def test_write(self, mock_write: Mock, layer: "Layer") -> None:
         self.datastore.write(layer=layer, name="test-artifact", values=[True])
 
         assert mock_write.call_args_list == [
@@ -226,7 +229,7 @@ class TestDatastore:
         ]
 
     @patch("laminar.utils.fs.open")
-    def test_read_record(self, mock_open: Mock, layer: Layer) -> None:
+    def test_read_record(self, mock_open: Mock, layer: "Layer") -> None:
         mock_open.return_value = io.StringIO(json.dumps(self.record.dict()))
 
         assert self.datastore.read_record(layer=layer) == self.record
@@ -234,7 +237,7 @@ class TestDatastore:
         mock_open.assert_called_once_with("path/to/root/TestFlow/.cache/test-execution/Layer/.record.json", "rb")
 
     @patch("laminar.utils.fs.open", new_callable=mock_open)
-    def test_write_record(self, mock_write: Mock, layer: Layer) -> None:
+    def test_write_record(self, mock_write: Mock, layer: "Layer") -> None:
         self.datastore.write_record(layer=layer, record=self.record)
 
         mock_write.assert_called_once_with("path/to/root/TestFlow/.cache/test-execution/Layer/.record.json", "wb")
@@ -245,9 +248,9 @@ class TestDatastore:
 
 class TestLocal:
     @pytest.fixture(autouse=True)
-    def _datastore(self, tmp_path: Path) -> None:
+    def _datastore(self, tmp_path: "Path") -> None:
         self.datastore = Local(root=str(tmp_path))
 
-    def test_read_write(self, layer: Layer) -> None:
+    def test_read_write(self, layer: "Layer") -> None:
         self.datastore.write(layer=layer, name="test", values=[[True, False]])
         assert self.datastore.read(layer=layer, index=0, name="test") == [True, False]

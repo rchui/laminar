@@ -4,7 +4,6 @@ import asyncio
 import functools
 import logging
 import operator
-from asyncio import Task
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Dict, List, Set, Tuple
@@ -15,8 +14,9 @@ from laminar.types import unwrap
 from laminar.utils import contexts
 
 if TYPE_CHECKING:
-    from laminar import Layer
-    from laminar.components import Execution
+    from asyncio import Task
+
+    from laminar import Execution, Layer
 
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class Scheduler:
 
         try:
             splits = layer.configuration.foreach.splits(layer=layer)
-            tasks: List[Task["Layer"]] = []
+            tasks: List["Task[Layer]"] = []
 
             # Create a task per layer split
             for index in range(splits):
@@ -201,7 +201,7 @@ class Scheduler:
 
         pending = set(dependencies) - finished
         runnable: Set[str] = set()
-        running: Set[Task[List["Layer"]]] = set()
+        running: Set["Task[List[Layer]]"] = set()
 
         # Start the scheduling loop
         while pending:

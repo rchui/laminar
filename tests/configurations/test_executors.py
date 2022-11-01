@@ -2,13 +2,16 @@
 
 import asyncio
 import shlex
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, patch
 
 import pytest
 
-from laminar import Layer
 from laminar.configurations.executors import Docker, Executor, Thread
 from laminar.exceptions import ExecutionError
+
+if TYPE_CHECKING:
+    from laminar import Layer
 
 
 @pytest.mark.asyncio
@@ -19,7 +22,7 @@ class TestExecutor:
         assert self.executor.semaphore._value == 1
         assert self.executor.semaphore != asyncio.Semaphore(1)
 
-    async def test_submit(self, layer: Layer) -> None:
+    async def test_submit(self, layer: "Layer") -> None:
         with pytest.raises(NotImplementedError):
             await self.executor.submit(layer=layer)
 
@@ -40,7 +43,7 @@ class TestThread:
 class TestDocker:
     executor = Docker()
 
-    async def test_submit(self, layer: Layer) -> None:
+    async def test_submit(self, layer: "Layer") -> None:
         command = shlex.split("echo 'hello world'")
         with patch("shlex.split") as mock_split:
             mock_split.return_value = command
@@ -55,7 +58,7 @@ class TestDocker:
             " main.py"
         )
 
-    async def test_submit_error_code(self, layer: Layer) -> None:
+    async def test_submit_error_code(self, layer: "Layer") -> None:
         command = shlex.split("exit 1")
         with patch("shlex.split") as mock_split:
             mock_split.return_value = command
@@ -63,7 +66,7 @@ class TestDocker:
             with pytest.raises(ExecutionError):
                 await self.executor.submit(layer=layer)
 
-    async def test_submit_exeception(self, layer: Layer) -> None:
+    async def test_submit_exeception(self, layer: "Layer") -> None:
         with patch("shlex.split") as mock_split:
             mock_split.side_effect = Mock(side_effect=Exception())
 

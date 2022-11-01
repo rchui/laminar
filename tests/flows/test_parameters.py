@@ -2,8 +2,7 @@
 
 import pytest
 
-from laminar import Flow, Layer
-from laminar.components import Parameters
+from laminar import Flow, Layer, Parameters
 from laminar.configurations import datastores, executors
 
 

@@ -1,5 +1,6 @@
 """Configurations for laminar serde."""
 
+import hashlib
 from typing import Any, BinaryIO, TypeVar
 
 import cloudpickle
@@ -112,6 +113,18 @@ class Protocol(metaclass=MetaProtocol):
         """
 
         raise NotImplementedError
+
+    def hexdigest(self, value: Any) -> str:
+        """Compute the hexdigest to generate the content address.
+
+        Args:
+            value: Value to compute hexdigest from.
+
+        Returns:
+            Hexdigest to use as the content address.
+        """
+
+        return hashlib.sha256(self.dumps(value)).hexdigest()
 
 
 ProtocolType = TypeVar("ProtocolType", bound=Protocol)

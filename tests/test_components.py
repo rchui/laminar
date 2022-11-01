@@ -7,8 +7,7 @@ from unittest.mock import MagicMock
 import cloudpickle
 import pytest
 
-from laminar import Flow, Layer
-from laminar.components import Parameters
+from laminar import Flow, Layer, Parameters
 from laminar.configurations import layers
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
 from laminar.exceptions import FlowError

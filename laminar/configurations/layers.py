@@ -6,7 +6,6 @@ import logging
 import random
 import sys
 from dataclasses import dataclass, field
-from inspect import Traceback
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
 
 from laminar.configurations import datastores
@@ -14,9 +13,9 @@ from laminar.settings import current
 from laminar.types import unwrap
 
 if TYPE_CHECKING:
+    from inspect import Traceback
+
     from laminar import Layer
-else:
-    Layer = "Layer"
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class Catch:
     def __enter__(self) -> "Catch":
         return self
 
-    def __exit__(self, etype: Type[Exception], error: Exception, traceback: Traceback) -> Optional[Type[Exception]]:
+    def __exit__(self, etype: Type[Exception], error: Exception, traceback: "Traceback") -> Optional[Type[Exception]]:
         if isinstance(error, self.exceptions):
             self.exception = etype
             return etype
@@ -106,7 +105,7 @@ class ForEach:
 
     parameters: Iterable[Parameter] = field(default_factory=list)  #: Parameters to configure the foreach with.
 
-    def join(self, *, layer: Layer, name: str) -> datastores.Archive:
+    def join(self, *, layer: "Layer", name: str) -> datastores.Archive:
         """Join together multiple artifact splits of a layer into a single Archive.
 
         Args:
@@ -135,7 +134,7 @@ class ForEach:
 
         return archive
 
-    def grid(self, *, layer: Layer) -> List[Dict[Layer, Dict[str, int]]]:
+    def grid(self, *, layer: "Layer") -> List[Dict["Layer", Dict[str, int]]]:
         """Generate a grid of all combinations of foreach inputs.
 
         Args:
@@ -146,7 +145,7 @@ class ForEach:
                 index.
         """
 
-        parameters: List[Tuple[Layer, str]] = []
+        parameters: List[Tuple["Layer", str]] = []
         archives: List[datastores.Archive] = []
 
         for parameter in self.parameters:
@@ -166,16 +165,16 @@ class ForEach:
                 )
 
         # Compute the product of every possible set of parameter indexes based off of parameter layer splits.
-        grid: List[Dict[Layer, Dict[str, int]]] = []
+        grid: List[Dict["Layer", Dict[str, int]]] = []
         for indexes in itertools.product(*(range(len(archive)) for archive in archives)):
-            model: Dict[Layer, Dict[str, int]] = {}
+            model: Dict["Layer", Dict[str, int]] = {}
             for (instance, attribute), index in zip(parameters, indexes):
                 model.setdefault(instance, {})[attribute] = index
             grid.append(model)
 
         return grid
 
-    def splits(self, *, layer: Layer) -> int:
+    def splits(self, *, layer: "Layer") -> int:
         """Get the splits of the ForEach grid."""
 
         if layer.execution.flow.configuration.datastore.exists(path=datastores.Record.path(layer=layer)):
@@ -186,7 +185,7 @@ class ForEach:
             logger.debug("Cache miss for layer '%s' record.", layer.name)
             return len(self.grid(layer=layer))
 
-    def set(self, *, layer: Layer, parameters: Tuple[Layer, ...]) -> Tuple[Layer, ...]:
+    def set(self, *, layer: "Layer", parameters: Tuple["Layer", ...]) -> Tuple["Layer", ...]:
         """Set a foreach layer's parameters given the inputs from the foreach grid.
 
         Args:
@@ -234,7 +233,7 @@ class Retry:
     #: Factor to randomize delay.
     jitter: float = 0.1
 
-    async def sleep(self, *, layer: Layer, attempt: int) -> None:
+    async def sleep(self, *, layer: "Layer", attempt: int) -> None:
         """Exponentially backoff before retrying a layer.
 
         Args:
@@ -275,7 +274,7 @@ class Configuration:
 
 @dataclass
 class State:
-    layer: Layer
+    layer: "Layer"
 
     @property
     def finished(self) -> bool:

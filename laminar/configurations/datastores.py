@@ -1,7 +1,6 @@
 """Configurations for laminar data sources."""
 
 import copy
-import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass, field
@@ -15,13 +14,7 @@ from laminar.types import unwrap
 from laminar.utils import fs
 
 if TYPE_CHECKING:
-    from laminar import Flow, Layer
-    from laminar.components import Execution
-
-else:
-    Execution = "Execution"
-    Flow = "Flow"
-    Layer = "Layer"
+    from laminar import Execution, Flow, Layer
 
 DEFAULT_SERDE = serde.PickleProtocol()
 
@@ -63,7 +56,7 @@ class Record:
     execution: ExecutionRecord
 
     @staticmethod
-    def path(*, layer: Layer) -> str:
+    def path(*, layer: "Layer") -> str:
         """Get the path to the Record."""
 
         return fs.join(layer.execution.flow.name, ".cache", unwrap(layer.execution.id), layer.name, ".record.json")
@@ -107,7 +100,7 @@ class Artifact:
     #: SHA256 hexdigest of the artifact bytes.
     hexdigest: str
 
-    def path(self, *, layer: Layer) -> str:
+    def path(self, *, layer: "Layer") -> str:
         """Get the path to the Artifact."""
 
         return fs.join(layer.execution.flow.name, "artifacts", f"{self.hexdigest}.gz")
@@ -132,7 +125,7 @@ class Archive:
         return len(self.artifacts)
 
     @staticmethod
-    def path(*, layer: Layer, index: int, name: str, cache: bool = False) -> str:
+    def path(*, layer: "Layer", index: int, name: str, cache: bool = False) -> str:
         """Get the path to the Archive."""
 
         parts: Tuple[str, ...]
@@ -279,7 +272,7 @@ class DataStore:
 
         return decorator
 
-    def read_archive(self, *, layer: Layer, index: int, name: str, cache: bool = False) -> Archive:
+    def read_archive(self, *, layer: "Layer", index: int, name: str, cache: bool = False) -> Archive:
         """Read an archive from the laminar datastore.
 
         Args:
@@ -298,7 +291,7 @@ class DataStore:
         )
         return archive
 
-    def read_artifact(self, *, layer: Layer, archive: Archive) -> Any:
+    def read_artifact(self, *, layer: "Layer", archive: Archive) -> Any:
         """Read an artifact form the laminar datastore.
 
         Args:
@@ -318,7 +311,7 @@ class DataStore:
         else:
             return Accessor(archive=archive, layer=layer)
 
-    def read_record(self, *, layer: Layer) -> Record:
+    def read_record(self, *, layer: "Layer") -> Record:
         """Read a layer record from the laminar datastore.
 
         Args:
@@ -334,7 +327,7 @@ class DataStore:
     def _read(self, *, uri: str, dtype: str) -> Any:
         return self.protocols.get(dtype, DEFAULT_SERDE).read(uri)
 
-    def read(self, *, layer: Layer, index: int, name: str) -> Any:
+    def read(self, *, layer: "Layer", index: int, name: str) -> Any:
         """Read from the laminar datastore.
 
         Args:
@@ -348,7 +341,7 @@ class DataStore:
 
         return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
 
-    def write_archive(self, *, layer: Layer, name: str, artifacts: List[Artifact], cache: bool = False) -> Archive:
+    def write_archive(self, *, layer: "Layer", name: str, artifacts: List[Artifact], cache: bool = False) -> Archive:
         """Write an archive to the laminar datastore.
 
         Args:
@@ -369,7 +362,7 @@ class DataStore:
         )
         return archive
 
-    def write_artifact(self, *, layer: Layer, value: Any) -> Artifact:
+    def write_artifact(self, *, layer: "Layer", value: Any) -> Artifact:
         """Write an arifact to the laminar datastore.
 
         Args:
@@ -381,14 +374,12 @@ class DataStore:
         """
 
         serializer = self.protocols.get(type(value).__name__, DEFAULT_SERDE)
-        artifact = Artifact(
-            dtype=serde.dtype(type(value)), hexdigest=hashlib.sha256(serializer.dumps(value)).hexdigest()
-        )
+        artifact = Artifact(dtype=serde.dtype(type(value)), hexdigest=serializer.hexdigest(value))
         self._write(value=value, uri=self.uri(path=artifact.path(layer=layer)), dtype=artifact.dtype)
 
         return artifact
 
-    def write_record(self, *, layer: Layer, record: Record) -> None:
+    def write_record(self, *, layer: "Layer", record: Record) -> None:
         """Write a layer record to the laminar datastore.
 
         Args:
@@ -401,7 +392,7 @@ class DataStore:
     def _write(self, *, value: Any, uri: str, dtype: str) -> None:
         self.protocols.get(dtype, DEFAULT_SERDE).write(value, uri)
 
-    def write(self, *, layer: Layer, name: str, values: Iterable[Any]) -> None:
+    def write(self, *, layer: "Layer", name: str, values: Iterable[Any]) -> None:
         """Write to the laminar datastore.
 
         Args:
@@ -413,7 +404,7 @@ class DataStore:
         artifacts = [self.write_artifact(layer=layer, value=value) for value in values]
         self.write_archive(layer=layer, name=name, artifacts=artifacts)
 
-    def list_executions(self, *, flow: Flow) -> List["Execution"]:
+    def list_executions(self, *, flow: "Flow") -> List["Execution"]:
         """List all executions.
 
         Args:
@@ -426,7 +417,7 @@ class DataStore:
         executions = sorted(set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives")), group="execution")))
         return [copy.deepcopy(flow).execution(execution) for execution in executions]
 
-    def list_layers(self, *, execution: Execution) -> List["Layer"]:
+    def list_layers(self, *, execution: "Execution") -> List["Layer"]:
         """List all layers in an execution.
 
         Args:
@@ -445,7 +436,7 @@ class DataStore:
         )
         return [execution.layer(layer) for layer in layers]
 
-    def list_artifacts(self, *, layer: Layer) -> List[str]:
+    def list_artifacts(self, *, layer: "Layer") -> List[str]:
         """List all artifacts in a layer execution.
 
         Args:

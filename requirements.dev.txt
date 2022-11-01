@@ -2,6 +2,7 @@ black
 build
 coverage[toml]
 flake8
+flake8-type-checking
 Flake8-pyproject
 isort
 mypy
