@@ -153,7 +153,7 @@ class AWS:
     """Execute layers in AWS."""
 
     @dataclass(frozen=True)
-    class BaseBatch:
+    class _BatchBase:
         #: Amazon resource name (ARN) of an Batch job queue.
         job_queue_arn: str
         #: Amazon resource name (ARN) of an IAM role to attach to each Batch job.
@@ -162,7 +162,7 @@ class AWS:
         poll: float = 30.0
 
     @dataclass(frozen=True)
-    class Batch(Executor, BaseBatch):
+    class Batch(Executor, _BatchBase):
         """Execute layers in AWS Batch.
 
         Usage::
