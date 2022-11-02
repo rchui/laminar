@@ -39,10 +39,9 @@ Flows can be accessed by importing them from their definition file:
 
 from laminar import Flow, Layer
 
-class ResultFlow(Flow):
-  ...
+class ResultFlow(Flow): ...
 
-@ResultFlow.register()
+@ResultFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.foo = "bar"
@@ -97,7 +96,7 @@ datastore = flow.configuration.datastore
 # List executions
 datastore.list_executions(flow=flow)
 >>> [
-  ResultsFlow(execution=Execution(id="21lYX2jVgfbdYqyuEPr8kWkf3vp")),
+  Execution(flow=ResultsFlow(), id="21lYX2jVgfbdYqyuEPr8kWkf3vp", retry=False),
   ...
 ]
 
@@ -105,7 +104,7 @@ datastore.list_executions(flow=flow)
 execution = flow.execution("21lYX2jVgfbdYqyuEPr8kWkf3vp")
 datastore.list_layers(execution=execution)
 >>> [
-  A(flow=ResultsFlow(execution=Execution(id="21lYX2jVgfbdYqyuEPr8kWkf3vp"))),
+  A(execution=Execution(flow=ResultsFlow(), id="21lYX2jVgfbdYqyuEPr8kWkf3vp", retry=False), index=None, splits=None),
   ...
 ]
 

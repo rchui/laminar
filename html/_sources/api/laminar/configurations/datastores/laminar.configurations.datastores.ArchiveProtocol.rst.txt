@@ -41,6 +41,9 @@ ArchiveProtocol
         ~laminar.configurations.datastores.ArchiveProtocol.dumps
         
         
+        ~laminar.configurations.datastores.ArchiveProtocol.hexdigest
+        
+        
         ~laminar.configurations.datastores.ArchiveProtocol.load
         
         

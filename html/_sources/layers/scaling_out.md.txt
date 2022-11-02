@@ -9,15 +9,14 @@ Workflows often involve processing large objects which needs to be handled in pa
 
 from laminar import Flow, Layer
 
-class ShardedFlow(Flow):
-    ...
+class ShardedFlow(Flow): ...
 
-@ShardedFlow.register()
+@ShardedFlow.register
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
 
-@ShardedFlow.register()
+@ShardedFlow.register
 class Process(Layer):
     def __call__(self, shard: Shard) -> None:
         print(list(shard.foo))
@@ -56,10 +55,9 @@ Often it is better to break up a problem across many tasks instead of processing
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-class ForeachFlow(Flow):
-    ...
+class ForeachFlow(Flow): ...
 
-@ForeachFlow.register()
+@ForeachFlow.register
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
@@ -108,10 +106,9 @@ sharded.
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-class ForeachFlow(Flow):
-    ...
+class ForeachFlow(Flow): ...
 
-@ForeachFlow.register()
+@ForeachFlow.register
 class Shard(Layer):
     def __call__(self) -> None:
         self.bar = "a"
@@ -167,10 +164,9 @@ python main.py
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-class GridFlow(Flow):
-    ...
+class GridFlow(Flow): ...
 
-@GridFlow.register()
+@GridFlow.register
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3], bar=["a", "b"])
@@ -229,10 +225,9 @@ A `ForEach` layer does not need a special join step in order to merge branch val
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-class JoinFlow(Flow):
-    ...
+class JoinFlow(Flow): ...
 
-@JoinFlow.register()
+@JoinFlow.register
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2])
@@ -298,10 +293,9 @@ It is common to performed multiple foreach loops in a row, where each value prod
 from laminar import Flow, Layer
 from laminar.configurations.layers import ForEach, Parameters
 
-class ChainedFlow(Flow):
-    ...
+class ChainedFlow(Flow): ...
 
-@ChainedFlow.register()
+@ChainedFlow.register
 class Shard(Layer):
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])

@@ -3,7 +3,7 @@
 To install the latest release of `laminar`:
 
 ```bash
-pip install laminar
+python -m pip install laminar
 ```
 
 `laminar` is only tested in Python 3.8+ environments.
@@ -11,5 +11,5 @@ pip install laminar
 To upgrade to the latest release of `laminar`:
 
 ```bash
-pip install laminar --upgrade
+python -m pip install laminar --upgrade
 ```

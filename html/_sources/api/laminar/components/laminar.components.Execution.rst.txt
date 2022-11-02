@@ -1,7 +1,7 @@
 Execution
 =========
 
-.. autoclass:: laminar.configurations.flows.Execution
+.. autoclass:: laminar.components.Execution
     :members:
     :inherited-members: BaseModel
     :show-inheritance:
@@ -35,13 +35,22 @@ Execution
         
         
         
-        ~laminar.configurations.flows.Execution.layer
+        ~laminar.components.Execution.execute
         
         
-        ~laminar.configurations.flows.Execution.next
+        ~laminar.components.Execution.layer
         
         
-        ~laminar.configurations.flows.Execution.resume
+        ~laminar.components.Execution.next
+        
+        
+        ~laminar.components.Execution.parameters
+        
+        
+        ~laminar.components.Execution.resume
+        
+        
+        ~laminar.components.Execution.schedule
         
     
     
@@ -62,19 +71,19 @@ Execution
         
         
         
-        ~laminar.configurations.flows.Execution.finished
+        ~laminar.components.Execution.finished
         
         
-        ~laminar.configurations.flows.Execution.retry
+        ~laminar.components.Execution.retry
         
         
-        ~laminar.configurations.flows.Execution.running
+        ~laminar.components.Execution.running
         
         
-        ~laminar.configurations.flows.Execution.id
+        ~laminar.components.Execution.id
         
         
-        ~laminar.configurations.flows.Execution.flow
+        ~laminar.components.Execution.flow
         
     
     

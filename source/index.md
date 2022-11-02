@@ -4,7 +4,7 @@
 
 `laminar` is the workflow framework that works for you. It aims to be a modern container first framework that enables you to rapidly go from local development into production as quickly as possible.
 
-## Key Features
+## Goals
 
 * **Easy to Write**: `laminar` brings together many of the best ideas from the various workflow frameworks that came before it. The dependencies are declarative and the logic is imperative. Concepts are consistent throughout the framework making it easy to understand and implement.
 * **Container First**: Containers are first class citizens in `laminar` flows. Containers are both used as a "write once, deploy anywhere" method of packaging software applications for portability, and for comparmentalization and isolation of `laminar` flow layers from each other.
@@ -16,7 +16,7 @@
 ```{rubric} Custom DSLs
 ```
 
-Many workflow frameworks come with custom DSls that you must learn and adhere to. Many of them implement imperative directives within declarative specifications, attempting to put a round peg into a square hole. `laminar` is written and allows the user to write their workflows in pure python. It is designed to give you the guard rails of a DSL with the power of a full programming language.
+Many workflow frameworks come with custom DSls that you must learn and adhere to. Many of them implement imperative directives within declarative specifications, attempting to put a round peg into a square hole. `laminar` is written and allows the user to write their workflows in pure python. It is designed to give you the guard rails of a DSL with the power of a full programming language as an escape hatch.
 
 * [nextflow](https://www.nextflow.io/)
 * [snakemake](https://snakemake.readthedocs.io/en/stable/)
@@ -44,7 +44,7 @@ Many workflow frameworks require you to declare your resource requirements up fr
 ```{rubric} Lack of Conditional Branching
 ```
 
-Many workflow frameworks lack conditional branching (a logical fork where none, one, or many of the child tasks need to be executed depending on a condition). There are many cases in which a branch may not need to be executed but whether or not is indeterminate until runtime. Many workflows provide hacky workarounds to get around this limitation. `laminar` has conditional branching out of the box.
+Many workflow frameworks lack conditional branching (a logical fork where none, one, or many of the child tasks need to be executed depending on a condition). There are many cases in which a branch may not need to be executed but whether or not is indeterminate until runtime. Many workflows provide hacky or unergonomic methods to get around this limitation. `laminar` has conditional branching out of the box.
 
 ```{rubric} Behind the Scenes Magic
 ```

@@ -15,7 +15,7 @@ from laminar.configurations import hooks
 class HookFlow(Flow):
     ...
 
-@HookFlow.register()
+@HookFlow.register
 class A(Layer):
     def __call__(self) -> None:
         print("in call")
@@ -52,11 +52,9 @@ from laminar import Flow, Layer
 from laminar.configurations import hooks
 
 
-class HookFlow(Flow):
-    ...
+class HookFlow(Flow): ...
 
-
-@HookFlow.register()
+@HookFlow.register
 class A(Layer):
     def __call__(self) -> None:
         print("in call")
@@ -93,11 +91,9 @@ import psycopg2
 from laminar import Flow, Layer
 from laminar.configurations import hooks
 
-class HookFlow(Flow):
-    ...
+class HookFlow(Flow): ...
 
-
-@HookFlow.register()
+@HookFlow.register
 class A(Layer):
     def __call__(self) -> None:
         self.cursor.execute("SELECT * FROM <table>")
@@ -131,7 +127,7 @@ class HookFlow(Flow):
     ...
 
 
-@HookFlow.register()
+@HookFlow.register
 class A(Layer):
     @hooks.retry
     def configure_container(self) -> None:
@@ -160,7 +156,7 @@ from laminar.configurations import hooks
 class HookFlow(Flow):
     ...
 
-@HookFlow.register()
+@HookFlow.register
 class A(Layer):
     @hooks.submission
     def configure_container(self) -> None:
@@ -181,7 +177,7 @@ from laminar.types import unwrap
 class HookFlow(Flow):
     ...
 
-@HookFlow.register()
+@HookFlow.register
 class A(Layer):
     baz: List[str]
 
@@ -189,7 +185,7 @@ class A(Layer):
         self.shard(baz=["a", "b", "c"])
 
 @HookFlow.register(
-    foreach=layers.ForEach(parameters=[layers.Parameter(layer=A, attribute="baz")])
+    foreach=layers.ForEach(parameters=[layers.ForEachParameter(layer=A, attribute="baz")])
 )
 class B(Layer):
     baz: List[str]
@@ -247,12 +243,12 @@ class HelloFlow(Flow):
         yield
         print(f"after {self.name}")
 
-@HelloFlow.register()
+@HelloFlow.register
 class A(Layer):
     def __call__(self) -> None:
         print("in A")
 
-@HelloFlow.register()
+@HelloFlow.register
 class B(Layer):
     def __call__(self, a: A) -> None:
         print("in B")

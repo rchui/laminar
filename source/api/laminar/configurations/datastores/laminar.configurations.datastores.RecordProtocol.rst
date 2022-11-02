@@ -41,6 +41,9 @@ RecordProtocol
         ~laminar.configurations.datastores.RecordProtocol.dumps
         
         
+        ~laminar.configurations.datastores.RecordProtocol.hexdigest
+        
+        
         ~laminar.configurations.datastores.RecordProtocol.load
         
         

@@ -17,8 +17,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../../_static/stylesheets/main.30c392bc.min.css">
+      <link rel="stylesheet" href="../../../../_static/stylesheets/main.95d89437.min.css">
       
+      
+
     
     
     
@@ -29,10 +31,11 @@
       
     
         <link rel="stylesheet" type="text/css" href="../../../../_static/google_fonts.css" />
-    <script>__md_scope=new URL("../../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -109,7 +112,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -1186,15 +1189,16 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h1>
+<h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.layers.Configuration">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.layers.</span></span><span class="sig-name descname"><span class="pre">Configuration</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">catch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Catch.html#laminar.configurations.layers.Catch" title="laminar.configurations.layers.Catch (Python class) — Bases: object"><span class="pre">Catch</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">Catch</span><span class="p">()</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Container.html#laminar.configurations.layers.Container" title="laminar.configurations.layers.Container (Python class) — Bases: object"><span class="pre">Container</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">Container</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="s1">&#39;python main.py&#39;</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s1">&#39;rchui/laminar:3.8&#39;</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="s1">&#39;/laminar&#39;</span><span class="p">)</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">foreach</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach" title="laminar.configurations.layers.ForEach (Python class) — Bases: object"><span class="pre">ForEach</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">ForEach</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="p">[])</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Retry.html#laminar.configurations.layers.Retry" title="laminar.configurations.layers.Retry (Python class) — Bases: object"><span class="pre">Retry</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">Retry</span><span class="p">(</span><span class="n">attempts</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.layers.Configuration" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.configurations.layers.</span></span><span class="sig-name descname"><span class="pre">Configuration</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">catch:</span> <span class="pre">~laminar.configurations.layers.Catch</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">container:</span> <span class="pre">~laminar.configurations.layers.Container</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">foreach:</span> <span class="pre">~laminar.configurations.layers.ForEach</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">retry:</span> <span class="pre">~laminar.configurations.layers.Retry</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.layers.Configuration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Layer configurations.</p>
 <p>Usage:</p>
@@ -1237,24 +1241,24 @@
 </table>
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.layers.Configuration.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">catch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Catch.html#laminar.configurations.layers.Catch" title="laminar.configurations.layers.Catch (Python class) — Bases: object"><span class="pre">Catch</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">Catch</span><span class="p">()</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Container.html#laminar.configurations.layers.Container" title="laminar.configurations.layers.Container (Python class) — Bases: object"><span class="pre">Container</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">Container</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="s1">&#39;python main.py&#39;</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s1">&#39;rchui/laminar:3.8&#39;</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="s1">&#39;/laminar&#39;</span><span class="p">)</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">foreach</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach" title="laminar.configurations.layers.ForEach (Python class) — Bases: object"><span class="pre">ForEach</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">ForEach</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="p">[])</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Retry.html#laminar.configurations.layers.Retry" title="laminar.configurations.layers.Retry (Python class) — Bases: object"><span class="pre">Retry</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="n">Retry</span><span class="p">(</span><span class="n">attempts</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span></code></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.layers.Configuration.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">catch:</span> <span class="pre">~laminar.configurations.layers.Catch</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">container:</span> <span class="pre">~laminar.configurations.layers.Container</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">foreach:</span> <span class="pre">~laminar.configurations.layers.ForEach</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">retry:</span> <span class="pre">~laminar.configurations.layers.Retry</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.configurations.layers.Configuration.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute objdesc">
-<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.layers.Configuration.container">
-<span class="sig-name descname"><span class="pre">container</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Container.html#laminar.configurations.layers.Container" title="laminar.configurations.layers.Container (Python class) — Bases: object"><span class="pre">Container</span></a></span><span class="p"> <span class="pre">=</span> </span><code class="code python docutils literal highlight highlight-python"><span class="n">Container</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="s1">&#39;python main.py&#39;</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s1">&#39;rchui/laminar:3.8&#39;</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">workdir</span><span class="o">=</span><span class="s1">&#39;/laminar&#39;</span><span class="p">)</span></code><a class="headerlink" href="#laminar.configurations.layers.Configuration.container" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object highlight py" id="laminar.configurations.layers.Configuration.container">
+<span class="sig-name descname"><span class="pre">container</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Container.html#laminar.configurations.layers.Container" title="laminar.configurations.layers.Container (Python class) — Bases: object"><span class="pre">Container</span></a></span><a class="headerlink" href="#laminar.configurations.layers.Configuration.container" title="Permalink to this definition">¶</a></dt>
 <dd><p>Layer container configuration</p>
 </dd></dl>
 
 <dl class="py attribute objdesc">
 <dt class="sig sig-object highlight py" id="laminar.configurations.layers.Configuration.foreach">
-<span class="sig-name descname"><span class="pre">foreach</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach" title="laminar.configurations.layers.ForEach (Python class) — Bases: object"><span class="pre">ForEach</span></a></span><span class="p"> <span class="pre">=</span> </span><code class="code python docutils literal highlight highlight-python"><span class="n">ForEach</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="p">[])</span></code><a class="headerlink" href="#laminar.configurations.layers.Configuration.foreach" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">foreach</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.ForEach.html#laminar.configurations.layers.ForEach" title="laminar.configurations.layers.ForEach (Python class) — Bases: object"><span class="pre">ForEach</span></a></span><a class="headerlink" href="#laminar.configurations.layers.Configuration.foreach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Layer foreach configuration</p>
 </dd></dl>
 
 <dl class="py attribute objdesc">
-<dt class="sig sig-object highlight sig-wrap py" id="laminar.configurations.layers.Configuration.retry">
-<span class="sig-name descname"><span class="pre">retry</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Retry.html#laminar.configurations.layers.Retry" title="laminar.configurations.layers.Retry (Python class) — Bases: object"><span class="pre">Retry</span></a></span><span class="p"> <span class="pre">=</span> </span><code class="code python docutils literal highlight highlight-python"><span class="n">Retry</span><span class="p">(</span><span class="n">attempts</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span></code><a class="headerlink" href="#laminar.configurations.layers.Configuration.retry" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object highlight py" id="laminar.configurations.layers.Configuration.retry">
+<span class="sig-name descname"><span class="pre">retry</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.configurations.layers.Retry.html#laminar.configurations.layers.Retry" title="laminar.configurations.layers.Retry (Python class) — Bases: object"><span class="pre">Retry</span></a></span><a class="headerlink" href="#laminar.configurations.layers.Configuration.retry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Layer retry configuration</p>
 </dd></dl>
 
@@ -1263,16 +1267,22 @@
 
 
 
-              
-            </article>
-          </div>
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="laminar.configurations.layers.Catch.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Catch" rel="prev">
@@ -1321,7 +1331,7 @@
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.2.3.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -1336,10 +1346,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
+    
     <script id="__config" type="application/json">{"base": "../../../..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../../../_static/javascripts/bundle.309d5c42.min.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>

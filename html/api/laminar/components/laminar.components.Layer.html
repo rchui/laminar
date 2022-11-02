@@ -17,8 +17,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../_static/stylesheets/main.30c392bc.min.css">
+      <link rel="stylesheet" href="../../../_static/stylesheets/main.95d89437.min.css">
       
+      
+
     
     
     
@@ -29,10 +31,11 @@
       
     
         <link rel="stylesheet" type="text/css" href="../../../_static/google_fonts.css" />
-    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -109,7 +112,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -701,6 +704,21 @@
   
   
     <li class="md-nav__item">
+      <a href="laminar.components.Execution.html" class="md-nav__link">
+        <span class="md-ellipsis">Execution</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="laminar.components.Flow.html" class="md-nav__link">
         <span class="md-ellipsis">Flow</span>
       </a>
@@ -810,8 +828,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#laminar.components.Layer.flow" class="md-nav__link">
-    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.flow (Python attribute) — Flow the Layer is registered to" class="md-ellipsis">flow</span>
+  <a href="#laminar.components.Layer.execution" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.execution (Python attribute) — Execution the layer is being run in" class="md-ellipsis">execution</span>
   </a>
   
 </li>
@@ -866,7 +884,7 @@
         
           <li class="md-nav__item">
   <a href="#laminar.components.Layer.state" class="md-nav__link">
-    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.state (Python attribute) — Layer state" class="md-ellipsis">state</span>
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.state (Python property) — State of the Layer" class="md-ellipsis">state</span>
   </a>
   
 </li>
@@ -1100,8 +1118,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#laminar.components.Layer.flow" class="md-nav__link">
-    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.flow (Python attribute) — Flow the Layer is registered to" class="md-ellipsis">flow</span>
+  <a href="#laminar.components.Layer.execution" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.execution (Python attribute) — Execution the layer is being run in" class="md-ellipsis">execution</span>
   </a>
   
 </li>
@@ -1156,7 +1174,7 @@
         
           <li class="md-nav__item">
   <a href="#laminar.components.Layer.state" class="md-nav__link">
-    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="laminar.components.Layer.state (Python attribute) — Layer state" class="md-ellipsis">state</span>
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="laminar.components.Layer.state (Python property) — State of the Layer" class="md-ellipsis">state</span>
   </a>
   
 </li>
@@ -1174,12 +1192,13 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset" role="main">
-                
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
 
 
-  <h1 id="layer">Layer<a class="headerlink" href="#layer" title="Permalink to this heading">¶</a></h1>
+<h1 id="layer">Layer<a class="headerlink" href="#layer" title="Permalink to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight py" id="laminar.components.Layer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">laminar.components.</span></span><span class="sig-name descname"><span class="pre">Layer</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><span class="pre">Any</span></span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#laminar.components.Layer" title="Permalink to this definition">¶</a></dt>
@@ -1188,8 +1207,7 @@
 <p>Usage:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">laminar</span> <span class="kn">import</span> <span class="n">Layer</span>
 
-<span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
-    <span class="o">...</span>
+<span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span> <span class="o">...</span>
 </code></pre></div>
 </div>
 <p class="rubric">Methods</p>
@@ -1235,14 +1253,14 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.splits" title="laminar.components.Layer.splits (Python attribute) — Number of splits in the layer execution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splits</span></code></a></p></td>
 <td><p>Number of splits in the layer execution</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration (Python attribute) — Configurations for the Layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.state" title="laminar.components.Layer.state (Python property) — State of the Layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
+<td><p>State of the Layer</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.configuration" title="laminar.components.Layer.configuration (Python attribute) — Configurations for the Layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
 <td><p>Configurations for the Layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#laminar.components.Layer.flow" title="laminar.components.Layer.flow (Python attribute) — Flow the Layer is registered to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flow</span></code></a></p></td>
-<td><p>Flow the Layer is registered to</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.state" title="laminar.components.Layer.state (Python attribute) — Layer state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
-<td><p>Layer state</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#laminar.components.Layer.execution" title="laminar.components.Layer.execution (Python attribute) — Execution the layer is being run in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execution</span></code></a></p></td>
+<td><p>Execution the layer is being run in</p></td>
 </tr>
 </tbody>
 </table>
@@ -1290,9 +1308,9 @@
 </dd></dl>
 
 <dl class="py attribute objdesc">
-<dt class="sig sig-object highlight py" id="laminar.components.Layer.flow">
-<span class="sig-name descname"><span class="pre">flow</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.components.Flow.html#laminar.components.Flow" title="laminar.components.Flow (Python class) — Bases: object"><span class="pre">Flow</span></a></span><a class="headerlink" href="#laminar.components.Layer.flow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Flow the Layer is registered to</p>
+<dt class="sig sig-object highlight py" id="laminar.components.Layer.execution">
+<span class="sig-name descname"><span class="pre">execution</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="laminar.components.Execution.html#laminar.components.Execution" title="laminar.components.Execution (Python class) — Bases: object"><span class="pre">Execution</span></a></span><a class="headerlink" href="#laminar.components.Layer.execution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execution the layer is being run in</p>
 </dd></dl>
 
 <dl class="py property objdesc">
@@ -1341,10 +1359,10 @@
 <dd><p>Number of splits in the layer execution</p>
 </dd></dl>
 
-<dl class="py attribute objdesc">
+<dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="laminar.components.Layer.state">
-<span class="sig-name descname"><span class="pre">state</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.State.html#laminar.configurations.layers.State" title="laminar.configurations.layers.State (Python class) — Bases: object"><span class="pre">State</span></a></span><a class="headerlink" href="#laminar.components.Layer.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Layer state</p>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state</span></span><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference internal" href="../configurations/layers/laminar.configurations.layers.State.html#laminar.configurations.layers.State" title="laminar.configurations.layers.State (Python class) — Bases: object"><span class="pre">State</span></a></span><a class="headerlink" href="#laminar.components.Layer.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>State of the Layer</p>
 </dd></dl>
 
 </dd></dl>
@@ -1352,16 +1370,22 @@
 
 
 
-              
-            </article>
-          </div>
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="laminar.components.Flow.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Flow" rel="prev">
@@ -1410,7 +1434,7 @@
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    5.2.3.
+    5.3.0.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -1425,10 +1449,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
+    
     <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../../_static/javascripts/bundle.dc1bded0.min.js"></script>
+      <script src="../../../_static/javascripts/bundle.309d5c42.min.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>

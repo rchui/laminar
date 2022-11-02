@@ -41,6 +41,9 @@ Protocol
         ~laminar.configurations.serde.Protocol.dumps
         
         
+        ~laminar.configurations.serde.Protocol.hexdigest
+        
+        
         ~laminar.configurations.serde.Protocol.load
         
         

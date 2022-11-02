@@ -36,20 +36,7 @@ Flow
         
         
         
-        
-        ~laminar.components.Flow.execute
-        
-        
-        ~laminar.components.Flow.layer
-        
-        
-        ~laminar.components.Flow.parameters
-        
-        
         ~laminar.components.Flow.register
-        
-        
-        ~laminar.components.Flow.schedule
         
     
     
@@ -69,10 +56,22 @@ Flow
         
         
         
+        
+        
+        
         ~laminar.components.Flow.dependencies
         
         
         ~laminar.components.Flow.dependents
+        
+        
+        ~laminar.components.Flow.name
+        
+        
+        ~laminar.components.Flow.execution
+        
+        
+        ~laminar.components.Flow.configuration
         
         
         ~laminar.components.Flow.registry

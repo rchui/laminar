@@ -41,6 +41,9 @@ PickleProtocol
         ~laminar.configurations.serde.PickleProtocol.dumps
         
         
+        ~laminar.configurations.serde.PickleProtocol.hexdigest
+        
+        
         ~laminar.configurations.serde.PickleProtocol.load
         
         
