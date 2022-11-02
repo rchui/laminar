@@ -43,9 +43,11 @@ packages = { find = { include = ["laminar*"], exclude = ["*tests*", "test_*", "*
 
 [tool.setuptools.dynamic]
 version = { attr = "laminar.version.VERSION" }
-readme = { file = ["README.md"] }
-dependencies = { file = ["requirements.txt"] }
-optional-dependencies = { dev = { file = ["requirements.dev.txt"] } }
+readme = { file = "README.md", content-type = "text/markdown" }
+dependencies = { file = "requirements.txt" }
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = "requirements.dev.txt" }
 
 [tool.black]
 exclude = '''
