@@ -39,12 +39,13 @@ env: venv upgrade
 format:
 	$(VENV) black -C .
 	$(VENV) isort .
+	$(VENV) ruff --fix --show-fixes --show-source .
 
 .PHONY: lint
 lint:
 	$(VENV) black --version && black --check .
 	$(VENV) isort --version && isort --check-only .
-	$(VENV) flake8 --version && flake8 .
+	$(VENV) ruff --version && ruff --diff .
 	$(VENV) mypy --version && mypy .
 
 .PHONY: open
@@ -74,7 +75,7 @@ test: lint
 .PHONY: upgrade
 upgrade:
 	$(VENV) $(INSTALL) --upgrade pip wheel
-	$(VENV) $(INSTALL) --upgrade --editable .[dev]
+	$(VENV) $(INSTALL) --constraint constraints.txt --upgrade --editable .[dev]
 
 .PHONY: venv
 venv:

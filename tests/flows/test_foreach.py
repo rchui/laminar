@@ -10,8 +10,7 @@ from laminar.configurations.layers import ForEach, Parameter
 from laminar.types import unwrap
 
 
-class ForeachFlow(Flow):
-    ...
+class ForeachFlow(Flow): ...
 
 
 @ForeachFlow.register

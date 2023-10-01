@@ -35,8 +35,7 @@ class TestLayer:
         assert Layer() == "Layer"
         assert Layer() == Layer()
 
-        class Test(Layer):
-            ...
+        class Test(Layer): ...
 
         assert Layer() != Test()
         assert Layer() != 0
@@ -48,8 +47,7 @@ class TestLayer:
     def test_name(self) -> None:
         assert Layer().name == "Layer"
 
-        class Subclass(Layer):
-            ...
+        class Subclass(Layer): ...
 
         assert Subclass().name == "Subclass"
 
@@ -59,33 +57,27 @@ class TestLayer:
 
     def test_dependencies(self, flow: Flow) -> None:
         @flow.register
-        class Dep1(Layer):
-            ...
+        class Dep1(Layer): ...
 
         @flow.register
-        class Dep2(Layer):
-            ...
+        class Dep2(Layer): ...
 
         @flow.register
         class Test(Layer):
-            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
-                ...
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None: ...
 
         assert flow.execution.layer(Test).dependencies == {"Dep1", "Dep2"}
 
     def test__dependencies(self, flow: Flow) -> None:
         @flow.register
-        class Dep1(Layer):
-            ...
+        class Dep1(Layer): ...
 
         @flow.register
-        class Dep2(Layer):
-            ...
+        class Dep2(Layer): ...
 
         @flow.register
         class Test(Layer):
-            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
-                ...
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None: ...
 
         assert flow.execution.layer(Test)._dependencies == {Dep1(), Dep2()}
 
@@ -146,24 +138,20 @@ class TestFLow:
     def test_init(self) -> None:
         with pytest.raises(FlowError):
 
-            class InitFlow(Flow):
-                ...
+            class InitFlow(Flow): ...
 
             InitFlow(datastore=Memory())
 
     def test_dependencies(self, flow: Flow) -> None:
         @flow.register
-        class Dep1(Layer):
-            ...
+        class Dep1(Layer): ...
 
         @flow.register
-        class Dep2(Layer):
-            ...
+        class Dep2(Layer): ...
 
         @flow.register
         class Test(Layer):
-            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
-                ...
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None: ...
 
         assert flow.dependencies == {"Dep1": set(), "Dep2": set(), "Parameters": set(), "Test": {"Dep1", "Dep2"}}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
@@ -187,8 +175,7 @@ class TestFLow:
         flow.execution = mock_execution
 
         @flow.register
-        class Test(Layer):
-            ...
+        class Test(Layer): ...
 
         flow()
 
@@ -199,17 +186,14 @@ class TestFLow:
 
     def test_register(self, flow: Flow) -> None:
         @flow.register
-        class Dep1(Layer):
-            ...
+        class Dep1(Layer): ...
 
         @flow.register
-        class Dep2(Layer):
-            ...
+        class Dep2(Layer): ...
 
         @flow.register
         class Test(Layer):
-            def __call__(self, dep1: Dep1, dep2: Dep2) -> None:
-                ...
+            def __call__(self, dep1: Dep1, dep2: Dep2) -> None: ...
 
         assert flow.registry == {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test(), "Parameters": Parameters()}
         assert flow.dependencies == {"Dep1": set(), "Dep2": set(), "Parameters": set(), "Test": {"Dep1", "Dep2"}}
@@ -217,8 +201,7 @@ class TestFLow:
 
     def test_layer_duplicate(self, flow: Flow) -> None:
         @flow.register
-        class Test(Layer):
-            ...
+        class Test(Layer): ...
 
         with pytest.raises(FlowError):
 
@@ -228,8 +211,7 @@ class TestFLow:
 
     def test_layer(self, flow: Flow) -> None:
         @flow.register
-        class Test(Layer):
-            ...
+        class Test(Layer): ...
 
         assert flow.execution.layer("Test"), Test()
         assert flow.execution.layer(Test), Test()
@@ -241,8 +223,6 @@ class TestFLow:
 
 
 class TestExecution:
-    def test_execute(self) -> None:
-        ...
+    def test_execute(self) -> None: ...
 
-    def test_schedule(self) -> None:
-        ...
+    def test_schedule(self) -> None: ...

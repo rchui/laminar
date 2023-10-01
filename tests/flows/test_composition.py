@@ -7,8 +7,7 @@ from laminar.configurations import datastores, executors
 from laminar.types import unwrap
 
 
-class Flow1(Flow):
-    ...
+class Flow1(Flow): ...
 
 
 @Flow1.register
@@ -17,8 +16,7 @@ class A(Layer):
         self.foo = "bar"
 
 
-class Flow2(Flow):
-    ...
+class Flow2(Flow): ...
 
 
 @Flow2.register
@@ -27,8 +25,7 @@ class B(Layer):
         self.foo = parameters.foo
 
 
-class Flow3(Flow):
-    ...
+class Flow3(Flow): ...
 
 
 @Flow3.register
@@ -53,8 +50,7 @@ def test_flow() -> None:
     assert flow3.execution(unwrap(execution.id)).layer(C).foo == "bar"
 
 
-class CombinedFlow(Flow1, Flow2, Flow3):
-    ...
+class CombinedFlow(Flow1, Flow2, Flow3): ...
 
 
 @pytest.mark.flow

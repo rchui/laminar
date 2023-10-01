@@ -12,4 +12,4 @@ check:
 .PHONY: setup
 setup:
 	$(INSTALL) pip
-	$(INSTALL) --requirement requirements.dev.txt
+	$(INSTALL) --constraint constraints.txt --requirement requirements.dev.txt

@@ -12,23 +12,19 @@ parse_uri = smart_open.parse_uri
 
 
 @overload
-def open(uri: str, mode: "Literal['r']") -> TextIO:
-    ...
+def open(uri: str, mode: "Literal['r']") -> TextIO: ...
 
 
 @overload
-def open(uri: str, mode: "Literal['rb']") -> BinaryIO:
-    ...
+def open(uri: str, mode: "Literal['rb']") -> BinaryIO: ...
 
 
 @overload
-def open(uri: str, mode: "Literal['w']") -> TextIO:
-    ...
+def open(uri: str, mode: "Literal['w']") -> TextIO: ...
 
 
 @overload
-def open(uri: str, mode: "Literal['wb']") -> BinaryIO:
-    ...
+def open(uri: str, mode: "Literal['wb']") -> BinaryIO: ...
 
 
 @contextmanager  # type: ignore
@@ -73,7 +69,7 @@ def exists(*, uri: str) -> bool:
     try:
         with open(uri, "rb"):
             return True
-    except IOError:
+    except OSError:
         return False
 
 

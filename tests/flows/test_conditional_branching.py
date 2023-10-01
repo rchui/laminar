@@ -6,8 +6,7 @@ from laminar import Flow, Layer
 from laminar.configurations import datastores, executors, hooks
 
 
-class ConditionalFlow(Flow):
-    ...
+class ConditionalFlow(Flow): ...
 
 
 @ConditionalFlow.register

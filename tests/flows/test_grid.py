@@ -9,8 +9,7 @@ from laminar.configurations import datastores, executors
 from laminar.configurations.layers import ForEach, Parameter
 
 
-class SingleGridFlow(Flow):
-    ...
+class SingleGridFlow(Flow): ...
 
 
 @SingleGridFlow.register
@@ -50,8 +49,7 @@ def test_grid() -> None:
     assert execution.layer(C).result == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
 
 
-class MultiGridFlow(Flow):
-    ...
+class MultiGridFlow(Flow): ...
 
 
 @MultiGridFlow.register

@@ -6,8 +6,7 @@ from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 
 
-class LinearFlow(Flow):
-    ...
+class LinearFlow(Flow): ...
 
 
 @LinearFlow.register
