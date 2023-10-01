@@ -6,8 +6,7 @@ from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 
 
-class BranchFlow(Flow):
-    ...
+class BranchFlow(Flow): ...
 
 
 @BranchFlow.register

@@ -6,8 +6,7 @@ from laminar.configurations import datastores, executors
 
 @pytest.fixture()
 def flow() -> Flow:
-    class TestFlow(Flow):
-        ...
+    class TestFlow(Flow): ...
 
     flow = TestFlow(datastore=datastores.Memory(), executor=executors.Thread())
     flow.execution("test-execution")

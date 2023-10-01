@@ -13,8 +13,7 @@ from laminar.configurations.schedulers import Scheduler
 
 @asynccontextmanager
 async def coroutine(path: str) -> AsyncGenerator[Mock, None]:
-    async def func(*args: Any, **kwargs: Any) -> None:
-        ...
+    async def func(*args: Any, **kwargs: Any) -> None: ...
 
     with patch(path) as mock:
         mock.return_value = func
@@ -38,16 +37,13 @@ class TestScheduler:
         )
 
     def test_runnable(self) -> None:
-        class A(Layer):
-            ...
+        class A(Layer): ...
 
         class B(Layer):
-            def __call__(self, a: A) -> None:
-                ...
+            def __call__(self, a: A) -> None: ...
 
         class C(Layer):
-            def __call__(self, a: A) -> None:
-                ...
+            def __call__(self, a: A) -> None: ...
 
         dependencies: Dict[str, Set[str]] = {"A": set(), "B": {"A"}, "C": {"A"}}
 

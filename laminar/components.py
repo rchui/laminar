@@ -297,16 +297,13 @@ class Execution:
         return flow(execution=self.id, **artifacts)
 
     @overload
-    def layer(self, layer: str, **atributes: Any) -> Layer:
-        ...
+    def layer(self, layer: str, **atributes: Any) -> Layer: ...
 
     @overload
-    def layer(self, layer: Type[LayerT], **attributes: Any) -> LayerT:
-        ...
+    def layer(self, layer: Type[LayerT], **attributes: Any) -> LayerT: ...
 
     @overload
-    def layer(self, layer: LayerT, **attributes: Any) -> LayerT:
-        ...
+    def layer(self, layer: LayerT, **attributes: Any) -> LayerT: ...
 
     def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
         """Get a registered flow layer.
@@ -526,8 +523,7 @@ class Flow:
 
     @overload
     @classmethod
-    def register(cls, layer: Type[LayerT]) -> Type[LayerT]:
-        ...
+    def register(cls, layer: Type[LayerT]) -> Type[LayerT]: ...
 
     @overload
     @classmethod
@@ -538,8 +534,7 @@ class Flow:
         container: layers.Container = layers.Container(),
         foreach: layers.ForEach = layers.ForEach(),
         retry: layers.Retry = layers.Retry(),
-    ) -> Callable[[Type[LayerT]], Type[LayerT]]:
-        ...
+    ) -> Callable[[Type[LayerT]], Type[LayerT]]: ...
 
     @classmethod
     def register(cls, *args: Any, **kwargs: Any) -> Any:

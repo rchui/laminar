@@ -71,22 +71,18 @@ class TestForEach:
         self.flow = flow
 
         @self.flow.register
-        class A(Layer):
-            ...
+        class A(Layer): ...
 
         @self.flow.register
-        class B(Layer):
-            ...
+        class B(Layer): ...
 
         @self.flow.register(
             foreach=ForEach(parameters=[Parameter(layer=A, attribute="foo"), Parameter(layer=B, attribute="bar")])
         )
-        class C(Layer):
-            ...
+        class C(Layer): ...
 
         @self.flow.register(foreach=ForEach(parameters=[Parameter(layer=C, attribute="foo", index=None)]))
-        class D(Layer):
-            ...
+        class D(Layer): ...
 
         self.A = A
         self.B = B

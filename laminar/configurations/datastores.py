@@ -176,12 +176,10 @@ class Accessor:
     layer: "Layer"
 
     @overload
-    def __getitem__(self, key: int) -> Any:
-        ...
+    def __getitem__(self, key: int) -> Any: ...
 
     @overload
-    def __getitem__(self, key: slice) -> List[Any]:
-        ...
+    def __getitem__(self, key: slice) -> List[Any]: ...
 
     def __getitem__(self, key: Union[int, slice]) -> Any:
         datastore = self.layer.execution.flow.configuration.datastore

@@ -14,11 +14,8 @@ jobs:
       PY_COLORS: '1'
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
-      - name: setup
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.${{ matrix.python-version }}
           architecture: x64
@@ -37,11 +34,8 @@ jobs:
       PY_COLORS: '1'
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
-      - name: setup
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
@@ -54,8 +48,7 @@ jobs:
       - name: check
         run: make check
 
-      - name: upload
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist
@@ -69,16 +62,11 @@ jobs:
       PY_COLORS: '1'
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
-      - name: setup
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: dist
-        uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: dist
           path: dist

@@ -6,14 +6,12 @@ from laminar import Flow, Layer
 from laminar.configurations import datastores, executors
 
 
-class ResumeFlow(Flow):
-    ...
+class ResumeFlow(Flow): ...
 
 
 @ResumeFlow.register
 class A(Layer):
-    def __call__(self) -> None:
-        ...
+    def __call__(self) -> None: ...
 
 
 @ResumeFlow.register
@@ -27,8 +25,7 @@ class B(Layer):
 
 @ResumeFlow.register
 class C(Layer):
-    def __call__(self, b: B) -> None:
-        ...
+    def __call__(self, b: B) -> None: ...
 
 
 @pytest.mark.flow
@@ -39,8 +36,7 @@ def test_flow() -> None:
     # Catch failure
     try:
         flow(execution=execution_id)
-    except RuntimeError:
-        ...
+    except RuntimeError: ...
 
     execution = flow.execution(execution_id)
 

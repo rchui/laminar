@@ -9,8 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class TestFlow(Flow):
-    ...
+class TestFlow(Flow): ...
 
 
 @TestFlow.register
@@ -65,12 +64,10 @@ class Four(Layer):
         print(self.end)
 
 
-class DockerFlow(TestFlow):
-    ...
+class DockerFlow(TestFlow): ...
 
 
-class ThreadFlow(TestFlow):
-    ...
+class ThreadFlow(TestFlow): ...
 
 
 flow: Flow

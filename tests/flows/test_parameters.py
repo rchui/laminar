@@ -6,8 +6,7 @@ from laminar import Flow, Layer, Parameters
 from laminar.configurations import datastores, executors
 
 
-class ParameterFlow(Flow):
-    ...
+class ParameterFlow(Flow): ...
 
 
 @ParameterFlow.register
