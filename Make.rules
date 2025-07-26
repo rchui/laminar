@@ -1,5 +1,0 @@
-PIP_INDEX_URL := https://pypi.python.org/simple
-
-VENV := . .venv/bin/activate &&
-PIP := python -m pip
-INSTALL := $(PIP) install --upgrade --index-url $(PIP_INDEX_URL)
