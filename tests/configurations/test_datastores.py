@@ -2,7 +2,7 @@
 
 import io
 import json
-from typing import TYPE_CHECKING, Any, Dict, cast
+from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock, call, mock_open, patch
 
 import cloudpickle
@@ -55,7 +55,7 @@ class TestArchive:
 class TestAccessor:
     @pytest.fixture(autouse=True)
     def _accessor(self, layer: "Layer") -> None:
-        workspace: Dict[str, Any] = layer.execution.flow.configuration.datastore.cache
+        workspace: dict[str, Any] = layer.execution.flow.configuration.datastore.cache
         workspace["memory:///TestFlow/artifacts/test-hexdigest-0.gz"] = "foo"
         workspace["memory:///TestFlow/artifacts/test-hexdigest-1.gz"] = "bar"
 

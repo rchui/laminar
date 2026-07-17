@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=40.8.0", "wheel"]
+requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -11,8 +11,16 @@ authors = [
 ]
 
 # Package information
-requires-python = ">=3.8"
-dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
+requires-python = ">=3.10"
+dynamic = ["version", "readme"]
+
+dependencies = [
+  "boto3",
+  "boto3-stubs[batch]",
+  "cloudpickle",
+  "smart_open",
+  "svix-ksuid",
+]
 
 # Project metadata
 license = { file = "LICENSE" }
@@ -27,15 +35,32 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Internet",
   "Typing :: Typed",
 ]
 urls = { Homepage = "https://github.com/rchui/laminar", Documentation = "https://rchui.github.io/laminar/html/index.html" }
+
+[dependency-groups]
+dev = [
+  "build",
+  "coverage[toml]",
+  "mypy",
+  "myst-parser",
+  "pytest",
+  "pytest-asyncio",
+  "pytest-cov",
+  "rstcheck",
+  "ruff",
+  "sphinx",
+  "sphinx-immaterial",
+  "sphinxcontrib-mermaid",
+  "twine",
+]
 
 [tool.setuptools]
 include-package-data = true
@@ -44,21 +69,6 @@ packages = { find = { include = ["laminar*"], exclude = ["*tests*", "test_*", "*
 [tool.setuptools.dynamic]
 version = { attr = "laminar.version.VERSION" }
 readme = { file = "README.md", content-type = "text/markdown" }
-dependencies = { file = "requirements.txt" }
-
-[tool.setuptools.dynamic.optional-dependencies]
-dev = { file = "requirements.dev.txt" }
-
-[tool.black]
-exclude = '''
-(
-  /(
-    | \.venv
-  )/
-)
-'''
-line-length = 120
-preview = true
 
 [tool.coverage.report]
 exclude_lines = [
@@ -66,11 +76,8 @@ exclude_lines = [
   "@overload",
 ]
 
-[tool.isort]
-line_length = 120
-profile = "black"
-
 [tool.mypy]
+python_version = "3.10"
 follow_imports = "silent"
 ignore_missing_imports = true
 warn_redundant_casts = true
@@ -88,16 +95,8 @@ markers = [
 
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+target-version = "py310"
 
-select = ["E", "F", "W", "I", "PGH", "UP"]
-ignore = [
-    "E701",    # Multiple statements on one line (colon)
-    "PGH003",  # Use specific rule codes when ignoring type issues
-    "PGH004",  # Use specific rule codes when using `noqa`
-]
-
-# Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
     ".direnv",
@@ -120,3 +119,14 @@ exclude = [
     "node_modules",
     "venv",
 ]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "PGH", "UP"]
+ignore = [
+    "E701",    # Multiple statements on one line (colon)
+    "PGH003",  # Use specific rule codes when ignoring type issues
+    "PGH004",  # Use specific rule codes when using `noqa`
+]
+
+[tool.ruff.format]
+docstring-code-format = true

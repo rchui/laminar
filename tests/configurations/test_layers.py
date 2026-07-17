@@ -1,6 +1,6 @@
 """Tests for laminar.configurations.layers"""
 
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -43,7 +43,7 @@ class TestCatch:
 class TestForEach:
     @pytest.fixture(autouse=True)
     def _flow(self, flow: Flow) -> None:
-        workspace: Dict[str, Any] = flow.configuration.datastore.cache
+        workspace: dict[str, Any] = flow.configuration.datastore.cache
         workspace["memory:///TestFlow/archives/test-execution/A/0/foo.json"] = Archive(
             artifacts=[Artifact(dtype="str", hexdigest="1"), Artifact(dtype="str", hexdigest="2")]
         )

@@ -5,8 +5,9 @@ import itertools
 import logging
 import random
 import sys
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Type
+from typing import TYPE_CHECKING
 
 from laminar.configurations import datastores
 from laminar.settings import current
@@ -33,13 +34,13 @@ class Catch:
         @Flow.register(catch=Catch(...))
     """
 
-    def __init__(self, *exceptions: Type[Exception]) -> None:
+    def __init__(self, *exceptions: type[Exception]) -> None:
         self.exceptions = exceptions
 
     def __enter__(self) -> "Catch":
         return self
 
-    def __exit__(self, etype: Type[Exception], error: Exception, traceback: "Traceback") -> Optional[Type[Exception]]:
+    def __exit__(self, etype: type[Exception], error: Exception, traceback: "Traceback") -> type[Exception] | None:
         if isinstance(error, self.exceptions):
             self.exception = etype
             return etype
@@ -81,11 +82,11 @@ class Parameter:
     """Input for configuring a ForEach."""
 
     #: Layer the attribute is associated with.
-    layer: Type["Layer"]
+    layer: type["Layer"]
     #: Attribute to iterate over.
     attribute: str
     #: Layer index to reference attributes from.
-    index: Optional[int] = 0
+    index: int | None = 0
 
 
 @dataclass
@@ -134,7 +135,7 @@ class ForEach:
 
         return archive
 
-    def grid(self, *, layer: "Layer") -> List[Dict["Layer", Dict[str, int]]]:
+    def grid(self, *, layer: "Layer") -> list[dict["Layer", dict[str, int]]]:
         """Generate a grid of all combinations of foreach inputs.
 
         Args:
@@ -145,8 +146,8 @@ class ForEach:
                 index.
         """
 
-        parameters: List[Tuple["Layer", str]] = []
-        archives: List[datastores.Archive] = []
+        parameters: list[tuple[Layer, str]] = []
+        archives: list[datastores.Archive] = []
 
         for parameter in self.parameters:
             instance = layer.execution.layer(parameter.layer)
@@ -165,9 +166,9 @@ class ForEach:
                 )
 
         # Compute the product of every possible set of parameter indexes based off of parameter layer splits.
-        grid: List[Dict["Layer", Dict[str, int]]] = []
+        grid: list[dict[Layer, dict[str, int]]] = []
         for indexes in itertools.product(*(range(len(archive)) for archive in archives)):
-            model: Dict["Layer", Dict[str, int]] = {}
+            model: dict[Layer, dict[str, int]] = {}
             for (instance, attribute), index in zip(parameters, indexes):
                 model.setdefault(instance, {})[attribute] = index
             grid.append(model)
@@ -185,7 +186,7 @@ class ForEach:
             logger.debug("Cache miss for layer '%s' record.", layer.name)
             return len(self.grid(layer=layer))
 
-    def set(self, *, layer: "Layer", parameters: Tuple["Layer", ...]) -> Tuple["Layer", ...]:
+    def set(self, *, layer: "Layer", parameters: tuple["Layer", ...]) -> tuple["Layer", ...]:
         """Set a foreach layer's parameters given the inputs from the foreach grid.
 
         Args:

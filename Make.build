@@ -2,14 +2,13 @@ include Make.rules
 
 .PHONY: build
 build:
-	python -m build
+	uv build
 
 .PHONY: check
 check:
 	ls -lh dist/
-	twine check dist/*
+	$(RUN) twine check dist/*
 
 .PHONY: setup
 setup:
-	$(INSTALL) pip
-	$(INSTALL) --constraint constraints.txt --requirement requirements.dev.txt
+	uv sync --group dev

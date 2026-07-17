@@ -3,24 +3,23 @@ on: [push]
 
 jobs:
   test:
-    name: ${{ matrix.os }} - python3.${{ matrix.python-version }}
+    name: ${{ matrix.os }} - python${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
-        python-version: ['8', '9', '10', '11']
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     env:
       PY_COLORS: '1'
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: 3.${{ matrix.python-version }}
-          architecture: x64
+          python-version: ${{ matrix.python-version }}
 
-      - name: virtualenv
+      - name: install
         run: make env
 
       - name: test
@@ -35,9 +34,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
       - name: install
         run: make setup
@@ -48,7 +47,7 @@ jobs:
       - name: check
         run: make check
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist
@@ -63,10 +62,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.11'
-      - uses: actions/download-artifact@v3
+          python-version: '3.10'
+      - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
@@ -81,7 +80,7 @@ jobs:
         run: make tag
 
       - name: promote
-        run: twine upload dist/*
+        run: uv run twine upload dist/*
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}

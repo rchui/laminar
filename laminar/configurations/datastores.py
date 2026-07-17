@@ -1,11 +1,13 @@
 """Configurations for laminar data sources."""
 
+import builtins
 import copy
 import json
 import re
+from collections.abc import Callable, Generator, Iterable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Dict, Generator, Iterable, List, Tuple, Type, Union, overload
+from typing import TYPE_CHECKING, Any, BinaryIO, overload
 
 import boto3
 
@@ -61,13 +63,13 @@ class Record:
 
         return fs.join(layer.execution.flow.name, ".cache", unwrap(layer.execution.id), layer.name, ".record.json")
 
-    def dict(self) -> Dict[str, Any]:
+    def dict(self) -> dict[str, Any]:
         """Convert the Record to a dict."""
 
         return asdict(self)
 
     @staticmethod
-    def parse(source: Dict[str, Any]) -> "Record":
+    def parse(source: builtins.dict[str, Any]) -> "Record":
         """Get a Record from a dict."""
 
         return Record(
@@ -105,7 +107,7 @@ class Artifact:
 
         return fs.join(layer.execution.flow.name, "artifacts", f"{self.hexdigest}.gz")
 
-    def dict(self) -> Dict[str, str]:
+    def dict(self) -> dict[str, str]:
         """Convert the Artifact to a dict."""
 
         return asdict(self)
@@ -119,7 +121,7 @@ class Archive:
         Archives are metadata for artifacts.
     """
 
-    artifacts: List[Artifact]
+    artifacts: list[Artifact]
 
     def __len__(self) -> int:
         return len(self.artifacts)
@@ -128,7 +130,7 @@ class Archive:
     def path(*, layer: "Layer", index: int, name: str, cache: bool = False) -> str:
         """Get the path to the Archive."""
 
-        parts: Tuple[str, ...]
+        parts: tuple[str, ...]
 
         if cache:
             parts = (layer.execution.flow.name, ".cache", unwrap(layer.execution.id), layer.name, f"{name}.json")
@@ -144,13 +146,13 @@ class Archive:
 
         return fs.join(*parts)
 
-    def dict(self) -> Dict[str, List[Dict[str, str]]]:
+    def dict(self) -> dict[str, list[dict[str, str]]]:
         """Convert the Archive to a dict."""
 
         return asdict(self)
 
     @staticmethod
-    def parse(source: Dict[str, List[Dict[str, str]]]) -> "Archive":
+    def parse(source: builtins.dict[str, list[builtins.dict[str, str]]]) -> "Archive":
         """Get an Archive from a dict."""
 
         return Archive(artifacts=[Artifact(**artifact) for artifact in source["artifacts"]])
@@ -179,9 +181,9 @@ class Accessor:
     def __getitem__(self, key: int) -> Any: ...
 
     @overload
-    def __getitem__(self, key: slice) -> List[Any]: ...
+    def __getitem__(self, key: slice) -> list[Any]: ...
 
-    def __getitem__(self, key: Union[int, slice]) -> Any:
+    def __getitem__(self, key: int | slice) -> Any:
         datastore = self.layer.execution.flow.configuration.datastore
 
         # Directly access an index
@@ -218,9 +220,9 @@ class DataStore:
     #: URI root of the datastore
     root: str
     #: Internal datastore cache
-    cache: Dict[str, Any] = field(default_factory=dict)
+    cache: dict[str, Any] = field(default_factory=dict)
     #: Custom serde protocols for reading/writing artifacts
-    protocols: Dict[str, serde.Protocol] = field(default_factory=dict)
+    protocols: dict[str, serde.Protocol] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.root.endswith(("://", ":///")):
@@ -253,7 +255,7 @@ class DataStore:
 
         return fs.exists(uri=self.uri(path=path))
 
-    def protocol(self, *dtypes: type) -> Callable[[Type[serde.ProtocolType]], Type[serde.ProtocolType]]:
+    def protocol(self, *dtypes: type) -> Callable[[type[serde.ProtocolType]], type[serde.ProtocolType]]:
         """Register a custom serde protocol for a type.
 
         Usage::
@@ -263,7 +265,7 @@ class DataStore:
                 ...
         """
 
-        def decorator(protocol: Type[serde.ProtocolType]) -> Type[serde.ProtocolType]:
+        def decorator(protocol: type[serde.ProtocolType]) -> type[serde.ProtocolType]:
             for dtype in dtypes:
                 self.protocols[f"{dtype.__module__}.{dtype.__name__}"] = protocol()
             return protocol
@@ -339,7 +341,7 @@ class DataStore:
 
         return self.read_artifact(layer=layer, archive=self.read_archive(layer=layer, index=index, name=name))
 
-    def write_archive(self, *, layer: "Layer", name: str, artifacts: List[Artifact], cache: bool = False) -> Archive:
+    def write_archive(self, *, layer: "Layer", name: str, artifacts: list[Artifact], cache: bool = False) -> Archive:
         """Write an archive to the laminar datastore.
 
         Args:
@@ -402,7 +404,7 @@ class DataStore:
         artifacts = [self.write_artifact(layer=layer, value=value) for value in values]
         self.write_archive(layer=layer, name=name, artifacts=artifacts)
 
-    def list_executions(self, *, flow: "Flow") -> List["Execution"]:
+    def list_executions(self, *, flow: "Flow") -> list["Execution"]:
         """List all executions.
 
         Args:
@@ -415,7 +417,7 @@ class DataStore:
         executions = sorted(set(self._list(prefix=self.uri(path=fs.join(flow.name, "archives")), group="execution")))
         return [copy.deepcopy(flow).execution(execution) for execution in executions]
 
-    def list_layers(self, *, execution: "Execution") -> List["Layer"]:
+    def list_layers(self, *, execution: "Execution") -> list["Layer"]:
         """List all layers in an execution.
 
         Args:
@@ -434,7 +436,7 @@ class DataStore:
         )
         return [execution.layer(layer) for layer in layers]
 
-    def list_artifacts(self, *, layer: "Layer") -> List[str]:
+    def list_artifacts(self, *, layer: "Layer") -> list[str]:
         """List all artifacts in a layer execution.
 
         Args:
@@ -519,8 +521,8 @@ class AWS:
             parts = fs.parse_uri(prefix)
 
             s3 = boto3.resource("s3")
-            bucket = s3.Bucket(name=parts.bucket)
-            for response in bucket.objects.filter(Prefix=parts.key_id):
+            bucket = s3.Bucket(name=parts.bucket_id)  # type: ignore[attr-defined]
+            for response in bucket.objects.filter(Prefix=parts.key_id):  # type: ignore[attr-defined]
                 match = ARCHIVE_PATTERN.match(response.key)
                 if match is not None:
                     yield match.group(group)

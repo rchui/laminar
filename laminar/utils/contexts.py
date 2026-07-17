@@ -1,7 +1,7 @@
 import asyncio
 import contextlib
 import os
-from typing import Any, Dict, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 
 class Attributes(contextlib.ContextDecorator):
@@ -15,7 +15,7 @@ class Attributes(contextlib.ContextDecorator):
 
         self.cls = cls
         self.attributes = attributes
-        self._attributes: Dict[str, Any] = {}
+        self._attributes: dict[str, Any] = {}
 
     def __enter__(self) -> "Attributes":
         """Modify the class attributes."""
@@ -65,9 +65,9 @@ def EventLoop(func: T) -> T:
 
         from laminar.utils import contexts
 
+
         @contexts.EventLoop
-        async def main() -> None:
-            ...
+        async def main() -> None: ...
     """
 
     def wrapper(*args: Any, **kwargs: Any) -> Any:

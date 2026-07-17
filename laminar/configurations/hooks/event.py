@@ -18,9 +18,9 @@ def execution(hook: T) -> T:
 
         from laminar.configurations import hooks
 
+
         @hooks.execution
-        def configure() -> Generator[None, None, None]:
-            ...
+        def configure() -> Generator[None, None, None]: ...
     """
 
     return annotation.annotate(hook, annotation.execution)
@@ -33,9 +33,9 @@ def retry(hook: T) -> T:
 
         from laminar.configurations import hooks
 
+
         @hooks.retry
-        def configure() -> Generator[None, None, None]:
-            ...
+        def configure() -> Generator[None, None, None]: ...
     """
 
     return annotation.annotate(hook, annotation.retry)
@@ -48,9 +48,9 @@ def submission(hook: T) -> T:
 
         from laminar.configurations import hooks
 
+
         @hooks.submission
-        def configure() -> Generator[None, None, None]:
-            ...
+        def configure() -> Generator[None, None, None]: ...
     """
 
     return annotation.annotate(hook, annotation.submission)

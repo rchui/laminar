@@ -4,10 +4,11 @@ import copy
 import logging
 import operator
 from collections import defaultdict
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from functools import reduce
 from itertools import chain
-from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple, Type, TypeVar, Union, overload
+from typing import Any, TypeVar, overload
 
 from ksuid import KsuidMs
 
@@ -31,6 +32,7 @@ class Layer:
 
         from laminar import Layer
 
+
         class Task(Layer): ...
     """
 
@@ -40,11 +42,11 @@ class Layer:
     execution: "Execution"
 
     #: Current layer execution attempt
-    attempt: Optional[int] = current.layer.attempt
+    attempt: int | None = current.layer.attempt
     #: Layer index in its splits
-    index: Optional[int] = current.layer.index
+    index: int | None = current.layer.index
     #: Number of splits in the layer execution
-    splits: Optional[int] = current.layer.splits
+    splits: int | None = current.layer.splits
 
     def __init__(self, **attributes: Any) -> None:
         for key, value in attributes.items():
@@ -58,7 +60,7 @@ class Layer:
     def __repr__(self) -> str:
         return stringify(self, self.name, "execution", "index", "splits")
 
-    def __deepcopy__(self, memo: Dict[int, Any]) -> "Layer":
+    def __deepcopy__(self, memo: dict[int, Any]) -> "Layer":
         cls = self.__class__
         result: Layer = cls.__new__(cls)
         memo[id(self)] = result
@@ -93,7 +95,7 @@ class Layer:
 
         return self.__dict__[name]
 
-    def __getstate__(self) -> Dict[str, Any]:
+    def __getstate__(self) -> dict[str, Any]:
         return self.__dict__
 
     def __hash__(self) -> int:
@@ -107,17 +109,17 @@ class Layer:
         else:
             raise TypeError(f"Type '{type(self).__name__}' and type '{type(other).__name__}' are incomparable.")
 
-    def __setstate__(self, slots: Dict[str, Any]) -> None:
+    def __setstate__(self, slots: dict[str, Any]) -> None:
         self.__dict__ = slots
 
     @property
-    def artifacts(self) -> Dict[str, Any]:
+    def artifacts(self) -> dict[str, Any]:
         """Artifacts assigned to the layer."""
 
         return {artifact: value for artifact, value in vars(self).items() if artifact not in LAYER_RESERVED_KEYWORDS}
 
     @property
-    def _hooks(self) -> Set[Callable[..., Any]]:
+    def _hooks(self) -> set[Callable[..., Any]]:
         return {
             hook
             for hook in chain(vars(type(self.execution.flow)).values(), vars(type(self)).values())
@@ -125,27 +127,27 @@ class Layer:
         }
 
     @property
-    def _parameters(self) -> Dict[str, Tuple["Layer", ...]]:
+    def _parameters(self) -> dict[str, tuple["Layer", ...]]:
         return {
             self.__call__.__name__: hints(self.execution, self.__call__),
             **{hook.__name__: hints(self.execution, hook) for hook in self._hooks},
         }
 
     @property
-    def _dependencies(self) -> Set["Layer"]:
+    def _dependencies(self) -> set["Layer"]:
         return set(chain.from_iterable(self._parameters.values()))
 
     @property
-    def dependencies(self) -> Set[str]:
+    def dependencies(self) -> set[str]:
         """Layers this layer depends on."""
 
         return {layer.name for layer in self._dependencies}
 
     @property
-    def hooks(self) -> Dict[str, Set[Callable[..., Any]]]:
+    def hooks(self) -> dict[str, set[Callable[..., Any]]]:
         """Hooks attached to this layer collated by annotation."""
 
-        _hooks: Dict[str, Set[Callable[..., Any]]] = defaultdict(set)
+        _hooks: dict[str, set[Callable[..., Any]]] = defaultdict(set)
         for hook in self._hooks:
             _hooks[unwrap(hooks.annotation.get(hook))].add(hook)
         return _hooks
@@ -207,7 +209,7 @@ LayerT = TypeVar("LayerT", bound=Layer)
 @dataclass
 class Execution:
     #: ID of the flow execution
-    id: Optional[str]
+    id: str | None
     #: Flow being executed
     flow: "Flow"
     #: True if the flow execution is being retried, else False.
@@ -243,8 +245,10 @@ class Execution:
 
             class ExecutionFlow(Flow): ...
 
+
             @ExecutionFlow.register
             class A(Layer): ...
+
 
             flow = ExecutionFlow()
             flow.execution(...).execute(layer=flow.layer(A, index=0, splits=2))
@@ -271,18 +275,19 @@ class Execution:
         Usage::
 
             class Flow1(Flow): ...
+
+
             class Flow2(Flow): ...
+
 
             @Flow1.register
             class A(Layer):
                 foo: str
 
+
             flow1 = Flow1()
 
-            flow_1().next(
-                flow=Flow2(),
-                linker=lambda execution: Parameters(foo=execution.layer(A).foo)
-            )
+            flow_1().next(flow=Flow2(), linker=lambda execution: Parameters(foo=execution.layer(A).foo))
 
         Args:
             flow: Flow to execute next.
@@ -300,12 +305,12 @@ class Execution:
     def layer(self, layer: str, **atributes: Any) -> Layer: ...
 
     @overload
-    def layer(self, layer: Type[LayerT], **attributes: Any) -> LayerT: ...
+    def layer(self, layer: type[LayerT], **attributes: Any) -> LayerT: ...
 
     @overload
     def layer(self, layer: LayerT, **attributes: Any) -> LayerT: ...
 
-    def layer(self, layer: Union[str, Type[Layer], Layer], **attributes: Any) -> Layer:
+    def layer(self, layer: str | type[Layer] | Layer, **attributes: Any) -> Layer:
         """Get a registered flow layer.
 
         Usage::
@@ -385,7 +390,7 @@ class Execution:
         self.retry = True
         return self.schedule(dependencies=self.flow.dependencies)
 
-    def schedule(self, *, dependencies: Dict[str, Set[str]]) -> "Execution":
+    def schedule(self, *, dependencies: dict[str, set[str]]) -> "Execution":
         """Schedule layers to run in sequence in the flow execution.
 
         Args:
@@ -407,6 +412,7 @@ class Flow:
 
         from laminar import Flow, Layer
 
+
         class HelloFlow(Flow): ...
     """
 
@@ -415,7 +421,7 @@ class Flow:
     #: Flow configuration
     configuration: flows.Configuration
     #: Layers registered with the flow
-    registry: Dict[str, Layer] = field(default_factory=dict)
+    registry: dict[str, Layer] = field(default_factory=dict)
 
     def __init__(
         self,
@@ -438,7 +444,7 @@ class Flow:
         self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
 
     def __init_subclass__(cls) -> None:
-        flow: Type[Flow]
+        flow: type[Flow]
         layer: Layer
 
         # Register all subflow layers with this layer
@@ -454,30 +460,30 @@ class Flow:
                     callback(layer.__class__)
 
     @property
-    def _dependencies(self) -> Dict[Layer, Set[Layer]]:
+    def _dependencies(self) -> dict[Layer, set[Layer]]:
         return {
             self.execution.layer(child): {self.execution.layer(parent) for parent in parents}
             for child, parents in self.dependencies.items()
         }
 
     @property
-    def dependencies(self) -> Dict[str, Set[str]]:
+    def dependencies(self) -> dict[str, set[str]]:
         """A mapping of each layer and the layers it depends on."""
 
         return {layer: self.execution.layer(layer).dependencies for layer in self.registry}
 
     @property
-    def _dependents(self) -> Dict[Layer, Set[Layer]]:
+    def _dependents(self) -> dict[Layer, set[Layer]]:
         return {
             self.execution.layer(parent): {self.execution.layer(child) for child in children}
             for parent, children in self.dependents.items()
         }
 
     @property
-    def dependents(self) -> Dict[str, Set[str]]:
+    def dependents(self) -> dict[str, set[str]]:
         """A mapping of each layer and the layers that depend on it."""
 
-        dependents: Dict[str, Set[str]] = defaultdict(set)
+        dependents: dict[str, set[str]] = defaultdict(set)
         for child, parents in self.dependencies.items():
             for parent in parents:
                 dependents[parent].add(child)
@@ -496,7 +502,7 @@ class Flow:
 
         return False
 
-    def __call__(self, *, execution: Optional[str] = None, **parameters: Any) -> Execution:
+    def __call__(self, *, execution: str | None = None, **parameters: Any) -> Execution:
         """Execute the flow or execute a layer in the flow.
 
         Notes:
@@ -506,6 +512,8 @@ class Flow:
         Usage::
 
             class HelloFlow(Flow): ...
+
+
             flow = HelloFlow()
 
             flow()
@@ -523,7 +531,7 @@ class Flow:
 
     @overload
     @classmethod
-    def register(cls, layer: Type[LayerT]) -> Type[LayerT]: ...
+    def register(cls, layer: type[LayerT]) -> type[LayerT]: ...
 
     @overload
     @classmethod
@@ -534,7 +542,7 @@ class Flow:
         container: layers.Container = layers.Container(),
         foreach: layers.ForEach = layers.ForEach(),
         retry: layers.Retry = layers.Retry(),
-    ) -> Callable[[Type[LayerT]], Type[LayerT]]: ...
+    ) -> Callable[[type[LayerT]], type[LayerT]]: ...
 
     @classmethod
     def register(cls, *args: Any, **kwargs: Any) -> Any:
@@ -545,11 +553,12 @@ class Flow:
             @Flow.register
             class Task(Layer): ...
 
+
             @Flow.register(...)
             class Task(Layer): ...
         """
 
-        def add_layer(flow: Type[Flow], layer: Layer) -> None:
+        def add_layer(flow: type[Flow], layer: Layer) -> None:
             """Add a Layer to the Flow registry."""
 
             if layer.name in flow.registry:
@@ -564,7 +573,7 @@ class Flow:
         # 1st form: Register a layer with user-defined configurations
         # @Flow.register
         if args:
-            LayerDef: Type[Layer] = args[0]
+            LayerDef: type[Layer] = args[0]
             layer = LayerDef(configuration=layers.Configuration())
 
             add_layer(cls, layer)
@@ -575,7 +584,7 @@ class Flow:
         # @Flow.register
         else:
 
-            def wrapper(Layer: Type[LayerT]) -> Type[LayerT]:
+            def wrapper(Layer: type[LayerT]) -> type[LayerT]:
                 layer = Layer(
                     configuration=layers.Configuration(
                         catch=kwargs.get("catch", layers.Catch()),

@@ -1,12 +1,12 @@
 import os
 from contextlib import contextmanager
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, BinaryIO, TextIO, Union, overload
+from typing import TYPE_CHECKING, Any, BinaryIO, TextIO, overload
 
 import smart_open
 
 if TYPE_CHECKING:
-    from typing_extensions import Literal
+    from typing import Literal
 
 parse_uri = smart_open.parse_uri
 
@@ -28,13 +28,15 @@ def open(uri: str, mode: "Literal['wb']") -> BinaryIO: ...
 
 
 @contextmanager  # type: ignore
-def open(uri: str, mode: "Literal['r', 'rb', 'w', 'wb']") -> Union[BinaryIO, TextIO]:  # type: ignore
+def open(uri: str, mode: "Literal['r', 'rb', 'w', 'wb']") -> BinaryIO | TextIO:  # type: ignore
     """Open a file handler to a local or remote file.
 
     Usage::
 
-        with fs.open("file:///...", "r") as file: ...
-        with fs.open("s3://...", "wb") as file: ...
+        with fs.open("file:///...", "r") as file:
+            ...
+        with fs.open("s3://...", "wb") as file:
+            ...
 
     Args:
         uri: URI to the file to open.
@@ -44,7 +46,7 @@ def open(uri: str, mode: "Literal['r', 'rb', 'w', 'wb']") -> Union[BinaryIO, Tex
         Union[BinaryIO, TextIO]: File handle to the local/remote file.
     """
 
-    if parse_uri(uri).scheme == "file" and "w" in mode:
+    if parse_uri(uri).scheme == "file" and "w" in mode:  # type: ignore[attr-defined]
         Path(uri).parent.mkdir(parents=True, exist_ok=True)
 
     with smart_open.open(uri, mode) as file:

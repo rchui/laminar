@@ -1,7 +1,8 @@
 """Unit tests for laminar.configurations.schedulers"""
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Dict, Set
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest
@@ -45,7 +46,7 @@ class TestScheduler:
         class C(Layer):
             def __call__(self, a: A) -> None: ...
 
-        dependencies: Dict[str, Set[str]] = {"A": set(), "B": {"A"}, "C": {"A"}}
+        dependencies: dict[str, set[str]] = {"A": set(), "B": {"A"}, "C": {"A"}}
 
         # Just starting
         pending, runnable = self.scheduler.runnable(dependencies=dependencies, pending={"A", "B", "C"}, finished=set())

@@ -1,5 +1,5 @@
 import logging
-from typing import Generator, List
+from collections.abc import Generator
 
 from laminar import Flow, Layer, Parameters
 from laminar.configurations import executors, hooks, layers
@@ -14,7 +14,7 @@ class TestFlow(Flow): ...
 
 @TestFlow.register
 class One(Layer):
-    baz: List[str]
+    baz: list[str]
     foo: str
 
     def __call__(self, parameters: Parameters) -> None:
@@ -37,7 +37,7 @@ class Two(Layer):
 
 @TestFlow.register(foreach=layers.ForEach(parameters=[layers.Parameter(layer=One, attribute="baz")]))
 class Three(Layer):
-    baz: List[str]
+    baz: list[str]
 
     def __call__(self, one: One) -> None:
         self.baz = one.baz
@@ -50,7 +50,7 @@ class Three(Layer):
 
 @TestFlow.register(foreach=layers.ForEach(parameters=[layers.Parameter(layer=Three, attribute="baz", index=None)]))
 class Five(Layer):
-    baz: List[str]
+    baz: list[str]
 
     def __call__(self, three: Three) -> None:
         self.baz = three.baz

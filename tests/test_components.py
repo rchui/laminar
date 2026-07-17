@@ -1,7 +1,7 @@
 """Tests for laminar.components"""
 
 import copy
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock
 
 import cloudpickle
@@ -82,7 +82,7 @@ class TestLayer:
         assert flow.execution.layer(Test)._dependencies == {Dep1(), Dep2()}
 
     def test_getattr(self, flow: Flow) -> None:
-        workspace: Dict[str, Any] = flow.configuration.datastore.cache
+        workspace: dict[str, Any] = flow.configuration.datastore.cache
         workspace["memory:///TestFlow/archives/test-execution/Layer/0/foo.json"] = Archive(
             artifacts=[Artifact(dtype="str", hexdigest="abc")]
         )

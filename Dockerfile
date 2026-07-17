@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:latest
 
-ARG PYTHON_VERSION=3.8
+ARG PYTHON_VERSION=3.10
 ARG WHEELDIR=/opt/python${PYTHON_VERSION}/wheels/
 
 # --- Setup build environment
@@ -30,7 +30,7 @@ RUN --mount=type=cache,mode=0755,target=/root/.cache/pip \
 
 # --- Install laminar packages from wheels
 
-FROM python:3.8-slim as test
+FROM python:${PYTHON_VERSION}-slim as test
 
 ARG WHEELDIR
 

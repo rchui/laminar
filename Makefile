@@ -7,7 +7,7 @@ include Make.tf
 
 .PHONY: bash zsh
 bash zsh:
-	$(VENV) /bin/$@
+	$(RUN) /bin/$@
 
 .PHONY: clean
 clean: clear
@@ -30,23 +30,22 @@ clear:
 
 .PHONY: docs
 docs:
-	$(VENV) sphinx-build -a docs/source docs/html
+	$(RUN) sphinx-build -a docs/source docs/html
 
 .PHONY: env
-env: venv upgrade
+env:
+	uv sync --group dev
 
 .PHONY: format
 format:
-	$(VENV) black -C .
-	$(VENV) isort .
-	$(VENV) ruff --fix --show-fixes --show-source .
+	$(RUN) ruff check --fix --show-fixes .
+	$(RUN) ruff format .
 
 .PHONY: lint
 lint:
-	$(VENV) black --version && black --check .
-	$(VENV) isort --version && isort --check-only .
-	$(VENV) ruff --version && ruff --diff .
-	$(VENV) mypy --version && mypy .
+	$(RUN) ruff --version && $(RUN) ruff check .
+	$(RUN) ruff format --diff .
+	$(RUN) mypy --version && $(RUN) mypy .
 
 .PHONY: open
 open: docs
@@ -54,29 +53,25 @@ open: docs
 
 .PHONY: release
 release:
-	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target release .
+	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.10 --target release .
 	docker system prune --force
 
 .PHONY: smoke
 smoke:
-	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.8 --target test .
+	docker build --build-arg BUILDKIT_INLINE_CACHE=1 --tag rchui/laminar:3.10 --target test .
 	docker system prune --force
-	$(VENV) python main.py
+	$(RUN) python main.py
 
 .PHONY: tag
 tag:
-	python tests/tag.py
+	$(RUN) python tests/tag.py
 
 .PHONY: test
 test: lint
-	$(VENV) pytest -m "not flow" --cov laminar --cov-report term-missing
-	$(VENV) pytest -m "flow"
+	$(RUN) pytest -m "not flow" --cov laminar --cov-report term-missing
+	$(RUN) pytest -m "flow"
 
 .PHONY: upgrade
 upgrade:
-	$(VENV) $(INSTALL) --upgrade pip wheel
-	$(VENV) $(INSTALL) --constraint constraints.txt --upgrade --editable .[dev]
-
-.PHONY: venv
-venv:
-	python -m venv .venv --clear
+	uv lock --upgrade
+	uv sync --group dev

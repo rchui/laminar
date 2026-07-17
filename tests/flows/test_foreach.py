@@ -1,6 +1,6 @@
 """Test foreach flows."""
 
-from typing import List, cast
+from typing import cast
 
 import pytest
 
@@ -15,7 +15,7 @@ class ForeachFlow(Flow): ...
 
 @ForeachFlow.register
 class A(Layer):
-    foo: List[int]
+    foo: list[int]
 
     def __call__(self) -> None:
         self.shard(foo=[1, 2, 3])
@@ -23,10 +23,10 @@ class A(Layer):
 
 @ForeachFlow.register(foreach=ForEach(parameters=[Parameter(layer=A, attribute="foo")]))
 class B(Layer):
-    foo: List[int]
+    foo: list[int]
 
     def __call__(self, a: A) -> None:
-        self.foo = cast("List[int]", cast("int", a.foo) + unwrap(self.index) ** 2)
+        self.foo = cast("list[int]", cast("int", a.foo) + unwrap(self.index) ** 2)
 
 
 @ForeachFlow.register

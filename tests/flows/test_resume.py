@@ -36,7 +36,8 @@ def test_flow() -> None:
     # Catch failure
     try:
         flow(execution=execution_id)
-    except RuntimeError: ...
+    except RuntimeError:
+        ...
 
     execution = flow.execution(execution_id)
 

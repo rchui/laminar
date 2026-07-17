@@ -1,4 +1,5 @@
-from typing import Any, Callable, Generator, Optional, TypeVar
+from collections.abc import Callable, Generator
+from typing import Any, TypeVar
 
 T = TypeVar("T")
 
@@ -15,5 +16,5 @@ def annotate(hook: T, annotation: str) -> T:
     return hook
 
 
-def get(hook: Callable[..., Generator[Any, None, None]]) -> Optional[str]:
+def get(hook: Callable[..., Generator[Any, None, None]]) -> str | None:
     return getattr(hook, ATTRIBUTE, None)

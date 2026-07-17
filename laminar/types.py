@@ -1,6 +1,7 @@
 """Shared laminar types."""
 
-from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, TypeVar, get_type_hints
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, TypeVar, get_type_hints
 
 if TYPE_CHECKING:
     from laminar import Execution, Layer
@@ -8,7 +9,7 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 
-def hints(execution: "Execution", function: Callable[..., Any]) -> Tuple["Layer", ...]:
+def hints(execution: "Execution", function: Callable[..., Any]) -> tuple["Layer", ...]:
     """Get the type hints for a given function.
 
     Args:
@@ -25,7 +26,7 @@ def hints(execution: "Execution", function: Callable[..., Any]) -> Tuple["Layer"
     )
 
 
-def unwrap(option: Optional[T], default: Optional[T] = None) -> T:
+def unwrap(option: T | None, default: T | None = None) -> T:
     """Unwrap an optional value.
 
     Usage::

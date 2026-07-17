@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from laminar.configurations.hooks import annotation
 
@@ -15,15 +15,15 @@ def entry(hook: T) -> T:
 
         from laminar.configurations import entry
 
+
         @hooks.entry
-        def enter() -> bool:
-            ...
+        def enter() -> bool: ...
     """
 
     return annotation.annotate(hook, annotation.entry)
 
 
-def gather(*, layer: "Layer", annotation: str) -> List[Any]:
+def gather(*, layer: "Layer", annotation: str) -> list[Any]:
     """Get values returned by all hooks of the annotated type.
 
     Args:

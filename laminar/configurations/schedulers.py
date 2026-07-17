@@ -6,7 +6,7 @@ import logging
 import operator
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Dict, List, Set, Tuple
+from typing import TYPE_CHECKING, Any
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import SchedulerError
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class Scheduler:
     """Base scheduler"""
 
-    async def schedule(self, *, layer: "Layer", attempt: int = 1) -> List["Layer"]:
+    async def schedule(self, *, layer: "Layer", attempt: int = 1) -> list["Layer"]:
         """Schedule layers for execution.
 
         Args:
@@ -40,7 +40,7 @@ class Scheduler:
 
         try:
             splits = layer.configuration.foreach.splits(layer=layer)
-            tasks: List["Task[Layer]"] = []
+            tasks: list[Task[Layer]] = []
 
             # Create a task per layer split
             for index in range(splits):
@@ -83,8 +83,8 @@ class Scheduler:
         return list(layers)
 
     def runnable(
-        self, *, dependencies: Dict[str, Set[str]], pending: Set[str], finished: Set[str]
-    ) -> Tuple[Set[str], Set[str]]:
+        self, *, dependencies: dict[str, set[str]], pending: set[str], finished: set[str]
+    ) -> tuple[set[str], set[str]]:
         """Find all runnable layers.
 
         Args:
@@ -100,7 +100,7 @@ class Scheduler:
         runnable = {layer for layer in pending if dependencies[layer].issubset(finished)}
         return pending - runnable, runnable
 
-    def skippable(self, *, execution: "Execution", runnable: Set[str], finished: Set[str]) -> Tuple[Set[str], Set[str]]:
+    def skippable(self, *, execution: "Execution", runnable: set[str], finished: set[str]) -> tuple[set[str], set[str]]:
         """Find all skippable layers.
 
         Args:
@@ -113,7 +113,7 @@ class Scheduler:
             * Finished layers
         """
 
-        skippable: Set[str] = set()
+        skippable: set[str] = set()
 
         for layer in runnable:
             instance = execution.layer(layer)
@@ -139,8 +139,8 @@ class Scheduler:
         return runnable - skippable, finished | skippable
 
     def running(
-        self, *, execution: "Execution", runnable: Set[str], running: Set["Task[List[Layer]]"]
-    ) -> Set["Task[List[Layer]]"]:
+        self, *, execution: "Execution", runnable: set[str], running: set["Task[list[Layer]]"]
+    ) -> set["Task[list[Layer]]"]:
         """Schedule runnable layers.
 
         Args:
@@ -156,8 +156,8 @@ class Scheduler:
         return running | {asyncio.create_task(self.schedule(layer=execution.layer(layer))) for layer in runnable}
 
     async def wait(
-        self, *, running: Set["Task[List[Layer]]"], finished: Set[str], condition: str
-    ) -> Tuple[Set["Task[List[Layer]]"], Set[str]]:
+        self, *, running: set["Task[list[Layer]]"], finished: set[str], condition: str
+    ) -> tuple[set["Task[list[Layer]]"], set[str]]:
         """Wait on the completion of running layers.
 
         Args:
@@ -180,7 +180,7 @@ class Scheduler:
         return running, finished
 
     @contexts.EventLoop
-    async def loop(self, *, execution: "Execution", dependencies: Dict[str, Set[str]], finished: Set[str]) -> None:
+    async def loop(self, *, execution: "Execution", dependencies: dict[str, set[str]], finished: set[str]) -> None:
         """Run the scheduling loop.
 
         Args:
@@ -200,8 +200,8 @@ class Scheduler:
         logger.info("Dependencies: '%s'", dependencies)
 
         pending = set(dependencies) - finished
-        runnable: Set[str] = set()
-        running: Set["Task[List[Layer]]"] = set()
+        runnable: set[str] = set()
+        running: set[Task[list[Layer]]] = set()
 
         # Start the scheduling loop
         while pending:
@@ -229,12 +229,12 @@ class Scheduler:
                 running, finished = await self.wait(running=running, finished=finished, condition=condition)
             logger.info("Finished layers: %s", sorted(finished))
 
-    def compile(self, *, execution: "Execution") -> Dict[str, Any]:
+    def compile(self, *, execution: "Execution") -> dict[str, Any]:
         """Compile an intermediate representation of the Flow."""
 
         raise NotImplementedError
 
-    def create(self, *, ir: Dict[str, Any]) -> None:
+    def create(self, *, ir: dict[str, Any]) -> None:
         """Create a delegated scheduler to schedule the Flow."""
 
         raise NotImplementedError

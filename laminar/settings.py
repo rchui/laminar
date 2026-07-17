@@ -1,10 +1,9 @@
 """Access for execution specific environment variables."""
 
 import os
-from typing import Optional
 
 
-def get(prefix: str, attr: str) -> Optional[str]:
+def get(prefix: str, attr: str) -> str | None:
     """Get environment variable."""
     return os.environ.get(f"{prefix}{attr.upper()}")
 
@@ -14,12 +13,12 @@ def coerce_bool(prefix: str, attr: str) -> bool:
     return (get(prefix, attr) or "False") == "True"
 
 
-def coerce_optional_str(prefix: str, attr: str) -> Optional[str]:
+def coerce_optional_str(prefix: str, attr: str) -> str | None:
     """Coerce environment variable to an optional string."""
     return get(prefix, attr)
 
 
-def coerce_optional_int(prefix: str, attr: str) -> Optional[int]:
+def coerce_optional_int(prefix: str, attr: str) -> int | None:
     """Coerce environment variable to an optional integer."""
     value = get(prefix, attr)
     return None if value is None else int(value)
@@ -45,7 +44,7 @@ class Current:
             prefix = "LAMINAR_EXECUTION_"
 
         @property
-        def id(self) -> Optional[str]:
+        def id(self) -> str | None:
             """ID of the current execution"""
             return coerce_optional_str(self.Env.prefix, "id")
 
@@ -59,7 +58,7 @@ class Current:
             prefix = "LAMINAR_FLOW_"
 
         @property
-        def name(self) -> Optional[str]:
+        def name(self) -> str | None:
             """Name of the currently running flow"""
             return coerce_optional_str(self.Env.prefix, "name")
 
@@ -68,22 +67,22 @@ class Current:
             prefix = "LAMINAR_LAYER_"
 
         @property
-        def attempt(self) -> Optional[int]:
+        def attempt(self) -> int | None:
             """Current layer attempt"""
             return coerce_optional_int(self.Env.prefix, "attempt")
 
         @property
-        def index(self) -> Optional[int]:
+        def index(self) -> int | None:
             """Index of the layer the layer splits"""
             return coerce_optional_int(self.Env.prefix, "index")
 
         @property
-        def name(self) -> Optional[str]:
+        def name(self) -> str | None:
             """Name of the currently running layer"""
             return coerce_optional_str(self.Env.prefix, "name")
 
         @property
-        def splits(self) -> Optional[int]:
+        def splits(self) -> int | None:
             """Number of splits in the layer"""
             return coerce_optional_int(self.Env.prefix, "splits")
 
