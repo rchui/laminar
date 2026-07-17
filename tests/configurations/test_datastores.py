@@ -1,5 +1,6 @@
 """Tests for laminar.configurations.datastores"""
 
+import hashlib
 import io
 import json
 from typing import TYPE_CHECKING, Any, cast
@@ -8,6 +9,7 @@ from unittest.mock import Mock, call, mock_open, patch
 import cloudpickle
 import pytest
 
+from laminar.configurations import serde
 from laminar.configurations.datastores import Accessor, Archive, Artifact, DataStore, Local, Record
 
 if TYPE_CHECKING:
@@ -200,6 +202,21 @@ class TestDatastore:
         mock_open.return_value.write.assert_called_once_with(
             b"\x80\x05\x95\x0e\x00\x00\x00\x00\x00\x00\x00\x8c\ntest-value\x94."
         )
+
+    @patch("laminar.utils.fs.open", new_callable=mock_open)
+    def test_write_artifact_custom_protocol(self, mock_open: Mock, layer: "Layer") -> None:
+        class UppercaseProtocol(serde.Protocol):
+            def dumps(self, value: Any) -> bytes:
+                return cast(str, value).upper().encode()
+
+        self.datastore.protocol(str)(UppercaseProtocol)
+
+        artifact = self.datastore.write_artifact(layer=layer, value="test-value")
+
+        # The hexdigest must be computed with the custom protocol's bytes, not the default
+        # pickle-derived bytes, or the content hash won't match what's actually written to disk.
+        assert artifact == Artifact(dtype="builtins.str", hexdigest=hashlib.sha256(b"TEST-VALUE").hexdigest())
+        mock_open.return_value.write.assert_called_once_with(b"TEST-VALUE")
 
     @patch("laminar.configurations.datastores.DataStore._write")
     def test_write(self, mock_write: Mock, layer: "Layer") -> None:

@@ -373,8 +373,9 @@ class DataStore:
             Artifact metadata written to the laminar datastore.
         """
 
-        serializer = self.protocols.get(type(value).__name__, DEFAULT_SERDE)
-        artifact = Artifact(dtype=serde.dtype(type(value)), hexdigest=serializer.hexdigest(value))
+        dtype = serde.dtype(type(value))
+        serializer = self.protocols.get(dtype, DEFAULT_SERDE)
+        artifact = Artifact(dtype=dtype, hexdigest=serializer.hexdigest(value))
         self._write(value=value, uri=self.uri(path=artifact.path(layer=layer)), dtype=artifact.dtype)
 
         return artifact
