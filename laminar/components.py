@@ -426,22 +426,30 @@ class Flow:
     def __init__(
         self,
         *,
-        datastore: datastores.DataStore = datastores.Local(),
-        executor: executors.Executor = executors.Docker(),
-        scheduler: schedulers.Scheduler = schedulers.Scheduler(),
+        datastore: datastores.DataStore | None = None,
+        executor: executors.Executor | None = None,
+        scheduler: schedulers.Scheduler | None = None,
     ) -> None:
         """
         Args:
-            datastore: Datastore to execute the flow with. Optional; Defaults to datastores.Local().
-            executor: Executor to run layers with. Optional; Defaults to executors.Docker().
-            scheduler: Scheduler to manage the flow with. Optional; Defaults to schedulers.Scheduler().
+            datastore: Datastore to execute the flow with. Optional; Defaults to a new datastores.Local().
+            executor: Executor to run layers with. Optional; Defaults to a new executors.Docker().
+            scheduler: Scheduler to manage the flow with. Optional; Defaults to a new schedulers.Scheduler().
 
         Raises:
             FlowError: If the flow is used to configure the Memory datastore without a Thread executor.
         """
 
         self.execution = Execution(id=current.execution.id, flow=self)
-        self.configuration = flows.Configuration(datastore=datastore, executor=executor, scheduler=scheduler)
+        self.configuration = flows.Configuration(
+            # Constructed here rather than as parameter defaults: parameter defaults are evaluated once
+            # at function-definition time and would be a single shared DataStore/Executor/Scheduler
+            # instance reused (and mutated, e.g. via custom serde protocol registration) across every
+            # Flow() built without explicit arguments.
+            datastore=datastore if datastore is not None else datastores.Local(),
+            executor=executor if executor is not None else executors.Docker(),
+            scheduler=scheduler if scheduler is not None else schedulers.Scheduler(),
+        )
 
     def __init_subclass__(cls) -> None:
         flow: type[Flow]

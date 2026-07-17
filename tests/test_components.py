@@ -8,7 +8,7 @@ import cloudpickle
 import pytest
 
 from laminar import Flow, Layer, Parameters
-from laminar.configurations import layers
+from laminar.configurations import layers, serde
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
 from laminar.exceptions import FlowError
 from laminar.utils import contexts
@@ -141,6 +141,24 @@ class TestFLow:
             class InitFlow(Flow): ...
 
             InitFlow(datastore=Memory())
+
+    def test_init_default_configuration_is_not_shared(self) -> None:
+        # Regression test: Flow.__init__ used to default datastore/executor/scheduler to shared
+        # instances constructed once at function-definition time, so mutating one default-constructed
+        # flow's datastore (e.g. registering a custom serde protocol) leaked into every other
+        # default-constructed flow, and they all contended for the same Docker executor semaphore.
+        class IsolationFlowA(Flow): ...
+
+        class IsolationFlowB(Flow): ...
+
+        a, b = IsolationFlowA(), IsolationFlowB()
+
+        assert a.configuration.datastore is not b.configuration.datastore
+        assert a.configuration.executor is not b.configuration.executor
+        assert a.configuration.scheduler is not b.configuration.scheduler
+
+        a.configuration.datastore.protocols["custom"] = serde.PickleProtocol()
+        assert "custom" not in b.configuration.datastore.protocols
 
     def test_dependencies(self, flow: Flow) -> None:
         @flow.register
