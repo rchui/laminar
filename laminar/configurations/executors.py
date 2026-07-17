@@ -104,13 +104,24 @@ class Docker(Executor):
         Flow(executor=Docker())
     """
 
+    #: Seconds to wait for a timed-out container to be force removed before giving up on cleanup.
+    STOP_TIMEOUT = 30
+
     async def submit(self, *, layer: "Layer") -> "Layer":
         async with self.semaphore:
             workspace = (
                 f"{layer.execution.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
             )
-            name = f"laminar-{layer.execution.flow.name}-{unwrap(layer.execution.id)}-{layer.name}-{layer.index}"
+            # Hashed rather than interpolated directly: execution IDs are caller-supplied strings and
+            # may contain spaces, slashes, or other characters that would break command tokenization or
+            # be rejected as an invalid Docker container name.
+            identifier = f"{layer.execution.flow.name}/{unwrap(layer.execution.id)}/{layer.name}/{layer.index}"
+            name = f"laminar-{hashlib.sha256(identifier.encode()).hexdigest()}"
 
+            # Quoted: these are joined into one string and re-split with shlex.split() below, so any
+            # value containing a space or quote would otherwise corrupt tokenization of the whole
+            # command, not just its own argument. container.command is intentionally left unquoted --
+            # it's a shell-style string that's meant to expand to multiple argv entries.
             command = " ".join(
                 [
                     "docker",
@@ -119,17 +130,17 @@ class Docker(Executor):
                     "--interactive",
                     f"--name {name}",
                     f"--cpus {layer.configuration.container.cpu}",
-                    f"--env LAMINAR_EXECUTION_ID={unwrap(layer.execution.id)}",
+                    f"--env LAMINAR_EXECUTION_ID={shlex.quote(unwrap(layer.execution.id))}",
                     f"--env LAMINAR_EXECUTION_RETRY={layer.execution.retry}",
-                    f"--env LAMINAR_FLOW_NAME={layer.execution.flow.name}",
+                    f"--env LAMINAR_FLOW_NAME={shlex.quote(layer.execution.flow.name)}",
                     f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
                     f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
-                    f"--env LAMINAR_LAYER_NAME={layer.name}",
+                    f"--env LAMINAR_LAYER_NAME={shlex.quote(layer.name)}",
                     f"--env LAMINAR_LAYER_SPLITS={unwrap(layer.splits)}",
                     f"--memory {layer.configuration.container.memory}m",
-                    f"--volume {workspace}",
-                    f"--workdir {layer.configuration.container.workdir}",
-                    layer.configuration.container.image,
+                    f"--volume {shlex.quote(workspace)}",
+                    f"--workdir {shlex.quote(layer.configuration.container.workdir)}",
+                    shlex.quote(layer.configuration.container.image),
                     layer.configuration.container.command,
                 ]
             )
@@ -144,36 +155,53 @@ class Docker(Executor):
             except ExecutionError:
                 raise
             except asyncio.TimeoutError as error:
-                await self._stop(name=name, process=process)
-                raise ExecutionError(f"Layer '{layer.name}' timed out after '{self.timeout}' seconds.") from error
+                removed = await self._stop(name=name, process=process)
+                message = f"Layer '{layer.name}' timed out after '{self.timeout}' seconds."
+                if not removed:
+                    message += f" Failed to confirm removal of container '{name}'; it may still be running."
+                raise ExecutionError(message) from error
             except Exception as error:
                 message = type(error).__name__ + (f":{error}" if str(error) else "")
                 raise ExecutionError(f"Layer '{layer.name}' failed with an unexpected error. {message}") from error
 
-    async def _stop(self, *, name: str, process: "asyncio.subprocess.Process") -> None:
+    async def _stop(self, *, name: str, process: "asyncio.subprocess.Process") -> bool:
         """Stop a timed out container.
 
         Notes:
             Killing the local `docker run` client only detaches it -- the container is managed by the
             Docker daemon and keeps running (and consuming resources / writing artifacts) until it's
             explicitly stopped. `--rm` only removes a container once it has exited on its own.
+
+        Returns:
+            True if the container was confirmed removed, else False.
         """
 
-        remove = await asyncio.create_subprocess_exec(
-            "docker",
-            "rm",
-            "--force",
-            name,
-            stdout=asyncio.subprocess.DEVNULL,
-            stderr=asyncio.subprocess.DEVNULL,
-        )
-        await remove.wait()
+        removed = False
+        try:
+            remove = await asyncio.create_subprocess_exec(
+                "docker",
+                "rm",
+                "--force",
+                name,
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL,
+            )
+            returncode = await asyncio.wait_for(remove.wait(), timeout=self.STOP_TIMEOUT)
+            removed = returncode == 0
+            if not removed:
+                logger.error("'docker rm --force %s' exited with code '%d'.", name, returncode)
+        except asyncio.TimeoutError:
+            logger.error("Timed out after '%d' seconds waiting for 'docker rm --force %s'.", self.STOP_TIMEOUT, name)
+        except Exception as error:
+            logger.error("Failed to run 'docker rm --force %s': %s(%s).", name, type(error).__name__, error)
 
         try:
             process.kill()
         except ProcessLookupError:
             pass
         await process.wait()
+
+        return removed
 
 
 class AWS:
