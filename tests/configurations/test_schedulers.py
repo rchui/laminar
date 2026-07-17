@@ -1,5 +1,6 @@
 """Unit tests for laminar.configurations.schedulers"""
 
+import asyncio
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
@@ -36,6 +37,26 @@ class TestScheduler:
             layer=Record.LayerRecord(name="Layer"),
             execution=Record.ExecutionRecord(splits=1),
         )
+
+    @pytest.mark.asyncio
+    async def test_schedule_cancels_siblings_on_failure(self, layer: Layer) -> None:
+        async def submit(*, layer: Layer) -> Layer:
+            if layer.index == 0:
+                raise RuntimeError("boom")
+            await asyncio.sleep(10)
+            return layer
+
+        with (
+            patch("laminar.configurations.layers.ForEach.splits", return_value=2),
+            patch("laminar.configurations.executors.Thread.submit", side_effect=submit),
+            pytest.raises(RuntimeError),
+        ):
+            await self.scheduler.schedule(layer=layer)
+
+        # The still-sleeping sibling split must be cancelled, not abandoned running in the background.
+        current = asyncio.current_task()
+        leaked = [task for task in asyncio.all_tasks() if task is not current and not task.done()]
+        assert leaked == []
 
     def test_runnable(self) -> None:
         class A(Layer): ...

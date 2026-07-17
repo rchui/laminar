@@ -38,9 +38,10 @@ class Scheduler:
             Layer splits that were executed
         """
 
+        tasks: list[Task[Layer]] = []
+
         try:
             splits = layer.configuration.foreach.splits(layer=layer)
-            tasks: list[Task[Layer]] = []
 
             # Create a task per layer split
             for index in range(splits):
@@ -55,6 +56,14 @@ class Scheduler:
             layers = await asyncio.gather(*tasks)
 
         except Exception as error:
+            # A sibling split may still be running when another split fails. Cancel and drain them so a
+            # retry doesn't race with tasks abandoned from this attempt.
+            # NOTE: asyncio.TaskGroup does this automatically, but requires Python 3.11+. Switch this to
+            # a TaskGroup once laminar's minimum supported Python version reaches 3.11.
+            for task in tasks:
+                task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
+
             logger.error(
                 "Encountered unexpected error: %s(%s) on attempt '%d' of '%d'.",
                 type(error).__name__,
