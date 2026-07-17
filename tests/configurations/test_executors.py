@@ -72,3 +72,12 @@ class TestDocker:
 
             with pytest.raises(Exception):
                 await self.executor.submit(layer=layer)
+
+    async def test_submit_timeout(self, layer: "Layer") -> None:
+        executor = Docker(timeout=0)
+        command = shlex.split("sleep 5")
+        with patch("shlex.split") as mock_split:
+            mock_split.return_value = command
+
+            with pytest.raises(ExecutionError, match="timed out"):
+                await executor.submit(layer=layer)

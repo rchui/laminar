@@ -133,16 +133,17 @@ class Docker(Executor):
             )
             logger.debug(command)
 
-            task = asyncio.create_task(asyncio.create_subprocess_exec(*shlex.split(command)))
-
             try:
-                process = await asyncio.wait_for(task, timeout=self.timeout)
-                if await process.wait() != 0:
-                    raise ExecutionError(f"Layer '{layer.name}' failed with exit code: {process.returncode}")
+                process = await asyncio.create_subprocess_exec(*shlex.split(command))
+                returncode = await asyncio.wait_for(process.wait(), timeout=self.timeout)
+                if returncode != 0:
+                    raise ExecutionError(f"Layer '{layer.name}' failed with exit code: {returncode}")
                 return layer
             except ExecutionError:
                 raise
             except asyncio.TimeoutError as error:
+                process.kill()
+                await process.wait()
                 raise ExecutionError(f"Layer '{layer.name}' timed out after '{self.timeout}' seconds.") from error
             except Exception as error:
                 message = type(error).__name__ + (f":{error}" if str(error) else "")
