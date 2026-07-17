@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING, Any
 
 from laminar.configurations import datastores, hooks
 from laminar.exceptions import SchedulerError
-from laminar.types import unwrap
 from laminar.utils import contexts
 
 if TYPE_CHECKING:
@@ -205,7 +204,7 @@ class Scheduler:
         finished = deepcopy(finished)
 
         logger.info("Flow: '%s'", execution.flow.name)
-        logger.info("Execution: '%s'", unwrap(execution.id))
+        logger.info("Execution: '%s'", execution.id)
         logger.info("Dependencies: '%s'", dependencies)
 
         pending = set(dependencies) - finished

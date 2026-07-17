@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING
 
 from laminar.configurations import datastores
 from laminar.settings import current
-from laminar.types import unwrap
 
 if TYPE_CHECKING:
     from inspect import Traceback
@@ -197,7 +196,7 @@ class ForEach:
             Tuple[Layer, ...]: Parameters with modified values for the foreach evaluation.
         """
 
-        inputs = self.grid(layer=layer)[unwrap(layer.index)]
+        inputs = self.grid(layer=layer)[layer.index]
         for parameter in parameters:
             for attribute, index in inputs.get(parameter, {}).items():
                 value = getattr(parameter, attribute)

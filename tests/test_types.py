@@ -19,12 +19,12 @@ class TestHints:
     def test_reference(self) -> None:
         def test(a: "Ref") -> None: ...
 
-        assert types.hints(flow.execution, test) == (Ref(flow=flow),)
+        assert types.hints(flow.execution("test"), test) == (Ref(flow=flow),)
 
     def test_forward_reference(self) -> None:
         def test(a: "ForwardRef") -> None: ...
 
-        assert types.hints(flow.execution, test) == (ForwardRef(flow=flow),)
+        assert types.hints(flow.execution("test"), test) == (ForwardRef(flow=flow),)
 
 
 @HintFlow.register

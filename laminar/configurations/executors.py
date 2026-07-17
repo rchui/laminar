@@ -16,7 +16,6 @@ from mypy_boto3_batch.type_defs import (
 )
 
 from laminar.exceptions import ExecutionError
-from laminar.types import unwrap
 from laminar.utils import contexts
 
 logger = logging.getLogger(__name__)
@@ -115,7 +114,7 @@ class Docker(Executor):
             # Hashed rather than interpolated directly: execution IDs are caller-supplied strings and
             # may contain spaces, slashes, or other characters that would break command tokenization or
             # be rejected as an invalid Docker container name.
-            identifier = f"{layer.execution.flow.name}/{unwrap(layer.execution.id)}/{layer.name}/{layer.index}"
+            identifier = f"{layer.execution.flow.name}/{layer.execution.id}/{layer.name}/{layer.index}"
             name = f"laminar-{hashlib.sha256(identifier.encode()).hexdigest()}"
 
             # Quoted: these are joined into one string and re-split with shlex.split() below, so any
@@ -130,13 +129,13 @@ class Docker(Executor):
                     "--interactive",
                     f"--name {name}",
                     f"--cpus {layer.configuration.container.cpu}",
-                    f"--env LAMINAR_EXECUTION_ID={shlex.quote(unwrap(layer.execution.id))}",
+                    f"--env LAMINAR_EXECUTION_ID={shlex.quote(layer.execution.id)}",
                     f"--env LAMINAR_EXECUTION_RETRY={layer.execution.retry}",
                     f"--env LAMINAR_FLOW_NAME={shlex.quote(layer.execution.flow.name)}",
-                    f"--env LAMINAR_LAYER_ATTEMPT={unwrap(layer.attempt)}",
-                    f"--env LAMINAR_LAYER_INDEX={unwrap(layer.index)}",
+                    f"--env LAMINAR_LAYER_ATTEMPT={layer.attempt}",
+                    f"--env LAMINAR_LAYER_INDEX={layer.index}",
                     f"--env LAMINAR_LAYER_NAME={shlex.quote(layer.name)}",
-                    f"--env LAMINAR_LAYER_SPLITS={unwrap(layer.splits)}",
+                    f"--env LAMINAR_LAYER_SPLITS={layer.splits}",
                     f"--memory {layer.configuration.container.memory}m",
                     f"--volume {shlex.quote(workspace)}",
                     f"--workdir {shlex.quote(layer.configuration.container.workdir)}",
@@ -300,13 +299,13 @@ class AWS:
                         memory=container.memory,
                         command=container.command,
                         environment=[
-                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_ID", value=unwrap(layer.execution.id)),
+                            KeyValuePairTypeDef(name="LAMINAR_EXECUTION_ID", value=layer.execution.id),
                             KeyValuePairTypeDef(name="LAMINAR_EXECUTION_RETRY", value=str(layer.execution.retry)),
                             KeyValuePairTypeDef(name="LAMINAR_FLOW_NAME", value=layer.execution.flow.name),
-                            KeyValuePairTypeDef(name="LAMINAR_LAYER_ATTEMPT", value=str(unwrap(layer.attempt))),
-                            KeyValuePairTypeDef(name="LAMINAR_LAYER_INDEX", value=str(unwrap(layer.index))),
+                            KeyValuePairTypeDef(name="LAMINAR_LAYER_ATTEMPT", value=str(layer.attempt)),
+                            KeyValuePairTypeDef(name="LAMINAR_LAYER_INDEX", value=str(layer.index)),
                             KeyValuePairTypeDef(name="LAMINAR_LAYER_NAME", value=layer.name),
-                            KeyValuePairTypeDef(name="LAMINAR_LAYER_SPLITS", value=str(unwrap(layer.splits))),
+                            KeyValuePairTypeDef(name="LAMINAR_LAYER_SPLITS", value=str(layer.splits)),
                         ],
                     ),
                     timeout=JobTimeoutTypeDef(attemptDurationSeconds=self.timeout),

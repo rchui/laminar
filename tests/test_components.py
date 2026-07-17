@@ -2,12 +2,13 @@
 
 import copy
 from typing import Any
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import cloudpickle
 import pytest
 
 from laminar import Flow, Layer, Parameters
+from laminar.components import LayerDefinition
 from laminar.configurations import layers, serde
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
 from laminar.exceptions import FlowError
@@ -66,7 +67,7 @@ class TestLayer:
         class Test(Layer):
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None: ...
 
-        assert flow.execution.layer(Test).dependencies == {"Dep1", "Dep2"}
+        assert flow.test_execution.layer(Test).dependencies == {"Dep1", "Dep2"}
 
     def test__dependencies(self, flow: Flow) -> None:
         @flow.register
@@ -79,7 +80,7 @@ class TestLayer:
         class Test(Layer):
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None: ...
 
-        assert flow.execution.layer(Test)._dependencies == {Dep1(), Dep2()}
+        assert flow.test_execution.layer(Test)._dependencies == {Dep1(), Dep2()}
 
     def test_getattr(self, flow: Flow) -> None:
         workspace: dict[str, Any] = flow.configuration.datastore.cache
@@ -94,8 +95,8 @@ class TestLayer:
 
         flow.register(Layer)
 
-        assert flow.execution.layer(Layer, index=0).foo is True
-        assert flow.execution.layer(Layer, index=0).bar == Accessor(
+        assert flow.test_execution.layer(Layer, index=0).foo is True
+        assert flow.test_execution.layer(Layer, index=0).bar == Accessor(
             archive=Archive(artifacts=[Artifact(dtype="str", hexdigest="123"), Artifact(dtype="str", hexdigest="456")]),
             layer=Layer(),
         )
@@ -109,7 +110,7 @@ class TestLayer:
 
     def test_shard(self, flow: Flow) -> None:
         flow.register(Layer)
-        flow.execution.layer(Layer, index=0).shard(foo=[True, False, None])
+        flow.test_execution.layer(Layer, index=0).shard(foo=[True, False, None])
 
         assert flow.configuration.datastore.cache == {
             "memory:///TestFlow/artifacts/5280fce43ea9afbd61ec2c2a16c35118af29eafa08aa2f5f714e54dc9cceb5ae.gz": True,
@@ -178,7 +179,7 @@ class TestFLow:
         mock_execution = MagicMock()
         mock_execution.id = None
 
-        flow.execution = mock_execution
+        flow.execution = mock_execution  # type: ignore[method-assign]
 
         flow()
 
@@ -190,15 +191,32 @@ class TestFLow:
         mock_execution = MagicMock()
         mock_execution.id = "test-execution"
 
-        flow.execution = mock_execution
+        @flow.register
+        class Test(Layer): ...
+
+        with patch.object(flow, "execution", return_value=mock_execution):
+            flow()
+
+            with contexts.Environment(
+                LAMINAR_EXECUTION_ID="test-execution", LAMINAR_LAYER_NAME="Test", LAMINAR_FLOW_NAME="TestFlow"
+            ):
+                flow()
+
+        mock_execution.execute.assert_called_once_with(layer=mock_execution.layer.return_value)
+
+    def test_bool_executes_current_layer(self, flow: Flow) -> None:
+        mock_execution = MagicMock()
 
         @flow.register
         class Test(Layer): ...
 
-        flow()
-
-        with contexts.Environment(LAMINAR_LAYER_NAME="Test", LAMINAR_FLOW_NAME="TestFlow"):
-            flow()
+        with (
+            patch.object(flow, "execution", return_value=mock_execution),
+            contexts.Environment(
+                LAMINAR_EXECUTION_ID="test-execution", LAMINAR_LAYER_NAME="Test", LAMINAR_FLOW_NAME="TestFlow"
+            ),
+        ):
+            assert not flow
 
         mock_execution.execute.assert_called_once_with(layer=mock_execution.layer.return_value)
 
@@ -213,7 +231,11 @@ class TestFLow:
         class Test(Layer):
             def __call__(self, dep1: Dep1, dep2: Dep2) -> None: ...
 
-        assert flow.registry == {"Dep1": Dep1(), "Dep2": Dep2(), "Test": Test(), "Parameters": Parameters()}
+        assert set(flow.registry) == {"Dep1", "Dep2", "Test", "Parameters"}
+        assert flow.registry["Dep1"] == LayerDefinition(Dep1, layers.Configuration())
+        assert flow.registry["Dep2"] == LayerDefinition(Dep2, layers.Configuration())
+        assert flow.registry["Test"] == LayerDefinition(Test, layers.Configuration())
+        assert flow.registry["Parameters"] == LayerDefinition(Parameters, layers.Configuration())
         assert flow.dependencies == {"Dep1": set(), "Dep2": set(), "Parameters": set(), "Test": {"Dep1", "Dep2"}}
         assert flow.dependents == {"Dep1": {"Test"}, "Dep2": {"Test"}}
 
@@ -227,14 +249,29 @@ class TestFLow:
             class Test(Layer):  # type: ignore # noqa
                 ...
 
+    def test_inherited_layer_duplicate(self) -> None:
+        class Flow1(Flow): ...
+
+        class Flow2(Flow): ...
+
+        @Flow1.register
+        class A(Layer): ...
+
+        @Flow2.register
+        class A(Layer): ...  # type: ignore[no-redef]  # noqa: F811
+
+        with pytest.raises(FlowError, match="Duplicate layer added"):
+
+            class Combined(Flow1, Flow2): ...
+
     def test_layer(self, flow: Flow) -> None:
         @flow.register
         class Test(Layer): ...
 
-        assert flow.execution.layer("Test"), Test()
-        assert flow.execution.layer(Test), Test()
-        assert flow.execution.layer(Test()), Test()
-        assert flow.execution.layer(Test, foo="bar").foo == "bar"
+        assert flow.test_execution.layer("Test"), Test()
+        assert flow.test_execution.layer(Test), Test()
+        assert flow.test_execution.layer(Test()), Test()
+        assert flow.test_execution.layer(Test, foo="bar").foo == "bar"
 
     def test_results(self, flow: Flow) -> None:
         assert flow.execution("test-execution").id == "test-execution"

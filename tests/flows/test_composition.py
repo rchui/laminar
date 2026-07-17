@@ -56,9 +56,9 @@ class CombinedFlow(Flow1, Flow2, Flow3): ...
 @pytest.mark.flow
 def test_combination() -> None:
     assert sorted(CombinedFlow.registry) == ["A", "B", "C", "Parameters"]
-    assert CombinedFlow.registry["A"] == A()
-    assert CombinedFlow.registry["B"] == B()
-    assert CombinedFlow.registry["C"] == C()
+    assert CombinedFlow.registry["A"].layer is A
+    assert CombinedFlow.registry["B"].layer is B
+    assert CombinedFlow.registry["C"].layer is C
 
     flow = CombinedFlow(datastore=datastores.Memory(), executor=executors.Thread())
     execution = flow(foo="bar")

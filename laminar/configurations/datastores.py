@@ -12,7 +12,6 @@ from typing import TYPE_CHECKING, Any, BinaryIO, overload
 import boto3
 
 from laminar.configurations import serde
-from laminar.types import unwrap
 from laminar.utils import fs
 
 if TYPE_CHECKING:
@@ -61,7 +60,7 @@ class Record:
     def path(*, layer: "Layer") -> str:
         """Get the path to the Record."""
 
-        return fs.join(layer.execution.flow.name, ".cache", unwrap(layer.execution.id), layer.name, ".record.json")
+        return fs.join(layer.execution.flow.name, ".cache", layer.execution.id, layer.name, ".record.json")
 
     def dict(self) -> dict[str, Any]:
         """Convert the Record to a dict."""
@@ -133,12 +132,12 @@ class Archive:
         parts: tuple[str, ...]
 
         if cache:
-            parts = (layer.execution.flow.name, ".cache", unwrap(layer.execution.id), layer.name, f"{name}.json")
+            parts = (layer.execution.flow.name, ".cache", layer.execution.id, layer.name, f"{name}.json")
         else:
             parts = (
                 layer.execution.flow.name,
                 "archives",
-                unwrap(layer.execution.id),
+                layer.execution.id,
                 layer.name,
                 str(index),
                 f"{name}.json",
@@ -357,7 +356,7 @@ class DataStore:
         archive = Archive(artifacts=artifacts)
         self._write(
             value=archive,
-            uri=self.uri(path=archive.path(layer=layer, index=unwrap(layer.index, 0), name=name, cache=cache)),
+            uri=self.uri(path=archive.path(layer=layer, index=layer.index, name=name, cache=cache)),
             dtype=ArchiveProtocol.dtype,
         )
         return archive
@@ -429,11 +428,7 @@ class DataStore:
         """
 
         layers = sorted(
-            set(
-                self._list(
-                    prefix=self.uri(path=fs.join(execution.flow.name, "archives", unwrap(execution.id))), group="layer"
-                )
-            )
+            set(self._list(prefix=self.uri(path=fs.join(execution.flow.name, "archives", execution.id)), group="layer"))
         )
         return [execution.layer(layer) for layer in layers]
 
@@ -451,7 +446,7 @@ class DataStore:
             set(
                 self._list(
                     prefix=self.uri(
-                        path=fs.join(layer.execution.flow.name, "archives", unwrap(layer.execution.id), layer.name, "0")
+                        path=fs.join(layer.execution.flow.name, "archives", layer.execution.id, layer.name, "0")
                     ),
                     group="artifact",
                 )
