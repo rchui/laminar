@@ -5,7 +5,6 @@ from typing import Any
 import pytest
 
 from laminar import Flow, Layer
-from laminar.configurations import layers
 from laminar.configurations.datastores import Archive, Artifact, Record
 from laminar.configurations.layers import Catch, ForEach, Parameter
 
@@ -21,23 +20,35 @@ class TestCatch:
                 raise AssertionError
 
         catch = Catch(RuntimeError, AssertionError)
-        A(configuration=layers.Configuration(catch=catch)).execute()
-        B(configuration=layers.Configuration(catch=catch)).execute()
+
+        class TestFlow(Flow): ...
+
+        TestFlow.register(catch=catch)(A)
+        TestFlow.register(catch=catch)(B)
+        execution = TestFlow().execution("test")
+        execution.layer(A).execute()
+        execution.layer(B).execute()
 
     def test_failure(self) -> None:
         class A(Layer):
             def __call__(self) -> None:
                 raise RuntimeError
 
+        class TestFlow(Flow): ...
+
+        TestFlow.register(A)
         with pytest.raises(RuntimeError):
-            A(configuration=layers.Configuration()).execute()
+            TestFlow().execution("test").layer(A).execute()
 
     def test_suberror(self) -> None:
         class A(Layer):
             def __call__(self) -> None:
                 raise RuntimeError
 
-        A(configuration=layers.Configuration(catch=Catch(Exception))).execute()
+        class TestFlow(Flow): ...
+
+        TestFlow.register(catch=Catch(Exception))(A)
+        TestFlow().execution("test").layer(A).execute()
 
 
 class TestForEach:

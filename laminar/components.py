@@ -8,7 +8,7 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from functools import reduce
 from itertools import chain
-from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, overload
+from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast, overload
 
 from ksuid import KsuidMs
 
@@ -21,10 +21,9 @@ from laminar.utils import stringify
 logger = logging.getLogger(__name__)
 
 FLOW_RESERVED_KEYWORDS = {"configuration", "execution", "registry"}
-LAYER_RESERVED_KEYWORDS = {"configuration", "execution", "attempt", "index", "splits"}
+LAYER_RESERVED_KEYWORDS = {"configuration", "definition", "execution", "attempt", "index", "splits"}
 
 
-@dataclass
 class Layer:
     """Task to execute as part of a flow.
 
@@ -36,121 +35,36 @@ class Layer:
         class Task(Layer): ...
     """
 
-    #: Configurations for the Layer
-    configuration: layers.Configuration
-    #: Execution the layer is being run in
-    execution: "Execution"
-
-    #: Current layer execution attempt
-    attempt: int = 1
-    #: Layer index in its splits
-    index: int = 0
-    #: Number of splits in the layer execution
-    splits: int = 1
-
     def __init__(self, **attributes: Any) -> None:
+        """Create a static layer object.
+
+        Static layer instances are useful only for user-level introspection.
+        Executable layers are created by :meth:`Execution.layer`.
+        """
         for key, value in attributes.items():
             setattr(self, key, value)
 
-    __call__: Callable[..., None]  # type: ignore
+    if TYPE_CHECKING:
+        # A user layer is executed as a generated LayerRun.  These declarations
+        # describe that runtime surface for subclasses without putting state on
+        # the static definition object.
+        configuration: layers.Configuration
+        execution: "Execution"
+        attempt: int
+        index: int
+        splits: int
 
-    def __call__(self) -> None:  # type: ignore
-        ...
+        def __getattr__(self, name: str) -> Any: ...
 
-    def __repr__(self) -> str:
-        return stringify(self, self.name, "execution", "index", "splits")
-
-    def __deepcopy__(self, memo: dict[int, Any]) -> "Layer":
-        cls = self.__class__
-        result: Layer = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            setattr(result, k, copy.deepcopy(v, memo))
-        return result
+    __call__: Callable[..., None] = lambda self: None
 
     def __eq__(self, other: object) -> bool:
-        if isinstance(other, str):
-            return self.name == other
-        elif isinstance(other, Layer):
-            return type(self) is type(other) and self.name == other.name
-        else:
-            return False
-
-    def __getattr__(self, name: str) -> Any:
-        if name not in self.__dict__:
-            # The key is a reserved keyword. We expect these to all be here.
-            if name in LAYER_RESERVED_KEYWORDS:
-                raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.")
-
-            # The key is likely an artifact.
-            try:
-                self.__dict__[name] = self.execution.flow.configuration.datastore.read_artifact(
-                    layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
-                )
-            except FileNotFoundError as error:
-                message = f"Object '{self.name}' has no attribute '{name}'."
-                if not self.state.finished:
-                    message = message + f" Layer {self.name} was not finished."
-                raise AttributeError(message) from error
-
-        return self.__dict__[name]
-
-    def __getstate__(self) -> dict[str, Any]:
-        return self.__dict__
+        return (isinstance(other, str) and self.name == other) or (
+            isinstance(other, Layer) and type(self) is type(other)
+        )
 
     def __hash__(self) -> int:
         return hash(self.name)
-
-    def __lt__(self, other: object) -> bool:
-        if isinstance(other, str):
-            return self.name < other
-        elif isinstance(other, Layer):
-            return self.name < other.name
-        else:
-            raise TypeError(f"Type '{type(self).__name__}' and type '{type(other).__name__}' are incomparable.")
-
-    def __setstate__(self, slots: dict[str, Any]) -> None:
-        self.__dict__ = slots
-
-    @property
-    def artifacts(self) -> dict[str, Any]:
-        """Artifacts assigned to the layer."""
-
-        return {artifact: value for artifact, value in vars(self).items() if artifact not in LAYER_RESERVED_KEYWORDS}
-
-    @property
-    def _hooks(self) -> set[Callable[..., Any]]:
-        return {
-            hook
-            for hook in chain(vars(type(self.execution.flow)).values(), vars(type(self)).values())
-            if hooks.annotation.get(hook) is not None
-        }
-
-    @property
-    def _parameters(self) -> dict[str, tuple["Layer", ...]]:
-        return {
-            self.__call__.__name__: hints(self.execution, self.__call__),
-            **{hook.__name__: hints(self.execution, hook) for hook in self._hooks},
-        }
-
-    @property
-    def _dependencies(self) -> set["Layer"]:
-        return set(chain.from_iterable(self._parameters.values()))
-
-    @property
-    def dependencies(self) -> set[str]:
-        """Layers this layer depends on."""
-
-        return {layer.name for layer in self._dependencies}
-
-    @property
-    def hooks(self) -> dict[str, set[Callable[..., Any]]]:
-        """Hooks attached to this layer collated by annotation."""
-
-        _hooks: dict[str, set[Callable[..., Any]]] = defaultdict(set)
-        for hook in self._hooks:
-            _hooks[unwrap(hooks.annotation.get(hook))].add(hook)
-        return _hooks
 
     @property
     def name(self) -> str:
@@ -158,13 +72,114 @@ class Layer:
 
         return type(self).__name__
 
+
+class LayerRun(Layer):
+    """Concrete, fully-specified execution of a registered :class:`Layer`."""
+
+    def __init__(
+        self,
+        *,
+        definition: "LayerDefinition",
+        execution: "Execution",
+        attempt: int,
+        index: int,
+        splits: int,
+        **attributes: Any,
+    ) -> None:
+        self.definition = definition
+        self.configuration = copy.deepcopy(definition.configuration)
+        self.execution = execution
+        self.attempt = attempt
+        self.index = index
+        self.splits = splits
+        for key, value in attributes.items():
+            setattr(self, key, value)
+
+    @property
+    def name(self) -> str:
+        return self.definition.name
+
+    def __repr__(self) -> str:
+        return stringify(self, self.name, "execution", "index", "splits")
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> "LayerRun":
+        cls = self.__class__
+        result: LayerRun = cls.__new__(cls)
+        memo[id(self)] = result
+        for key, value in self.__dict__.items():
+            setattr(result, key, copy.deepcopy(value, memo))
+        return result
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, str):
+            return self.name == other
+        if isinstance(other, LayerRun):
+            return self.definition.layer is other.definition.layer and self.name == other.name
+        if isinstance(other, Layer):
+            return self.definition.layer is type(other)
+        return False
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __lt__(self, other: object) -> bool:
+        if isinstance(other, str):
+            return self.name < other
+        if isinstance(other, LayerRun):
+            return self.name < other.name
+        raise TypeError(f"Type '{type(self).__name__}' and type '{type(other).__name__}' are incomparable.")
+
+    def __getattr__(self, name: str) -> Any:
+        if name in LAYER_RESERVED_KEYWORDS:
+            raise AttributeError(f"Object '{self.name}' has no attribute '{name}'.")
+        try:
+            self.__dict__[name] = self.execution.flow.configuration.datastore.read_artifact(
+                layer=self, archive=self.configuration.foreach.join(layer=self, name=name)
+            )
+        except FileNotFoundError as error:
+            message = f"Object '{self.name}' has no attribute '{name}'."
+            if not self.state.finished:
+                message += f" Layer {self.name} was not finished."
+            raise AttributeError(message) from error
+        return self.__dict__[name]
+
+    @property
+    def artifacts(self) -> dict[str, Any]:
+        return {artifact: value for artifact, value in vars(self).items() if artifact not in LAYER_RESERVED_KEYWORDS}
+
+    @property
+    def _hooks(self) -> set[Callable[..., Any]]:
+        return {
+            hook for cls in type(self).__mro__ for hook in vars(cls).values() if hooks.annotation.get(hook) is not None
+        } | {hook for hook in vars(type(self.execution.flow)).values() if hooks.annotation.get(hook) is not None}
+
+    @property
+    def _parameters(self) -> dict[str, tuple[Layer, ...]]:
+        return {
+            "__call__": cast(tuple[LayerRun, ...], hints(self.execution, self.__call__)),
+            **{hook.__name__: cast(tuple[LayerRun, ...], hints(self.execution, hook)) for hook in self._hooks},
+        }
+
+    @property
+    def _dependencies(self) -> set[Layer]:
+        return set(chain.from_iterable(self._parameters.values()))
+
+    @property
+    def dependencies(self) -> set[str]:
+        return {layer.name for layer in self._dependencies}
+
+    @property
+    def hooks(self) -> dict[str, set[Callable[..., Any]]]:
+        _hooks: dict[str, set[Callable[..., Any]]] = defaultdict(set)
+        for hook in self._hooks:
+            _hooks[unwrap(hooks.annotation.get(hook))].add(hook)
+        return _hooks
+
     @property
     def state(self) -> layers.State:
-        """State of the Layer"""
-
         return layers.State(layer=self)
 
-    def execute(self, *parameters: "Layer") -> None:
+    def execute(self, *parameters: Layer) -> None:
         """Execute a layer.
 
         Args:
@@ -216,10 +231,19 @@ class LayerDefinition:
 
     layer: type[Layer]
     configuration: layers.Configuration
+    _runtime: type[LayerRun] | None = field(default=None, init=False, compare=False, repr=False)
 
     @property
     def name(self) -> str:
         return self.layer.__name__
+
+    def runtime(self) -> type[LayerRun]:
+        """Return the cached runtime class for this definition's user layer."""
+        if runtime := self._runtime:
+            return runtime
+        runtime = type(f"{self.name}Run", (LayerRun, self.layer), {"__module__": self.layer.__module__})
+        object.__setattr__(self, "_runtime", runtime)
+        return runtime
 
 
 @dataclass
@@ -238,7 +262,7 @@ class Execution:
     def finished(self) -> bool:
         """Flow execution is finished."""
 
-        return reduce(operator.and_, [layer.state.finished for layer in self.flow._dependencies.keys()])
+        return bool(reduce(operator.and_, [layer.state.finished for layer in self.flow._dependencies.keys()]))
 
     @property
     def running(self) -> bool:
@@ -249,7 +273,7 @@ class Execution:
             flow_name is not None and flow_name == self.flow.name
         )
 
-    def execute(self, *, layer: Layer) -> "Execution":
+    def execute(self, *, layer: LayerRun) -> "Execution":
         """Execute a single layer of the flow.
 
         Usage::
@@ -271,7 +295,9 @@ class Execution:
         logger.info("Starting layer '%s'.", layer.name if layer.splits == 1 else f"{layer.name}/{layer.index}")
 
         # Setup the Layer parameter values
-        parameters = layer.configuration.foreach.set(layer=layer, parameters=layer._parameters["__call__"])
+        parameters = layer.configuration.foreach.set(
+            layer=layer, parameters=cast(tuple[LayerRun, ...], layer._parameters["__call__"])
+        )
 
         with hooks.event.context(layer=layer, annotation=hooks.annotation.execution):
             layer.execute(*parameters)
@@ -305,53 +331,63 @@ class Execution:
             linker: Function for passing parameters to the next flow.
         """
 
+        linked = linker(self)
         artifacts = (
-            linker(self).artifacts
+            (linked.artifacts if isinstance(linked, LayerRun) else vars(linked))
             if all(variable is None for variable in (current.execution.id, current.flow.name, current.layer.name))
             else {}
         )
         return flow(execution=self.id, **artifacts)
 
     @overload
-    def layer(self, layer: str, **atributes: Any) -> Layer: ...
+    def layer(
+        self, layer: str, *, attempt: int = 1, index: int = 0, splits: int = 1, **attributes: Any
+    ) -> LayerRun: ...
 
     @overload
-    def layer(self, layer: type[LayerT], **attributes: Any) -> LayerT: ...
+    def layer(
+        self, layer: type[LayerT], *, attempt: int = 1, index: int = 0, splits: int = 1, **attributes: Any
+    ) -> LayerRun: ...
 
     @overload
-    def layer(self, layer: LayerT, **attributes: Any) -> LayerT: ...
+    def layer(
+        self, layer: LayerRun, *, attempt: int = 1, index: int = 0, splits: int = 1, **attributes: Any
+    ) -> LayerRun: ...
 
-    def layer(self, layer: str | type[Layer] | Layer, **attributes: Any) -> Layer:
+    def layer(
+        self,
+        layer: str | type[Layer] | LayerRun,
+        *,
+        attempt: int = 1,
+        index: int = 0,
+        splits: int = 1,
+        **attributes: Any,
+    ) -> LayerRun:
         """Get a registered flow layer.
 
         Usage::
 
             flow.execution(...).layer("A")
             flow.execution(...).layer(A)
-            flow.execution(...).layer(A())
-            flow.execution(...).layer(A(), index=0, splits=2)
 
         Args:
-            layer: Layer to get.
+            layer: Registered layer name or type to get.
             **attributes: Keyword attributes to add to the Layer.
 
         Returns:
             Layer that is registered to the flow.
         """
 
-        if isinstance(layer, Layer):
-            layer = layer.name
-        elif not isinstance(layer, str):
-            layer = layer().name
-
-        # Materialize a fresh runtime layer from its static definition.
-        definition = self.flow.registry[layer]
-        layer = definition.layer(configuration=copy.deepcopy(definition.configuration))
-        layer.execution = self
-        for key, value in attributes.items():
-            setattr(layer, key, value)
-
-        return layer
+        name = layer if isinstance(layer, str) else layer.name if isinstance(layer, LayerRun) else layer.__name__
+        definition = self.flow.registry[name]
+        return definition.runtime()(
+            definition=definition,
+            execution=self,
+            attempt=attempt,
+            index=index,
+            splits=splits,
+            **attributes,
+        )
 
     def parameters(self, **artifacts: Any) -> "Execution":
         """Configure parameters for a flow execution
@@ -408,7 +444,7 @@ class Execution:
         """
 
         self.flow.configuration.scheduler.loop(  # type: ignore
-            execution=self, dependencies=dependencies, finished={Parameters().name}
+            execution=self, dependencies=dependencies, finished={Parameters.__name__}
         )
 
         return self

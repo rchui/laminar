@@ -15,7 +15,7 @@ from laminar.settings import current
 if TYPE_CHECKING:
     from inspect import Traceback
 
-    from laminar import Layer
+    from laminar import Layer, LayerRun
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +105,7 @@ class ForEach:
 
     parameters: Iterable[Parameter] = field(default_factory=list)  #: Parameters to configure the foreach with.
 
-    def join(self, *, layer: "Layer", name: str) -> datastores.Archive:
+    def join(self, *, layer: "LayerRun", name: str) -> datastores.Archive:
         """Join together multiple artifact splits of a layer into a single Archive.
 
         Args:
@@ -134,7 +134,7 @@ class ForEach:
 
         return archive
 
-    def grid(self, *, layer: "Layer") -> list[dict["Layer", dict[str, int]]]:
+    def grid(self, *, layer: "LayerRun") -> list[dict["LayerRun", dict[str, int]]]:
         """Generate a grid of all combinations of foreach inputs.
 
         Args:
@@ -145,7 +145,7 @@ class ForEach:
                 index.
         """
 
-        parameters: list[tuple[Layer, str]] = []
+        parameters: list[tuple[LayerRun, str]] = []
         archives: list[datastores.Archive] = []
 
         for parameter in self.parameters:
@@ -165,16 +165,16 @@ class ForEach:
                 )
 
         # Compute the product of every possible set of parameter indexes based off of parameter layer splits.
-        grid: list[dict[Layer, dict[str, int]]] = []
+        grid: list[dict[LayerRun, dict[str, int]]] = []
         for indexes in itertools.product(*(range(len(archive)) for archive in archives)):
-            model: dict[Layer, dict[str, int]] = {}
+            model: dict[LayerRun, dict[str, int]] = {}
             for (instance, attribute), index in zip(parameters, indexes):
                 model.setdefault(instance, {})[attribute] = index
             grid.append(model)
 
         return grid
 
-    def splits(self, *, layer: "Layer") -> int:
+    def splits(self, *, layer: "LayerRun") -> int:
         """Get the splits of the ForEach grid."""
 
         if layer.execution.flow.configuration.datastore.exists(path=datastores.Record.path(layer=layer)):
@@ -185,7 +185,7 @@ class ForEach:
             logger.debug("Cache miss for layer '%s' record.", layer.name)
             return len(self.grid(layer=layer))
 
-    def set(self, *, layer: "Layer", parameters: tuple["Layer", ...]) -> tuple["Layer", ...]:
+    def set(self, *, layer: "LayerRun", parameters: tuple["LayerRun", ...]) -> tuple["LayerRun", ...]:
         """Set a foreach layer's parameters given the inputs from the foreach grid.
 
         Args:
@@ -274,7 +274,7 @@ class Configuration:
 
 @dataclass
 class State:
-    layer: "Layer"
+    layer: "LayerRun"
 
     @property
     def finished(self) -> bool:

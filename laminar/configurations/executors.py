@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from mypy_boto3_batch.client import BatchClient
 
-    from laminar import Layer
+    from laminar import LayerRun
 
 
 @dataclass(frozen=True)
@@ -55,7 +55,7 @@ class Executor:
         semaphore: asyncio.Semaphore = getattr(self, attr)
         return semaphore
 
-    async def submit(self, *, layer: "Layer") -> "Layer":
+    async def submit(self, *, layer: "LayerRun") -> "LayerRun":
         """Execute a layer.
 
         Args:
@@ -78,7 +78,7 @@ class Thread(Executor):
         Flow(executor=Thread())
     """
 
-    async def submit(self, *, layer: "Layer") -> "Layer":
+    async def submit(self, *, layer: "LayerRun") -> "LayerRun":
         async with self.semaphore:
             with contexts.Environment(
                 LAMINAR_EXECUTION_ID=layer.execution.id,
@@ -106,7 +106,7 @@ class Docker(Executor):
     #: Seconds to wait for a timed-out container to be force removed before giving up on cleanup.
     STOP_TIMEOUT = 30
 
-    async def submit(self, *, layer: "Layer") -> "Layer":
+    async def submit(self, *, layer: "LayerRun") -> "LayerRun":
         async with self.semaphore:
             workspace = (
                 f"{layer.execution.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
@@ -234,7 +234,7 @@ class AWS:
             Flow(executor=AWS.Batch())
         """
 
-        async def wait(self, *, layer: "Layer", job: str, batch: Optional["BatchClient"] = None) -> "Layer":
+        async def wait(self, *, layer: "LayerRun", job: str, batch: Optional["BatchClient"] = None) -> "LayerRun":
             """Wait on the completion of a Layer.
 
             Args:
@@ -263,7 +263,7 @@ class AWS:
 
                 await asyncio.sleep(self.poll)
 
-        async def submit(self, *, layer: "Layer", batch: Optional["BatchClient"] = None) -> "Layer":
+        async def submit(self, *, layer: "LayerRun", batch: Optional["BatchClient"] = None) -> "LayerRun":
             async with self.semaphore:
                 container = layer.configuration.container
 

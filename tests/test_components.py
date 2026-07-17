@@ -7,9 +7,9 @@ from unittest.mock import MagicMock, patch
 import cloudpickle
 import pytest
 
-from laminar import Flow, Layer, Parameters
+from laminar import Flow, Layer, LayerRun, Parameters
 from laminar.components import LayerDefinition
-from laminar.configurations import layers, serde
+from laminar.configurations import hooks, layers, serde
 from laminar.configurations.datastores import Accessor, Archive, Artifact, Memory
 from laminar.exceptions import FlowError
 from laminar.utils import contexts
@@ -52,9 +52,36 @@ class TestLayer:
 
         assert Subclass().name == "Subclass"
 
-    def test_state(self) -> None:
+    def test_static_layer_has_no_runtime_state(self) -> None:
         layer = Layer()
+        for attribute in ("configuration", "execution", "attempt", "index", "splits", "artifacts", "state"):
+            with pytest.raises(AttributeError):
+                getattr(layer, attribute)
+
+    def test_run_has_required_runtime_state(self, layer: Layer) -> None:
+        assert isinstance(layer, LayerRun)
         assert layer.state == layers.State(layer=layer)
+        assert (layer.execution.id, layer.attempt, layer.index, layer.splits) == ("test-execution", 1, 0, 2)
+
+    def test_runtime_dispatches_user_methods_and_hooks(self, flow: Flow) -> None:
+        calls: list[int] = []
+
+        @flow.register
+        class Test(Layer):
+            def helper(self) -> int:
+                return self.index
+
+            @hooks.execution
+            def configure(self) -> None:
+                calls.append(self.helper())
+
+            def __call__(self) -> None:
+                calls.append(self.helper())
+
+        run = flow.test_execution.layer(Test, index=0)
+        flow.test_execution.execute(layer=run)
+
+        assert calls == [0, 0]
 
     def test_dependencies(self, flow: Flow) -> None:
         @flow.register
@@ -270,8 +297,8 @@ class TestFLow:
 
         assert flow.test_execution.layer("Test"), Test()
         assert flow.test_execution.layer(Test), Test()
-        assert flow.test_execution.layer(Test()), Test()
         assert flow.test_execution.layer(Test, foo="bar").foo == "bar"
+        assert isinstance(flow.test_execution.layer(Test), LayerRun)
 
     def test_results(self, flow: Flow) -> None:
         assert flow.execution("test-execution").id == "test-execution"

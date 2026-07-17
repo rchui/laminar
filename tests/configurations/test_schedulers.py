@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from laminar import Layer
+from laminar import Layer, LayerRun
 from laminar.configurations.datastores import Record
 from laminar.configurations.schedulers import Scheduler
 
@@ -26,7 +26,7 @@ class TestScheduler:
     scheduler = Scheduler()
 
     @pytest.mark.asyncio
-    async def test_schedule(self, layer: Layer) -> None:
+    async def test_schedule(self, layer: LayerRun) -> None:
         async with coroutine("laminar.configurations.executors.Thread.submit") as mock_execute:
             await self.scheduler.schedule(layer=layer)
 
@@ -39,8 +39,8 @@ class TestScheduler:
         )
 
     @pytest.mark.asyncio
-    async def test_schedule_cancels_siblings_on_failure(self, layer: Layer) -> None:
-        async def submit(*, layer: Layer) -> Layer:
+    async def test_schedule_cancels_siblings_on_failure(self, layer: LayerRun) -> None:
+        async def submit(*, layer: LayerRun) -> LayerRun:
             if layer.index == 0:
                 raise RuntimeError("boom")
             await asyncio.sleep(10)

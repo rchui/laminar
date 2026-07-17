@@ -15,7 +15,7 @@ from laminar.utils import contexts
 if TYPE_CHECKING:
     from asyncio import Task
 
-    from laminar import Execution, Layer
+    from laminar import Execution, LayerRun
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class Scheduler:
     """Base scheduler"""
 
-    async def schedule(self, *, layer: "Layer", attempt: int = 1) -> list["Layer"]:
+    async def schedule(self, *, layer: "LayerRun", attempt: int = 1) -> list["LayerRun"]:
         """Schedule layers for execution.
 
         Args:
@@ -37,7 +37,7 @@ class Scheduler:
             Layer splits that were executed
         """
 
-        tasks: list[Task[Layer]] = []
+        tasks: list[Task[LayerRun]] = []
 
         try:
             splits = layer.configuration.foreach.splits(layer=layer)
@@ -147,8 +147,8 @@ class Scheduler:
         return runnable - skippable, finished | skippable
 
     def running(
-        self, *, execution: "Execution", runnable: set[str], running: set["Task[list[Layer]]"]
-    ) -> set["Task[list[Layer]]"]:
+        self, *, execution: "Execution", runnable: set[str], running: set["Task[list[LayerRun]]"]
+    ) -> set["Task[list[LayerRun]]"]:
         """Schedule runnable layers.
 
         Args:
@@ -164,8 +164,8 @@ class Scheduler:
         return running | {asyncio.create_task(self.schedule(layer=execution.layer(layer))) for layer in runnable}
 
     async def wait(
-        self, *, running: set["Task[list[Layer]]"], finished: set[str], condition: str
-    ) -> tuple[set["Task[list[Layer]]"], set[str]]:
+        self, *, running: set["Task[list[LayerRun]]"], finished: set[str], condition: str
+    ) -> tuple[set["Task[list[LayerRun]]"], set[str]]:
         """Wait on the completion of running layers.
 
         Args:
@@ -209,7 +209,7 @@ class Scheduler:
 
         pending = set(dependencies) - finished
         runnable: set[str] = set()
-        running: set[Task[list[Layer]]] = set()
+        running: set[Task[list[LayerRun]]] = set()
 
         # Start the scheduling loop
         while pending:

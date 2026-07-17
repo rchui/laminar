@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from laminar import Layer
+from laminar import Layer, LayerRun
 from laminar.configurations.executors import Docker, Executor, Thread
 from laminar.exceptions import ExecutionError
 
@@ -25,7 +25,7 @@ class TestExecutor:
         assert self.executor.semaphore._value == 1
         assert self.executor.semaphore != asyncio.Semaphore(1)
 
-    async def test_submit(self, layer: "Layer") -> None:
+    async def test_submit(self, layer: "LayerRun") -> None:
         with pytest.raises(NotImplementedError):
             await self.executor.submit(layer=layer)
 
@@ -51,7 +51,7 @@ class TestDocker:
         identifier = f"{flow}/{execution}/{layer}/{index}"
         return f"laminar-{hashlib.sha256(identifier.encode()).hexdigest()}"
 
-    async def test_submit(self, layer: "Layer") -> None:
+    async def test_submit(self, layer: "LayerRun") -> None:
         command = shlex.split("echo 'hello world'")
         with patch("shlex.split") as mock_split:
             mock_split.return_value = command
@@ -67,7 +67,7 @@ class TestDocker:
             f" memory:///:/laminar/.laminar --workdir /laminar {layer.configuration.container.image} python main.py"
         )
 
-    async def test_submit_error_code(self, layer: "Layer") -> None:
+    async def test_submit_error_code(self, layer: "LayerRun") -> None:
         command = shlex.split("exit 1")
         with patch("shlex.split") as mock_split:
             mock_split.return_value = command
@@ -75,7 +75,7 @@ class TestDocker:
             with pytest.raises(ExecutionError):
                 await self.executor.submit(layer=layer)
 
-    async def test_submit_exeception(self, layer: "Layer") -> None:
+    async def test_submit_exeception(self, layer: "LayerRun") -> None:
         with patch("shlex.split") as mock_split:
             mock_split.side_effect = Mock(side_effect=Exception())
 
@@ -110,7 +110,7 @@ class TestDocker:
         assert tokens[env_index + 1] == 'LAMINAR_EXECUTION_ID=weird id/with space "quote'
         assert tokens[-2:] == ["python", "main.py"]
 
-    async def test_submit_timeout(self, layer: "Layer") -> None:
+    async def test_submit_timeout(self, layer: "LayerRun") -> None:
         executor = Docker(timeout=0)
         command = shlex.split("sleep 5")
 
@@ -147,7 +147,7 @@ class TestDocker:
             stderr=asyncio.subprocess.DEVNULL,
         )
 
-    async def test_submit_timeout_cleanup_failure_is_reported(self, layer: "Layer") -> None:
+    async def test_submit_timeout_cleanup_failure_is_reported(self, layer: "LayerRun") -> None:
         executor = Docker(timeout=0)
         command = shlex.split("sleep 5")
 
@@ -170,7 +170,7 @@ class TestDocker:
             with pytest.raises(ExecutionError, match="may still be running"):
                 await executor.submit(layer=layer)
 
-    async def test_submit_timeout_cleanup_is_bounded(self, layer: "Layer") -> None:
+    async def test_submit_timeout_cleanup_is_bounded(self, layer: "LayerRun") -> None:
         executor = Docker(timeout=0)
         command = shlex.split("sleep 5")
 
@@ -206,7 +206,7 @@ class TestDocker:
                 # Bounded by STOP_TIMEOUT: fails fast rather than hanging on the unresponsive daemon.
                 await asyncio.wait_for(executor.submit(layer=layer), timeout=2)
 
-    async def test_submit_timeout_cleanup_process_is_reaped(self, layer: "Layer") -> None:
+    async def test_submit_timeout_cleanup_process_is_reaped(self, layer: "LayerRun") -> None:
         executor = Docker(timeout=0)
         command = shlex.split("sleep 5")
 
