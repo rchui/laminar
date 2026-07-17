@@ -177,6 +177,7 @@ class Docker(Executor):
         """
 
         removed = False
+        remove: asyncio.subprocess.Process | None = None
         try:
             remove = await asyncio.create_subprocess_exec(
                 "docker",
@@ -194,6 +195,15 @@ class Docker(Executor):
             logger.error("Timed out after '%d' seconds waiting for 'docker rm --force %s'.", self.STOP_TIMEOUT, name)
         except Exception as error:
             logger.error("Failed to run 'docker rm --force %s': %s(%s).", name, type(error).__name__, error)
+        finally:
+            # asyncio.wait_for() only cancels the wait; the CLI process itself must be reaped separately
+            # or an unresponsive "docker rm" leaves an orphaned process behind on every timeout.
+            if remove is not None:
+                try:
+                    remove.kill()
+                except ProcessLookupError:
+                    pass
+                await remove.wait()
 
         try:
             process.kill()

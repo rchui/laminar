@@ -176,15 +176,22 @@ class TestDocker:
 
         real_create_subprocess_exec = asyncio.create_subprocess_exec
 
-        async def hang() -> int:
-            await asyncio.sleep(10)
-            return 0
+        class FakeUnresponsiveProcess:
+            """Doesn't resolve wait() until kill()'d, like a real process would once signalled."""
+
+            def __init__(self) -> None:
+                self._killed = asyncio.Event()
+
+            def kill(self) -> None:
+                self._killed.set()
+
+            async def wait(self) -> int:
+                await self._killed.wait()
+                return -9
 
         async def fake_create_subprocess_exec(*args: str, **kwargs: Any) -> Any:
             if args[:2] == ("docker", "rm"):
-                process = Mock()
-                process.wait = AsyncMock(side_effect=hang)  # unresponsive docker daemon
-                return process
+                return FakeUnresponsiveProcess()  # unresponsive docker daemon
             return await real_create_subprocess_exec(*args, **kwargs)
 
         with (
@@ -198,3 +205,37 @@ class TestDocker:
             with pytest.raises(ExecutionError, match="may still be running"):
                 # Bounded by STOP_TIMEOUT: fails fast rather than hanging on the unresponsive daemon.
                 await asyncio.wait_for(executor.submit(layer=layer), timeout=2)
+
+    async def test_submit_timeout_cleanup_process_is_reaped(self, layer: "Layer") -> None:
+        executor = Docker(timeout=0)
+        command = shlex.split("sleep 5")
+
+        real_create_subprocess_exec = asyncio.create_subprocess_exec
+        spawned: list[asyncio.subprocess.Process] = []
+
+        async def fake_create_subprocess_exec(*args: str, **kwargs: Any) -> Any:
+            if args[:2] == ("docker", "rm"):
+                # A real, slow-to-respond process stands in for an unresponsive docker CLI, so we can
+                # verify it actually gets killed rather than just having its wait() cancelled.
+                process = await real_create_subprocess_exec(
+                    "sleep", "10", stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL
+                )
+                spawned.append(process)
+                return process
+            return await real_create_subprocess_exec(*args, **kwargs)
+
+        with (
+            patch("shlex.split", return_value=command),
+            patch(
+                "laminar.configurations.executors.asyncio.create_subprocess_exec",
+                side_effect=fake_create_subprocess_exec,
+            ),
+            patch.object(Docker, "STOP_TIMEOUT", 0),
+        ):
+            with pytest.raises(ExecutionError, match="may still be running"):
+                await asyncio.wait_for(executor.submit(layer=layer), timeout=5)
+
+        assert len(spawned) == 1
+        # A non-None returncode means the process was actually killed and waited on, not just
+        # abandoned when asyncio.wait_for() cancelled its wait() coroutine.
+        assert spawned[0].returncode is not None
