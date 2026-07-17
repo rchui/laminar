@@ -109,6 +109,7 @@ class Docker(Executor):
             workspace = (
                 f"{layer.execution.flow.configuration.datastore.root}:{layer.configuration.container.workdir}/.laminar"
             )
+            name = f"laminar-{layer.execution.flow.name}-{unwrap(layer.execution.id)}-{layer.name}-{layer.index}"
 
             command = " ".join(
                 [
@@ -116,6 +117,7 @@ class Docker(Executor):
                     "run",
                     "--rm",
                     "--interactive",
+                    f"--name {name}",
                     f"--cpus {layer.configuration.container.cpu}",
                     f"--env LAMINAR_EXECUTION_ID={unwrap(layer.execution.id)}",
                     f"--env LAMINAR_EXECUTION_RETRY={layer.execution.retry}",
@@ -142,12 +144,36 @@ class Docker(Executor):
             except ExecutionError:
                 raise
             except asyncio.TimeoutError as error:
-                process.kill()
-                await process.wait()
+                await self._stop(name=name, process=process)
                 raise ExecutionError(f"Layer '{layer.name}' timed out after '{self.timeout}' seconds.") from error
             except Exception as error:
                 message = type(error).__name__ + (f":{error}" if str(error) else "")
                 raise ExecutionError(f"Layer '{layer.name}' failed with an unexpected error. {message}") from error
+
+    async def _stop(self, *, name: str, process: "asyncio.subprocess.Process") -> None:
+        """Stop a timed out container.
+
+        Notes:
+            Killing the local `docker run` client only detaches it -- the container is managed by the
+            Docker daemon and keeps running (and consuming resources / writing artifacts) until it's
+            explicitly stopped. `--rm` only removes a container once it has exited on its own.
+        """
+
+        remove = await asyncio.create_subprocess_exec(
+            "docker",
+            "rm",
+            "--force",
+            name,
+            stdout=asyncio.subprocess.DEVNULL,
+            stderr=asyncio.subprocess.DEVNULL,
+        )
+        await remove.wait()
+
+        try:
+            process.kill()
+        except ProcessLookupError:
+            pass
+        await process.wait()
 
 
 class AWS:

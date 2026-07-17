@@ -2,8 +2,8 @@
 
 import asyncio
 import shlex
-from typing import TYPE_CHECKING
-from unittest.mock import Mock, patch
+from typing import TYPE_CHECKING, Any
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -51,11 +51,11 @@ class TestDocker:
             assert await self.executor.submit(layer=layer) == layer
 
         mock_split.assert_called_once_with(
-            "docker run --rm --interactive --cpus 1 --env LAMINAR_EXECUTION_ID=test-execution --env"
-            " LAMINAR_EXECUTION_RETRY=False --env LAMINAR_FLOW_NAME=TestFlow --env LAMINAR_LAYER_ATTEMPT=1 --env"
-            " LAMINAR_LAYER_INDEX=0 --env LAMINAR_LAYER_NAME=Layer --env LAMINAR_LAYER_SPLITS=2 --memory 1500m"
-            f" --volume memory:///:/laminar/.laminar --workdir /laminar {layer.configuration.container.image} python"
-            " main.py"
+            "docker run --rm --interactive --name laminar-TestFlow-test-execution-Layer-0 --cpus 1 --env"
+            " LAMINAR_EXECUTION_ID=test-execution --env LAMINAR_EXECUTION_RETRY=False --env"
+            " LAMINAR_FLOW_NAME=TestFlow --env LAMINAR_LAYER_ATTEMPT=1 --env LAMINAR_LAYER_INDEX=0 --env"
+            " LAMINAR_LAYER_NAME=Layer --env LAMINAR_LAYER_SPLITS=2 --memory 1500m --volume"
+            f" memory:///:/laminar/.laminar --workdir /laminar {layer.configuration.container.image} python main.py"
         )
 
     async def test_submit_error_code(self, layer: "Layer") -> None:
@@ -76,8 +76,33 @@ class TestDocker:
     async def test_submit_timeout(self, layer: "Layer") -> None:
         executor = Docker(timeout=0)
         command = shlex.split("sleep 5")
-        with patch("shlex.split") as mock_split:
-            mock_split.return_value = command
 
+        # Spawn a real "sleep" process to exercise the timeout path, but fake the "docker rm" call so
+        # this test doesn't depend on a real Docker daemon being available (e.g. on macOS CI runners).
+        real_create_subprocess_exec = asyncio.create_subprocess_exec
+
+        async def fake_create_subprocess_exec(*args: str, **kwargs: Any) -> Any:
+            if args[:2] == ("docker", "rm"):
+                process = Mock()
+                process.wait = AsyncMock(return_value=0)
+                return process
+            return await real_create_subprocess_exec(*args, **kwargs)
+
+        with (
+            patch("shlex.split", return_value=command),
+            patch(
+                "laminar.configurations.executors.asyncio.create_subprocess_exec",
+                side_effect=fake_create_subprocess_exec,
+            ) as mock_exec,
+        ):
             with pytest.raises(ExecutionError, match="timed out"):
                 await executor.submit(layer=layer)
+
+        mock_exec.assert_any_call(
+            "docker",
+            "rm",
+            "--force",
+            "laminar-TestFlow-test-execution-Layer-0",
+            stdout=asyncio.subprocess.DEVNULL,
+            stderr=asyncio.subprocess.DEVNULL,
+        )
